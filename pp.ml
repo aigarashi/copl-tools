@@ -3,17 +3,18 @@ open Format
 
 let pf = printf
 
-let rec emit_seq delim emit_elm = function
+let rec emit_seq ?(spbefore=true) delim emit_elm = function 
+    (* spbefore = true means "insert space before delim" *)
     [] -> ()
-  | e::rest -> emit_elm e; emit_seq2 delim emit_elm rest
-and emit_seq2 delim emit_elm = function
+  | e::rest -> emit_elm e; emit_seq2 spbefore delim emit_elm rest
+and emit_seq2 spbefore delim emit_elm = function
     [] -> ()
   | e::rest -> 
-      pf "%s@ " delim; 
-      emit_elm e; emit_seq2 delim emit_elm rest
+      if spbefore then pf "@ %s " delim else pf "%s@ " delim; 
+      emit_elm e; emit_seq2 spbefore delim emit_elm rest
 
-let emit_comseq emit_elm = emit_seq "," emit_elm
-let emit_barseq emit_elm = emit_seq " |" emit_elm
+let emit_comseq emit_elm = emit_seq ~spbefore:false "," emit_elm
+let emit_barseq emit_elm = emit_seq "|" emit_elm
 
 let emit_var env = function
     Var id -> print_string (String.lowercase (Env.lookup_cat env id))
@@ -24,7 +25,8 @@ struct
       Var id -> let cat = Env.lookup_cat env id in 
 		  pf "%s_of_%s of %s" this cat (String.lowercase cat)
     | App (id, []) -> print_string id
-    | App (id, ts) -> pf "%s of " id; emit_seq " *" (emit_var env) ts
+    | App (id, ts) -> pf "%s of " id; 
+ 	              emit_seq "*" (emit_var env) ts
 
   let rec emit env = function
       [] -> failwith "Empty syntax definition"
@@ -53,7 +55,7 @@ struct
 	    List.map 
 	      (fun (Var v) -> Var (Syntax.split_LCID v)) jdg.args in
 	    pf "%s of @[" jdg.pred;
-	    emit_seq " *" (emit_var env) ts;
+	    emit_seq "*" (emit_var env) ts;
 	    pf "@]"
     in
       emit_barseq (emit_jdg env) jdgs;
@@ -128,7 +130,7 @@ struct
 	with Not_found -> failwith ("emit_jdg: " ^ jdg.pred ^ "not found")
 
   let emit_pat_of_rule rname =
-    pf "@[<2>{@[conc = _conc_;@ by = \"%s\";@ since = _derivs_@]}@]" rname
+    pf "@[<2>{@[conc = _conc_;@ by = \"%s\";@ since = _derivs_;@ pos = _p_@]}@]" rname
 
   let emit_pat_of_jdg i env jdg = 
     let tbl = Hashtbl.create 50 in
@@ -158,7 +160,7 @@ struct
 	  pf "@[if @[";
 	  emit_eqs' tbl; 
 	  pf "@]@ then _conc_";
-	  pf "@ else failwith \"Wrong rule application: %s\"@]" rn
+	  pf "@ else errAt _p_ \"Wrong rule application: %s\"@]" rn
 	end
     | prem :: rest ->
 	pf "@[(";
@@ -171,7 +173,7 @@ struct
 	  pf " ->@]@ ";
 	  (* exp *) emit_exp_of_premises (i+1) rn tbl env rest;
 	  pf "@]@ ";
-	  pf "@[| _ -> failwith \"The form of premise is wrong: %s\"@]@]" rn;
+	  pf "@[| _ -> errAt _p_ \"The form of premise is wrong: %s\"@]@]" rn;
 	end;
 	pf ")@]"
 
@@ -196,16 +198,16 @@ struct
 	    emit_exp_of_premises 1 r.rname tbl env r.rprem
 	  end;
 	  pf "@]@ ";
-	  pf "@[| _ -> failwith \"The number of premises is wrong: %s\"@]@]" r.rname;
+	  pf "@[| _ -> errAt _p_ \"The number of premises is wrong: %s\"@]@]" r.rname;
 	end;
 	pf ")@]@]@ ";
-	pf "@[| _ -> failwith \"The form of conclusion is wrong: %s\"@]@]" r.rname
+	pf "@[| _ -> errAt _p_ \"The form of conclusion is wrong: %s\"@]@]" r.rname
     end;
     pf ")@]@]"
 
   let emit env rules = 
     let rec loop = function
-	[] -> pf "@[| {by=name} -> failwith (\"No such rule: \" ^ name)@]"
+	[] -> pf "@[| {by=_name_; pos=_p_} -> errAt _p_ (\"No such rule: \" ^ _name_)@]"
       | rule::rest ->
 	  emit_clause_of_rule env rule; pf "@ ";
 	  loop rest
