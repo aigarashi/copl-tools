@@ -36,9 +36,9 @@ toplevel:
 
 Derivation: 
     Judgment BY ID LBRACE RBRACE
-    { {conc = $1; by = $3; since = [] } }
+    { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY ID LBRACE Derivs
-    { {conc = $1; by = $3; since = $5 } }
+    { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { failwith "Syntax error: \"by\" expected" }
   | Judgment BY ID error { failwith "Syntax error: opening brace expected" }
   | Judgment BY ID LBRACE error { failwith "Syntax error: unmatched brace" }
