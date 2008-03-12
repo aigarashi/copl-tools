@@ -1,7 +1,6 @@
 open Syntax
 
-val emit_seq : string -> ('a -> 'b) -> 'a list -> unit
-val emit_seq2 : string -> ('a -> 'b) -> 'a list -> unit
+val emit_seq : ?spbefore:bool -> string -> ('a -> 'b) -> 'a list -> unit
 val emit_comseq : ('a -> 'b) -> 'a list -> unit
 val emit_barseq : ('a -> 'b) -> 'a list -> unit
 val emit_var : Env.t -> term -> unit
