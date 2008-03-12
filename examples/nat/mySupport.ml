@@ -1,14 +1,45 @@
+open Format
+
 module Error =
 struct
-  type loc = {
-    fn : string; (* file name *)
-    l1 : int;
-    c1 : int;
-    l2 : int;
-    c2 : int
-  }
 
-  let merge_loc loc1 loc2 =
-    {loc1 with l2 = loc2.l2; c2 = loc2.c2}
+  open Lexing
+  type pos = position
 
+  type 'a with_pos = {p:pos; v:'a}
+
+  let print_pos pos =
+    printf "File \"%s\", line %d, character %d" 
+      pos.pos_fname
+      pos.pos_lnum
+      pos.pos_bol
+
+  let print_2pos pos1 pos2 =
+    printf "File \"%s\", %d.%d--%d.%d" 
+      pos1.pos_fname
+      pos1.pos_lnum
+      pos1.pos_bol
+      pos2.pos_lnum
+      pos2.pos_bol
+
+  let errAt pos s =
+    print_newline();
+    print_pos pos;
+    print_newline();
+    print_string s;
+    print_newline();
+    exit 2
+
+  let errBtw pos1 pos2 s =
+    print_newline();
+    print_2pos pos1 pos2;
+    print_newline();
+    print_string s;
+    print_newline();
+    exit 2
+
+end
+
+module Pervasives =
+struct
 end
