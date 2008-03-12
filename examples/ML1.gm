@@ -1,0 +1,37 @@
+(* ML1: ¦Ë + À°¿ô (represented by int) + »°Â§±é»» *)
+
+[BNF]
+
+i in int
+
+x in string
+
+env in Env ::= Empty
+            |  Bind(x,v,env)
+
+v in Val ::= i | Proc(env, x, exp)
+
+e in Exp ::= i
+          |  BinOp(p, e, e)
+          |  Fun(x, e)
+          |  App(e, e)
+
+p in Prim ::= Plus | Minus | Mult
+
+[Judgments]
+
+EvalTo(e; v)
+AppBinOp(p, e, e; e)
+
+[Rules]  (* <ÊÑ¿ô> := " <ML¼°> " *)
+
+"E-Const": EvalTo(i, i) :- ;
+"E-Plus":  EvalTo(P(e1, e2), n) :- EvalTo(e1, n1), 
+                                   EvalTo(e2, n2), 
+                                   n := "n1 + n2";
+"E-Sub":   EvalTo(S(e1, e2), n) :- EvalTo(e1, n1), 
+                                   EvalTo(e2, n2), 
+                                   n := "n1 - n2";
+"E-Mult":  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
+                                   EvalTo(e2, n2), 
+                                   n := "n1 * n2";

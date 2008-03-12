@@ -1,0 +1,66 @@
+\documentclass[11pt]{jarticle}
+
+\usepackage{a4full}
+\usepackage{alltt,boxedminipage,url}
+
+\title{\bf 導出チェッカコンパイラの概要}
+\author{京都大学 大学院情報学研究科 知能情報学専攻 \\ 五十嵐 淳 \\
+\url{igarashi@kuis.kyoto-u.ac.jp}}
+\date{\today}
+
+\markright{Draft of \today}
+
+\begin{document}
+
+\maketitle
+
+\section{体系定義ファイル}
+\label{sec:gamedef}
+
+\begin{itemize}
+\item コメントは (* *)
+\item 3セクション (セクション名を [] で囲む)
+  \begin{enumerate}
+  \item BNF
+  \item Judgments
+  \item Rules
+  \end{enumerate}
+\end{itemize}
+
+\begin{figure}
+  \begin{boxedminipage}{\textwidth}
+\begin{alltt}
+\input{nat.gm}
+\end{alltt}
+  \end{boxedminipage}
+  \caption{サンプル nat.gm}
+  \label{fig:nat.gm}
+\end{figure}
+
+\section{TODO}
+
+\begin{itemize}
+\item svn レポジトリセットアップ
+\item コードの整理
+\item エラー位置の出力(コンパイルコード)
+\item チェックされた導出の TeX 出力？
+\item ゲーム用 parser, lexer 記述の負担軽減
+\item ML の bool 式を付帯条件として書けるように
+\item 導出自動作成機能，規則のモードチェック
+\item 他の体系を書く
+\item 規則名も文字列ではなくヴァリアント化？
+\end{itemize}
+
+\section{Wish list}
+
+\begin{itemize}
+\item BNF定義, 規則の TeX 出力
+\item interactive checker / emacs のバッファから使えるようにする (proofgeneral?)
+\end{itemize}
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
