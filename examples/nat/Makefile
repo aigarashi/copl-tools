@@ -10,13 +10,13 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 PROGNAME=test
 
 # The list of object files for prog1
-OBJS=core.cmo parser.cmo lexer.cmo main.cmo
+OBJS=mySupport.cmx core.cmx parser.cmx lexer.cmx main.cmx
 #OBJS=syn
 
 DEPEND += lexer.ml parser.ml
 
 all: $(DEPEND) $(OBJS)
-	$(OCAMLC) -o $(PROGNAME) $(OCAMLFLAGS) $(OBJS)
+	$(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) $(OBJS)
 
 # Common rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx
@@ -47,6 +47,6 @@ clean:
 
 # Dependencies
 depend:: $(DEPEND)
-	$(OCAMLDEP) $(INCLUDES) *.mli *.ml > .depend
+	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml > .depend
 
 -include .depend
