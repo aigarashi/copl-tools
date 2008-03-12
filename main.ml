@@ -11,20 +11,25 @@ let emit_game g =
   Pp.jdgdef env g.jdgdecls;
   print_newline ();
 print_string 
-"type rulename = string
+"open MySupport.Error
 
+type rulename = string
+
+type derivation = {
+  conc:  judgment;
+  by:    rulename;
+  since: derivation list;
+  pos:   pos
+}
+";
+(*
 type rule = {
   name : rulename;
   conc : judgment;
   premises : judgment;
 }  
 
-type derivation = {
-  conc:  judgment;
-  by:    rulename;
-  since: derivation list
-}
-";
+*)
   print_newline();
   Pp.rules env g.ruledefs;
   print_newline ()
