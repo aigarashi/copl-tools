@@ -1,3 +1,5 @@
+open MySupport.Error
+
 type nat = Z | S of nat
 and exp = Exp_of_Nat of nat | P of exp * exp | M of exp * exp
 

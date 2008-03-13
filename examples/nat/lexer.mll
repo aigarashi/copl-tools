@@ -1,5 +1,6 @@
 {
 open Parser
+open Lexing
 
 let reservedWords = [
   (* common keywords *)
@@ -16,13 +17,20 @@ let reservedWords = [
   ("+", CROSS);
 ] 
 
+let newline lexbuf =
+  let pos = lexbuf.lex_curr_p in
+    lexbuf.lex_curr_p <-
+      { pos with pos_lnum = pos.pos_lnum + 1; pos_bol = pos.pos_cnum }
+
 }
 
 rule main = parse
   (* ignore spacing and newline characters *)
-  [' ' '\009' '\012' '\n']+     { main lexbuf }
+  [' ' '\009' '\012']+     { main lexbuf }
+  (* ignore spacing and newline characters *)
+  | [' ' '\009' '\012']* '\n'    { newline lexbuf; main lexbuf }
   (* ignore # and the following characters until the end of the line *)
-  | '#' [^ '\n'] '\n' { main lexbuf } 
+  | '#' [^ '\n'] '\n' { newline lexbuf; main lexbuf } 
 
 (* special symbols *)
 | "(" { LPAREN }
