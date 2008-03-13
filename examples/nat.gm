@@ -24,15 +24,15 @@ MultIs(n1, n2, n3);   (* MultIs(n1, n2; n3); *)
 [Rules]
 
 E-Const: EvalTo(n, n) :- ;
-"E-Plus":  EvalTo(P(e1, e2), n) :- EvalTo(e1, n1), 
+E-Plus:  EvalTo(P(e1, e2), n) :- EvalTo(e1, n1), 
                                    EvalTo(e2, n2), 
                                    PlusIs(n1, n2, n);
-"E-Mult":  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
+E-Mult:  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
                                    EvalTo(e2, n2), 
                                    MultIs(n1, n2, n);
 
-"P-Zero": PlusIs(Z, n, n) :- ;
-"P-Succ": PlusIs(S(n1), n2, S(n)) :- PlusIs(n1, n2, n) ;
+P-Zero: PlusIs(Z, n, n) :- ;
+P-Succ: PlusIs(S(n1), n2, S(n)) :- PlusIs(n1, n2, n) ;
 
-"M-Zero": MultIs(Z, n, Z) :- ;
-"M-Succ": MultIs(S(n1), n2, n4) :- MultIs(n1, n2, n3), PlusIs(n2, n3, n4);
+M-Zero: MultIs(Z, n, Z) :- ;
+M-Succ: MultIs(S(n1), n2, n4) :- MultIs(n1, n2, n3), PlusIs(n2, n3, n4);
