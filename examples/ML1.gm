@@ -23,15 +23,15 @@ p in Prim ::= Plus | Minus | Mult
 EvalTo(e; v)
 AppBinOp(p, e, e; e)
 
-[Rules]  (* <変数> := " <ML式> " *)
+[Rules]  (* <変数> := ` <ML式> ` *)
 
-"E-Const": EvalTo(i, i) :- ;
-"E-Plus":  EvalTo(P(e1, e2), n) :- EvalTo(e1, n1), 
+E-Const: EvalTo(i, i) :- ;
+E-Plus:  EvalTo(P(e1, e2), n) :- EvalTo(e1, n1), 
                                    EvalTo(e2, n2), 
-                                   n := "n1 + n2";
-"E-Sub":   EvalTo(S(e1, e2), n) :- EvalTo(e1, n1), 
+                                   n := `$n1 + $n2`;
+E-Sub:   EvalTo(S(e1, e2), n) :- EvalTo(e1, n1), 
                                    EvalTo(e2, n2), 
-                                   n := "n1 - n2";
-"E-Mult":  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
+                                   n := `$n1 - $n2`;
+E-Mult:  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
                                    EvalTo(e2, n2), 
-                                   n := "n1 * n2";
+                                   n := `n1 * $n2`;
