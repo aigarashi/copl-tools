@@ -5,4 +5,7 @@
 	* examples/ML1: game for ML1 (int + binoperations)
 	* changes for handling side conditions in rules.
 	
+2008-03-13  Atsushi Igarashi  <igarashi@cornet>
+
+	* ML1.gm: formatting adjustment
 
