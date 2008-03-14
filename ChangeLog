@@ -1,0 +1,8 @@
+2008-03-14  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* examples/ML1.drv: sample derivation for ML1
+
+	* examples/ML1: game for ML1 (int + binoperations)
+	* changes for handling side conditions in rules.
+	
+

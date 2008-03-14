@@ -79,7 +79,10 @@ struct
     let rec aux (cat, term) = match term with
 	Var id -> 
 	  let prefix = String.make (incr id + n) '_' in 
-	  let cat' = Syntax.Env.lookup_cat env (Syntax.split_LCID id) in
+	  let cat' = 
+	    try Syntax.Env.lookup_cat env (Syntax.split_LCID id) with
+		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
+	  in
 	    if cat' = cat then
 	      pf "%s%s" prefix id
 	    else if Syntax.Env.is_subcat env cat' cat 
@@ -133,7 +136,7 @@ struct
 	    pf "%s(@[" jdg.pred; 
 	    emit_comseq (fun (cat, t) -> emit_term n tbl env cat t) ts; 
 	    pf "@])"
-	with Not_found -> failwith ("emit_jdg: " ^ jdg.pred ^ "not found")
+	with Not_found -> failwith ("emit_jdg: " ^ jdg.pred ^ " not found")
 
   let emit_pat_of_rule rname =
     pf "@[<2>{@[conc = _conc_;@ by = \"%s\";@ since = _derivs_;@ pos = _p_@]}@]" rname
@@ -198,6 +201,11 @@ struct
 	  emit_exp_of_premises (i+1) rn tbl env rest;
 	  pf "@ else errAt _p_ \"Wrong rule application: %s\"@]" rn
 
+  let rec count_jdg = function
+      [] -> 0
+    | J _ :: rest -> 1 + count_jdg rest
+    | _ :: rest -> count_jdg rest
+
   let emit_clause_of_rule env r =
     pf "| @[<4>";
     emit_pat_of_rule r.rname;
@@ -213,7 +221,7 @@ struct
         begin
   	  pf "@[<v>@[match _derivs_ with@]@ ";
 	  pf "@[<2>";
-	  emit_pat_of_derivs (List.length r.rprem); 
+	  emit_pat_of_derivs (count_jdg r.rprem); 
 	  pf " ->@ ";
 	  begin
 	    emit_exp_of_premises 1 r.rname tbl env r.rprem
