@@ -1,0 +1,13 @@
+(1 + 3) * 4 - 2 evalto 14 by E-Minus {
+  (1 + 3) * 4 evalto 16 by E-Mult {
+    1 + 3 evalto 4 by E-Plus {
+      1 evalto 1 by E-Const {};
+      3 evalto 3 by E-Const {};
+      1 plus 3 is 4 by B-Plus {}
+    };
+    4 evalto 4 by E-Const {};
+    4 mult 4 is 16 by B-Mult {}
+  };
+  2 evalto 2 by E-Const {};
+  16 minus 2 is 14 by B-Minus {}
+}
