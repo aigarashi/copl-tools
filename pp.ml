@@ -22,26 +22,32 @@ let emit_var env = function
 module TypeDef = 
 struct
   let rec emit_term this env = function
-      Var id -> let cat = Env.lookup_cat env id in 
-		  pf "%s_of_%s of %s" this cat (String.lowercase cat)
+      Var id -> 
+	(try let cat = Env.lookup_cat env id in 
+	      pf "%s_of_%s of %s" this cat (String.lowercase cat)
+	  with Not_found -> failwith ("emit_term: " ^ id ^ " not found"))
     | App (id, []) -> print_string id
     | App (id, ts) -> pf "%s of " id; 
  	              emit_seq "*" (emit_var env) ts
 
   let rec emit env = function
       [] -> failwith "Empty syntax definition"
-    | sdef :: rest ->
-	pf "@[type %s = @[@," (String.lowercase sdef.cat); 
-	emit_barseq (emit_term sdef.cat env) sdef.body;
-	pf "@]@]@ ";
-	emit_typedef2 env rest
+    | sdef :: rest -> match sdef.body with
+	  [] -> emit env rest
+	| _ -> 
+	    pf "@[type %s @[= " (String.lowercase sdef.cat); 
+	    emit_barseq (emit_term sdef.cat env) sdef.body;
+	    pf "@]@]@ ";
+	    emit_typedef2 env rest;
   and emit_typedef2 env = function
       [] -> ()
-    | sdef :: rest ->
-	pf "@[and %s = @[@," (String.lowercase sdef.cat); 
-	emit_barseq (emit_term sdef.cat env) sdef.body;
-	pf "@]@]@ ";
-	emit_typedef2 env rest
+    | sdef :: rest -> match sdef.body with
+	  [] -> emit_typedef2 env rest
+	| _ -> 	
+	    pf "@[and %s @[= " (String.lowercase sdef.cat); 
+	    emit_barseq (emit_term sdef.cat env) sdef.body;
+	    pf "@]@]@\n";
+	    emit_typedef2 env rest
 end
 
 module JdgDef = 
@@ -50,7 +56,7 @@ struct
     pf "@[type judgment @[= ";
     let emit_jdg env = function
 	{pred = pred; args = []} -> print_string pred
-      | jdg -> 
+      | jdg ->
 	  let ts = 
 	    List.map 
 	      (fun (Var v) -> Var (Syntax.split_LCID v)) jdg.args in
@@ -80,7 +86,7 @@ struct
 	    then pf "%s_of_%s %s%s" cat cat' prefix id
 	    else 
 	      failwith 
-		("emit_term:" ^ cat ^ "is not a sub category of " ^ cat')
+		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
       | App (id, []) -> pf "%s" id
       | App (id, ts) -> 
 	  let TCon (cats, cat') = List.assoc (Syntax.split_LCID id) env in
@@ -162,7 +168,7 @@ struct
 	  pf "@]@ then _conc_";
 	  pf "@ else errAt _p_ \"Wrong rule application: %s\"@]" rn
 	end
-    | prem :: rest ->
+    | J prem :: rest ->
 	pf "@[(";
 	begin 
 	  pf "@[<v>@[match deriv_check _d%d_ with@]@ " i;
@@ -176,6 +182,21 @@ struct
 	  pf "@[| _ -> errAt _p_ \"The form of premise is wrong: %s\"@]@]" rn;
 	end;
 	pf ")@]"
+    | Qexp s :: rest ->
+	let b = Buffer.create (String.length s + 10) in
+	let subst s = 
+	  try 
+	    match Hashtbl.find tbl s with 
+		i :: _ -> (String.make i '_') ^ s
+	      | _ -> raise Not_found
+	  with Not_found -> failwith ("emit_exp_of_premises: " ^s ^ "doesn't appear in preceding premises")
+	in
+	  Buffer.add_substitute b subst s;
+	  pf "@[if @[";
+	  print_string (Buffer.contents b);
+	  pf "@]@ then ";
+	  emit_exp_of_premises (i+1) rn tbl env rest;
+	  pf "@ else errAt _p_ \"Wrong rule application: %s\"@]" rn
 
   let emit_clause_of_rule env r =
     pf "| @[<4>";

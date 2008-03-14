@@ -4,7 +4,12 @@ type term = Var of id | App of id * term list
 
 type syndef = { mvar : id; cat : id; body : term list; }
 type judgment = { pred : string; args : term list; }
-type rule = { rname : string; rconc : judgment; rprem : judgment list; }
+
+type premise = 
+    J of judgment
+  | Qexp of string  (* quoted ML expression for a side condition *)
+
+type rule = { rname : string; rconc : judgment; rprem : premise list; }
 
 type game = {
   syndefs : syndef list;

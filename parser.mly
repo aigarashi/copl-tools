@@ -13,6 +13,7 @@ open Syntax
 %token <Syntax.id> LCID
 %token <Syntax.id> UCID
 %token <Syntax.id> SYMID
+%token <string> MLexp
 
 %start toplevel
 %type <Syntax.game> toplevel
@@ -26,6 +27,8 @@ BnfDefs :
 /* empty */ { [] }
   | LCID IN UCID COLCOLEQ BarForms BnfDefs 
      { { mvar = $1; cat = $3; body = $5} :: $6 }
+  | LCID IN LCID BnfDefs  /* ML primitive type */
+     { { mvar = $1; cat = $3; body = []} :: $4 }
 
 BarForms :
     Form { [ $1 ] }
@@ -54,8 +57,8 @@ RuleDecls :
     Rule SEMI RuleSEMIs { $1 :: $3 }
 
 Rule :
-    Name COLON Judgment COLHYP JudgmentList { 
-      { rname = $1; rconc = $3; rprem = $5 }
+    Name COLON Judgment COLHYP PremiseList { 
+	{ rname = $1; rconc = $3; rprem = $5 }
     } 
 
 Name : 
@@ -68,7 +71,7 @@ RuleSEMIs :
   | Rule SEMI RuleSEMIs { $1 :: $3 }
 
 Judgment : 
-    UCID LPAREN ComTerms RPAREN { { pred = $1; args = $3 } }
+    UCID LPAREN ComTerms RPAREN { {pred = $1; args = $3} }
 
 ComTerms :
     Term { [ $1 ] } 
@@ -79,7 +82,9 @@ Term :
   | UCID { App($1, []) }
   | UCID LPAREN ComTerms RPAREN { App($1, $3) }
 
-JudgmentList :
+PremiseList :
     /* empty */ { [] }
-  | Judgment { [ $1 ] }
-  | Judgment COMMA JudgmentList { $1 :: $3 }
+  | Judgment { [ J $1 ] }
+  | MLexp { [ Qexp $1 ] }
+  | Judgment COMMA PremiseList { J $1 :: $3 }
+  | MLexp COMMA PremiseList { Qexp $1 :: $3 }

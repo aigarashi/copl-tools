@@ -9,7 +9,7 @@ x in string
 env in Env ::= Empty
             |  Bind(x,v,env)
 
-v in Val ::= i | Proc(env, x, exp)
+v in Value ::= i | Proc(env, x, e)
 
 e in Exp ::= i
           |  BinOp(p, e, e)
@@ -20,18 +20,18 @@ p in Prim ::= Plus | Minus | Mult
 
 [Judgments]
 
-EvalTo(e; v)
-AppBinOp(p, e, e; e)
+EvalTo(e, v);
+AppBinOp(p, e, e, e);
 
-[Rules]  (* <ÊÑ¿ô> := ` <ML¼°> ` *)
+[Rules]
 
 E-Const: EvalTo(i, i) :- ;
-E-Plus:  EvalTo(P(e1, e2), n) :- EvalTo(e1, n1), 
-                                   EvalTo(e2, n2), 
-                                   n := `$n1 + $n2`;
-E-Sub:   EvalTo(S(e1, e2), n) :- EvalTo(e1, n1), 
-                                   EvalTo(e2, n2), 
-                                   n := `$n1 - $n2`;
-E-Mult:  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
-                                   EvalTo(e2, n2), 
-                                   n := `n1 * $n2`;
+E-Plus:  EvalTo(BinOp(Plus, e1, e2), i) :- EvalTo(e1, i1), 
+                                   EvalTo(e2, i2), 
+                                   `$i = $i1 + $i2`;
+E-Sub:   EvalTo(BinOp(Minus, e1, e2), i) :- EvalTo(e1, i1), 
+                                   EvalTo(e2, i2), 
+                                   `$i = $i1 - $i2`;
+E-Mult:  EvalTo(BinOp(Mult, e1, e2), i) :- EvalTo(e1, i1), 
+                                   EvalTo(e2, i2), 
+                                   `$i = $i1 * $i2`;

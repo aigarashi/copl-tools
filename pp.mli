@@ -37,7 +37,7 @@ module Rules :
       int ->
       string ->
       (id, int list) Hashtbl.t ->
-      (id * decl) list -> judgment list -> unit
+      (id * decl) list -> premise list -> unit
     val emit_clause_of_rule :
       (id * decl) list -> rule -> unit
     val emit : (id * decl) list -> rule list -> unit

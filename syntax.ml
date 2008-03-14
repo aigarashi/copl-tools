@@ -13,14 +13,18 @@ type syndef = {
   }
    
 type judgment = {
-    pred : string;
-    args : term list;
+    pred : id;
+    args : term list
   }
+
+type premise = 
+    J of judgment
+  | Qexp of string  (* quoted ML expression for a side condition *)
 
 type rule = {
     rname : string;
     rconc : judgment;
-    rprem : judgment list
+    rprem : premise list
   }
 
 type game = {
@@ -47,7 +51,7 @@ struct
 
   let rec lookup_cat env id = 
     match List.assoc id env with 
-	MVar cat -> cat 
+	MVar cat -> cat
       | _ -> raise Not_found
 
   let rec lookup_con env id = 
@@ -55,10 +59,11 @@ struct
 	TCon (cats, cat) -> (cats, cat)
       | _ -> raise Not_found
 
-  let rec is_subcat env cat1 cat2 =
-    try let IsA cat = List.assoc cat1 env in cat = cat2 
-    with Not_found -> false
-
+  let rec is_subcat env cat1 cat2 = match env with
+      [] -> false
+    | (c, IsA c') :: rest when c = cat1 && c' = cat2 -> true
+    | _ :: rest -> is_subcat rest cat1 cat2
+	
   let rec of_body env cat = function
       [] -> env
     | Var id :: rest -> 
@@ -67,7 +72,8 @@ struct
     | App (id, vars) :: rest ->
 	let argcats = 
 	  List.map 
-	    (fun (Var x) -> let MVar cat = List.assoc x env in cat) vars in
+	    (fun (Var x) -> let MVar cat = 
+	      try List.assoc x env with Not_found -> failwith (x ^ " not found") in cat) vars in
 	  of_body ((id, TCon (argcats, cat)) :: env) cat rest
 
   let rec of_jdg env = function
@@ -77,10 +83,10 @@ struct
 	  List.map (fun (Var x) -> lookup_cat env (split_LCID x)) jdg.args in
 	  of_jdg ((jdg.pred, TCon (argcats, "j")) :: env) rest 
 
-  let of_game g = 
+  let of_game g =
     let catdecls = 
       List.fold_left 
-	(fun env def -> (def.mvar, Category)::env) [] g.syndefs in
+	(fun env def -> (def.cat, Category)::env) [] g.syndefs in
     let mvardecls =
       List.fold_left 
 	(fun env def -> (def.mvar, MVar def.cat)::env) catdecls g.syndefs in
@@ -89,4 +95,5 @@ struct
 	(fun env def -> of_body env def.cat def.body) mvardecls g.syndefs 
     in
       of_jdg constrdecls g.jdgdecls
+
 end

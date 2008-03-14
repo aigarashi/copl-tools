@@ -14,6 +14,7 @@ rule main = parse
 | "(" { Parser.LPAREN }
 | ")" { Parser.RPAREN }
 | "::=" { Parser.COLCOLEQ }
+(*| ":=" { Parser.COLEQ } *)
 | ":-" { Parser.COLHYP }
 | ":" { Parser.COLON }
 | "," { Parser.COMMA }
@@ -42,6 +43,10 @@ rule main = parse
 | '\"' [^ '\"' '\n' '\t' ' ']* '\"' { 
       let name = Lexing.lexeme lexbuf in
 	Parser.SYMID (String.sub name 1 (String.length name - 2))
+    }
+| '`' [^ '`' '\n']* '`' {
+      let name = Lexing.lexeme lexbuf in
+	Parser.MLexp (String.sub name 1 (String.length name - 2))
     }
 | "(*" { comment 1 lexbuf }
 | eof { Parser.EOF }
