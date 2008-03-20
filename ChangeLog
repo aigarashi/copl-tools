@@ -1,3 +1,13 @@
+2008-03-21  Atsushi Igarashi  <igarashi@cornet>
+
+	* examples/common/syntax.ml: data structure and pretty printing
+	functions common to all games.
+	
+	* examples/nat/pp.ml: pretty printer for natural numbers.
+	
+	* gmc/emit.ml: renamed from pp.ml to avoid collision with
+	game-specific printer.
+
 2008-03-20  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/ML1: boolean added
