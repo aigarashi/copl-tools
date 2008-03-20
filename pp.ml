@@ -90,9 +90,22 @@ struct
 	    else 
 	      failwith 
 		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
-      | App (id, []) -> pf "%s" id
+      | App (id, []) -> 
+	  let (_, cat') = 
+	    try Syntax.Env.lookup_con env id with
+		Not_found -> failwith ("emit_term: " ^ id ^ " not found")
+	  in
+	    if cat' = cat then pf "%s" id
+	    else if Syntax.Env.is_subcat env cat' cat
+	    then pf "%s_of_%s %s" cat cat' id
+	    else 
+	      failwith 
+		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
       | App (id, ts) -> 
-	  let TCon (cats, cat') = List.assoc (Syntax.split_LCID id) env in
+	  let (cats, cat') = 
+	    try Syntax.Env.lookup_con env (Syntax.split_LCID id) with
+		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
+	  in
 	    if cat' = cat then
 	      let ts = List.map2 (fun x y -> (x, y)) cats ts in 
 	      pf "%s(@[" id; emit_comseq aux ts; pf "@])" 
