@@ -1,14 +1,22 @@
 {
+open Lexing
+
 let reservedWords = [
   (* Keywords *)
   ("in", Parser.IN);
 ] 
 
+let newline lexbuf =
+  let pos = lexbuf.lex_curr_p in
+    lexbuf.lex_curr_p <-
+      { pos with pos_lnum = pos.pos_lnum + 1; pos_bol = pos.pos_cnum }
 }
 
 rule main = parse
   (* ignore spacing and newline characters *)
-  [' ' '\009' '\012' '\n']+     { main lexbuf }
+  [' ' '\009' '\012']+     { main lexbuf }
+  (* ignore spacing and newline characters *)
+  | [' ' '\009' '\012']* '\n'    { newline lexbuf; main lexbuf }
 
 | "|" { Parser.BAR }
 | "(" { Parser.LPAREN }
