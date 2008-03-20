@@ -1,14 +1,18 @@
+GMCDIR=../../gmc
+GMC=$(GMCDIR)/gmc
+
 OCAMLC=ocamlc
 OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES= -I ../..        # all relevant -I options here
+INCLUDES= -I . -I $(GMCDIR)    # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
+
 # The list of object files for prog1
-OBJS=../../mySupport.cmx core.cmx parser.cmx lexer.cmx main.cmx
+OBJS=$(GMCDIR)/mySupport.cmx syntax.cmx core.cmx pp.cmx parser.cmx lexer.cmx main.cmx
 #OBJS=syn
 
 DEPEND += lexer.ml parser.ml core.ml
@@ -40,7 +44,7 @@ lexer.ml: lexer.mll
 
 core.ml: ../$(PROGNAME).gm
 	@rm -f $@
-	../../gmc $< > $@
+	$(GMC) $< > $@
 	@chmod -w $@
 
 # Clean up
