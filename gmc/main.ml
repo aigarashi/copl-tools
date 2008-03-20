@@ -11,10 +11,10 @@ let emit_game g =
     printf "@] *)"; print_newline(); print_newline();
   print_string "open MySupport.Error"; print_newline ();
   print_string "open Syntax"; print_newline ();
-  Pp.typedef env g.syndefs; print_newline ();
-  Pp.jdgdef env g.jdgdecls; print_newline ();
+  Emit.typedef env g.syndefs; print_newline ();
+  Emit.jdgdef env g.jdgdecls; print_newline ();
   print_newline();
-  Pp.rules env g.ruledefs;
+  Emit.rules env g.ruledefs;
   print_newline ()
 
 let _ = emit_game (parse_file Sys.argv.(1))
