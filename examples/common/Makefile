@@ -3,12 +3,12 @@ OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES=                 # all relevant -I options here
+INCLUDES= -I ../..        # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 # The list of object files for prog1
-OBJS=mySupport.cmx core.cmx parser.cmx lexer.cmx main.cmx
+OBJS=../../mySupport.cmx core.cmx parser.cmx lexer.cmx main.cmx
 #OBJS=syn
 
 DEPEND += lexer.ml parser.ml core.ml
@@ -39,6 +39,7 @@ lexer.ml: lexer.mll
 	@chmod -w $@
 
 core.ml: ../$(PROGNAME).gm
+	@rm -f $@
 	../../gmc $< > $@
 	@chmod -w $@
 
