@@ -5,8 +5,11 @@ let parse_file s =
   Parser.toplevel Lexer.main (Lexing.from_channel (open_in s))
 
 let emit_game g = 
-  print_string "open MySupport.Error"; print_newline ();
   let env = Env.of_game g in
+    printf "(* @["; 
+    Syntax.Env.print_env env;
+    printf "@] *)"; print_newline(); print_newline();
+  print_string "open MySupport.Error"; print_newline ();
   Pp.typedef env g.syndefs; print_newline ();
   Pp.jdgdef env g.jdgdecls; print_newline ();
   print_string 
