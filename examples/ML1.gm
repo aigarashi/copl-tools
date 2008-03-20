@@ -1,8 +1,10 @@
-(* ML1: ¦Ë + À°¿ô (represented by int) + »°Â§±é»» *)
+(* ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» *)
 
 [BNF]
 
 i in int
+
+b in Bool ::= True | False
 
 x in string
 
@@ -11,10 +13,12 @@ env in Env ::= Empty
             |  Bind(x,v,env)
 *)
 
-v in Value ::= i (* | Proc(env, x, e) *)
+v in Value ::= i | b (* | Proc(env, x, e) *)
 
 e in Exp ::= i
+          | b
           |  BinOp(p, e, e)
+          | If(e, e, e)
 (*          |  Fun(x, e)
           |  App(e, e)
 *)
@@ -28,7 +32,13 @@ AppBOp(p, v, v, v);
 
 [Rules]
 
-E-Const: EvalTo(i, i) :- ;
+E-Int: EvalTo(i, i) :- ;
+E-Bool: EvalTo(b, b) :- ;
+E-IfT: EvalTo(If(e1, e2, e3), v) :- EvalTo(e1, True),
+                                   EvalTo(e2, v);
+E-IfF: EvalTo(If(e1, e2, e3), v) :- EvalTo(e1, False),
+                                   EvalTo(e3, v);
+
 E-Plus:  EvalTo(BinOp(Plus, e1, e2), i) :- EvalTo(e1, i1), 
                                    EvalTo(e2, i2), 
 				   AppBOp(Plus, i1, i2, i3);
