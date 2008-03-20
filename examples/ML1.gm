@@ -4,7 +4,7 @@
 
 i in int
 
-b in Bool ::= True | False
+b in Boolean ::= True | False
 
 x in string
 
