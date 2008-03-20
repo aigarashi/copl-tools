@@ -10,8 +10,8 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 PROGNAME=gmc
 
 # The list of object files for prog1
-# OBJS=syntax.cmx parser.cmx lexer.cmx pp.cmx main.cmx
-OBJS=mySupport.cmo syntax.cmo parser.cmo lexer.cmo pp.cmo main.cmo
+# OBJS=syntax.cmx parser.cmx lexer.cmx emit.cmx main.cmx
+OBJS=mySupport.cmo syntax.cmo parser.cmo lexer.cmo emit.cmo main.cmo
 
 DEPEND += lexer.ml parser.ml
 
