@@ -3,7 +3,7 @@ OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES=                 # all relevant -I options here
+INCLUDES= -I common                # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
@@ -11,9 +11,7 @@ PROGNAME=gmc
 
 # The list of object files for prog1
 # OBJS=syntax.cmx parser.cmx lexer.cmx pp.cmx main.cmx
-OBJS=syntax.cmo parser.cmo lexer.cmo pp.cmo main.cmo
-
-
+OBJS=common/mySupport.cmo syntax.cmo parser.cmo lexer.cmo pp.cmo main.cmo
 
 DEPEND += lexer.ml parser.ml
 
