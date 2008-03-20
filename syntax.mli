@@ -25,6 +25,7 @@ module Env :
   sig
     type t = (id * decl) list
 
+    val print_env : t -> unit
     val lookup_cat : t -> id -> id
     val lookup_con : t -> id -> id list * id
     val is_subcat : t -> id -> id -> bool
