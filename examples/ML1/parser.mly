@@ -20,6 +20,8 @@ let errAt i s =
 %token PLUS EVALTO MINUS MULT IS
 %token AST CROSS HYPHEN
 
+%token IF THEN ELSE TRUE FALSE
+
 %start toplevel
 %type <Core.derivation> toplevel
 
@@ -61,8 +63,15 @@ Judgment:
   | INTL MINUS INTL IS error { errAt 5 "Syntax error: natural number expected" }
 
 Exp:
-    Exp CROSS MExp { BinOp(Plus, $1, $3) }
-  | Exp HYPHEN MExp { BinOp(Minus, $1, $3) }
+    PExp { $1 }
+  | IfExp { $1 }
+
+IfExp: 
+  | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
+
+PExp:
+  | PExp CROSS MExp { BinOp(Plus, $1, $3) }
+  | PExp HYPHEN MExp { BinOp(Minus, $1, $3) }
   | MExp { $1 }
 
 MExp:
@@ -72,6 +81,8 @@ MExp:
 AExp:
     INTL { Exp_of_int $1 }
   | HYPHEN INTL { Exp_of_int (- $2) }
+  | TRUE { Exp_of_Boolean True }
+  | FALSE { Exp_of_Boolean False }
   | LPAREN Exp RPAREN { $2 }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
