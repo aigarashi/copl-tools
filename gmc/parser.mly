@@ -50,7 +50,7 @@ Form :
 ComLCIDs :
     LCID { [ Var $1 ] }
   | LCID COMMA ComLCIDs { Var $1 :: $3 }
-  | LCID error { errAt 2 "Syntax error: comma expected" }
+/*  | LCID error { errAt 2 "Syntax error: comma expected" } */
   | error { errAt 1 "Syntax error: metavariable expected" }
 
 JdgDecls :
