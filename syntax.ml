@@ -47,8 +47,34 @@ type decl =
 
 module Env = 
 struct
+  open Format
+
   type t = (id * decl) list
 
+  let rec print_ids = function
+      [] -> ()
+    | id :: [] -> print_string id
+    | id :: rest -> printf "%s,@ " id; print_ids rest
+
+  let rec print_binding id = function
+      Category -> print_string id
+    | MVar cat -> printf "%s: %s" id cat
+    | TCon (argcats, cat) -> 
+	begin
+	  printf "%s: %s[@[" id cat; 
+	  print_ids argcats; 
+	  printf "@]]"
+	end
+    | IsA cat -> printf "%s <: %s" id cat
+
+  let rec print_env = function
+      [] -> ()
+    | (id, decl) :: [] -> print_binding id decl
+    | (id, decl) :: rest ->
+	print_env rest;
+	printf ",@ ";
+	print_binding id decl
+      
   let rec lookup_cat env id = 
     match List.assoc id env with 
 	MVar cat -> cat
@@ -72,9 +98,12 @@ struct
     | App (id, vars) :: rest ->
 	let argcats = 
 	  List.map 
-	    (fun (Var x) -> let MVar cat = 
-	      try List.assoc x env with Not_found -> failwith (x ^ " not found") in cat) vars in
-	  of_body ((id, TCon (argcats, cat)) :: env) cat rest
+	    (fun (Var x) -> 
+	       let MVar cat = 
+		 try List.assoc x env with 
+		  Not_found -> failwith (x ^ " not found") 
+	       in cat) vars 
+	in of_body ((id, TCon (argcats, cat)) :: env) cat rest
 
   let rec of_jdg env = function
       [] -> env
