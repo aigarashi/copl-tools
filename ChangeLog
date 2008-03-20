@@ -1,3 +1,7 @@
+2008-03-20  Atsushi Igarashi  <igarashi@cornet>
+
+	* examples/ML1: boolean added
+
 2008-03-14  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* examples/ML1.drv: sample derivation for ML1
