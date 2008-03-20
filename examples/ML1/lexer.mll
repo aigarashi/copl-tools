@@ -8,14 +8,27 @@ let reservedWords = [
 
   (* game-specific keywords *)
   ("evalto", EVALTO);
-  ("plus", PLUS);
+
   ("minus", MINUS);
   ("mult", MULT);
+  ("plus", PLUS);
   ("is", IS);
+
+  ("true", TRUE);
+  ("false", FALSE);
+  ("if", IF);
+  ("then", THEN);
+  ("else", ELSE);
+
   ("*", AST);
   ("+", CROSS);
   ("-", HYPHEN);
 ] 
+
+let tbl = 
+  let tbl = Hashtbl.create 1024 in
+    List.iter (fun (word, token) -> Hashtbl.add tbl word token) reservedWords;
+    tbl
 
 let newline lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -44,7 +57,7 @@ rule main = parse
 | ['A'-'Z' 'a'-'z']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
     { let id = Lexing.lexeme lexbuf in
       try 
-        List.assoc id reservedWords
+        Hashtbl.find tbl id
       with
       _ -> ID id
      }
@@ -58,7 +71,7 @@ rule main = parse
 | ['!' '"' '#' '$' '%' '&' '\'' '*' '+' ',' '-' '.' '/' ':' '<' '=' '>' '+' 
    '@' '^' '_' '`' '~' '|' ]+ {
     let sym = Lexing.lexeme lexbuf in
-      try List.assoc sym reservedWords with _ -> ID sym
+      try Hashtbl.find tbl sym with _ -> ID sym
     }
 
 | ['0' - '9']+
