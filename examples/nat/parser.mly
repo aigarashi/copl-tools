@@ -1,5 +1,6 @@
 %{
 open Core
+open Syntax
 
 let errBtw i j s =
   MySupport.Error.errBtw 
@@ -14,13 +15,13 @@ let errAt i s =
 %token BY
 %token LBRACE RBRACE LPAREN RPAREN
 %token SEMI
-%token <Core.rulename> ID
+%token <Syntax.rulename> ID
 
 %token PLUS EVALTO MULT IS
 %token AST CROSS S Z
 
 %start toplevel
-%type <Core.derivation> toplevel
+%type <Core.judgment Syntax.derivation> toplevel
 
 %%
 
