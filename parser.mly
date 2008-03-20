@@ -1,5 +1,12 @@
 %{
 open Syntax
+
+let errBtw i j s =
+  MySupport.Error.errBtw 
+    (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
+
+let errAt i s =
+  MySupport.Error.errAt (Parsing.rhs_start_pos i) s
 %}
 
 %token EOF
@@ -38,10 +45,13 @@ Form :
     LCID { Var $1 }
   | UCID { App($1, []) }
   | UCID LPAREN ComLCIDs RPAREN { App($1, $3) }
+  | UCID LPAREN ComLCIDs error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
 
 ComLCIDs :
     LCID { [ Var $1 ] }
   | LCID COMMA ComLCIDs { Var $1 :: $3 }
+  | LCID error { errAt 2 "Syntax error: comma expected" }
+  | error { errAt 1 "Syntax error: metavariable expected" }
 
 JdgDecls :
     JForm SEMI JFormSEMIs { $1 :: $3 }
