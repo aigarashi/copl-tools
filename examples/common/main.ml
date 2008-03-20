@@ -6,7 +6,12 @@ let parse_file s =
     lexbuf.lex_curr_p <- { pos with pos_fname = s };
     Parser.toplevel Lexer.main lexbuf
 
-let _ = Core.deriv_check (parse_file Sys.argv.(1))
+let d = parse_file Sys.argv.(1)
+
+let _ = 
+  let j = Core.deriv_check d in
+    Syntax.print_deriv Pp.print_judgment Format.std_formatter d;
+    Format.print_newline()
 
 
   
