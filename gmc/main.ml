@@ -1,6 +1,13 @@
 open Syntax
 open Format
 
+type mode = ML | TeX
+
+let mode = ref ML
+let filename = ref ""
+
+let spec = [("-TeX", Arg.Unit (fun () -> mode := TeX), "display rules in TeX")]
+
 let parse_file s =
   Parser.toplevel Lexer.main (Lexing.from_channel (open_in s))
 
@@ -17,7 +24,13 @@ let emit_game g =
   Emit.rules env g.ruledefs;
   print_newline ()
 
-let _ = emit_game (parse_file Sys.argv.(1))
+let _ = 
+  Arg.parse spec (fun s -> filename := s) "Usage: gmc [-TeX] filename";
+  let g = parse_file !filename in
+    match !mode with
+	ML -> emit_game g
+      | TeX -> Emit.tex_rules g.ruledefs
+
 
   
   
