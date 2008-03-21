@@ -18,8 +18,8 @@ let errAt i s =
 %token <Syntax.rulename> ID
 %token <int> INTL
 
-%token PLUS EVALTO MINUS MULT IS
-%token AST CROSS HYPHEN
+%token PLUS EVALTO MINUS MULT IS LESS THAN NOT
+%token AST CROSS HYPHEN LT
 
 %token IF THEN ELSE TRUE FALSE
 
@@ -51,6 +51,8 @@ Judgment:
   | INTL PLUS INTL IS INTL { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | INTL MULT INTL IS INTL { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | INTL MINUS INTL IS INTL { AppBOp(Minus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
+  | INTL IS LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_Boolean True) }
+  | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_Boolean False) }
 
   | Exp EVALTO error { errAt 3 "Syntax error: natural number expected" }
   | INTL PLUS error { errAt 3 "Syntax error: natural number expected" }
@@ -67,6 +69,7 @@ Exp:
   | Exp1 { $1 }
   | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
   | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
 
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
@@ -75,15 +78,22 @@ Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
   | Exp2 { $1 }
 
+Exp2:
+  | Exp2 BinOp2 Exp3 { BinOp($2, $1, $3) }
+  | Exp3 { $1 }
+
+Exp3:
+    Exp3 BinOp3 AExp { BinOp($2, $1, $3) }
+  | AExp { $1 }
+
 BinOp1:
+    LT { Lt }
+
+BinOp2:
     CROSS { Plus }
   | HYPHEN { Minus }
 
-Exp2:
-    Exp2 BinOp2 AExp { BinOp($2, $1, $3) }
-  | AExp { $1 }
-
-BinOp2:
+BinOp3:
     AST { Mult }
 
 AExp:
@@ -98,4 +108,3 @@ Val:
     INTL { Value_of_int $1 }
   | TRUE { Value_of_Boolean True }
   | FALSE { Value_of_Boolean False }
-

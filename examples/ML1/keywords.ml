@@ -11,6 +11,9 @@ let v = [
   ("mult", MULT);
   ("plus", PLUS);
   ("is", IS);
+  ("less", LESS);
+  ("than", THAN);
+  ("not", NOT);
 
   ("true", TRUE);
   ("false", FALSE);
@@ -21,5 +24,6 @@ let v = [
   ("*", AST);
   ("+", CROSS);
   ("-", HYPHEN);
+  ("<", LT);
 ] 
 

@@ -12,7 +12,6 @@
   2 evalto 2 by E-Int {};
   16 minus 2 is 14 by B-Minus {}
 }
-*)
 
 1 - (2 - 3) evalto 2 by E-Minus {
   1 evalto 1 by E-Int {};
@@ -23,3 +22,23 @@
   };
   1 minus -1 is 2 by B-Minus {}
 }
+*)
+
+
+(if 3 < 5 then 1 + 2 else 2) * 2 evalto 6 by E-Mult {
+  if 3 < 5 then 1 + 2 else 2 evalto 3 by E-IfT {
+    3 < 5 evalto true by E-Lt {
+      3 evalto 3 by E-Int {};
+      5 evalto 5 by E-Int {};
+      3 is less than 5 by B-Lt {}
+    };
+    1 + 2 evalto 3 by E-Plus {
+      1 evalto 1 by E-Int {};
+      2 evalto 2 by E-Int {};
+      1 plus 2 is 3 by B-Plus {}
+    }
+  };
+  2 evalto 2 by E-Int {};
+  3 mult 2 is 6 by B-Mult {}
+}
+        

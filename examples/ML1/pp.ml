@@ -3,18 +3,24 @@ open Format
 
 let pr = fprintf
 
-(* if e1 is the left operand of e2, do you need parentheses for e1? *)
-let (<) e1 e2 = match e1, e2 with
+(* if e is the left operand of e_up, do you need parentheses for e? *)
+let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
-    BinOp((Plus | Minus), _, _), BinOp(Mult, _, _) -> true
+    BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _) 
+  | If(_, _, _),                      BinOp(Mult, _, _)
+  | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _) 
+  | If(_, _, _),                      BinOp((Plus | Minus), _, _)
+  | If(_, _, _),                      BinOp(Lt, _, _)
+      -> true
   | _ -> false
 
-(* if e1 is the right operand of e2, do you need parentheses for e1? *)
-let (>) e1 e2 = match e1, e2 with
+(* if e is the right operand of e_up, do you need parentheses for e? *)
+let (>) e_up e = match e_up, e with
     (* mult associates stronger than plus or minus,
        and bin ops are left-associative *)
-    BinOp(_, _, _), BinOp((Plus | Minus), _, _) 
-  | BinOp(Mult, _, _), BinOp(Mult, _, _) -> true
+    BinOp(Mult, _, _),           BinOp(_, _, _)
+  | BinOp((Plus | Minus), _, _), BinOp((Plus | Minus | Lt), _, _)
+      -> true
   | _ -> false
  
 let with_paren_L ppf_e e_up ppf e =
@@ -33,7 +39,8 @@ let rec print_exp ppf e = match e with
   | Exp_of_Boolean True -> pr ppf "true"
   | Exp_of_Boolean False -> pr ppf "false"
   | BinOp(p, e1, e2) -> 
-      let op = match p with Plus -> "+" | Minus -> "-" | Mult -> "*" in
+      let op = 
+	match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
       pr ppf "%a %s %a" 
 	(with_paren_L print_exp e) e1 
 	op
@@ -44,9 +51,12 @@ let rec print_exp ppf e = match e with
 	print_exp e2
 	print_exp e3 
 
-
 let print_judgment ppf = function
     EvalTo (e, v) -> pr ppf "%a evalto %a" print_exp e print_val v
+  | AppBOp (Lt, v1, v2, Value_of_Boolean True) ->
+      pr ppf "%a is less than %a" print_val v1 print_val v2
+  | AppBOp (Lt, v1, v2, Value_of_Boolean False) ->
+      pr ppf "%a is not less than %a" print_val v1 print_val v2
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult"
       in pr ppf "%a %s %a is %a" print_val v1 op print_val v2 print_val v3
