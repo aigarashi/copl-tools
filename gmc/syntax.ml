@@ -36,8 +36,10 @@ type game = {
 let split_LCID s =
   try 
     let pos = Str.search_forward (Str.regexp "[0-9 _ ']+") s 0 in
-      Str.string_before s pos
-  with Not_found -> s
+      (Str.string_before s pos, Str.string_after s pos)
+  with Not_found -> (s, "")
+
+let base_LCID s = fst (split_LCID s)
 
 type decl =
       Category
@@ -109,7 +111,7 @@ struct
       [] -> env
     | jdg :: rest ->
 	let argcats = (* categories of arguments of the judgment *)
-	  List.map (fun (Var x) -> lookup_cat env (split_LCID x)) jdg.args in
+	  List.map (fun (Var x) -> lookup_cat env (base_LCID x)) jdg.args in
 	  of_jdg ((jdg.pred, TCon (argcats, "j")) :: env) rest 
 
   let of_game g =
