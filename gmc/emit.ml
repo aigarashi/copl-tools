@@ -59,7 +59,7 @@ struct
       | jdg ->
 	  let ts = 
 	    List.map 
-	      (fun (Var v) -> Var (Syntax.split_LCID v)) jdg.args in
+	      (fun (Var v) -> Var (Syntax.base_LCID v)) jdg.args in
 	    pf "%s of @[" jdg.pred;
 	    emit_seq "*" (emit_var env) ts;
 	    pf "@]"
@@ -80,7 +80,7 @@ struct
 	Var id -> 
 	  let prefix = String.make (incr id + n) '_' in 
 	  let cat' = 
-	    try Syntax.Env.lookup_cat env (Syntax.split_LCID id) with
+	    try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	  in
 	    if cat' = cat then
@@ -103,7 +103,7 @@ struct
 		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
       | App (id, ts) -> 
 	  let (cats, cat') = 
-	    try Syntax.Env.lookup_con env (Syntax.split_LCID id) with
+	    try Syntax.Env.lookup_con env (Syntax.base_LCID id) with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	  in
 	    if cat' = cat then
@@ -258,9 +258,54 @@ struct
       loop rules;
       pf "@]"
 
+  module TeX =
+    struct
+      let pr = fprintf
+
+      let rec emit_term ppf t = match t with
+	  Var x -> 
+	    let (base, suffix) = Syntax.split_LCID x in
+	      pr ppf "\\metavar@[{%s_{%s}}@]" base suffix
+	| App (f, ts) -> pr ppf "\\%sTerm@[{%a}@]" f emit_terms ts
+      and emit_terms ppf = function
+	  [] -> ()
+	| t :: [] -> emit_term ppf t
+	| t :: rest -> pr ppf "%a}@,{%a" emit_term t emit_terms rest
+
+      let emit_qexp ppf s =
+	let b = Buffer.create 30 in
+	  Buffer.add_char b '(';
+	  Buffer.add_substitute b 
+	    (fun s -> 
+	       let (base, suffix) = Syntax.split_LCID s in
+		 "\\metavar{" ^ base ^ "_{" ^ suffix ^ "}}")
+	    s;
+	  Buffer.add_char b ')';
+	  pr ppf "%s" (Buffer.contents b)
+
+      let rec emit_jdg ppf j = 
+	pr ppf "\\%s{%a}" j.pred emit_terms j.args
+      and emit_premises ppf = function
+	  [] -> ()
+	| J j :: [] -> emit_jdg ppf j
+	| Qexp q :: [] -> emit_qexp ppf q
+	| J j :: rest -> pr ppf "%a@ \\andalso@ %a" emit_jdg j emit_premises rest
+	| Qexp q :: rest -> pr ppf "%a@ \\andalso@ %a" emit_qexp q emit_premises rest
+	
+      let emit ppf r =
+	pr ppf "@[\\infrule[%s]{%a}{%a}@]" 
+	  r.rname 
+	  emit_premises r.rprem
+	  emit_jdg r.rconc
+	  
+    end
 end
 
 let typedef = TypeDef.emit
 and jdgdef = JdgDef.emit
 and rules = Rules.emit
+
+let tex_rules rules = 
+  List.iter (fun r -> Rules.TeX.emit std_formatter r) rules
+
 
