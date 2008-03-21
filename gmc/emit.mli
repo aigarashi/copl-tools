@@ -46,3 +46,4 @@ module Rules :
 val typedef : Env.t -> syndef list -> unit
 val jdgdef : Env.t -> judgment list -> unit
 val rules : Env.t -> rule list -> unit
+val tex_rules : rule list -> unit
