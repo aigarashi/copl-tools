@@ -1,3 +1,7 @@
+2008-03-22  Atsushi Igarashi  <igarashi@cornet>
+
+	* gmc/emit.ml: function to format rules in TeX.
+
 2008-03-21  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* examples/common/main.ml: checker now takes more than one derivation.
