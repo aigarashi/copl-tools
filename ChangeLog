@@ -1,3 +1,9 @@
+2008-03-21  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* examples/common/lexer.mll: factoring out the common part of lexers.
+	* examples/*/keywords.ml: keyword list, required by lexers
+	* examples/ML1/pp.ml: pretty printer for ML1
+
 2008-03-21  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/common/syntax.ml: data structure and pretty printing

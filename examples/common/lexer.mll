@@ -2,20 +2,10 @@
 open Parser
 open Lexing
 
-let reservedWords = [
-  (* common keywords *)
-  ("by", BY);
-
-  (* game-specific keywords *)
-  ("S", S);
-  ("Z", Z);
-  ("evalto", EVALTO);
-  ("plus", PLUS);
-  ("mult", MULT);
-  ("is", IS);
-  ("*", AST);
-  ("+", CROSS);
-] 
+let tbl = 
+  let tbl = Hashtbl.create 1024 in
+    List.iter (fun (word, token) -> Hashtbl.add tbl word token) Keywords.v;
+    tbl
 
 let newline lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -44,7 +34,7 @@ rule main = parse
 | ['A'-'Z' 'a'-'z']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
     { let id = Lexing.lexeme lexbuf in
       try 
-        List.assoc id reservedWords
+        Hashtbl.find tbl id
       with
       _ -> ID id
      }
@@ -58,12 +48,16 @@ rule main = parse
 | ['!' '"' '#' '$' '%' '&' '\'' '*' '+' ',' '-' '.' '/' ':' '<' '=' '>' '+' 
    '@' '^' '_' '`' '~' '|' ]+ {
     let sym = Lexing.lexeme lexbuf in
-      try List.assoc sym reservedWords with _ -> ID sym
+      try Hashtbl.find tbl sym with _ -> ID sym
     }
+
+| '-'? ['0' - '9']+
+    { INTL (int_of_string (Lexing.lexeme lexbuf)) }
 
 | eof { EOF }
 
 and comment n = parse
   "(*" { comment (n+1) lexbuf }
 | "*)" { if n = 1 then main lexbuf else comment (n-1) lexbuf }
-| _ { comment n lexbuf }
+| [^ '\n'] { comment n lexbuf }
+| '\n' { newline lexbuf; comment n lexbuf }

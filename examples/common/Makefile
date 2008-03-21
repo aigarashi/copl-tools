@@ -12,8 +12,8 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 
 # The list of object files for prog1
-OBJS=$(GMCDIR)/mySupport.cmx syntax.cmx core.cmx pp.cmx parser.cmx lexer.cmx main.cmx
-#OBJS=syn
+OBJS=$(GMCDIR)/mySupport.cmx syntax.cmx core.cmx pp.cmx \
+	parser.cmx keywords.cmx lexer.cmx main.cmx
 
 DEPEND += lexer.ml parser.ml core.ml
 

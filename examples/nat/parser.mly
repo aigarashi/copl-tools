@@ -16,6 +16,7 @@ let errAt i s =
 %token LBRACE RBRACE LPAREN RPAREN
 %token SEMI
 %token <Syntax.rulename> ID
+%token <int> INTL  /* not used in this game */
 
 %token PLUS EVALTO MULT IS
 %token AST CROSS S Z
