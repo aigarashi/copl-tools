@@ -1,5 +1,7 @@
 2008-03-21  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
+	* examples/common/main.ml: checker now takes more than one derivation.
+	  Switch "-full" to display full derivations.
 	* examples/common/lexer.mll: factoring out the common part of lexers.
 	* examples/*/keywords.ml: keyword list, required by lexers
 	* examples/ML1/pp.ml: pretty printer for ML1

@@ -28,6 +28,7 @@ let errAt i s =
 
 toplevel: 
     Derivation { $1 }
+  | EOF { exit 0 }
 
 Derivation: 
     Judgment BY ID LBRACE RBRACE

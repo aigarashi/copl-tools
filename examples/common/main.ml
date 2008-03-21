@@ -1,17 +1,27 @@
 open Lexing
 
-let parse_file s =
-  let lexbuf = Lexing.from_channel (open_in s) in
+let filename = ref ""
+
+let mode = ref false  (* controls whether full derivations are shown *)
+
+let spec = [("-full", Arg.Set mode, "Display full derivations");]
+
+let () = 
+  Arg.parse spec (fun s -> filename := s) "Usage: [-full] filename";
+
+  let lexbuf = Lexing.from_channel (open_in !filename) in
   let pos = lexbuf.lex_curr_p in
-    lexbuf.lex_curr_p <- { pos with pos_fname = s };
-    Parser.toplevel Lexer.main lexbuf
+  lexbuf.lex_curr_p <- { pos with pos_fname = !filename };
 
-let d = parse_file Sys.argv.(1)
-
-let _ = 
-  let j = Core.deriv_check d in
-    Syntax.print_deriv Pp.print_judgment Format.std_formatter d;
-    Format.print_newline()
+  while true do
+    let d = Parser.toplevel Lexer.main lexbuf in
+    let j = Core.deriv_check d in
+      if !mode then
+	Syntax.print_deriv Pp.print_judgment Format.std_formatter d
+      else
+	Pp.print_judgment Format.std_formatter d.Syntax.conc;
+      Format.print_newline();
+  done
 
 
   

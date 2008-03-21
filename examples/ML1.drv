@@ -1,4 +1,3 @@
-(*
 (1 + 3) * 4 - 2 evalto 14 by E-Minus {
   (1 + 3) * 4 evalto 16 by E-Mult {
     1 + 3 evalto 4 by E-Plus {
@@ -22,8 +21,6 @@
   };
   1 minus -1 is 2 by B-Minus {}
 }
-*)
-
 
 (if 3 < 5 then 1 + 2 else 2) * 2 evalto 6 by E-Mult {
   if 3 < 5 then 1 + 2 else 2 evalto 3 by E-IfT {
