@@ -17,7 +17,9 @@ type game = {
   ruledefs : rule list;
 }
 
-val split_LCID : string -> string
+val split_LCID : string -> (string * string)
+
+val base_LCID : string -> string
 
 type decl = Category | MVar of id | TCon of id list * id | IsA of id
 
