@@ -1,3 +1,8 @@
+2008-03-23  Atsushi Igarashi  <igarashi@cornet>
+
+	* examples/common/syntax.ml, examples/nat/pp.ml: function to
+	output derivations in TeX (-TeX flag).  
+
 2008-03-22  Atsushi Igarashi  <igarashi@cornet>
 
 	* gmc/emit.ml: function to format rules in TeX.
