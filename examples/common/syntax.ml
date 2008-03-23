@@ -25,3 +25,15 @@ and print_derivs pr_j ppf = function
   
   
   
+let rec tex_deriv tex_j ppf d =
+  fprintf ppf "@[@[<v 2>";
+  fprintf ppf "@[\\infer[\\mbox{\\textsc{\\scriptsize %s}}]{@[%a@]}{@]" d.by tex_j d.conc;
+  tex_derivs tex_j ppf d.since;
+
+and tex_derivs tex_j ppf = function
+    [] -> fprintf ppf "}@]@]"
+  | d :: [] -> fprintf ppf "@,%a@]@,}@]" (tex_deriv tex_j) d
+  | d :: rest -> 
+      fprintf ppf "@,%a &%a" 
+	(tex_deriv tex_j) d 
+	(tex_derivs tex_j) rest
