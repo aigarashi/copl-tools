@@ -1,0 +1,46 @@
+\documentclass[11pt]{jarticle}
+
+\usepackage{bcprules,proof}
+
+\begin{document}
+
+\newcommand{\metavar}[1]{\mbox{\boldmath $#1$}}
+
+\section{nat.gm}
+\label{sec:nat.gm}
+
+\newcommand{\EvalTo}[2]{\mathtt{#1} \Downarrow \mathtt{#2}}
+\newcommand{\PlusIs}[3]{\mathtt{#1} + \mathtt{#2} = \mathtt{#3}}
+\newcommand{\MultIs}[3]{\mathtt{#1} * \mathtt{#2} = \mathtt{#3}}
+\newcommand{\PTerm}[2]{{#1} \texttt{ + } {#2}}
+\newcommand{\MTerm}[2]{{#1} \texttt{ * } {#2}}
+\newcommand{\STerm}[1]{S({#1})}
+\newcommand{\ZTerm}{Z}
+
+
+規則:
+%
+\input{natrules}
+
+導出例
+%
+\[
+\input{natderivs}
+\]
+\section{ML1.gm}
+
+\newcommand{\TrueTerm}{true}
+\newcommand{\FalseTerm}{false}
+\newcommand{\IfTerm}[3]{if\ {#1}\ then\ {#2}\ else\ {#3}}
+\newcommand{\AppBOp}[4]{{#2} {#1} {#3} = {#4}}
+\newcommand{\PlusTerm}{+}
+\newcommand{\MinusTerm}{-}
+\newcommand{\MultTerm}{*}
+\newcommand{\BinOpTerm}[3]{{#2} {#1} {#3}}
+\newcommand{\LtTerm}{<}
+
+規則:
+%
+\input{ML1rules}
+
+\end{document}
