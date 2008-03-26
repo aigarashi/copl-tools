@@ -17,7 +17,7 @@ let emit_game g =
     Syntax.Env.print_env env;
     printf "@] *)"; print_newline(); print_newline();
   print_string "open MySupport.Error"; print_newline ();
-  print_string "open Syntax"; print_newline ();
+  print_string "open Derivation"; print_newline ();
   Emit.typedef env g.syndefs; print_newline ();
   Emit.jdgdef env g.jdgdecls; print_newline ();
   print_newline();

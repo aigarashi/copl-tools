@@ -1,3 +1,11 @@
+2008-03-26  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* examples/ML1/pp.ml: function to output judgments in TeX. still
+	incomplete.
+
+	* source code restructuring: lexer is functorized.  Modules
+	for each game are packed in to one module.  Switch to choose a game.
+	
 2008-03-23  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/common/syntax.ml, examples/nat/pp.ml: function to

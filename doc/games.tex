@@ -1,6 +1,7 @@
-\documentclass[11pt]{jarticle}
+\documentclass[10pt]{jarticle}
 
-\usepackage{bcprules,proof}
+\usepackage{a4full}
+\usepackage{bcprules,proof,rotating}
 
 \begin{document}
 
@@ -24,9 +25,11 @@
 
 導出例
 %
-\[
+\begin{sidewaysfigure}
+\scriptsize
 \input{natderivs}
-\]
+\end{sidewaysfigure}
+
 \section{ML1.gm}
 
 \newcommand{\TrueTerm}{true}
@@ -42,5 +45,10 @@
 規則:
 %
 \input{ML1rules}
+
+導出例
+%
+\input{ML1derivs}
+
 
 \end{document}
