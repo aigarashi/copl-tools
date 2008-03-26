@@ -21,18 +21,15 @@ DEPEND += lexer.ml
 all: $(OBJS) $(DEPEND)
 	ocamlopt -o $(PROGNAME) $(OBJS)
 
-nat/nat.cmx: 
+../nat/nat.cmx: 
 	make -C ../nat depend
 	make -C ../nat
 
-ML1/ml1.cmx:
+../ML1/ml1.cmx:
 	make -C ../ML1 depend
 	make -C ../ML1
 
-main.cmx: main.ml
-	ocamlopt $(INCLUDES) -c $<
-
-derivation.cmx: derivation.ml
+%.cmx: %.ml
 	ocamlopt $(INCLUDES) -c $<
 
 lexer.ml: lexer.mll

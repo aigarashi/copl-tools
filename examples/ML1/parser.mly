@@ -1,5 +1,5 @@
 %{
-open Core
+open Checker
 open Derivation
 
 let errBtw i j s =
@@ -24,7 +24,7 @@ let errAt i s =
 %token IF THEN ELSE TRUE FALSE
 
 %start toplevel
-%type <Core.judgment Derivation.t> toplevel
+%type <Checker.judgment Derivation.t> toplevel
 
 %%
 

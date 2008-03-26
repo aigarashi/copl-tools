@@ -2,7 +2,7 @@ open Lexing
 
 module Lexer = Lexer.Make(
     struct
-      module Core = Core
+      module Core = Checker
 
       module P = struct
 	include Parser
@@ -23,19 +23,9 @@ module Lexer = Lexer.Make(
     end
   )
 
-(*
-let filename = ref ""
-
-let fullp = ref false  (* controls whether full derivations are shown *)
-let texp = ref false   (* controls whether output is in TeX *)
-
-let spec = [("-full", Arg.Set fullp, "Display full derivations");
-	    ("-TeX", Arg.Set texp, "output in TeX")]
-*)
-
 let process_input lexbuf fullp texp =
   let d = Parser.toplevel Lexer.main lexbuf in
-  let j = Core.deriv_check d in
+  let j = Checker.deriv_check d in
     (match fullp, texp with
 	true, true -> 
 	  Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d
@@ -46,16 +36,3 @@ let process_input lexbuf fullp texp =
       | false, false ->
 	  Pp.print_judgment Format.std_formatter d.Derivation.conc);
     Format.print_newline()
-
-(*
-let () = 
-  Arg.parse spec (fun s -> filename := s) "Usage: [-full] filename";
-
-  let lexbuf = Lexing.from_channel (open_in !filename) in
-  let pos = lexbuf.lex_curr_p in
-  lexbuf.lex_curr_p <- { pos with pos_fname = !filename };
-
-  while true do
-    process_input lexbuf
-  done
-*)

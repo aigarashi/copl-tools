@@ -1,4 +1,4 @@
-open Core
+open Checker
 open Format
 
 let pr = fprintf

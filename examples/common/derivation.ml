@@ -37,3 +37,9 @@ and tex_derivs tex_j ppf = function
       fprintf ppf "@,%a &%a" 
 	(tex_deriv tex_j) d 
 	(tex_derivs tex_j) rest
+
+let tex_deriv tex_j ppf d =
+  fprintf ppf "\\[@\n";
+  tex_deriv tex_j ppf d;
+  fprintf ppf "@\n\\]"
+

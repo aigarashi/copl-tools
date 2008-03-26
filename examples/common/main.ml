@@ -36,6 +36,6 @@ let () =
 	lexbuf.lex_curr_p <- { pos with pos_fname = !filename };
 
 	while true do
-	  process_f lexbuf !fullp !texp
+	  process_f lexbuf !fullp !texp;
 	done
     end
