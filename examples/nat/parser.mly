@@ -1,6 +1,6 @@
 %{
 open Core
-open Syntax
+open Derivation
 
 let errBtw i j s =
   MySupport.Error.errBtw 
@@ -15,14 +15,14 @@ let errAt i s =
 %token BY
 %token LBRACE RBRACE LPAREN RPAREN
 %token SEMI
-%token <Syntax.rulename> ID
+%token <Derivation.rulename> ID
 %token <int> INTL  /* not used in this game */
 
 %token PLUS EVALTO MULT IS
 %token AST CROSS S Z
 
 %start toplevel
-%type <Core.judgment Syntax.derivation> toplevel
+%type <Core.judgment Derivation.t> toplevel
 
 %%
 
@@ -76,3 +76,4 @@ Nat:
   | S LPAREN Nat RPAREN { S $3 }
   | S LPAREN Nat error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
+
