@@ -1,6 +1,6 @@
 %{
 open Core
-open Syntax
+open Derivation
 
 let errBtw i j s =
   MySupport.Error.errBtw 
@@ -15,7 +15,7 @@ let errAt i s =
 %token BY
 %token LBRACE RBRACE LPAREN RPAREN
 %token SEMI
-%token <Syntax.rulename> ID
+%token <Derivation.rulename> ID
 %token <int> INTL
 
 %token PLUS EVALTO MINUS MULT IS LESS THAN NOT
@@ -24,7 +24,7 @@ let errAt i s =
 %token IF THEN ELSE TRUE FALSE
 
 %start toplevel
-%type <Core.judgment Syntax.derivation> toplevel
+%type <Core.judgment Derivation.t> toplevel
 
 %%
 

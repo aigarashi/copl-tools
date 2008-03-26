@@ -3,10 +3,10 @@ open MySupport.Error
 
 type rulename = string
 
-type 'j derivation = {
+type 'j t = {
   conc:  'j;
   by:    rulename;
-  since: 'j derivation list;
+  since: 'j t list;
   pos:   pos
 }
 

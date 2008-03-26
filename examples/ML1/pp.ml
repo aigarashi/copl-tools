@@ -60,3 +60,10 @@ let print_judgment ppf = function
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult"
       in pr ppf "%a %s %a is %a" print_val v1 op print_val v2 print_val v3
+
+let tex_judgment ppf = function
+    EvalTo (e, v) -> pr ppf "\\EvalTo{%a}{%a}" print_exp e print_val v
+  | AppBOp (p, v1, v2, v3) -> 
+      let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult" | Lt -> "lt" 
+      in pr ppf "\\AppBOp{%a}{%s}{%a}{%a}" print_val v1 op print_val v2 print_val v3
+    

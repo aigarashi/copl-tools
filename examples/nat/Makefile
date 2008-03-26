@@ -1,5 +1,6 @@
 PROGNAME = nat
 MODULEPATH = Nat
+PACKED=nat
 
--include ../common/Makefile
+-include ../common/Makefile.game
 
