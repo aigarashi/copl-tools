@@ -1,0 +1,62 @@
+GMCDIR=../../gmc
+GMC=$(GMCDIR)/gmc
+
+OCAMLC=ocamlc
+OCAMLOPT=ocamlopt
+OCAMLDEP=ocamldep
+OCAMLYACC=ocamlyacc
+OCAMLLEX=ocamllex
+INCLUDES=-I . -I ../common -I $(GMCDIR)    # all relevant -I options here
+OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
+OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
+
+
+# The list of object files for prog1
+# OBJS=$(GMCDIR)/mySupport.cmx ../common/derivation.cmx ../common/lexer.cmx \
+#      core.cmx pp.cmx parser.cmx keywords.cmx main.cmx
+
+OBJS=checker.cmx pp.cmx parser.cmx keywords.cmx link.cmx
+
+DEPEND += parser.ml checker.ml
+
+all: $(DEPEND) $(OBJS)
+	# $(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) $(OBJS)	
+	$(OCAMLOPT) -pack -o $(PACKED).cmx $(OCAMLFLAGS) $(OBJS)
+
+# Common rules
+.SUFFIXES: .ml .mli .cmo .cmi .cmx
+
+.ml.cmo:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.mli.cmi:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.ml.cmx:
+	$(OCAMLOPT) $(OCAMLOPTFLAGS) -for-pack $(MODULEPATH) -c $<
+
+parser.ml parser.mli: parser.mly	
+	@rm -f $@
+	$(OCAMLYACC) -v $<
+	@chmod -w $@
+
+lexer.ml: lexer.mll
+	@rm -f $@
+	$(OCAMLLEX) $<
+	@chmod -w $@
+
+checker.ml: ../$(PROGNAME).gm
+	@rm -f $@
+	$(GMC) $< > $@
+	@chmod -w $@
+
+# Clean up
+clean:
+	rm -f $(PROGNAME)
+	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output lexer.ml checker.ml .depend
+
+# Dependencies
+depend:: $(DEPEND)
+	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml > .depend
+
+-include .depend
