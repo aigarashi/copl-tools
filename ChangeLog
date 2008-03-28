@@ -3,6 +3,7 @@
 	* gmc/syntax.ml: augmenting judgment declarations with mode information.
 	* gmc/parser.mly: Use semicolon to separate input and output arguments.
 	* gmc/emit.ml: Modified accordingly.
+	* examples/nat.gm: mode annotation attached.
 
 2008-03-26  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
