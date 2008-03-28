@@ -11,7 +11,7 @@ module TypeDef :
   end
 
 module JdgDef :
-  sig val emit : Env.t -> judgment list -> unit end
+  sig val emit : Env.t -> (judgment * int) list -> unit end
 
 module Rules :
   sig
@@ -44,6 +44,6 @@ module Rules :
   end
 
 val typedef : Env.t -> syndef list -> unit
-val jdgdef : Env.t -> judgment list -> unit
+val jdgdef : Env.t -> (judgment * int) list -> unit
 val rules : Env.t -> rule list -> unit
 val tex_rules : rule list -> unit
