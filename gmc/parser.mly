@@ -57,7 +57,12 @@ JdgDecls :
     JForm SEMI JFormSEMIs { $1 :: $3 }
 
 JForm :
-    UCID LPAREN ComLCIDs RPAREN { { pred = $1; args = $3 } }
+    UCID LPAREN ComLCIDs RPAREN {
+      ({ pred = $1; args = $3 }, List.length $3)
+    }
+  | UCID LPAREN ComLCIDs SEMI ComLCIDs RPAREN {
+      ({ pred = $1; args = $3 @ $5}, List.length $3)
+    }
 
 JFormSEMIs :
     /* empty */ { [] }
