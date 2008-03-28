@@ -1,5 +1,7 @@
 (* abstract syntax for judgments, rules and derivations *)
 
+open MySupport.Pervasives
+
 type id = string
 
 type term = 
@@ -15,7 +17,6 @@ type syndef = {
 type judgment = {
     pred : id;
     args : term list;
-    nin : int     (* first nin arguments correspond to inputs *)
   }
 
 type premise = 
@@ -30,7 +31,7 @@ type rule = {
 
 type game = {
     syndefs : syndef list;
-    jdgdecls : judgment list;
+    jdgdecls : (judgment * int) list;  (* integer denotes the number of inputs *)
     ruledefs : rule list
   }
 
@@ -46,6 +47,7 @@ type decl =
       Category
     | MVar of id
     | TCon of id list * id (* arity *)
+    | JCon of id list * id list (* arities of inputs and outputs *)
     | IsA of id            (* subcategory *)
 
 module Env = 
@@ -68,6 +70,15 @@ struct
 	  print_ids argcats; 
 	  printf "@]]"
 	end
+    | JCon (incats, outcats) ->
+	begin
+	  printf "%s: j[@[" id; 
+	  print_ids incats; 
+	  print_string "; ";
+	  print_ids outcats; 
+	  printf "@]]"
+	end
+	
     | IsA cat -> printf "%s <: %s" id cat
 
   let rec print_env = function
@@ -83,9 +94,14 @@ struct
 	MVar cat -> cat
       | _ -> raise Not_found
 
-  let rec lookup_con env id = 
+  let rec lookup_tcon env id = 
     match List.assoc id env with
 	TCon (cats, cat) -> (cats, cat)
+      | _ -> raise Not_found
+
+  let rec lookup_jcon env id = 
+    match List.assoc id env with
+	JCon (incat, outcat) -> (incat, outcat)
       | _ -> raise Not_found
 
   let rec is_subcat env cat1 cat2 = match env with
@@ -110,10 +126,12 @@ struct
 
   let rec of_jdg env = function
       [] -> env
-    | jdg :: rest ->
+    | (jdg, in_num) :: rest ->
 	let argcats = (* categories of arguments of the judgment *)
 	  List.map (fun (Var x) -> lookup_cat env (base_LCID x)) jdg.args in
-	  of_jdg ((jdg.pred, TCon (argcats, "j")) :: env) rest 
+	let in_cats = take in_num argcats 
+	and out_cats = drop in_num argcats in
+	  of_jdg ((jdg.pred, JCon (in_cats, out_cats)) :: env) rest 
 
   let of_game g =
     let catdecls = 
