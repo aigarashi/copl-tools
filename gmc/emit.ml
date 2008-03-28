@@ -55,8 +55,8 @@ struct
   let emit env jdgs =
     pf "@[type judgment @[= ";
     let emit_jdg env = function
-	{pred = pred; args = []} -> print_string pred
-      | jdg ->
+	({pred = pred; args = []}, _) -> print_string pred
+      | (jdg, _) ->
 	  let ts = 
 	    List.map 
 	      (fun (Var v) -> Var (Syntax.base_LCID v)) jdg.args in
@@ -92,7 +92,7 @@ struct
 		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
       | App (id, []) -> 
 	  let (_, cat') = 
-	    try Syntax.Env.lookup_con env id with
+	    try Syntax.Env.lookup_tcon env id with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found")
 	  in
 	    if cat' = cat then pf "%s" id
@@ -103,7 +103,7 @@ struct
 		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
       | App (id, ts) -> 
 	  let (cats, cat') = 
-	    try Syntax.Env.lookup_con env (Syntax.base_LCID id) with
+	    try Syntax.Env.lookup_tcon env (Syntax.base_LCID id) with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	  in
 	    if cat' = cat then
@@ -144,7 +144,8 @@ struct
       {pred = pred; args = []} -> pf "%s" pred
     | jdg ->
 	try 
-	  let (cats, _) = Syntax.Env.lookup_con env jdg.pred in
+	  let (incats, outcats) = Syntax.Env.lookup_jcon env jdg.pred in
+	  let cats = incats @ outcats in
 	  let ts = List.map2 (fun x y -> (x, y)) cats jdg.args in 
 	    pf "%s(@[" jdg.pred; 
 	    emit_comseq (fun (cat, t) -> emit_term n tbl env cat t) ts; 
