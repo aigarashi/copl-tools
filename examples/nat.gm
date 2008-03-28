@@ -17,9 +17,9 @@ e in Exp ::= n
 
 (* セミコロン(？)を入力と出力の区切りに使いたい *)
 
-EvalTo(e, n);         (* EvalTo(e; n); *)
-PlusIs(n1, n2, n3);   (* PlusIs(n1, n2; n3); *)
-MultIs(n1, n2, n3);   (* MultIs(n1, n2; n3); *)
+EvalTo(e; n);         (* EvalTo(e; n); *)
+PlusIs(n1, n2; n3);   (* PlusIs(n1, n2; n3); *)
+MultIs(n1, n2; n3);   (* MultIs(n1, n2; n3); *)
 
 [Rules]
 
