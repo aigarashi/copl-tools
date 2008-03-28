@@ -42,4 +42,11 @@ end
 
 module Pervasives =
 struct
+  let rec take n l =
+    if n = 0 then []
+    else match l with [] -> [] | a :: rest -> a :: take (n-1) rest
+
+  let rec drop n l = 
+    if n = 0 then l
+    else match l with [] -> [] | a :: rest -> drop (n-1) rest
 end
