@@ -14,7 +14,8 @@ type syndef = {
    
 type judgment = {
     pred : id;
-    args : term list
+    args : term list;
+    nin : int     (* first nin arguments correspond to inputs *)
   }
 
 type premise = 

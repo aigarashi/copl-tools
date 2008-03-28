@@ -20,13 +20,19 @@ let rec make_deriv = function
       {conc = _conc_; by = "E-Const"; since = []; pos = dummy }
 | In_EvalTo(P(e1, e2)) ->
     let _d1_ = make_deriv (In_EvalTo e1) in
-    let EvalTo(_, n1) = _d1_.conc in
-    let _d2_ = make_deriv (In_EvalTo e2) in
-    let EvalTo(_, n2) = _d2_.conc in
-    let _d3_ = make_deriv (In_PlusIs (n1, n2)) in
-    let PlusIs(_,_,n) = _d3_.conc in
-    let _conc_ = EvalTo(P(e1, e2), n) in
-      {conc = _conc_; by = "E-Plus"; since = [_d1_; _d2_; _d3_]; pos = dummy }
+    (match _d1_.conc with
+	EvalTo(_, n1) ->
+	  let _d2_ = make_deriv (In_EvalTo e2) in
+	    (match _d2_.conc with
+		EvalTo(_, n2) -> 
+		  let _d3_ = make_deriv (In_PlusIs (n1, n2)) in
+		    (match _d3_.conc with
+			PlusIs(_,_,n) ->
+			  let _conc_ = EvalTo(P(e1, e2), n) in
+			    {conc = _conc_; by = "E-Plus"; 
+			     since = [_d1_; _d2_; _d3_]; pos = dummy }
+			      (* error handling omitted *)
+		    )))
 | In_EvalTo(M(e1, e2)) ->
     let _d1_ = make_deriv (In_EvalTo e1) in
     let EvalTo(_, n1) = _d1_.conc in
