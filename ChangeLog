@@ -1,3 +1,9 @@
+2008-03-29  Atsushi Igarashi  <igarashi@cornet>
+
+	* gmc/syntax.ml: augmenting judgment declarations with mode information.
+	* gmc/parser.mly: Use semicolon to separate input and output arguments.
+	* gmc/emit.ml: Modified accordingly.
+
 2008-03-26  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* examples/ML1/pp.ml: function to output judgments in TeX. still
