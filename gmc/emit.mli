@@ -47,3 +47,9 @@ val typedef : Env.t -> syndef list -> unit
 val jdgdef : Env.t -> (judgment * int) list -> unit
 val rules : Env.t -> rule list -> unit
 val tex_rules : rule list -> unit
+
+module Prover :
+sig
+  val emit_jdgdef : Env.t -> (judgment * int) list -> unit
+  val emit : Env.t -> rule list -> unit
+end
