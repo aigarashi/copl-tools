@@ -18,6 +18,7 @@ module Make(X :
       val intl : int -> token
       val eof : token
       val id : string -> token
+      val qm : token
     end
 
     module K : sig val v : (string * P.token) list end
@@ -55,6 +56,7 @@ rule main = parse
 | "{" { lbrace }
 | "}" { rbrace }
 | ";" { semi }
+| "?" { qm }
 | "(*" { comment 1 lexbuf }
 
 (* alphabetical names *)
