@@ -1,3 +1,4 @@
+open MySupport.Pervasives
 open Syntax
 open Format
 
@@ -310,3 +311,144 @@ let tex_rules rules =
   List.iter (fun r -> Rules.TeX.emit std_formatter r) rules
 
 
+module Prover =
+struct
+
+  (* emit type definition from judgment definitions *)
+  let emit_jdgdef env jdgs =
+    pf "@[type in_judgment @[= ";
+    let emit_jdg env = function
+	({pred = pred; args = []}, _) -> pf "In_%s" pred
+      | (jdg, i) ->
+	  let inargs = take i jdg.args in
+	  let ts = 
+	    List.map 
+	      (fun (Var v) -> Var (Syntax.base_LCID v)) inargs in
+	    pf "In_%s of @[" jdg.pred;
+	    emit_seq "*" (emit_var env) ts;
+	    pf "@]"
+    in
+      emit_barseq (emit_jdg env) jdgs;
+      pf "@]@]@ "
+
+  let emit_term env cat term = 
+    let rec aux (cat, term) = match term with
+	Var id -> 
+	  let cat' = 
+	    try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
+		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
+	  in
+	    if cat' = cat then pf "%s" id
+	    else if Syntax.Env.is_subcat env cat' cat 
+	    then pf "%s_of_%s %s" cat cat' id
+	    else 
+	      failwith 
+		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
+      | App (id, []) -> 
+	  let (_, cat') = 
+	    try Syntax.Env.lookup_tcon env id with
+		Not_found -> failwith ("emit_term: " ^ id ^ " not found")
+	  in
+	    if cat' = cat then pf "%s" id
+	    else if Syntax.Env.is_subcat env cat' cat
+	    then pf "%s_of_%s %s" cat cat' id
+	    else 
+	      failwith 
+		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
+      | App (id, ts) -> 
+	  let (cats, cat') = 
+	    try Syntax.Env.lookup_tcon env (Syntax.base_LCID id) with
+		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
+	  in
+	    if cat' = cat then
+	      let ts = List.map2 (fun x y -> (x, y)) cats ts in 
+	      pf "%s(@[" id; emit_comseq aux ts; pf "@])" 
+    in
+      aux (cat, term)
+
+  let emit_jdg_in env = function
+      {pred = pred; args = []} -> pf "In_%s" pred
+    | jdg ->
+	try 
+	  let (incats, _) = Syntax.Env.lookup_jcon env jdg.pred in
+	  let inargs = take (List.length incats) jdg.args in
+	  let ts = List.map2 (fun x y -> (x, y)) incats inargs in 
+	    pf "In_%s(@[" jdg.pred; 
+	    emit_comseq (fun (cat, t) -> emit_term env cat t) ts; 
+	    pf "@])"
+	with Not_found -> failwith ("emit_jdg_in: " ^ jdg.pred ^ " not found")
+
+  let emit_jdg_out env = function
+      {pred = pred; args = []} -> pf "%s" pred
+    | jdg ->
+	try 
+	  let (incats, outcats) = Syntax.Env.lookup_jcon env jdg.pred in
+	  let ts = List.map2 (fun x y -> (x, y)) (incats @ outcats) jdg.args in 
+	    pf "%s(@[" jdg.pred; 
+	    emit_comseq (fun (cat, t) -> emit_term env cat t) ts; 
+	    pf "@])"
+	with Not_found -> failwith ("emit_jdg_out: " ^ jdg.pred ^ " not found")
+
+  let emit_exp_of_premises env r = 
+    let rec aux i = function
+      [] -> 
+	begin
+	  pf "@[let _conc_ = ";
+	  emit_jdg_out env r.rconc;
+	  pf "in@]@ ";
+	  pf "@[{@[conc = _conc_;@ by = \"%s\";@ since = [@[" r.rname;
+	  for j = 1 to i-1 do
+	    pf "_d%d_;@ " j
+	  done;
+	  pf "@]];@ pos = dummy@]}@]"
+	end
+    | J prem :: rest ->
+	begin
+	  pf "@[let _d%d_ = make_deriv (" i; 
+	  emit_jdg_in env prem;
+	  pf ") in@]@ ";
+	  pf "@[<v2>@[(match _d%d_.conc with " i;
+	  emit_jdg_out env prem;
+	  pf " ->@]@ ";
+	  aux (i+1) rest;
+	  pf "@,)@]"
+	end
+    | Qexp s :: rest -> failwith "emit_exp_of_premises: Not Implemented yet"
+
+(*	let b = Buffer.create (String.length s + 10) in
+	let subst s = 
+	  try 
+	    match Hashtbl.find tbl s with 
+		i :: _ -> (String.make i '_') ^ s
+	      | _ -> raise Not_found
+	  with Not_found -> failwith ("emit_exp_of_premises: " ^s ^ "doesn't appear in preceding premises")
+	in
+	  Buffer.add_substitute b subst s;
+	  pf "@[if @[";
+	  print_string (Buffer.contents b);
+	  pf "@]@ then ";
+	  emit_exp_of_premises (i+1) rn tbl env rest;
+	  pf "@ else errAt _p_ \"Wrong rule application: %s\"@]" rn
+*)
+    in aux 1 r.rprem
+
+  let emit_clause_of_rule env r =
+    pf "| @[<4>";
+    emit_jdg_in env r.rconc;
+    pf " ->@\n";
+    emit_exp_of_premises env r;
+    pf "@]"
+
+  let emit env rules = 
+    let rec loop = function
+	[] -> pf "@[| _ -> err (\"No rule to apply.\")@]" 
+	  (* need to augment error information *)
+      | rule::rest ->
+	  emit_clause_of_rule env rule; pf "@ ";
+	  loop rest
+    in
+      pf "@[<v>@[let rec make_deriv = function@]@ ";
+      loop rules;
+      pf "@]"
+
+end
