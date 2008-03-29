@@ -21,8 +21,11 @@ let errAt i s =
 %token PLUS EVALTO MULT IS
 %token AST CROSS S Z
 
-%start toplevel
+%start toplevel partialj
 %type <Checker.judgment Derivation.t> toplevel
+
+%token QM /* stands for question mark to specify holes in a judgment */
+%type <Checker.in_judgment> partialj
 
 %%
 
@@ -58,6 +61,19 @@ Judgment:
   | Nat MULT Nat error { errAt 4 "Syntax error: \'is\' expected" }
   | Nat MULT Nat IS error { errAt 5 "Syntax error: natural number expected" }
 
+partialj:
+    Exp EVALTO QM { In_EvalTo($1) }
+  | Nat PLUS Nat IS QM { In_PlusIs($1, $3) }
+  | Nat MULT Nat IS QM { In_MultIs($1, $3) }
+
+  | Exp EVALTO error { errAt 3 "Syntax error: '?' expected" }
+  | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
+  | Nat PLUS Nat error { errAt 4 "Syntax error: \'is\' expected" }
+  | Nat PLUS Nat IS error { errAt 5 "Syntax error: '?' expected" }
+  | Nat MULT error { errAt 3 "Syntax error: natural number expected" }
+  | Nat MULT Nat error { errAt 4 "Syntax error: \'is\' expected" }
+  | Nat MULT Nat IS error { errAt 5 "Syntax error: '?' expected" }
+
 Exp:
     Exp CROSS MExp { P($1, $3) }
   | MExp { $1 }
@@ -76,4 +92,5 @@ Nat:
   | S LPAREN Nat RPAREN { S $3 }
   | S LPAREN Nat error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
+
 
