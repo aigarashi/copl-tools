@@ -17,7 +17,7 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 OBJS=checker.cmx pp.cmx parser.cmx keywords.cmx link.cmx
 
-DEPEND += parser.ml checker.ml
+DEPEND += parser.ml checker.ml ../common/lexer.ml
 
 all: $(DEPEND) $(OBJS)
 	# $(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) $(OBJS)	
@@ -40,7 +40,7 @@ parser.ml parser.mli: parser.mly
 	$(OCAMLYACC) -v $<
 	@chmod -w $@
 
-lexer.ml: lexer.mll
+../common/lexer.ml: ../common/lexer.mll
 	@rm -f $@
 	$(OCAMLLEX) $<
 	@chmod -w $@
@@ -57,6 +57,6 @@ clean:
 
 # Dependencies
 depend:: $(DEPEND)
-	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml > .depend
+	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml ../common/derivation.ml ../common/derivation.mli ../common/lexer.ml > .depend
 
 -include .depend
