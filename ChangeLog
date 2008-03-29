@@ -5,6 +5,20 @@
 	* gmc/emit.ml: Modified accordingly.
 	* examples/nat.gm: mode annotation attached.
 
+	* gmc/emit.ml: module Prover to emit prover.
+	* examples/common/lexer.mll: '?' for holes in partial judgment is
+	added to the token list.
+	* examples/nat/parser.mly: support for partial judgments.
+	* examples/common/{main,link}.ml: support of prover with -prove
+	option. (combination with -full and -TeX options not supported
+	yet.)
+
+	* examples/common/Makefile.games: dependency description improved.
+
+	* examples/nat.gm: exchanged the positons of tasu-kazu and
+	tasareru-kazu.
+	
+
 2008-03-26  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* examples/ML1/pp.ml: function to output judgments in TeX. still
