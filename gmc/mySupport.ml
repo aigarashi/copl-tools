@@ -38,6 +38,11 @@ struct
     print_newline();
     exit 2
 
+  let err s =
+    print_newline ();
+    print_string s;
+    print_newline ();
+    exit 2
 end
 
 module Pervasives =
