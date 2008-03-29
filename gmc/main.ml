@@ -22,7 +22,11 @@ let emit_game g =
   Emit.jdgdef env g.jdgdecls; print_newline ();
   print_newline();
   Emit.rules env g.ruledefs;
-  print_newline ()
+  print_newline ();  print_newline ();
+  (* experimental prover generation *)
+  Emit.Prover.emit_jdgdef env g.jdgdecls; print_newline();
+  print_string "let dummy = Lexing.dummy_pos"; print_newline();
+  Emit.Prover.emit env g.ruledefs
 
 let _ = 
   Arg.parse spec (fun s -> filename := s) "Usage: gmc [-TeX] filename";
@@ -30,7 +34,3 @@ let _ =
     match !mode with
 	ML -> emit_game g
       | TeX -> Emit.tex_rules g.ruledefs
-
-
-  
-  
