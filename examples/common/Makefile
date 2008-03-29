@@ -13,8 +13,8 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 OBJS=$(GMCDIR)/mySupport.cmx derivation.cmx lexer.cmx \
 		../nat/nat.cmx \
-		../ML1/ml1.cmx \
 		main.cmx
+#		../ML1/ml1.cmx \
 
 DEPEND += lexer.ml
 
