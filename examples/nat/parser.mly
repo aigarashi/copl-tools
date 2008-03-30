@@ -1,5 +1,5 @@
 %{
-open Checker
+open Core
 open Derivation
 
 let errBtw i j s =
@@ -22,10 +22,10 @@ let errAt i s =
 %token AST CROSS S Z
 
 %start toplevel partialj
-%type <Checker.judgment Derivation.t> toplevel
+%type <Core.judgment Derivation.t> toplevel
 
 %token QM /* stands for question mark to specify holes in a judgment */
-%type <Checker.in_judgment> partialj
+%type <Core.in_judgment> partialj
 
 %%
 
