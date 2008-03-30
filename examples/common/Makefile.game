@@ -15,9 +15,9 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 # OBJS=$(GMCDIR)/mySupport.cmx ../common/derivation.cmx ../common/lexer.cmx \
 #      core.cmx pp.cmx parser.cmx keywords.cmx main.cmx
 
-OBJS=checker.cmx pp.cmx parser.cmx keywords.cmx link.cmx
+OBJS=core.cmx pp.cmx parser.cmx keywords.cmx link.cmx
 
-DEPEND += parser.ml checker.ml ../common/lexer.ml
+DEPEND += parser.ml core.ml ../common/lexer.ml
 
 all: $(DEPEND) $(OBJS)
 	# $(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) $(OBJS)	
@@ -45,15 +45,15 @@ parser.ml parser.mli: parser.mly
 	$(OCAMLLEX) $<
 	@chmod -w $@
 
-checker.ml: ../$(PROGNAME).gm
+core.ml: ../$(PROGNAME).gm
 	@rm -f $@
-	$(GMC) $< > $@
+	$(GMC) $< > $@ || rm -f $@
 	@chmod -w $@
 
 # Clean up
 clean:
 	rm -f $(PROGNAME)
-	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output lexer.ml checker.ml .depend
+	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output lexer.ml core.ml .depend
 
 # Dependencies
 depend:: $(DEPEND)
