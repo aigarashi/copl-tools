@@ -1,3 +1,10 @@
+2008-03-30  Atsushi Igarashi  <igarashi@cornet>
+
+	* examples/ML1.gm: bug fix.
+	* examples/ML1/parser.mly: support for partial derivations
+	* gmc/emit.ml, gmc/main.ml, gmc/mySupport.ml: implementing backtracking.
+	Hope it works.
+
 2008-03-29  Atsushi Igarashi  <igarashi@cornet>
 
 	* gmc/syntax.ml: augmenting judgment declarations with mode information.
