@@ -17,8 +17,8 @@ let spec = [
   ]
 
 let games = [
-    ("nat", (Nat.Link.process_derivation, Nat.Link.process_partial_jdg));
-(*    ("ML1", Ml1.Link.process_derivation); *)
+    ("nat", (Nat.Link.check_deriv, Nat.Link.make_deriv));
+    ("ML1", (Ml1.Link.check_deriv, Ml1.Link.make_deriv));
   ]
 
 let () = 
@@ -29,7 +29,7 @@ let () =
   if !gname = "" then failwith "Game name must be given"
   else
     begin
-      let process_deriv, process_partial_jdg = 
+      let check_deriv, make_deriv = 
 	try List.assoc !gname games with 
 	    Not_found -> failwith ("No such game: " ^ !gname) in
 	if !jdg = "" then (* checker mode *)
@@ -40,11 +40,11 @@ let () =
 	      lexbuf.lex_curr_p <- { pos with pos_fname = !filename };
 	      
 	      while true do
-		process_deriv lexbuf !fullp !texp;
+		check_deriv lexbuf !fullp !texp;
 	      done
 	  end
 	    
 	else (* -prove mode*)
 	  let lexbuf = Lexing.from_string !jdg in
-	    process_partial_jdg lexbuf !fullp !texp
+	    make_deriv lexbuf !fullp !texp
     end
