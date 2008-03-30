@@ -189,7 +189,7 @@ struct
     | J prem :: rest ->
 	pf "@[(";
 	begin 
-	  pf "@[<v>@[match deriv_check _d%d_ with@]@ " i;
+	  pf "@[<v>@[match check_deriv _d%d_ with@]@ " i;
 	  pf "@[<4>";
 	  (* pat -> *) 
 	  pf "@[  ";
@@ -256,7 +256,7 @@ struct
 	  emit_clause_of_rule env rule; pf "@ ";
 	  loop rest
     in
-      pf "@[<v>@[let rec deriv_check = function@]@ ";
+      pf "@[<v>@[let rec check_deriv = function@]@ ";
       loop rules;
       pf "@]"
 
@@ -383,60 +383,87 @@ struct
     | jdg ->
 	try 
 	  let (incats, outcats) = Syntax.Env.lookup_jcon env jdg.pred in
+	  let outargs = drop (List.length incats) jdg.args in
+	  let ts = List.map2 (fun x y -> (x, y)) outcats outargs in 
+	    pf "%s(@[" jdg.pred;
+	    emit_comseq (fun _ -> pf "_") incats;
+	    pf ",@ ";
+	    emit_comseq (fun (cat, t) -> emit_term env cat t) ts; 
+	    pf "@])"
+	with Not_found -> failwith ("emit_jdg_out: " ^ jdg.pred ^ " not found")
+
+  let emit_jdg env = function
+      {pred = pred; args = []} -> pf "%s" pred
+    | jdg ->
+	try 
+	  let (incats, outcats) = Syntax.Env.lookup_jcon env jdg.pred in
 	  let ts = List.map2 (fun x y -> (x, y)) (incats @ outcats) jdg.args in 
-	    pf "%s(@[" jdg.pred; 
+	    pf "%s(@[" jdg.pred;
 	    emit_comseq (fun (cat, t) -> emit_term env cat t) ts; 
 	    pf "@])"
 	with Not_found -> failwith ("emit_jdg_out: " ^ jdg.pred ^ " not found")
 
   let emit_exp_of_premises env r = 
     let rec aux i = function
-      [] -> 
-	begin
-	  pf "@[let _conc_ = ";
-	  emit_jdg_out env r.rconc;
-	  pf "in@]@ ";
-	  pf "@[{@[conc = _conc_;@ by = \"%s\";@ since = [@[" r.rname;
-	  for j = 1 to i-1 do
-	    pf "_d%d_;@ " j
-	  done;
-	  pf "@]];@ pos = dummy@]}@]"
-	end
+      [] -> pf "@ true@ "
     | J prem :: rest ->
 	begin
 	  pf "@[let _d%d_ = make_deriv (" i; 
 	  emit_jdg_in env prem;
 	  pf ") in@]@ ";
-	  pf "@[<v2>@[(match _d%d_.conc with " i;
+	  pf "@[Stack.push _d%d_ deriv_stack;@]@ " i;
+	  pf "@[<v2>@[(match _d%d_.conc with@]@ @[<v3>  " i;
 	  emit_jdg_out env prem;
-	  pf " ->@]@ ";
+	  pf " ->@ @[";
 	  aux (i+1) rest;
+	  pf "@]@]@ ";
+	  pf "@[| _ -> for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false@]" i;
 	  pf "@,)@]"
 	end
-    | Qexp s :: rest -> failwith "emit_exp_of_premises: Not Implemented yet"
-
-(*	let b = Buffer.create (String.length s + 10) in
-	let subst s = 
-	  try 
-	    match Hashtbl.find tbl s with 
-		i :: _ -> (String.make i '_') ^ s
-	      | _ -> raise Not_found
-	  with Not_found -> failwith ("emit_exp_of_premises: " ^s ^ "doesn't appear in preceding premises")
-	in
+    | Qexp s :: rest ->
+	let b = Buffer.create (String.length s + 10) in
+	let subst s = s in
 	  Buffer.add_substitute b subst s;
-	  pf "@[if @[";
+	  pf "@[let @[";
 	  print_string (Buffer.contents b);
-	  pf "@]@ then ";
-	  emit_exp_of_premises (i+1) rn tbl env rest;
-	  pf "@ else errAt _p_ \"Wrong rule application: %s\"@]" rn
-*)
+	  pf "@]@ in @]@ ";
+	  aux i rest
     in aux 1 r.rprem
 
   let emit_clause_of_rule env r =
     pf "| @[<4>";
     emit_jdg_in env r.rconc;
-    pf " ->@\n";
+    pf " when @\n";
     emit_exp_of_premises env r;
+    pf "-> @\n";
+    begin 
+      (* extract relevant parts from subderivations 
+	 and construct the conclusion *)
+      pf "@[let _subderivs_ = pop %d deriv_stack [] in@]@ " 
+	(List.fold_right
+	   (fun x y -> match x with J j -> 1 + y | _ -> y) r.rprem 0);
+      pf "@[<v2>@[(match List.map (fun d -> d.conc) _subderivs_ with@]@ @[[";
+      emit_seq ~spbefore:false ";" (emit_jdg_out env) 
+	(List.fold_right
+	   (fun x y -> match x with J j -> j :: y | _ -> y) r.rprem []);
+      pf "]@] ->@ ";
+      List.iter
+	(function 
+	     J _ -> () 
+	   | Qexp s ->
+	       let b = Buffer.create (String.length s + 10) in
+	       let subst s = s in
+		 Buffer.add_substitute b subst s;
+		 pf "@[let @[";
+		 print_string (Buffer.contents b);
+		 pf "@]@ in @]@ ")
+	r.rprem;
+      pf "@[let _conc_ = ";
+      emit_jdg env r.rconc;
+      pf " in @]@ ";
+      pf "@[{@[conc = _conc_;@ by = \"%s\";@ since = _subderivs_;@ pos = dummy@]}@])@]@]" 
+	r.rname
+    end;
     pf "@]"
 
   let emit env rules = 
