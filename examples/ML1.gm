@@ -21,8 +21,8 @@ p in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
-EvalTo(e, v);
-AppBOp(p, v, v, v);
+EvalTo(e; v);
+AppBOp(p, v, v; v);
 
 [Rules]
 
@@ -32,13 +32,13 @@ E-IfT: 	EvalTo(If(e1, e2, e3), v) :-
 		EvalTo(e1, True), EvalTo(e2, v);
 E-IfF: 	EvalTo(If(e1, e2, e3), v) :- 
 		EvalTo(e1, False), EvalTo(e3, v);
-E-Plus: EvalTo(BinOp(Plus, e1, e2), i) :- 
+E-Plus: EvalTo(BinOp(Plus, e1, e2), i3) :- 
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(BinOp(Minus, e1, e2), i) :- 
+E-Minus: EvalTo(BinOp(Minus, e1, e2), i3) :- 
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Minus, i1, i2, i3);
-E-Mult: EvalTo(BinOp(Mult, e1, e2), i) :- 
+E-Mult: EvalTo(BinOp(Mult, e1, e2), i3) :- 
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Mult, i1, i2, i3);
-E-Lt: 	EvalTo(BinOp(Lt, e1, e2), b) :-
+E-Lt: 	EvalTo(BinOp(Lt, e1, e2), b3) :-
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Lt, i1, i2, b3);
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
