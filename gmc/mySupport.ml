@@ -54,4 +54,8 @@ struct
   let rec drop n l = 
     if n = 0 then l
     else match l with [] -> [] | a :: rest -> drop (n-1) rest
+
+  let rec pop n s acc =
+    if n = 0 then acc
+    else let top = Stack.pop s in pop (n-1) s (top :: acc)
 end
