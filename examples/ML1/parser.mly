@@ -1,5 +1,5 @@
 %{
-open Checker
+open Core
 open Derivation
 
 let errBtw i j s =
@@ -23,8 +23,11 @@ let errAt i s =
 
 %token IF THEN ELSE TRUE FALSE
 
-%start toplevel
-%type <Checker.judgment Derivation.t> toplevel
+%start toplevel partialj
+%type <Core.judgment Derivation.t> toplevel
+
+%token QM /* stands for question mark to specify holes in a judgment */
+%type <Core.in_judgment> partialj
 
 %%
 
@@ -65,6 +68,26 @@ Judgment:
   | INTL MINUS error { errAt 3 "Syntax error: natural number expected" }
   | INTL MINUS INTL error { errAt 4 "Syntax error: \'is\' expected" }
   | INTL MINUS INTL IS error { errAt 5 "Syntax error: natural number expected" }
+
+partialj :
+    Exp EVALTO QM { In_EvalTo($1) }
+  | INTL PLUS INTL IS QM { In_AppBOp(Plus, Value_of_int $1, Value_of_int $3) }
+  | INTL MULT INTL IS QM { In_AppBOp(Mult, Value_of_int $1, Value_of_int $3) }
+  | INTL MINUS INTL IS QM { In_AppBOp(Minus, Value_of_int $1, Value_of_int $3) }
+/*  | INTL IS LESS THAN INTL { In_AppBOp(Lt, Value_of_int $1, Value_of_int $5) }
+  | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6) }
+*/
+  | Exp EVALTO error { errAt 3 "Syntax error: '?' expected" }
+  | INTL PLUS error { errAt 3 "Syntax error: natural number expected" }
+  | INTL PLUS INTL error { errAt 4 "Syntax error: \'is\' expected" }
+  | INTL PLUS INTL IS error { errAt 5 "Syntax error: '?' expected" }
+  | INTL MULT error { errAt 3 "Syntax error: natural number expected" }
+  | INTL MULT INTL error { errAt 4 "Syntax error: \'is\' expected" }
+  | INTL MULT INTL IS error { errAt 5 "Syntax error: '?' expected" }
+  | INTL MINUS error { errAt 3 "Syntax error: natural number expected" }
+  | INTL MINUS INTL error { errAt 4 "Syntax error: \'is\' expected" }
+  | INTL MINUS INTL IS error { errAt 5 "Syntax error: '?' expected" }
+
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
