@@ -17,6 +17,7 @@ let emit_game g =
     Syntax.Env.print_env env;
     printf "@] *)"; print_newline(); print_newline();
   print_string "open MySupport.Error"; print_newline ();
+  print_string "open MySupport.Pervasives"; print_newline ();
   print_string "open Derivation"; print_newline ();
   Emit.typedef env g.syndefs; print_newline ();
   Emit.jdgdef env g.jdgdecls; print_newline ();
@@ -26,6 +27,7 @@ let emit_game g =
   (* experimental prover generation *)
   Emit.Prover.emit_jdgdef env g.jdgdecls; print_newline();
   print_string "let dummy = Lexing.dummy_pos"; print_newline();
+  print_string "let deriv_stack = Stack.create ()"; print_newline();
   Emit.Prover.emit env g.ruledefs
 
 let _ = 
