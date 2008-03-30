@@ -2,7 +2,7 @@ open Lexing
 
 module Lexer = Lexer.Make(
     struct
-      module Core = Checker
+      module Core = Core
 
       module P = struct
 	include Parser
@@ -24,9 +24,9 @@ module Lexer = Lexer.Make(
     end
   )
 
-let process_derivation lexbuf fullp texp =
+let check_deriv lexbuf fullp texp =
   let d = Parser.toplevel Lexer.main lexbuf in
-  let j = Checker.deriv_check d in
+  let j = Core.check_deriv d in
     (match fullp, texp with
 	true, true -> 
 	  Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d
@@ -38,9 +38,9 @@ let process_derivation lexbuf fullp texp =
 	  Pp.print_judgment Format.std_formatter d.Derivation.conc);
     Format.print_newline()
 
-let process_partial_jdg lexbuf fullp texp =
+let make_deriv lexbuf fullp texp =
   let j = Parser.partialj Lexer.main lexbuf in
-  let d = Checker.make_deriv j in
+  let d = Core.make_deriv j in
     (match fullp, texp with
 	true, true -> 
 	  Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d
