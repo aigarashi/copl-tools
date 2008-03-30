@@ -13,19 +13,20 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 OBJS=$(GMCDIR)/mySupport.cmx derivation.cmx lexer.cmx \
 		../nat/nat.cmx \
+		../ML1/ml1.cmx \
 		main.cmx
-#		../ML1/ml1.cmx \
+
 
 DEPEND += lexer.ml
 
-all: $(OBJS) $(DEPEND)
+all: nat ML1 $(OBJS) $(DEPEND) 
 	ocamlopt -o $(PROGNAME) $(OBJS)
 
-../nat/nat.cmx: 
+nat: 
 	make -C ../nat depend
 	make -C ../nat
 
-../ML1/ml1.cmx:
+ML1:
 	make -C ../ML1 depend
 	make -C ../ML1
 
