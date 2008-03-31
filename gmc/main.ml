@@ -26,7 +26,7 @@ let emit_game g =
   print_newline ();  print_newline ();
   (* experimental prover generation *)
   Emit.Prover.emit_jdgdef env std_formatter g.jdgdecls;
-  print_string "\
+  pp_print_string std_formatter "\
 
 let dummy = Lexing.dummy_pos
 let deriv_stack = Stack.create ()
