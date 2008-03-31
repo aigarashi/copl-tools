@@ -25,10 +25,15 @@ let emit_game g =
   Emit.rules env g.ruledefs;
   print_newline ();  print_newline ();
   (* experimental prover generation *)
-  Emit.Prover.emit_jdgdef env g.jdgdecls; print_newline();
-  print_string "let dummy = Lexing.dummy_pos"; print_newline();
-  print_string "let deriv_stack = Stack.create ()"; print_newline();
-  Emit.Prover.emit env g.ruledefs
+  Emit.Prover.emit_jdgdef env std_formatter g.jdgdecls;
+  print_string "\
+
+let dummy = Lexing.dummy_pos
+let deriv_stack = Stack.create ()
+
+exception NoApplicableRule of in_judgment
+";
+  Emit.Prover.emit env std_formatter g.ruledefs
 
 let _ = 
   Arg.parse spec (fun s -> filename := s) "Usage: gmc [-TeX] filename";
