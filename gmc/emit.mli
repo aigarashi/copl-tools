@@ -50,6 +50,6 @@ val tex_rules : rule list -> unit
 
 module Prover :
 sig
-  val emit_jdgdef : Env.t -> (judgment * int) list -> unit
-  val emit : Env.t -> rule list -> unit
+  val emit_jdgdef : Env.t -> Format.formatter -> (judgment * int) list -> unit
+  val emit : Env.t -> Format.formatter -> rule list -> unit
 end
