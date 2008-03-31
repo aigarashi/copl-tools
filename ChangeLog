@@ -1,3 +1,13 @@
+2008-03-31  Atsushi Igarashi  <igarashi@cornet>
+
+	* examples/ML1/pp.ml, examples/nat/pp.ml, examples/common/link.ml:
+	error handling in derivation search.
+	* examples/common/Makefile: better dependency descrpition.
+
+	* gmc/emit.ml, gmc/emit.mli, gmc/main.ml: now partly use
+	Format.fprintf.  Should use it consistently.  Needs further
+	tidying up.
+
 2008-03-31  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* gmc/parser.mly: allowing multiple metavars for one syntactic
