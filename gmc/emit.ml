@@ -291,8 +291,10 @@ struct
 	  [] -> ()
 	| J j :: [] -> emit_jdg ppf j
 	| Qexp q :: [] -> emit_qexp ppf q
-	| J j :: rest -> pr ppf "%a@ \\andalso@ %a" emit_jdg j emit_premises rest
-	| Qexp q :: rest -> pr ppf "%a@ \\andalso@ %a" emit_qexp q emit_premises rest
+	| J j :: rest -> 
+	    pr ppf "%a@ \\andalso@ %a" emit_jdg j emit_premises rest
+	| Qexp q :: rest -> 
+	    pr ppf "%a@ \\andalso@ %a" emit_qexp q emit_premises rest
 	
       let emit ppf r =
 	pr ppf "@[\\infrule[%s]{%a}{%a}@]" 
@@ -310,37 +312,55 @@ and rules = Rules.emit
 let tex_rules rules = 
   List.iter (fun r -> Rules.TeX.emit std_formatter r) rules
 
-
 module Prover =
 struct
 
+  let pf = fprintf
+
+(* common functions to be lifted outside this submodule *)
+let rec emit_seq ?(spbefore=true) delim emit_elm ppf = function 
+    (* spbefore = true means "insert space before delim" *)
+    [] -> ()
+  | e::rest -> emit_elm ppf e; emit_seq2 spbefore delim emit_elm ppf rest
+and emit_seq2 spbefore delim emit_elm ppf = function
+    [] -> ()
+  | e::rest -> 
+      if spbefore then pf ppf "@ %s " delim else pf ppf "%s@ " delim; 
+      emit_elm ppf e; emit_seq2 spbefore delim emit_elm ppf rest
+
+let emit_comseq emit_elm ppf e = emit_seq ~spbefore:false "," emit_elm ppf e
+let emit_barseq emit_elm ppf e = emit_seq "|" emit_elm ppf e
+let emit_semiseq emit_elm ppf e = emit_seq ~spbefore:false ";" emit_elm ppf e
+
+let emit_var env ppf = function
+    Var id -> pp_print_string ppf (String.lowercase (Env.lookup_cat env id))
+
   (* emit type definition from judgment definitions *)
-  let emit_jdgdef env jdgs =
-    pf "@[type in_judgment @[= ";
-    let emit_jdg env = function
-	({pred = pred; args = []}, _) -> pf "In_%s" pred
+  let emit_jdgdef env ppf jdgs =
+    let emit_jdg env ppf = function
+	({pred = pred; args = []}, _) -> pf ppf "In_%s" pred
       | (jdg, i) ->
 	  let inargs = take i jdg.args in
 	  let ts = 
 	    List.map 
 	      (fun (Var v) -> Var (Syntax.base_LCID v)) inargs in
-	    pf "In_%s of @[" jdg.pred;
-	    emit_seq "*" (emit_var env) ts;
-	    pf "@]"
+	    pf ppf "In_%s of @[%a@]" 
+	      jdg.pred
+	      (emit_seq "*" (emit_var env)) ts
     in
-      emit_barseq (emit_jdg env) jdgs;
-      pf "@]@]@ "
+    pf ppf "@[type in_judgment @[= %a@]@]"
+      (emit_barseq (emit_jdg env)) jdgs
 
-  let emit_term env cat term = 
-    let rec aux (cat, term) = match term with
+  let emit_term env cat ppf term = 
+    let rec aux  ppf (cat, term) = match term with
 	Var id -> 
 	  let cat' = 
 	    try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	  in
-	    if cat' = cat then pf "%s" id
+	    if cat' = cat then pp_print_string ppf id
 	    else if Syntax.Env.is_subcat env cat' cat 
-	    then pf "%s_of_%s %s" cat cat' id
+	    then pf ppf "%s_of_%s %s" cat cat' id
 	    else 
 	      failwith 
 		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
@@ -349,9 +369,9 @@ struct
 	    try Syntax.Env.lookup_tcon env id with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found")
 	  in
-	    if cat' = cat then pf "%s" id
+	    if cat' = cat then pp_print_string ppf id
 	    else if Syntax.Env.is_subcat env cat' cat
-	    then pf "%s_of_%s %s" cat cat' id
+	    then pf ppf "%s_of_%s %s" cat cat' id
 	    else 
 	      failwith 
 		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
@@ -362,91 +382,82 @@ struct
 	  in
 	    if cat' = cat then
 	      let ts = List.map2 (fun x y -> (x, y)) cats ts in 
-	      pf "%s(@[" id; emit_comseq aux ts; pf "@])" 
+	      pf ppf "%s(@[%a@])" id (emit_comseq aux) ts
     in
-      aux (cat, term)
+      aux ppf (cat, term)
 
-  let emit_jdg_in env = function
-      {pred = pred; args = []} -> pf "In_%s" pred
+  let emit_jdg_in env ppf = function
+      {pred = pred; args = []} -> pf ppf "In_%s" pred
     | jdg ->
 	try 
 	  let (incats, _) = Syntax.Env.lookup_jcon env jdg.pred in
 	  let inargs = take (List.length incats) jdg.args in
 	  let ts = List.map2 (fun x y -> (x, y)) incats inargs in 
-	    pf "In_%s(@[" jdg.pred; 
-	    emit_comseq (fun (cat, t) -> emit_term env cat t) ts; 
-	    pf "@])"
+	    pf ppf "In_%s(@[%a@])" jdg.pred
+	    (emit_comseq (fun ppf (cat, t) -> emit_term env cat ppf t)) ts
 	with Not_found -> failwith ("emit_jdg_in: " ^ jdg.pred ^ " not found")
 
-  let emit_jdg_out env = function
-      {pred = pred; args = []} -> pf "%s" pred
+  let emit_jdg_out env ppf = function
+      {pred = pred; args = []} -> pp_print_string ppf pred
     | jdg ->
 	try 
 	  let (incats, outcats) = Syntax.Env.lookup_jcon env jdg.pred in
 	  let outargs = drop (List.length incats) jdg.args in
 	  let ts = List.map2 (fun x y -> (x, y)) outcats outargs in 
-	    pf "%s(@[" jdg.pred;
-	    emit_comseq (fun _ -> pf "_") incats;
-	    pf ",@ ";
-	    emit_comseq (fun (cat, t) -> emit_term env cat t) ts; 
-	    pf "@])"
+	    pf ppf "%s(@[%a,@ %a@])" jdg.pred
+	      (emit_comseq (fun ppf _ -> pp_print_string ppf "_")) incats
+	      (emit_comseq (fun ppf (cat, t) -> emit_term env cat ppf t)) ts
 	with Not_found -> failwith ("emit_jdg_out: " ^ jdg.pred ^ " not found")
 
-  let emit_jdg env = function
-      {pred = pred; args = []} -> pf "%s" pred
+  let emit_jdg env ppf = function
+      {pred = pred; args = []} -> pp_print_string ppf pred
     | jdg ->
 	try 
 	  let (incats, outcats) = Syntax.Env.lookup_jcon env jdg.pred in
 	  let ts = List.map2 (fun x y -> (x, y)) (incats @ outcats) jdg.args in 
-	    pf "%s(@[" jdg.pred;
-	    emit_comseq (fun (cat, t) -> emit_term env cat t) ts; 
-	    pf "@])"
+	    pf ppf "%s(@[%a@])" jdg.pred
+	      (emit_comseq (fun ppf (cat, t) -> emit_term env cat ppf t)) ts
 	with Not_found -> failwith ("emit_jdg_out: " ^ jdg.pred ^ " not found")
 
-  let emit_exp_of_premises env r = 
-    let rec aux i = function
-      [] -> pf "@ true@ "
+  let emit_exp_of_premises env ppf r = 
+    let rec aux i ppf = function
+      [] -> pf ppf "@ true@ "
     | J prem :: rest ->
 	begin
-	  pf "@[let _d%d_ = make_deriv (" i; 
-	  emit_jdg_in env prem;
-	  pf ") in@]@ ";
-	  pf "@[Stack.push _d%d_ deriv_stack;@]@ " i;
-	  pf "@[<v2>@[(match _d%d_.conc with@]@ @[<v3>  " i;
-	  emit_jdg_out env prem;
-	  pf " ->@ @[";
-	  aux (i+1) rest;
-	  pf "@]@]@ ";
-	  pf "@[| _ -> for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false@]" i;
-	  pf "@,)@]"
+	  pf ppf "@[let _d%d_ = make_deriv (%a) in@]@ " i
+	    (emit_jdg_in env) prem;
+	  pf ppf "@[Stack.push _d%d_ deriv_stack;@]@ " i;
+	  pf ppf 
+	    "@[<v2>@[(match _d%d_.conc with@]@ @[<v3>  %a ->@ @[%a@]@]@ " 
+	    i
+	    (emit_jdg_out env) prem
+	    (aux (i+1)) rest;
+	  pf ppf "@[| _ -> for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false@]" i;
+	  pf ppf "@,)@]"
 	end
     | Qexp s :: rest ->
 	let b = Buffer.create (String.length s + 10) in
 	let subst s = s in
 	  Buffer.add_substitute b subst s;
-	  pf "@[let @[";
-	  print_string (Buffer.contents b);
-	  pf "@]@ in @]@ ";
-	  aux i rest
-    in aux 1 r.rprem
+	  pf ppf "@[let @[%s@]@ in @]@ %a" 
+	    (Buffer.contents b) (aux i) rest
+    in aux 1 ppf r.rprem
 
-  let emit_clause_of_rule env r =
-    pf "| @[<4>";
-    emit_jdg_in env r.rconc;
-    pf " when @\n";
-    emit_exp_of_premises env r;
-    pf "-> @\n";
+  let emit_clause_of_rule env ppf r =
+    pf ppf "| @[<4>%a when @\n%a -> @\n" 
+      (emit_jdg_in env) r.rconc
+      (emit_exp_of_premises env) r;
     begin 
       (* extract relevant parts from subderivations 
 	 and construct the conclusion *)
-      pf "@[let _subderivs_ = pop %d deriv_stack [] in@]@ " 
+      pf ppf "@[let _subderivs_ = pop %d deriv_stack [] in@]@ " 
 	(List.fold_right
 	   (fun x y -> match x with J j -> 1 + y | _ -> y) r.rprem 0);
-      pf "@[<v2>@[(match List.map (fun d -> d.conc) _subderivs_ with@]@ @[[";
-      emit_seq ~spbefore:false ";" (emit_jdg_out env) 
+      pf ppf "@[<v2>@[(match List.map (fun d -> d.conc) _subderivs_ with@]@ ";
+      pf ppf "@[[%a]@] ->@ "
+	(emit_semiseq (emit_jdg_out env))
 	(List.fold_right
 	   (fun x y -> match x with J j -> j :: y | _ -> y) r.rprem []);
-      pf "]@] ->@ ";
       List.iter
 	(function 
 	     J _ -> () 
@@ -454,28 +465,24 @@ struct
 	       let b = Buffer.create (String.length s + 10) in
 	       let subst s = s in
 		 Buffer.add_substitute b subst s;
-		 pf "@[let @[";
-		 print_string (Buffer.contents b);
-		 pf "@]@ in @]@ ")
+		 pf ppf "@[let @[%s@]@ in @]@ " (Buffer.contents b))
 	r.rprem;
-      pf "@[let _conc_ = ";
-      emit_jdg env r.rconc;
-      pf " in @]@ ";
-      pf "@[{@[conc = _conc_;@ by = \"%s\";@ since = _subderivs_;@ pos = dummy@]}@])@]@]" 
+      pf ppf "@[let _conc_ = %a in @]@ " (emit_jdg env) r.rconc;
+      pf ppf "@[{@[conc = _conc_;@ by = \"%s\";@ since = _subderivs_;@ pos = dummy@]}@])@]@]" 
 	r.rname
     end;
-    pf "@]"
+    pf ppf "@]"
 
-  let emit env rules = 
-    let rec loop = function
-	[] -> pf "@[| _ -> err (\"No rule to apply.\")@]" 
+  let emit env ppf rules = 
+    let rec loop ppf = function
+	[] -> pf ppf "@[| j -> raise (NoApplicableRule j)@]" 
 	  (* need to augment error information *)
       | rule::rest ->
-	  emit_clause_of_rule env rule; pf "@ ";
-	  loop rest
+	  pf ppf "%a@ %a"
+	    (emit_clause_of_rule env) rule
+	      loop rest
     in
-      pf "@[<v>@[let rec make_deriv = function@]@ ";
-      loop rules;
-      pf "@]"
+      pf ppf "@[<v>@[let rec make_deriv = function@]@ %a@]" loop rules;
+
 
 end
