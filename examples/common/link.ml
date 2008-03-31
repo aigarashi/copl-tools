@@ -40,14 +40,19 @@ let check_deriv lexbuf fullp texp =
 
 let make_deriv lexbuf fullp texp =
   let j = Parser.partialj Lexer.main lexbuf in
-  let d = Core.make_deriv j in
-    (match fullp, texp with
-	true, true -> 
-	  Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d
-      | true, false -> 
-	  Derivation.print_deriv Pp.print_judgment Format.std_formatter d
-      | false, true ->
-	  Pp.tex_judgment Format.std_formatter d.Derivation.conc
-      | false, false ->
-	  Pp.print_judgment Format.std_formatter d.Derivation.conc);
-    Format.print_newline()
+    try
+      let d = Core.make_deriv j in
+	(match fullp, texp with
+	     true, true -> 
+	       Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d
+	   | true, false -> 
+	       Derivation.print_deriv Pp.print_judgment Format.std_formatter d
+	   | false, true ->
+	       Pp.tex_judgment Format.std_formatter d.Derivation.conc
+	   | false, false ->
+	       Pp.print_judgment Format.std_formatter d.Derivation.conc);
+	Format.print_newline()
+    with Core.NoApplicableRule j -> 
+      Format.fprintf Format.std_formatter 
+	"Error: no applicable rule for %a\n" Pp.print_pjudgment j
+
