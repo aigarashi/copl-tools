@@ -47,4 +47,6 @@ clean:
 depend:: $(DEPEND)
 	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml > .depend
 
+main.cmx: ../nat/nat.cmx ../ML1/ml1.cmx
+
 -include .depend
