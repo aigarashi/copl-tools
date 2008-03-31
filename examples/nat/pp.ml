@@ -32,6 +32,13 @@ let print_judgment ppf = function
   | MultIs (n1, n2, n3) ->
       pr ppf "%a mult %a is %a" print_nat n1 print_nat n2 print_nat n3
 
+let print_pjudgment ppf = function
+    In_EvalTo e -> pr ppf "%a evalto ?" print_exp e
+  | In_PlusIs (n1, n2) -> 
+      pr ppf "%a plus %a is ?" print_nat n1 print_nat n2
+  | In_MultIs (n1, n2) ->
+      pr ppf "%a mult %a is ?" print_nat n1 print_nat n2
+
 let tex_judgment ppf = function
     EvalTo (e, n) -> pr ppf "\\EvalTo{%a}{%a}" print_exp e print_nat n
   | PlusIs (n1, n2, n3) -> 
