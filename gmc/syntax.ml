@@ -9,7 +9,7 @@ type term =
   | App of id * term list
 
 type syndef = {
-    mvar : id;
+    mvars : id list;
     cat : id;
     body : term list
   }
@@ -139,7 +139,12 @@ struct
 	(fun env def -> (def.cat, Category)::env) [] g.syndefs in
     let mvardecls =
       List.fold_left 
-	(fun env def -> (def.mvar, MVar def.cat)::env) catdecls g.syndefs in
+	(fun env def -> 
+	  let cat = MVar def.cat in
+	    List.fold_left
+	      (fun env' mvar -> (mvar, cat)::env') 
+	      env def.mvars)
+	catdecls g.syndefs in
     let constrdecls =
       List.fold_left
 	(fun env def -> of_body env def.cat def.body) mvardecls g.syndefs 

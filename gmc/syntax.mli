@@ -2,7 +2,7 @@ type id = string
 
 type term = Var of id | App of id * term list
 
-type syndef = { mvar : id; cat : id; body : term list; }
+type syndef = { mvars : id list; cat : id; body : term list; }
 type judgment = { pred : string; args : term list }
 
 type premise = 

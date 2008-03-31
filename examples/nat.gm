@@ -2,7 +2,7 @@
 
 [BNF]
 
-n in Nat ::= Z
+n,m in Nat ::= Z
           |  S(n)
 
 e in Exp ::= n
@@ -10,16 +10,16 @@ e in Exp ::= n
           |  M(e,e)
 
 (*
-  Nat, Exp, n:Nat, Z:Nat[], S:Nat[Nat], Nat <: Exp,
+  Nat, Exp, n:Nat, m:Nat, Z:Nat[], S:Nat[Nat], Nat <: Exp,
 *)
 
 [Judgments]
 
-(* セミコロン(？)を入力と出力の区切りに使いたい *)
+(* セミコロンは入力と出力の区切り．宣言にだけ必要 *)
 
-EvalTo(e; n);         (* EvalTo(e; n); *)
-PlusIs(n1, n2; n3);   (* PlusIs(n1, n2; n3); *)
-MultIs(n1, n2; n3);   (* MultIs(n1, n2; n3); *)
+EvalTo(e; n);      
+PlusIs(n1, n2; n3);
+MultIs(n1, n2; n3);
 
 [Rules]
 

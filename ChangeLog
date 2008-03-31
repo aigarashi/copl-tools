@@ -1,3 +1,10 @@
+2008-03-31  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* gmc/parser.mly: allowing multiple metavars for one syntactic
+	category.
+	* gmc/syntax.ml, gmc/syntax.mli: accordingly changed.
+	* examples/nat.gm: test of this feature.
+	
 2008-03-30  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/ML1.gm: bug fix.

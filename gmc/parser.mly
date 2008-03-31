@@ -7,6 +7,8 @@ let errBtw i j s =
 
 let errAt i s =
   MySupport.Error.errAt (Parsing.rhs_start_pos i) s
+
+let appVar vars = List.map (fun x -> Var x) vars
 %}
 
 %token EOF
@@ -32,10 +34,10 @@ toplevel :
 
 BnfDefs :
 /* empty */ { [] }
-  | LCID IN UCID COLCOLEQ BarForms BnfDefs 
-     { { mvar = $1; cat = $3; body = $5} :: $6 }
-  | LCID IN LCID BnfDefs  /* ML primitive type */
-     { { mvar = $1; cat = $3; body = []} :: $4 }
+  | ComLCIDs IN UCID COLCOLEQ BarForms BnfDefs 
+     { { mvars = $1; cat = $3; body = $5} :: $6 }
+  | ComLCIDs IN LCID BnfDefs  /* ML primitive type */
+     { { mvars = $1; cat = $3; body = []} :: $4 }
 
 BarForms :
     Form { [ $1 ] }
@@ -44,12 +46,12 @@ BarForms :
 Form : 
     LCID { Var $1 }
   | UCID { App($1, []) }
-  | UCID LPAREN ComLCIDs RPAREN { App($1, $3) }
+  | UCID LPAREN ComLCIDs RPAREN { App($1, appVar $3) }
   | UCID LPAREN ComLCIDs error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
 
 ComLCIDs :
-    LCID { [ Var $1 ] }
-  | LCID COMMA ComLCIDs { Var $1 :: $3 }
+    LCID { [ $1 ] }
+  | LCID COMMA ComLCIDs { $1 :: $3 }
 /*  | LCID error { errAt 2 "Syntax error: comma expected" } */
   | error { errAt 1 "Syntax error: metavariable expected" }
 
@@ -58,10 +60,10 @@ JdgDecls :
 
 JForm :
     UCID LPAREN ComLCIDs RPAREN {
-      ({ pred = $1; args = $3 }, List.length $3)
+      ({ pred = $1; args = appVar $3 }, List.length $3)
     }
   | UCID LPAREN ComLCIDs SEMI ComLCIDs RPAREN {
-      ({ pred = $1; args = $3 @ $5}, List.length $3)
+      ({ pred = $1; args = appVar ($3 @ $5)}, List.length $3)
     }
 
 JFormSEMIs :
