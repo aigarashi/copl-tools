@@ -1,3 +1,12 @@
+2008-04-01  Atsushi Igarashi  <igarashi@cornet>
+
+	* gmc/parser.mly: better error handling.  (error handling code
+	should be added.)
+	* gmc/lexer.mll: line counting inside comments.
+	* gmc/main.ml: now knows the input file name.
+
+	
+
 2008-03-31  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/ML1/pp.ml, examples/nat/pp.ml, examples/common/link.ml:

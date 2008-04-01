@@ -62,4 +62,5 @@ rule main = parse
 and comment n = parse
   "(*" { comment (n+1) lexbuf }
 | "*)" { if n = 1 then main lexbuf else comment (n-1) lexbuf }
-| _ { comment n lexbuf }
+| [^ '\n'] { comment n lexbuf }
+| '\n' { newline lexbuf; comment n lexbuf }

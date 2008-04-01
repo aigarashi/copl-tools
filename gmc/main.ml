@@ -1,3 +1,5 @@
+open Lexing
+
 open Syntax
 open Format
 
@@ -9,7 +11,10 @@ let filename = ref ""
 let spec = [("-TeX", Arg.Unit (fun () -> mode := TeX), "display rules in TeX")]
 
 let parse_file s =
-  Parser.toplevel Lexer.main (Lexing.from_channel (open_in s))
+  let lexbuf = Lexing.from_channel (open_in s) in
+  let pos = lexbuf.lex_curr_p in
+	      lexbuf.lex_curr_p <- { pos with pos_fname = !filename };
+  Parser.toplevel Lexer.main lexbuf
 
 let emit_game g = 
   let env = Env.of_game g in

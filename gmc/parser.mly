@@ -72,6 +72,7 @@ JFormSEMIs :
 
 RuleDecls :
     Rule SEMI RuleSEMIs { $1 :: $3 }
+  | Rule error { errAt 2 "Syntax error: semicolon expected" }
 
 Rule :
     Name COLON Judgment COLHYP PremiseList { 
