@@ -1,0 +1,51 @@
+(*
+  ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
+  ML2: ML1 + let (´Ä¶­)
+*)
+
+[BNF]
+
+i in int
+
+b in Boolean ::= True | False
+
+x in string
+
+v in Value ::= i | b | Proc(env, x, e)
+
+env in Env ::= Empty
+            |  Bind(x,v,env)
+
+e in Exp ::= i
+          | b
+          | BinOp(p, e, e)
+          | If(e, e, e)
+
+p in Prim ::= Plus | Minus | Mult | Lt
+
+[Judgments]
+
+EvalTo(e, v);
+AppBOp(p, v, v, v);
+
+[Rules]
+
+E-Int: 	EvalTo(i, i) :- ;
+E-Bool: EvalTo(b, b) :- ;
+E-IfT: 	EvalTo(If(e1, e2, e3), v) :- 
+		EvalTo(e1, True), EvalTo(e2, v);
+E-IfF: 	EvalTo(If(e1, e2, e3), v) :- 
+		EvalTo(e1, False), EvalTo(e3, v);
+E-Plus: EvalTo(BinOp(Plus, e1, e2), i) :- 
+		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Plus, i1, i2, i3);
+E-Minus: EvalTo(BinOp(Minus, e1, e2), i) :- 
+		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Minus, i1, i2, i3);
+E-Mult: EvalTo(BinOp(Mult, e1, e2), i) :- 
+		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Mult, i1, i2, i3);
+E-Lt: 	EvalTo(BinOp(Lt, e1, e2), b) :-
+		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Lt, i1, i2, b3);
+
+B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
+B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
+B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
+B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = (if $i1 < $i2 then True else False)`;
