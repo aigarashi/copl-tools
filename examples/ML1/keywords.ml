@@ -3,6 +3,8 @@ open Parser
 let v = [
   (* common keywords *)
   ("by", BY);
+  (";", SEMI);
+  ("?", QM);
 
   (* game-specific keywords *)
   ("evalto", EVALTO);

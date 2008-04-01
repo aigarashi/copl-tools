@@ -14,11 +14,11 @@ module Make(X :
       val rparen : token
       val lbrace : token
       val rbrace : token
-      val semi : token
-      val intl : int -> token
       val eof : token
+
+      val intl : int -> token
       val id : string -> token
-      val qm : token
+      val lcid : string -> token
     end
 
     module K : sig val v : (string * P.token) list end
@@ -55,10 +55,16 @@ rule main = parse
 | ")" { rparen }
 | "{" { lbrace }
 | "}" { rbrace }
-| ";" { semi }
-| "?" { qm }
 | "(*" { comment 1 lexbuf }
 
+(* lowercase names *)
+| ['a'-'z']+ ['0'-'9']*
+    { let name = Lexing.lexeme lexbuf in
+      try 
+        Hashtbl.find tbl name
+      with
+      _ -> lcid name
+     }
 (* alphabetical names *)
 | ['A'-'Z' 'a'-'z']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
     { let name = Lexing.lexeme lexbuf in
@@ -75,7 +81,7 @@ rule main = parse
     }
 
 | ['!' '"' '#' '$' '%' '&' '\'' '*' '+' ',' '-' '.' '/' ':' '<' '=' '>' '+' 
-   '@' '^' '_' '`' '~' '|' ]+ {
+   '@' '^' '_' '`' '~' '|' '?' ';']+ {
     let sym = Lexing.lexeme lexbuf in
       try Hashtbl.find tbl sym with _ -> id sym
     }

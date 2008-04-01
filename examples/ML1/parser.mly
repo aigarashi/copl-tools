@@ -16,6 +16,7 @@ let errAt i s =
 %token LBRACE RBRACE LPAREN RPAREN
 %token SEMI
 %token <Derivation.rulename> ID
+%token <string> LCID  /* not used in this game */
 %token <int> INTL
 
 %token PLUS EVALTO MINUS MULT IS LESS THAN NOT
@@ -58,7 +59,8 @@ Judgment:
   | INTL IS LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_Boolean True) }
   | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_Boolean False) }
 
-  | Exp EVALTO error { errAt 3 "Syntax error: natural number expected" }
+  | Exp error { errAt 2 "Syntax error: \'evalto\' expected" }
+  | Exp EVALTO error { errAt 3 "Syntax error: value expected" }
   | INTL PLUS error { errAt 3 "Syntax error: natural number expected" }
   | INTL PLUS INTL error { errAt 4 "Syntax error: \'is\' expected" }
   | INTL PLUS INTL IS error { errAt 5 "Syntax error: natural number expected" }
@@ -77,6 +79,7 @@ partialj :
 /*  | INTL IS LESS THAN INTL { In_AppBOp(Lt, Value_of_int $1, Value_of_int $5) }
   | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6) }
 */
+  | Exp error { errAt 2 "Syntax error: \'evalto\' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: '?' expected" }
   | INTL PLUS error { errAt 3 "Syntax error: natural number expected" }
   | INTL PLUS INTL error { errAt 4 "Syntax error: \'is\' expected" }

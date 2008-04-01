@@ -1,8 +1,10 @@
 open Parser
 
 let v = [
-  (* common keywords *)
+  (* common keywords and symbols *)
   ("by", BY);
+  (";", SEMI);
+  ("?", QM);
 
   (* game-specific keywords *)
   ("S", S);

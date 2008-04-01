@@ -5,7 +5,17 @@
 	* gmc/lexer.mll: line counting inside comments.
 	* gmc/main.ml: now knows the input file name.
 
+	* examples/common/lexer.mll: "?" and ";" are now scanned as
+	symbolic keywords.  So, for example, "??" can be a single token in
+	some game.  Now, only special characters are parens and braces.
+
+	Names consisting only of lowercase characters are now categorized
+	as a token LCID.  The parser of each game should allow both LCIDs
+	and alphabetical names (ID) as a rule name.
+
+	* examples/common/link.ml: function lcid() added.
 	
+	* examples/*/keywords.ml: "?" and ";" are listed as keywords.
 
 2008-03-31  Atsushi Igarashi  <igarashi@cornet>
 

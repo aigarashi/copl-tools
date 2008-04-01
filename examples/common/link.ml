@@ -10,6 +10,7 @@ module Lexer = Lexer.Make(
 	(* exporting common tokens *)
 	open Parser
 	let id x = ID x
+	let lcid x = LCID x
 	and eof = EOF
 	and intl i = INTL i
 	and semi = SEMI
