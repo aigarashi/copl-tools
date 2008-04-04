@@ -1,8 +1,10 @@
 open Lexing
+open MySupport.Error
+open MySupport.Pervasives
 
 let commandname = "checker"
 
-let filename = ref ""  (* the name of the input file *)
+let filenames = ref []  (* the name of the input file *)
 let gname = ref ""     (* the name of a game *)
 let jdg = ref ""       (* the judgment to prove *)
 
@@ -23,11 +25,10 @@ let games = [
   ]
 
 let () = 
-  Arg.parse spec (fun s -> filename := s) 
-    (Printf.sprintf "Usage: %s -game gamename [-full] [-TeX] filename\n%s -game gamename -prove judgment" 
-	commandname commandname);
+  Arg.parse spec (fun s -> filenames := s :: !filenames) 
+    (Printf.sprintf "Usage: %s -game gamename [-full] [-TeX] [filename ...]\n%s -game gamename -prove judgment" commandname commandname);
 
-  if !gname = "" then failwith "Game name must be given"
+  if !gname = "" then err "Game name must be given.\n"
   else
     begin
       let check_deriv, make_deriv = 
@@ -35,14 +36,25 @@ let () =
 	    Not_found -> failwith ("No such game: " ^ !gname) in
 	if !jdg = "" then (* checker mode *)
 	  begin
-	    let lexbuf = Lexing.from_channel (open_in !filename) in
-	    
-	    let pos = lexbuf.lex_curr_p in
-	      lexbuf.lex_curr_p <- { pos with pos_fname = !filename };
-	      
-	      while true do
-		check_deriv lexbuf !fullp !texp;
-	      done
+	    let make_lexbuf s = 
+	      let lexbuf = Lexing.from_channel (open_in s) in
+	      let pos = lexbuf.lex_curr_p in
+		lexbuf.lex_curr_p <- { pos with pos_fname = s};
+		lexbuf 
+	    in
+	    let rec loop lexbufs = match lexbufs with
+		[] -> ()
+	      | lexbuf::rest ->
+		  while true do
+		    check_deriv lexbuf !fullp !texp;
+		  done;
+		  loop rest
+	    in 
+	    let lexbufs = 
+	      match !filenames with
+		  [] -> [Lexing.from_channel stdin]
+		| _ -> List.rev_map make_lexbuf !filenames in
+	      loop lexbufs
 	  end
 	    
 	else (* -prove mode*)

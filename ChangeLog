@@ -6,6 +6,12 @@
 	variables) will be to the expression verbatim.  See doc/main.tex,
 	too.
 
+	* examples/ML2.gm: representation of env is modified.
+	* examples/ML2/{parser.mly,pp.ml}: according changes.
+	
+	* examples/common/main.ml: if file name is omitted, it reads from
+	stdin. 
+	
 2008-04-03  Atsushi Igarashi  <igarashi@cornet>
 
 	* gmc/emit.ml: All calls of Format.printf has been replaced with

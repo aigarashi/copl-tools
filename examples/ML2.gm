@@ -14,7 +14,7 @@ x,y in string
 v in Value ::= i | b
 
 env in Env ::= Empty
-            |  Bind(x,v,env)
+            |  Bind(env,x,v)
 
 e in Exp ::= i
           | b
@@ -46,11 +46,11 @@ E-Mult: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
-E-Var1:  EvalTo(Bind(x,v,env), x, v) :- ;
-E-Var2:  EvalTo(Bind(y,v1,env), x, v2) :- `$y <> $x`, EvalTo(env, x, v2);
+E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
+E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x`, EvalTo(env, x, v2);
 
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
-		EvalTo(env, e1, v1), EvalTo(Bind(x,v1,env), e2, v);
+		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;

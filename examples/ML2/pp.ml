@@ -59,10 +59,10 @@ let rec print_exp ppf e = match e with
 
 let rec print_env ppf = function
     Empty -> ()
-  | Bind(x,v,env') -> pr ppf "%a%s = %a" print_env' env' x print_val v 
+  | Bind(env',x,v) -> pr ppf "%a%s = %a" print_env' env' x print_val v 
 and print_env' ppf = function
   | Empty -> ()
-  | Bind(x,v,env') -> pr ppf "%a%s = %a,@ " print_env' env' x print_val v 
+  | Bind(env',x,v) -> pr ppf "%a%s = %a,@ " print_env' env' x print_val v 
 
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 

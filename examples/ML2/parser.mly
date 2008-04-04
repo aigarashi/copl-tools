@@ -100,11 +100,11 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | LCID EQ Val Env2 { Bind($1, $3, $4) }
+  | Env2 LCID EQ Val { Bind($1, $2, $4) }
 
 Env2:
     /* empty */ { Empty } 
-  | COMMA LCID EQ Val Env2 { Bind($2, $4, $5) }
+  | Env2 LCID EQ Val COMMA { Bind($1, $2, $4) }
   
 Exp:
   | LongExp { $1 }
