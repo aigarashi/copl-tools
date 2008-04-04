@@ -19,6 +19,7 @@ let spec = [
 let games = [
     ("nat", (Nat.Link.check_deriv, Nat.Link.make_deriv));
     ("ML1", (Ml1.Link.check_deriv, Ml1.Link.make_deriv));
+    ("ML2", (Ml2.Link.check_deriv, Ml2.Link.make_deriv));
   ]
 
 let () = 

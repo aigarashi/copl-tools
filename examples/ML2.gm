@@ -9,41 +9,48 @@ i in int
 
 b in Boolean ::= True | False
 
-x in string
+x,y in string
 
-v in Value ::= i | b | Proc(env, x, e)
+v in Value ::= i | b
 
 env in Env ::= Empty
             |  Bind(x,v,env)
 
 e in Exp ::= i
           | b
+          | x
           | BinOp(p, e, e)
           | If(e, e, e)
+          | Let(x, e, e)
 
 p in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
-EvalTo(e, v);
-AppBOp(p, v, v, v);
+EvalTo(env, e; v);
+AppBOp(p, v, v; v);
 
 [Rules]
 
-E-Int: 	EvalTo(i, i) :- ;
-E-Bool: EvalTo(b, b) :- ;
-E-IfT: 	EvalTo(If(e1, e2, e3), v) :- 
-		EvalTo(e1, True), EvalTo(e2, v);
-E-IfF: 	EvalTo(If(e1, e2, e3), v) :- 
-		EvalTo(e1, False), EvalTo(e3, v);
-E-Plus: EvalTo(BinOp(Plus, e1, e2), i) :- 
-		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(BinOp(Minus, e1, e2), i) :- 
-		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Minus, i1, i2, i3);
-E-Mult: EvalTo(BinOp(Mult, e1, e2), i) :- 
-		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Mult, i1, i2, i3);
-E-Lt: 	EvalTo(BinOp(Lt, e1, e2), b) :-
-		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Lt, i1, i2, b3);
+E-Int: 	EvalTo(env, i, i) :- ;
+E-Bool: EvalTo(env, b, b) :- ;
+E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :- 
+		EvalTo(env, e1, True), EvalTo(env, e2, v);
+E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :- 
+		EvalTo(env, e1, False), EvalTo(env, e3, v);
+E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :- 
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Plus, i1, i2, i3);
+E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :- 
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Minus, i1, i2, i3);
+E-Mult: EvalTo(env, BinOp(Mult, e1, e2), i3) :- 
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
+E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
+E-Var1:  EvalTo(Bind(x,v,env), x, v) :- ;
+E-Var2:  EvalTo(Bind(y,v1,env), x, v2) :- `$y <> $x`, EvalTo(env, x, v2);
+
+E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
+		EvalTo(env, e1, v1), EvalTo(Bind(x,v1,env), e2, v);
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;

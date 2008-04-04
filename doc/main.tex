@@ -56,6 +56,30 @@
 \item ブラウザから使えるようにする
 \end{itemize}
 
+\section{未解決問題の数々}
+
+\subsection{ML1}
+
+\begin{itemize}
+\item 真偽値を ML の bool と定義しようとしても，規則で定数に言及できないので，
+困る．(引用の中でないと true, false に言及できない．)
+それに伴って値の大小判定の規則が少し不自然．
+\end{itemize}
+
+\subsection{ML2}
+
+\begin{itemize}
+\item 変数 lookup の付帯条件が，`output = 「input の演算」` の形式で書けない．
+  回避策1:(`true = ($x = $y)`のように書く)はダメ．
+  
+モードをもっと真面目に見て生成するコードを変える必要がありそう．
+
+根本的には，付帯条件が規則の適用条件にかかわっているから？
+(足し算などとは根本的に違う点)
+\item [$\Rightarrow$] 引用に output 変数が出るか(tbl を見ればわかる)によって，
+変数束縛を出力するか，単なる bool 式を出すかをコントロールすることにした．
+\end{itemize}
+
 \end{document}
 
 %%% Local Variables: 

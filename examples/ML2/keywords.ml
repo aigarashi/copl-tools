@@ -1,12 +1,14 @@
 open Parser
 
 let v = [
-  (* common keywords *)
+  (* common keywords and symbols *)
   ("by", BY);
+  (";", SEMI);
+  ("?", QM);
 
   (* game-specific keywords *)
   ("evalto", EVALTO);
-
+  
   ("minus", MINUS);
   ("mult", MULT);
   ("plus", PLUS);
@@ -15,15 +17,24 @@ let v = [
   ("than", THAN);
   ("not", NOT);
 
+  (* ML1 expressions *)
   ("true", TRUE);
   ("false", FALSE);
   ("if", IF);
   ("then", THEN);
   ("else", ELSE);
-
+  
   ("*", AST);
   ("+", CROSS);
   ("-", HYPHEN);
   ("<", LT);
+
+  (* ML2 judgments and expressions *)
+  ("|-", VDASH);
+  (",", COMMA);
+
+  ("let", LET);
+  ("in", IN);
+  ("=", EQ);
 ] 
 

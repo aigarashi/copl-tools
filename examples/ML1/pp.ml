@@ -52,22 +52,22 @@ let rec print_exp ppf e = match e with
 	print_exp e3 
 
 let print_judgment ppf = function
-    EvalTo (e, v) -> pr ppf "%a evalto %a" print_exp e print_val v
+    EvalTo (e, v) -> pr ppf "@[@[%a@]@ evalto %a@]" print_exp e print_val v
   | AppBOp (Lt, v1, v2, Value_of_Boolean True) ->
-      pr ppf "%a is less than %a" print_val v1 print_val v2
+      pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
   | AppBOp (Lt, v1, v2, Value_of_Boolean False) ->
-      pr ppf "%a is not less than %a" print_val v1 print_val v2
+      pr ppf "@[%a is not less than %a@]" print_val v1 print_val v2
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult"
-      in pr ppf "%a %s %a is %a" print_val v1 op print_val v2 print_val v3
+      in pr ppf "@[%a %s %a is %a@]" print_val v1 op print_val v2 print_val v3
 
 let print_pjudgment ppf = function
-    In_EvalTo e -> pr ppf "%a evalto ?" print_exp e
+    In_EvalTo e -> pr ppf "@[@[%a@]@ evalto ?@]" print_exp e
   | In_AppBOp (Lt, v1, v2) ->
-      pr ppf "%a is less than %a ?" print_val v1 print_val v2
+      pr ppf "@[%a is less than %a ?@]" print_val v1 print_val v2
   | In_AppBOp (p, v1, v2) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult"
-      in pr ppf "%a %s %a is ?" print_val v1 op print_val v2
+      in pr ppf "@[%a %s %a is ?@]" print_val v1 op print_val v2
 
 let tex_judgment ppf = function
     EvalTo (e, v) -> pr ppf "\\EvalTo{%a}{%a}" print_exp e print_val v

@@ -1,6 +1,6 @@
-PROGNAME = ML1
-MODULEPATH = Ml1
-PACKED=ml1
+PROGNAME = ML2
+MODULEPATH = Ml2
+PACKED=ml2
 
 -include ../common/Makefile.game
 

@@ -24,10 +24,10 @@ let emit_game g =
   print_string "open MySupport.Error"; print_newline ();
   print_string "open MySupport.Pervasives"; print_newline ();
   print_string "open Derivation"; print_newline ();
-  Emit.typedef env g.syndefs; print_newline ();
-  Emit.jdgdef env g.jdgdecls; print_newline ();
+  Emit.typedef env std_formatter g.syndefs; print_newline ();
+  Emit.jdgdef env std_formatter g.jdgdecls; print_newline ();
   print_newline();
-  Emit.rules env g.ruledefs;
+  Emit.rules env std_formatter g.ruledefs;
   print_newline ();  print_newline ();
   (* experimental prover generation *)
   Emit.Prover.emit_jdgdef env std_formatter g.jdgdecls;
