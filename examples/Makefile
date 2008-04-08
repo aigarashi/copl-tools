@@ -1,39 +1,31 @@
 PROGNAME=checker
 
-GMCDIR=../../gmc
+GMCDIR=../gmc
 
 OCAMLC=ocamlc
 OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES=-I ../nat -I ../ML1 -I ../ML2 -I $(GMCDIR)   # all relevant -I options here
+INCLUDES=-I nat -I ML1 -I ML2 -I $(GMCDIR)   # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 OBJS=$(GMCDIR)/mySupport.cmx derivation.cmx lexer.cmx \
-		../nat/nat.cmx \
-		../ML1/ml1.cmx \
-		../ML2/ml2.cmx \
+		nat/nat.cmx \
+		ML1/ml1.cmx \
+		ML2/ml2.cmx \
 		main.cmx
 
 
 DEPEND += lexer.ml
 
-all: nat ML1 ML2 $(OBJS) $(DEPEND) 
+all: nat.pack ML1.pack ML2.pack $(OBJS) $(DEPEND) 
 	ocamlopt -o $(PROGNAME) $(OBJS)
 
-nat: 
-	make -C ../nat depend
-	make -C ../nat
-
-ML1:
-	make -C ../ML1 depend
-	make -C ../ML1
-
-ML2:
-	make -C ../ML2 depend
-	make -C ../ML2
+%.pack: 
+	make -C `basename $@ .pack` depend
+	make -C `basename $@ .pack`
 
 %.cmx: %.ml
 	ocamlopt $(INCLUDES) -c $<
@@ -52,6 +44,6 @@ clean:
 depend:: $(DEPEND)
 	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml > .depend
 
-main.cmx: ../nat/nat.cmx ../ML1/ml1.cmx ../ML2/ml2.cmx
+main.cmx: nat/nat.cmx ML1/ml1.cmx ML2/ml2.cmx
 
 -include .depend

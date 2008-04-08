@@ -6,7 +6,7 @@ OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES=-I . -I ../common -I $(GMCDIR)    # all relevant -I options here
+INCLUDES=-I . -I .. -I $(GMCDIR)    # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
@@ -17,7 +17,7 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 OBJS=core.cmx pp.cmx parser.cmx keywords.cmx link.cmx
 
-DEPEND += parser.ml core.ml ../common/lexer.ml
+DEPEND += parser.ml core.ml ../lexer.ml
 
 all: $(DEPEND) $(OBJS)
 	# $(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) $(OBJS)	
@@ -40,12 +40,12 @@ parser.ml parser.mli: parser.mly
 	$(OCAMLYACC) -v $<
 	@chmod -w $@
 
-../common/lexer.ml: ../common/lexer.mll
+../lexer.ml: ../lexer.mll
 	@rm -f $@
 	$(OCAMLLEX) $<
 	@chmod -w $@
 
-core.ml: ../$(PROGNAME).gm
+core.ml: $(PROGNAME).gm
 	@rm -f $@
 	$(GMC) $< > $@ || rm -f $@
 	@chmod -w $@
@@ -53,10 +53,10 @@ core.ml: ../$(PROGNAME).gm
 # Clean up
 clean:
 	rm -f $(PROGNAME)
-	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output lexer.ml core.ml .depend
+	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output core.ml .depend
 
 # Dependencies
 depend:: $(DEPEND)
-	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml ../common/derivation.ml ../common/derivation.mli ../common/lexer.ml > .depend
+	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml ../derivation.ml ../derivation.mli ../lexer.ml > .depend
 
 -include .depend
