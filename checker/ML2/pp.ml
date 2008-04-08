@@ -11,6 +11,8 @@ let (<) e e_up = match e, e_up with
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _) 
   | If(_, _, _),                      BinOp((Plus | Minus), _, _)
   | If(_, _, _),                      BinOp(Lt, _, _)
+  | Let(_, _, _),                      BinOp((Plus | Minus), _, _)
+  | Let(_, _, _),                      BinOp(Lt, _, _)
       -> true
   | _ -> false
 

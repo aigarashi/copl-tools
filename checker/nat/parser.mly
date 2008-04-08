@@ -13,7 +13,7 @@ let errAt i s =
 %token EOF
 
 %token BY
-%token LBRACE RBRACE LPAREN RPAREN
+%token LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 %token SEMI
 %token <Derivation.rulename> ID
 %token <string> LCID  /* not used in this game */

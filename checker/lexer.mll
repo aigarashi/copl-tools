@@ -14,6 +14,8 @@ module Make(X :
       val rparen : token
       val lbrace : token
       val rbrace : token
+      val lbracket : token
+      val rbracket : token
       val eof : token
 
       val intl : int -> token
@@ -55,6 +57,8 @@ rule main = parse
 | ")" { rparen }
 | "{" { lbrace }
 | "}" { rbrace }
+| "[" { lbracket }
+| "]" { rbracket }
 | "(*" { comment 1 lexbuf }
 
 (* lowercase names *)

@@ -13,7 +13,7 @@ let errAt i s =
 %token EOF
 
 %token BY
-%token LBRACE RBRACE LPAREN RPAREN
+%token LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 %token SEMI
 %token <Derivation.rulename> ID
 %token <string> LCID
@@ -150,5 +150,6 @@ AExp:
 
 Val:
     INTL { Value_of_int $1 }
+  | HYPHEN INTL { Value_of_int (- $2) }
   | TRUE { Value_of_Boolean True }
   | FALSE { Value_of_Boolean False }

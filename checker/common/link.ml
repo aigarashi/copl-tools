@@ -18,6 +18,8 @@ module Lexer = Lexer.Make(
 	and lbrace = LBRACE
 	and rparen = RPAREN
 	and lparen = LPAREN
+	and rbracket = RBRACKET
+	and lbracket = LBRACKET
 	and qm = QM
       end 
 
