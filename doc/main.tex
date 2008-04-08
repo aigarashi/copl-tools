@@ -53,11 +53,11 @@
 \begin{itemize}
 \item BNF定義, 規則の plain text / TeX 出力
 \item interactive checker / emacs のバッファから使えるようにする (proofgeneral?)
-\item ブラウザから使えるようにする
+\item ブラウザから使えるようにする．(終わらない導出生成の制御)
 \item ゲーム定義ファイルに ML 関数を定義するセクションを設ける
 \end{itemize}
 
-\section{未解決問題の数々}
+\section{ぶちあたった問題の数々}
 
 \subsection{ML1}
 
@@ -70,8 +70,8 @@
 \subsection{ML2}
 
 \begin{itemize}
-\item 変数 lookup の付帯条件が，`output = 「input の演算」` の形式で書けない．
-  回避策1:(`true = ($x = $y)`のように書く)はダメ．
+\item (解決済) 変数 lookup の付帯条件が，`output = 「input の演算」` の
+  形式で書けない．回避策1:(`true = ($x = $y)`のように書く)はダメ．
   
 モードをもっと真面目に見て生成するコードを変える必要がありそう．
 
@@ -79,11 +79,13 @@
 (足し算などとは根本的に違う点)
 \item [$\Rightarrow$] 引用に output 変数が出るか(tbl を見ればわかる)によって，
 変数束縛を出力するか，単なる bool 式を出すかをコントロールすることにした．
+
+\item 早くもML1の parser のコードを再利用(継承？)したくなる．
+
 \end{itemize}
 
 \end{document}
 
 %%% Local Variables: 
 %%% mode: latex
-%%% TeX-master: t
 %%% End: 
