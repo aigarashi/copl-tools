@@ -9,10 +9,8 @@ let (<) e e_up = match e, e_up with
     BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _) 
   | If(_, _, _),                      BinOp(Mult, _, _)
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _) 
-  | If(_, _, _),                      BinOp((Plus | Minus), _, _)
-  | If(_, _, _),                      BinOp(Lt, _, _)
-  | Let(_, _, _),                      BinOp((Plus | Minus), _, _)
-  | Let(_, _, _),                      BinOp(Lt, _, _)
+  | If(_, _, _),                      BinOp(_, _, _)
+  | Let(_, _, _),                     BinOp(_, _, _)
       -> true
   | _ -> false
 
