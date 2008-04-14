@@ -1,0 +1,1684 @@
+   0  $accept : %entry% $end
+
+   1  toplevel : Derivation
+   2           | EOF
+
+   3  Derivation : Judgment BY RName LBRACE RBRACE
+   4             | Judgment BY RName LBRACE Derivs
+   5             | Judgment error
+   6             | Judgment BY RName error
+   7             | Judgment BY RName LBRACE error
+
+   8  RName : ID
+   9        | LCID
+
+  10  Derivs : Derivation RBRACE
+  11         | Derivation SEMI RBRACE
+  12         | Derivation SEMI Derivs
+  13         | Derivation error
+
+  14  Judgment : Env VDASH Exp EVALTO Val
+  15           | INTL PLUS INTL IS INTL
+  16           | INTL MULT INTL IS INTL
+  17           | INTL MINUS INTL IS INTL
+  18           | INTL IS LESS THAN INTL
+  19           | INTL IS NOT LESS THAN INTL
+  20           | Env VDASH Exp error
+  21           | Env VDASH Exp EVALTO error
+  22           | INTL PLUS error
+  23           | INTL PLUS INTL error
+  24           | INTL PLUS INTL IS error
+  25           | INTL MULT error
+  26           | INTL MULT INTL error
+  27           | INTL MULT INTL IS error
+  28           | INTL MINUS error
+  29           | INTL MINUS INTL error
+  30           | INTL MINUS INTL IS error
+
+  31  partialj : Env VDASH Exp EVALTO QM
+  32           | INTL PLUS INTL IS QM
+  33           | INTL MULT INTL IS QM
+  34           | INTL MINUS INTL IS QM
+  35           | Env VDASH Exp error
+  36           | Env VDASH Exp EVALTO error
+  37           | INTL PLUS error
+  38           | INTL PLUS INTL error
+  39           | INTL PLUS INTL IS error
+  40           | INTL MULT error
+  41           | INTL MULT INTL error
+  42           | INTL MULT INTL IS error
+  43           | INTL MINUS error
+  44           | INTL MINUS INTL error
+  45           | INTL MINUS INTL IS error
+
+  46  Env :
+  47      | Env2 LCID EQ Val
+
+  48  Env2 :
+  49       | Env2 LCID EQ Val COMMA
+
+  50  Exp : LongExp
+  51      | Exp1
+  52      | Exp1 BinOp1 LongExp
+  53      | Exp2 BinOp2 LongExp
+  54      | Exp3 BinOp3 LongExp
+
+  55  LongExp : IF Exp THEN Exp ELSE Exp
+  56          | LET LCID EQ Exp IN Exp
+  57          | FUN LCID RARROW Exp
+
+  58  Exp1 : Exp1 BinOp1 Exp2
+  59       | Exp2
+
+  60  Exp2 : Exp2 BinOp2 Exp3
+  61       | Exp3
+
+  62  Exp3 : Exp3 BinOp3 Exp4
+  63       | Exp4
+
+  64  Exp4 : Exp4 AExp
+  65       | MinExp
+
+  66  BinOp1 : LT
+
+  67  BinOp2 : CROSS
+  68         | HYPHEN
+
+  69  BinOp3 : AST
+
+  70  MinExp : HYPHEN INTL
+  71         | AExp
+
+  72  AExp : INTL
+  73       | TRUE
+  74       | FALSE
+  75       | LCID
+  76       | LPAREN Exp RPAREN
+  77       | LPAREN Exp error
+
+  78  Val : INTL
+  79      | HYPHEN INTL
+  80      | TRUE
+  81      | FALSE
+  82      | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET
+
+  83  %entry% : '\001' toplevel
+  84          | '\002' partialj
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	'\002'  shift 2
+	.  error
+
+	%entry%  goto 3
+
+
+state 1
+	%entry% : '\001' . toplevel  (83)
+	Env : .  (46)
+	Env2 : .  (48)
+
+	EOF  shift 4
+	INTL  shift 5
+	LCID  reduce 48
+	VDASH  reduce 46
+
+	toplevel  goto 6
+	Derivation  goto 7
+	Judgment  goto 8
+	Env  goto 9
+	Env2  goto 10
+
+
+state 2
+	%entry% : '\002' . partialj  (84)
+	Env : .  (46)
+	Env2 : .  (48)
+
+	INTL  shift 11
+	LCID  reduce 48
+	VDASH  reduce 46
+
+	partialj  goto 12
+	Env  goto 13
+	Env2  goto 10
+
+
+state 3
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 4
+	toplevel : EOF .  (2)
+
+	.  reduce 2
+
+
+state 5
+	Judgment : INTL . PLUS INTL IS INTL  (15)
+	Judgment : INTL . MULT INTL IS INTL  (16)
+	Judgment : INTL . MINUS INTL IS INTL  (17)
+	Judgment : INTL . IS LESS THAN INTL  (18)
+	Judgment : INTL . IS NOT LESS THAN INTL  (19)
+	Judgment : INTL . PLUS error  (22)
+	Judgment : INTL . PLUS INTL error  (23)
+	Judgment : INTL . PLUS INTL IS error  (24)
+	Judgment : INTL . MULT error  (25)
+	Judgment : INTL . MULT INTL error  (26)
+	Judgment : INTL . MULT INTL IS error  (27)
+	Judgment : INTL . MINUS error  (28)
+	Judgment : INTL . MINUS INTL error  (29)
+	Judgment : INTL . MINUS INTL IS error  (30)
+
+	PLUS  shift 14
+	MINUS  shift 15
+	MULT  shift 16
+	IS  shift 17
+	.  error
+
+
+state 6
+	%entry% : '\001' toplevel .  (83)
+
+	.  reduce 83
+
+
+state 7
+	toplevel : Derivation .  (1)
+
+	.  reduce 1
+
+
+state 8
+	Derivation : Judgment . BY RName LBRACE RBRACE  (3)
+	Derivation : Judgment . BY RName LBRACE Derivs  (4)
+	Derivation : Judgment . error  (5)
+	Derivation : Judgment . BY RName error  (6)
+	Derivation : Judgment . BY RName LBRACE error  (7)
+
+	error  shift 18
+	BY  shift 19
+	.  error
+
+
+state 9
+	Judgment : Env . VDASH Exp EVALTO Val  (14)
+	Judgment : Env . VDASH Exp error  (20)
+	Judgment : Env . VDASH Exp EVALTO error  (21)
+
+	VDASH  shift 20
+	.  error
+
+
+state 10
+	Env : Env2 . LCID EQ Val  (47)
+	Env2 : Env2 . LCID EQ Val COMMA  (49)
+
+	LCID  shift 21
+	.  error
+
+
+state 11
+	partialj : INTL . PLUS INTL IS QM  (32)
+	partialj : INTL . MULT INTL IS QM  (33)
+	partialj : INTL . MINUS INTL IS QM  (34)
+	partialj : INTL . PLUS error  (37)
+	partialj : INTL . PLUS INTL error  (38)
+	partialj : INTL . PLUS INTL IS error  (39)
+	partialj : INTL . MULT error  (40)
+	partialj : INTL . MULT INTL error  (41)
+	partialj : INTL . MULT INTL IS error  (42)
+	partialj : INTL . MINUS error  (43)
+	partialj : INTL . MINUS INTL error  (44)
+	partialj : INTL . MINUS INTL IS error  (45)
+
+	PLUS  shift 22
+	MINUS  shift 23
+	MULT  shift 24
+	.  error
+
+
+state 12
+	%entry% : '\002' partialj .  (84)
+
+	.  reduce 84
+
+
+state 13
+	partialj : Env . VDASH Exp EVALTO QM  (31)
+	partialj : Env . VDASH Exp error  (35)
+	partialj : Env . VDASH Exp EVALTO error  (36)
+
+	VDASH  shift 25
+	.  error
+
+
+state 14
+	Judgment : INTL PLUS . INTL IS INTL  (15)
+	Judgment : INTL PLUS . error  (22)
+	Judgment : INTL PLUS . INTL error  (23)
+	Judgment : INTL PLUS . INTL IS error  (24)
+
+	error  shift 26
+	INTL  shift 27
+	.  error
+
+
+state 15
+	Judgment : INTL MINUS . INTL IS INTL  (17)
+	Judgment : INTL MINUS . error  (28)
+	Judgment : INTL MINUS . INTL error  (29)
+	Judgment : INTL MINUS . INTL IS error  (30)
+
+	error  shift 28
+	INTL  shift 29
+	.  error
+
+
+state 16
+	Judgment : INTL MULT . INTL IS INTL  (16)
+	Judgment : INTL MULT . error  (25)
+	Judgment : INTL MULT . INTL error  (26)
+	Judgment : INTL MULT . INTL IS error  (27)
+
+	error  shift 30
+	INTL  shift 31
+	.  error
+
+
+state 17
+	Judgment : INTL IS . LESS THAN INTL  (18)
+	Judgment : INTL IS . NOT LESS THAN INTL  (19)
+
+	LESS  shift 32
+	NOT  shift 33
+	.  error
+
+
+state 18
+	Derivation : Judgment error .  (5)
+
+	.  reduce 5
+
+
+state 19
+	Derivation : Judgment BY . RName LBRACE RBRACE  (3)
+	Derivation : Judgment BY . RName LBRACE Derivs  (4)
+	Derivation : Judgment BY . RName error  (6)
+	Derivation : Judgment BY . RName LBRACE error  (7)
+
+	ID  shift 34
+	LCID  shift 35
+	.  error
+
+	RName  goto 36
+
+
+state 20
+	Judgment : Env VDASH . Exp EVALTO Val  (14)
+	Judgment : Env VDASH . Exp error  (20)
+	Judgment : Env VDASH . Exp EVALTO error  (21)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 46
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 21
+	Env : Env2 LCID . EQ Val  (47)
+	Env2 : Env2 LCID . EQ Val COMMA  (49)
+
+	EQ  shift 54
+	.  error
+
+
+state 22
+	partialj : INTL PLUS . INTL IS QM  (32)
+	partialj : INTL PLUS . error  (37)
+	partialj : INTL PLUS . INTL error  (38)
+	partialj : INTL PLUS . INTL IS error  (39)
+
+	error  shift 55
+	INTL  shift 56
+	.  error
+
+
+state 23
+	partialj : INTL MINUS . INTL IS QM  (34)
+	partialj : INTL MINUS . error  (43)
+	partialj : INTL MINUS . INTL error  (44)
+	partialj : INTL MINUS . INTL IS error  (45)
+
+	error  shift 57
+	INTL  shift 58
+	.  error
+
+
+state 24
+	partialj : INTL MULT . INTL IS QM  (33)
+	partialj : INTL MULT . error  (40)
+	partialj : INTL MULT . INTL error  (41)
+	partialj : INTL MULT . INTL IS error  (42)
+
+	error  shift 59
+	INTL  shift 60
+	.  error
+
+
+state 25
+	partialj : Env VDASH . Exp EVALTO QM  (31)
+	partialj : Env VDASH . Exp error  (35)
+	partialj : Env VDASH . Exp EVALTO error  (36)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 61
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 26
+	Judgment : INTL PLUS error .  (22)
+
+	.  reduce 22
+
+
+state 27
+	Judgment : INTL PLUS INTL . IS INTL  (15)
+	Judgment : INTL PLUS INTL . error  (23)
+	Judgment : INTL PLUS INTL . IS error  (24)
+
+	error  shift 62
+	IS  shift 63
+	.  error
+
+
+state 28
+	Judgment : INTL MINUS error .  (28)
+
+	.  reduce 28
+
+
+state 29
+	Judgment : INTL MINUS INTL . IS INTL  (17)
+	Judgment : INTL MINUS INTL . error  (29)
+	Judgment : INTL MINUS INTL . IS error  (30)
+
+	error  shift 64
+	IS  shift 65
+	.  error
+
+
+state 30
+	Judgment : INTL MULT error .  (25)
+
+	.  reduce 25
+
+
+state 31
+	Judgment : INTL MULT INTL . IS INTL  (16)
+	Judgment : INTL MULT INTL . error  (26)
+	Judgment : INTL MULT INTL . IS error  (27)
+
+	error  shift 66
+	IS  shift 67
+	.  error
+
+
+state 32
+	Judgment : INTL IS LESS . THAN INTL  (18)
+
+	THAN  shift 68
+	.  error
+
+
+state 33
+	Judgment : INTL IS NOT . LESS THAN INTL  (19)
+
+	LESS  shift 69
+	.  error
+
+
+state 34
+	RName : ID .  (8)
+
+	.  reduce 8
+
+
+state 35
+	RName : LCID .  (9)
+
+	.  reduce 9
+
+
+state 36
+	Derivation : Judgment BY RName . LBRACE RBRACE  (3)
+	Derivation : Judgment BY RName . LBRACE Derivs  (4)
+	Derivation : Judgment BY RName . error  (6)
+	Derivation : Judgment BY RName . LBRACE error  (7)
+
+	error  shift 70
+	LBRACE  shift 71
+	.  error
+
+
+state 37
+	AExp : LPAREN . Exp RPAREN  (76)
+	AExp : LPAREN . Exp error  (77)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 72
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 38
+	AExp : LCID .  (75)
+
+	.  reduce 75
+
+
+state 39
+	AExp : INTL .  (72)
+
+	.  reduce 72
+
+
+state 40
+	MinExp : HYPHEN . INTL  (70)
+
+	INTL  shift 73
+	.  error
+
+
+state 41
+	LongExp : IF . Exp THEN Exp ELSE Exp  (55)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 74
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 42
+	AExp : TRUE .  (73)
+
+	.  reduce 73
+
+
+state 43
+	AExp : FALSE .  (74)
+
+	.  reduce 74
+
+
+state 44
+	LongExp : LET . LCID EQ Exp IN Exp  (56)
+
+	LCID  shift 75
+	.  error
+
+
+state 45
+	LongExp : FUN . LCID RARROW Exp  (57)
+
+	LCID  shift 76
+	.  error
+
+
+state 46
+	Judgment : Env VDASH Exp . EVALTO Val  (14)
+	Judgment : Env VDASH Exp . error  (20)
+	Judgment : Env VDASH Exp . EVALTO error  (21)
+
+	error  shift 77
+	EVALTO  shift 78
+	.  error
+
+
+state 47
+	Exp : LongExp .  (50)
+
+	.  reduce 50
+
+
+state 48
+	Exp : Exp1 .  (51)
+	Exp : Exp1 . BinOp1 LongExp  (52)
+	Exp1 : Exp1 . BinOp1 Exp2  (58)
+
+	LT  shift 79
+	error  reduce 51
+	RPAREN  reduce 51
+	RBRACKET  reduce 51
+	EVALTO  reduce 51
+	THEN  reduce 51
+	ELSE  reduce 51
+	IN  reduce 51
+
+	BinOp1  goto 80
+
+
+state 49
+	Exp : Exp2 . BinOp2 LongExp  (53)
+	Exp1 : Exp2 .  (59)
+	Exp2 : Exp2 . BinOp2 Exp3  (60)
+
+	CROSS  shift 81
+	HYPHEN  shift 82
+	error  reduce 59
+	RPAREN  reduce 59
+	RBRACKET  reduce 59
+	EVALTO  reduce 59
+	LT  reduce 59
+	THEN  reduce 59
+	ELSE  reduce 59
+	IN  reduce 59
+
+	BinOp2  goto 83
+
+
+state 50
+	Exp : Exp3 . BinOp3 LongExp  (54)
+	Exp2 : Exp3 .  (61)
+	Exp3 : Exp3 . BinOp3 Exp4  (62)
+
+	AST  shift 84
+	error  reduce 61
+	RPAREN  reduce 61
+	RBRACKET  reduce 61
+	EVALTO  reduce 61
+	CROSS  reduce 61
+	HYPHEN  reduce 61
+	LT  reduce 61
+	THEN  reduce 61
+	ELSE  reduce 61
+	IN  reduce 61
+
+	BinOp3  goto 85
+
+
+state 51
+	Exp3 : Exp4 .  (63)
+	Exp4 : Exp4 . AExp  (64)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	TRUE  shift 42
+	FALSE  shift 43
+	error  reduce 63
+	RPAREN  reduce 63
+	RBRACKET  reduce 63
+	EVALTO  reduce 63
+	AST  reduce 63
+	CROSS  reduce 63
+	HYPHEN  reduce 63
+	LT  reduce 63
+	THEN  reduce 63
+	ELSE  reduce 63
+	IN  reduce 63
+
+	AExp  goto 86
+
+
+state 52
+	MinExp : AExp .  (71)
+
+	.  reduce 71
+
+
+state 53
+	Exp4 : MinExp .  (65)
+
+	.  reduce 65
+
+
+state 54
+	Env : Env2 LCID EQ . Val  (47)
+	Env2 : Env2 LCID EQ . Val COMMA  (49)
+
+	LPAREN  shift 87
+	INTL  shift 88
+	HYPHEN  shift 89
+	TRUE  shift 90
+	FALSE  shift 91
+	.  error
+
+	Val  goto 92
+
+
+state 55
+	partialj : INTL PLUS error .  (37)
+
+	.  reduce 37
+
+
+state 56
+	partialj : INTL PLUS INTL . IS QM  (32)
+	partialj : INTL PLUS INTL . error  (38)
+	partialj : INTL PLUS INTL . IS error  (39)
+
+	error  shift 93
+	IS  shift 94
+	.  error
+
+
+state 57
+	partialj : INTL MINUS error .  (43)
+
+	.  reduce 43
+
+
+state 58
+	partialj : INTL MINUS INTL . IS QM  (34)
+	partialj : INTL MINUS INTL . error  (44)
+	partialj : INTL MINUS INTL . IS error  (45)
+
+	error  shift 95
+	IS  shift 96
+	.  error
+
+
+state 59
+	partialj : INTL MULT error .  (40)
+
+	.  reduce 40
+
+
+state 60
+	partialj : INTL MULT INTL . IS QM  (33)
+	partialj : INTL MULT INTL . error  (41)
+	partialj : INTL MULT INTL . IS error  (42)
+
+	error  shift 97
+	IS  shift 98
+	.  error
+
+
+state 61
+	partialj : Env VDASH Exp . EVALTO QM  (31)
+	partialj : Env VDASH Exp . error  (35)
+	partialj : Env VDASH Exp . EVALTO error  (36)
+
+	error  shift 99
+	EVALTO  shift 100
+	.  error
+
+
+state 62
+	Judgment : INTL PLUS INTL error .  (23)
+
+	.  reduce 23
+
+
+state 63
+	Judgment : INTL PLUS INTL IS . INTL  (15)
+	Judgment : INTL PLUS INTL IS . error  (24)
+
+	error  shift 101
+	INTL  shift 102
+	.  error
+
+
+state 64
+	Judgment : INTL MINUS INTL error .  (29)
+
+	.  reduce 29
+
+
+state 65
+	Judgment : INTL MINUS INTL IS . INTL  (17)
+	Judgment : INTL MINUS INTL IS . error  (30)
+
+	error  shift 103
+	INTL  shift 104
+	.  error
+
+
+state 66
+	Judgment : INTL MULT INTL error .  (26)
+
+	.  reduce 26
+
+
+state 67
+	Judgment : INTL MULT INTL IS . INTL  (16)
+	Judgment : INTL MULT INTL IS . error  (27)
+
+	error  shift 105
+	INTL  shift 106
+	.  error
+
+
+state 68
+	Judgment : INTL IS LESS THAN . INTL  (18)
+
+	INTL  shift 107
+	.  error
+
+
+state 69
+	Judgment : INTL IS NOT LESS . THAN INTL  (19)
+
+	THAN  shift 108
+	.  error
+
+
+state 70
+	Derivation : Judgment BY RName error .  (6)
+
+	.  reduce 6
+
+
+state 71
+	Derivation : Judgment BY RName LBRACE . RBRACE  (3)
+	Derivation : Judgment BY RName LBRACE . Derivs  (4)
+	Derivation : Judgment BY RName LBRACE . error  (7)
+	Env : .  (46)
+	Env2 : .  (48)
+
+	error  shift 109
+	RBRACE  shift 110
+	INTL  shift 5
+	LCID  reduce 48
+	VDASH  reduce 46
+
+	Derivation  goto 111
+	Judgment  goto 8
+	Derivs  goto 112
+	Env  goto 9
+	Env2  goto 10
+
+
+state 72
+	AExp : LPAREN Exp . RPAREN  (76)
+	AExp : LPAREN Exp . error  (77)
+
+	error  shift 113
+	RPAREN  shift 114
+	.  error
+
+
+state 73
+	MinExp : HYPHEN INTL .  (70)
+
+	.  reduce 70
+
+
+state 74
+	LongExp : IF Exp . THEN Exp ELSE Exp  (55)
+
+	THEN  shift 115
+	.  error
+
+
+state 75
+	LongExp : LET LCID . EQ Exp IN Exp  (56)
+
+	EQ  shift 116
+	.  error
+
+
+state 76
+	LongExp : FUN LCID . RARROW Exp  (57)
+
+	RARROW  shift 117
+	.  error
+
+
+state 77
+	Judgment : Env VDASH Exp error .  (20)
+
+	.  reduce 20
+
+
+state 78
+	Judgment : Env VDASH Exp EVALTO . Val  (14)
+	Judgment : Env VDASH Exp EVALTO . error  (21)
+
+	error  shift 118
+	LPAREN  shift 87
+	INTL  shift 88
+	HYPHEN  shift 89
+	TRUE  shift 90
+	FALSE  shift 91
+	.  error
+
+	Val  goto 119
+
+
+state 79
+	BinOp1 : LT .  (66)
+
+	.  reduce 66
+
+
+state 80
+	Exp : Exp1 BinOp1 . LongExp  (52)
+	Exp1 : Exp1 BinOp1 . Exp2  (58)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	LongExp  goto 120
+	Exp2  goto 121
+	Exp3  goto 122
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 81
+	BinOp2 : CROSS .  (67)
+
+	.  reduce 67
+
+
+state 82
+	BinOp2 : HYPHEN .  (68)
+
+	.  reduce 68
+
+
+state 83
+	Exp : Exp2 BinOp2 . LongExp  (53)
+	Exp2 : Exp2 BinOp2 . Exp3  (60)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	LongExp  goto 123
+	Exp3  goto 124
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 84
+	BinOp3 : AST .  (69)
+
+	.  reduce 69
+
+
+state 85
+	Exp : Exp3 BinOp3 . LongExp  (54)
+	Exp3 : Exp3 BinOp3 . Exp4  (62)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	LongExp  goto 125
+	Exp4  goto 126
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 86
+	Exp4 : Exp4 AExp .  (64)
+
+	.  reduce 64
+
+
+state 87
+	Val : LPAREN . Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET  (82)
+	Env : .  (46)
+	Env2 : .  (48)
+
+	RPAREN  reduce 46
+	LCID  reduce 48
+
+	Env  goto 127
+	Env2  goto 10
+
+
+state 88
+	Val : INTL .  (78)
+
+	.  reduce 78
+
+
+state 89
+	Val : HYPHEN . INTL  (79)
+
+	INTL  shift 128
+	.  error
+
+
+state 90
+	Val : TRUE .  (80)
+
+	.  reduce 80
+
+
+state 91
+	Val : FALSE .  (81)
+
+	.  reduce 81
+
+
+state 92
+	Env : Env2 LCID EQ Val .  (47)
+	Env2 : Env2 LCID EQ Val . COMMA  (49)
+
+	COMMA  shift 129
+	RPAREN  reduce 47
+	VDASH  reduce 47
+
+
+state 93
+	partialj : INTL PLUS INTL error .  (38)
+
+	.  reduce 38
+
+
+state 94
+	partialj : INTL PLUS INTL IS . QM  (32)
+	partialj : INTL PLUS INTL IS . error  (39)
+
+	error  shift 130
+	QM  shift 131
+	.  error
+
+
+state 95
+	partialj : INTL MINUS INTL error .  (44)
+
+	.  reduce 44
+
+
+state 96
+	partialj : INTL MINUS INTL IS . QM  (34)
+	partialj : INTL MINUS INTL IS . error  (45)
+
+	error  shift 132
+	QM  shift 133
+	.  error
+
+
+state 97
+	partialj : INTL MULT INTL error .  (41)
+
+	.  reduce 41
+
+
+state 98
+	partialj : INTL MULT INTL IS . QM  (33)
+	partialj : INTL MULT INTL IS . error  (42)
+
+	error  shift 134
+	QM  shift 135
+	.  error
+
+
+state 99
+	partialj : Env VDASH Exp error .  (35)
+
+	.  reduce 35
+
+
+state 100
+	partialj : Env VDASH Exp EVALTO . QM  (31)
+	partialj : Env VDASH Exp EVALTO . error  (36)
+
+	error  shift 136
+	QM  shift 137
+	.  error
+
+
+state 101
+	Judgment : INTL PLUS INTL IS error .  (24)
+
+	.  reduce 24
+
+
+state 102
+	Judgment : INTL PLUS INTL IS INTL .  (15)
+
+	.  reduce 15
+
+
+state 103
+	Judgment : INTL MINUS INTL IS error .  (30)
+
+	.  reduce 30
+
+
+state 104
+	Judgment : INTL MINUS INTL IS INTL .  (17)
+
+	.  reduce 17
+
+
+state 105
+	Judgment : INTL MULT INTL IS error .  (27)
+
+	.  reduce 27
+
+
+state 106
+	Judgment : INTL MULT INTL IS INTL .  (16)
+
+	.  reduce 16
+
+
+state 107
+	Judgment : INTL IS LESS THAN INTL .  (18)
+
+	.  reduce 18
+
+
+state 108
+	Judgment : INTL IS NOT LESS THAN . INTL  (19)
+
+	INTL  shift 138
+	.  error
+
+
+state 109
+	Derivation : Judgment BY RName LBRACE error .  (7)
+
+	.  reduce 7
+
+
+state 110
+	Derivation : Judgment BY RName LBRACE RBRACE .  (3)
+
+	.  reduce 3
+
+
+state 111
+	Derivs : Derivation . RBRACE  (10)
+	Derivs : Derivation . SEMI RBRACE  (11)
+	Derivs : Derivation . SEMI Derivs  (12)
+	Derivs : Derivation . error  (13)
+
+	error  shift 139
+	RBRACE  shift 140
+	SEMI  shift 141
+	.  error
+
+
+state 112
+	Derivation : Judgment BY RName LBRACE Derivs .  (4)
+
+	.  reduce 4
+
+
+state 113
+	AExp : LPAREN Exp error .  (77)
+
+	.  reduce 77
+
+
+state 114
+	AExp : LPAREN Exp RPAREN .  (76)
+
+	.  reduce 76
+
+
+state 115
+	LongExp : IF Exp THEN . Exp ELSE Exp  (55)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 142
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 116
+	LongExp : LET LCID EQ . Exp IN Exp  (56)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 143
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 117
+	LongExp : FUN LCID RARROW . Exp  (57)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 144
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 118
+	Judgment : Env VDASH Exp EVALTO error .  (21)
+
+	.  reduce 21
+
+
+state 119
+	Judgment : Env VDASH Exp EVALTO Val .  (14)
+
+	.  reduce 14
+
+
+state 120
+	Exp : Exp1 BinOp1 LongExp .  (52)
+
+	.  reduce 52
+
+
+state 121
+	Exp1 : Exp1 BinOp1 Exp2 .  (58)
+	Exp2 : Exp2 . BinOp2 Exp3  (60)
+
+	CROSS  shift 81
+	HYPHEN  shift 82
+	error  reduce 58
+	RPAREN  reduce 58
+	RBRACKET  reduce 58
+	EVALTO  reduce 58
+	LT  reduce 58
+	THEN  reduce 58
+	ELSE  reduce 58
+	IN  reduce 58
+
+	BinOp2  goto 145
+
+
+state 122
+	Exp2 : Exp3 .  (61)
+	Exp3 : Exp3 . BinOp3 Exp4  (62)
+
+	AST  shift 84
+	error  reduce 61
+	RPAREN  reduce 61
+	RBRACKET  reduce 61
+	EVALTO  reduce 61
+	CROSS  reduce 61
+	HYPHEN  reduce 61
+	LT  reduce 61
+	THEN  reduce 61
+	ELSE  reduce 61
+	IN  reduce 61
+
+	BinOp3  goto 146
+
+
+state 123
+	Exp : Exp2 BinOp2 LongExp .  (53)
+
+	.  reduce 53
+
+
+state 124
+	Exp2 : Exp2 BinOp2 Exp3 .  (60)
+	Exp3 : Exp3 . BinOp3 Exp4  (62)
+
+	AST  shift 84
+	error  reduce 60
+	RPAREN  reduce 60
+	RBRACKET  reduce 60
+	EVALTO  reduce 60
+	CROSS  reduce 60
+	HYPHEN  reduce 60
+	LT  reduce 60
+	THEN  reduce 60
+	ELSE  reduce 60
+	IN  reduce 60
+
+	BinOp3  goto 146
+
+
+state 125
+	Exp : Exp3 BinOp3 LongExp .  (54)
+
+	.  reduce 54
+
+
+state 126
+	Exp3 : Exp3 BinOp3 Exp4 .  (62)
+	Exp4 : Exp4 . AExp  (64)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	TRUE  shift 42
+	FALSE  shift 43
+	error  reduce 62
+	RPAREN  reduce 62
+	RBRACKET  reduce 62
+	EVALTO  reduce 62
+	AST  reduce 62
+	CROSS  reduce 62
+	HYPHEN  reduce 62
+	LT  reduce 62
+	THEN  reduce 62
+	ELSE  reduce 62
+	IN  reduce 62
+
+	AExp  goto 86
+
+
+state 127
+	Val : LPAREN Env . RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET  (82)
+
+	RPAREN  shift 147
+	.  error
+
+
+state 128
+	Val : HYPHEN INTL .  (79)
+
+	.  reduce 79
+
+
+state 129
+	Env2 : Env2 LCID EQ Val COMMA .  (49)
+
+	.  reduce 49
+
+
+state 130
+	partialj : INTL PLUS INTL IS error .  (39)
+
+	.  reduce 39
+
+
+state 131
+	partialj : INTL PLUS INTL IS QM .  (32)
+
+	.  reduce 32
+
+
+state 132
+	partialj : INTL MINUS INTL IS error .  (45)
+
+	.  reduce 45
+
+
+state 133
+	partialj : INTL MINUS INTL IS QM .  (34)
+
+	.  reduce 34
+
+
+state 134
+	partialj : INTL MULT INTL IS error .  (42)
+
+	.  reduce 42
+
+
+state 135
+	partialj : INTL MULT INTL IS QM .  (33)
+
+	.  reduce 33
+
+
+state 136
+	partialj : Env VDASH Exp EVALTO error .  (36)
+
+	.  reduce 36
+
+
+state 137
+	partialj : Env VDASH Exp EVALTO QM .  (31)
+
+	.  reduce 31
+
+
+state 138
+	Judgment : INTL IS NOT LESS THAN INTL .  (19)
+
+	.  reduce 19
+
+
+state 139
+	Derivs : Derivation error .  (13)
+
+	.  reduce 13
+
+
+state 140
+	Derivs : Derivation RBRACE .  (10)
+
+	.  reduce 10
+
+
+state 141
+	Derivs : Derivation SEMI . RBRACE  (11)
+	Derivs : Derivation SEMI . Derivs  (12)
+	Env : .  (46)
+	Env2 : .  (48)
+
+	RBRACE  shift 148
+	INTL  shift 5
+	LCID  reduce 48
+	VDASH  reduce 46
+
+	Derivation  goto 111
+	Judgment  goto 8
+	Derivs  goto 149
+	Env  goto 9
+	Env2  goto 10
+
+
+state 142
+	LongExp : IF Exp THEN Exp . ELSE Exp  (55)
+
+	ELSE  shift 150
+	.  error
+
+
+state 143
+	LongExp : LET LCID EQ Exp . IN Exp  (56)
+
+	IN  shift 151
+	.  error
+
+
+state 144
+	LongExp : FUN LCID RARROW Exp .  (57)
+
+	.  reduce 57
+
+
+state 145
+	Exp2 : Exp2 BinOp2 . Exp3  (60)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	TRUE  shift 42
+	FALSE  shift 43
+	.  error
+
+	Exp3  goto 124
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 146
+	Exp3 : Exp3 BinOp3 . Exp4  (62)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	TRUE  shift 42
+	FALSE  shift 43
+	.  error
+
+	Exp4  goto 126
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 147
+	Val : LPAREN Env RPAREN . LBRACKET FUN LCID RARROW Exp RBRACKET  (82)
+
+	LBRACKET  shift 152
+	.  error
+
+
+state 148
+	Derivs : Derivation SEMI RBRACE .  (11)
+
+	.  reduce 11
+
+
+state 149
+	Derivs : Derivation SEMI Derivs .  (12)
+
+	.  reduce 12
+
+
+state 150
+	LongExp : IF Exp THEN Exp ELSE . Exp  (55)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 153
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 151
+	LongExp : LET LCID EQ Exp IN . Exp  (56)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 154
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 152
+	Val : LPAREN Env RPAREN LBRACKET . FUN LCID RARROW Exp RBRACKET  (82)
+
+	FUN  shift 155
+	.  error
+
+
+state 153
+	LongExp : IF Exp THEN Exp ELSE Exp .  (55)
+
+	.  reduce 55
+
+
+state 154
+	LongExp : LET LCID EQ Exp IN Exp .  (56)
+
+	.  reduce 56
+
+
+state 155
+	Val : LPAREN Env RPAREN LBRACKET FUN . LCID RARROW Exp RBRACKET  (82)
+
+	LCID  shift 156
+	.  error
+
+
+state 156
+	Val : LPAREN Env RPAREN LBRACKET FUN LCID . RARROW Exp RBRACKET  (82)
+
+	RARROW  shift 157
+	.  error
+
+
+state 157
+	Val : LPAREN Env RPAREN LBRACKET FUN LCID RARROW . Exp RBRACKET  (82)
+
+	LPAREN  shift 37
+	LCID  shift 38
+	INTL  shift 39
+	HYPHEN  shift 40
+	IF  shift 41
+	TRUE  shift 42
+	FALSE  shift 43
+	LET  shift 44
+	FUN  shift 45
+	.  error
+
+	Exp  goto 158
+	LongExp  goto 47
+	Exp1  goto 48
+	Exp2  goto 49
+	Exp3  goto 50
+	Exp4  goto 51
+	AExp  goto 52
+	MinExp  goto 53
+
+
+state 158
+	Val : LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp . RBRACKET  (82)
+
+	RBRACKET  shift 159
+	.  error
+
+
+state 159
+	Val : LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET .  (82)
+
+	.  reduce 82
+
+
+41 terminals, 22 nonterminals
+85 grammar rules, 160 states
