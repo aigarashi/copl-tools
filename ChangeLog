@@ -1,3 +1,13 @@
+2008-04-16  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/main.ml: error handling for Stack_overflow.
+
+2008-04-15  Atsushi Igarashi  <igarashi@cornet>
+
+	* gmc/emit.ml: optimization to reduce generation of trivial equations.
+	* checker/ML4: implemented.
+	* gmc/emit.ml (emit_eqs): bug fix.
+
 2008-04-08  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* example: renamed to `checker'.
@@ -130,7 +140,7 @@
 	* examples/nat/pp.ml: pretty printer for natural numbers.
 	
 	* gmc/emit.ml: renamed from pp.ml to avoid collision with
-	game-specific printer.
+	game-specific printers.
 
 2008-03-20  Atsushi Igarashi  <igarashi@cornet>
 

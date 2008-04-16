@@ -23,13 +23,14 @@ let games = [
     ("ML1", (Ml1.Link.check_deriv, Ml1.Link.make_deriv));
     ("ML2", (Ml2.Link.check_deriv, Ml2.Link.make_deriv));
     ("ML3", (Ml3.Link.check_deriv, Ml3.Link.make_deriv));
+    ("ML4", (Ml4.Link.check_deriv, Ml4.Link.make_deriv));
   ]
 
 let () = 
   Arg.parse spec (fun s -> filenames := s :: !filenames) 
     (Printf.sprintf "Usage: %s -game gamename [-full] [-TeX] [filename ...]\n%s -game gamename -prove judgment" commandname commandname);
 
-  if !gname = "" then err "Game name must be given.\n"
+  if !gname = "" then err "Game name must be given."
   else
     begin
       let check_deriv, make_deriv = 
@@ -60,5 +61,10 @@ let () =
 	    
 	else (* -prove mode*)
 	  let lexbuf = Lexing.from_string !jdg in
-	    make_deriv lexbuf !fullp !texp
+	    try 
+	      make_deriv lexbuf !fullp !texp 
+	    with
+		Stack_overflow -> 
+		  err ("Couldn't find a derivation for " ^ !jdg ^ 
+			 " within a reasonable amount of memory.")
     end

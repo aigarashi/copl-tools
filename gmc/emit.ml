@@ -112,15 +112,18 @@ struct
     in
       aux ppf (cat, term)
 
-  let emit_eqs ppf (tbl : (string, int) Hashtbl.t) = 
-    let rec aux id m = 
+  let emit_eqs n ppf (tbl : (string, int) Hashtbl.t) = 
+    let rec aux ppf id m = 
       if m > 1 then 
 	begin
-	  pf ppf "%s%s = %s &&@ " (String.make (m-1) '_') id id;
-	  aux id (m-1)
+	  pf ppf "%s%s = %s%s &&@ " 
+	    (String.make n '_') id
+	    (String.make (n+m-1) '_') id;
+	  aux ppf id (m-1)
 	end
     in
-    Hashtbl.iter aux tbl; pp_print_string ppf "true"
+      pf ppf "@[%atrue@]"
+	  (fun ppf -> Hashtbl.iter (aux ppf)) tbl
 
   let emit_eqs' ppf (tbl : (string, int list) Hashtbl.t) = 
     let rec aux ppf id indices = 
@@ -156,10 +159,11 @@ struct
 
   let emit_pat_of_jdg i env ppf jdg = 
     let tbl = Hashtbl.create 50 in
-    pf ppf "@[  %a@ when @[%a@]@]"
-      (emit_jdg i tbl env) jdg
-      emit_eqs tbl;
-    tbl
+      pf ppf "@[  %a@ " (emit_jdg i tbl env) jdg;
+      if Hashtbl.fold (fun _ m res -> res || m > 1) tbl false then
+	pf ppf "when @[%a@]" (emit_eqs i) tbl;
+      pf ppf "@]";
+      tbl
 
   let emit_pat_of_derivs ppf n =
     let rec loop ppf i =
@@ -430,7 +434,7 @@ struct
     let tbl = Hashtbl.create 50 in
     pf ppf "| @[<4>%a when %a"
       (emit_pat_of_jdg_in tbl env) r.rconc
-      Rules.emit_eqs tbl;
+      (Rules.emit_eqs 0) tbl;
     (* creating a backup copy for later pattern generation *)
     let tbl' = Hashtbl.copy tbl in 
     pf ppf " && @\n%a -> @\n" (emit_exp_of_premises tbl env) r;
@@ -441,13 +445,15 @@ struct
 	(List.fold_right
 	   (fun x y -> match x with J j -> 1 + y | _ -> y) r.rprem 0);
       pf ppf "@[<v2>@[(match List.map (fun d -> d.conc) _subderivs_ with@]@ ";
-      pf ppf "@[[%a]@] when %a ->@ "
+      pf ppf "@[[%a]@]"
 	(emit_semiseq (emit_pat_of_jdg_out tbl' env))
 	(List.fold_right
-	   (fun x y -> match x with J j -> j :: y | _ -> y) r.rprem [])
-	(* Actually, the following equations don't have to be
-	   generated since they have already been checked *)
-        Rules.emit_eqs tbl';
+	   (fun x y -> match x with J j -> j :: y | _ -> y) r.rprem []);
+      (* Actually, the following equations don't have to be
+	 generated since they have already been checked *)
+      if Hashtbl.fold (fun _ m res -> res || m > 1) tbl' false then
+	pf ppf "@ when @[%a@] ->@ " (Rules.emit_eqs 0) tbl'
+      else pf ppf " ->@ ";
       List.iter
 	(function 
 	     J _ -> () 

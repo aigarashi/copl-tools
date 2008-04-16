@@ -53,8 +53,10 @@
 \begin{itemize}
 \item BNF定義, 規則の plain text / TeX 出力
 \item interactive checker / emacs のバッファから使えるようにする (proofgeneral?)
-\item ブラウザから使えるようにする．(要終わらない導出生成の制御)
+\item ブラウザから使えるようにする．(要：終わらない導出生成の制御 ---
+  timeout，導出の深さ?)
 \item ゲーム定義ファイルに ML 関数を定義するセクションを設ける
+\item 導出に失敗する時に partial な導出を生成(「エラー」の specification?)
 \end{itemize}
 
 \section{ぶちあたった問題の数々}
@@ -62,9 +64,13 @@
 \subsection{ML1}
 
 \begin{itemize}
-\item 真偽値を ML の bool と定義しようとしても，規則で定数に言及できないので，
-困る．(引用の中でないと true, false に言及できない．)
-それに伴って値の大小判定の規則が少し不自然．
+\item 真偽値を ML の bool と定義しようとしても，規則で定数(BNFセクショ
+  ンに現われない)に言及できないので，ちょっと困る．(引用の中でないと true,
+  false に言及できない．) それに伴って値の大小判定の規則が少し不自然．
+\item [$\Rightarrow$] quote された ML 式を項としても書けるようにする？ (undone)
+
+\item nat ゲームと違い，入力によっては導出がない場合がある(型エラーを出すプログラム)．
+\item if (同じ形式の式にふたつ式がある)があるのでバックトラックも発生
 \end{itemize}
 
 \subsection{ML2}
@@ -87,6 +93,18 @@
 \subsection{ML3}
 
 特に問題なくできている．
+
+\subsection{ML4}
+
+特に問題なくできている．
+
+\section{FAQ}
+
+\begin{itemize}
+\item [Q] Why not Twelf?
+\item [A} MLの関数も呼びたいし．type theory 説明したくないし．
+\end{itemize}
+
 
 \end{document}
 

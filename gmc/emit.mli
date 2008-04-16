@@ -24,7 +24,7 @@ module Rules :
       int ->
       (id, int) Hashtbl.t ->
       (id * decl) list -> id -> Format.formatter -> term -> unit
-    val emit_eqs : Format.formatter -> (string, int) Hashtbl.t -> unit
+    val emit_eqs : int -> Format.formatter -> (string, int) Hashtbl.t -> unit
     val emit_eqs' : Format.formatter -> (string, int list) Hashtbl.t -> unit
     val emit_jdg :
       int ->
