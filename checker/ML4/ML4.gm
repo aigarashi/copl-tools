@@ -1,0 +1,75 @@
+(*
+  ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
+  ML2: ML1 + let (´Ä¶­)
+  ML3: ML2 + fun (´Ø¿ôÃê¾Ý¡¦Å¬ÍÑ)
+  ML4: ML3 + let rec (ºÆµ¢´Ø¿ôÄêµÁ)
+*)
+
+[BNF]
+
+i in int
+
+b in Boolean ::= True | False
+
+x,y in string
+
+v in Value ::= i | b | Fun(env, x, e) | Rec(env, x, y, e)
+
+env in Env ::= Empty
+            |  Bind(env,x,v)
+
+e in Exp ::= i
+          | b
+          | x
+          | BinOp(p, e, e)
+          | If(e, e, e)
+          | Let(x, e, e)
+          | Abs(x, e)
+          | App(e, e)
+          | LetRec(x, y, e, e)  (* let rec x y = e in e *)
+
+p in Prim ::= Plus | Minus | Mult | Lt
+
+[Judgments]
+
+EvalTo(env, e; v);
+AppBOp(p, v, v; v);
+
+[Rules]
+
+E-Int: 	EvalTo(env, i, i) :- ;
+E-Bool: EvalTo(env, b, b) :- ;
+E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :- 
+		EvalTo(env, e1, True), EvalTo(env, e2, v);
+E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :- 
+		EvalTo(env, e1, False), EvalTo(env, e3, v);
+E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :- 
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Plus, i1, i2, i3);
+E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :- 
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Minus, i1, i2, i3);
+E-Mult: EvalTo(env, BinOp(Mult, e1, e2), i3) :- 
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
+E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
+		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
+E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
+E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x`, EvalTo(env, x, v2);
+
+E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
+		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);
+E-Fun: EvalTo(env, Abs(x, e), Fun(env, x, e)) :- ;
+E-App: EvalTo(env, App(e1, e2), v) :-
+         EvalTo(env, e1, Fun(env2, x, e0)),
+         EvalTo(env, e2, v2),
+         EvalTo(Bind(env2, x, v2), e0, v);
+
+E-LetRec: EvalTo(env, LetRec(x, y, e1, e2), v) :-
+                EvalTo(Bind(env,x,Rec(env,x,y,e1)), e2, v);
+E-AppRec: EvalTo(env,App(e1, e2), v) :-
+         EvalTo(env, e1, Rec(env2, x, y, e0)),
+         EvalTo(env, e2, v2),
+         EvalTo(Bind(Bind(env2, y, v2), x, Rec(env2, x, y, e0)), e0, v);
+
+B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
+B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
+B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
+B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = (if $i1 < $i2 then True else False)`;
