@@ -1,5 +1,9 @@
 2008-04-16  Atsushi Igarashi  <igarashi@cornet>
 
+	* checker/ML1/{ML1.gm, parser.mly, pp.ml}: primitive type bool is
+	used for boolean values and expressions.
+	* gmc/emit.ml: Qexp is emitted now with parentheses.
+
 	* checker/main.ml: error handling for Stack_overflow.
 
 2008-04-15  Atsushi Igarashi  <igarashi@cornet>
@@ -23,7 +27,7 @@
 	too.
 
 	* examples/ML2.gm: representation of env is modified.
-	* examples/ML2/{parser.mly,pp.ml}: according changes.
+	* examples/ML2/{parser.mly, pp.ml}: according changes.
 	
 	* examples/common/main.ml: if file name is omitted, it reads from
 	stdin. 
@@ -36,7 +40,7 @@
 2008-04-02  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/ML2.gm: New file.
-	* examples/ML2/{parser.mly,pp.ml,Makefile,keywords.ml}: New files.
+	* examples/ML2/{parser.mly, pp.ml, Makefile, keywords.ml}: New files.
 	* examples/common/{Makefile, main.ml}: Necessary changes for ML2.
 	* doc/main.tex: description of problems in implementing ML2.
 	
@@ -97,7 +101,7 @@
 	* examples/common/lexer.mll: '?' for holes in partial judgment is
 	added to the token list.
 	* examples/nat/parser.mly: support for partial judgments.
-	* examples/common/{main,link}.ml: support of prover with -prove
+	* examples/common/{main.ml, link.ml}: support of prover with -prove
 	option. (combination with -full and -TeX options not supported
 	yet.)
 

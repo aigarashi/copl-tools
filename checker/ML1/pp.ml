@@ -31,13 +31,11 @@ let with_paren_R ppf_e e_up ppf e =
 
 let rec print_val ppf = function
     Value_of_int i -> pr ppf "%d" i
-  | Value_of_Boolean True -> pr ppf "true"
-  | Value_of_Boolean False -> pr ppf "false"
+  | Value_of_bool b -> pp_print_string ppf (string_of_bool b)
 
 let rec print_exp ppf e = match e with
     Exp_of_int i -> pr ppf "%d" i
-  | Exp_of_Boolean True -> pr ppf "true"
-  | Exp_of_Boolean False -> pr ppf "false"
+  | Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
   | BinOp(p, e1, e2) -> 
       let op = 
 	match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
@@ -53,9 +51,9 @@ let rec print_exp ppf e = match e with
 
 let print_judgment ppf = function
     EvalTo (e, v) -> pr ppf "@[@[%a@]@ evalto %a@]" print_exp e print_val v
-  | AppBOp (Lt, v1, v2, Value_of_Boolean True) ->
+  | AppBOp (Lt, v1, v2, Value_of_bool true) ->
       pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
-  | AppBOp (Lt, v1, v2, Value_of_Boolean False) ->
+  | AppBOp (Lt, v1, v2, Value_of_bool false) ->
       pr ppf "@[%a is not less than %a@]" print_val v1 print_val v2
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult"

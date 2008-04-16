@@ -6,15 +6,16 @@
 
 i in int
 
-b in Boolean ::= True | False
+(* b in Boolean ::= True | False *)
+b in bool
 
 x in string
 
-v in Value ::= i | b (* | Proc(env, x, e) *)
+v in Value ::= i | b
 
 e in Exp ::= i
           | b
-          |  BinOp(p, e, e)
+          | BinOp(p, e, e)
           | If(e, e, e)
 
 p in Prim ::= Plus | Minus | Mult | Lt
@@ -29,9 +30,9 @@ AppBOp(p, v, v; v);
 E-Int: 	EvalTo(i, i) :- ;
 E-Bool: EvalTo(b, b) :- ;
 E-IfT: 	EvalTo(If(e1, e2, e3), v) :- 
-		EvalTo(e1, True), EvalTo(e2, v);
+		EvalTo(e1, b), `$b`, EvalTo(e2, v);
 E-IfF: 	EvalTo(If(e1, e2, e3), v) :- 
-		EvalTo(e1, False), EvalTo(e3, v);
+		EvalTo(e1, b), `not $b`, EvalTo(e3, v);
 E-Plus: EvalTo(BinOp(Plus, e1, e2), i3) :- 
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Plus, i1, i2, i3);
 E-Minus: EvalTo(BinOp(Minus, e1, e2), i3) :- 
@@ -44,4 +45,4 @@ E-Lt: 	EvalTo(BinOp(Lt, e1, e2), b3) :-
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
 B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
-B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = (if $i1 < $i2 then True else False)`;
+B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;

@@ -56,8 +56,8 @@ Judgment:
   | INTL PLUS INTL IS INTL { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | INTL MULT INTL IS INTL { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | INTL MINUS INTL IS INTL { AppBOp(Minus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | INTL IS LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_Boolean True) }
-  | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_Boolean False) }
+  | INTL IS LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
+  | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
 
   | Exp error { errAt 2 "Syntax error: \'evalto\' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: value expected" }
@@ -126,13 +126,13 @@ BinOp3:
 AExp:
     INTL { Exp_of_int $1 }
   | HYPHEN INTL { Exp_of_int (- $2) }
-  | TRUE { Exp_of_Boolean True }
-  | FALSE { Exp_of_Boolean False }
+  | TRUE { Exp_of_bool true }
+  | FALSE { Exp_of_bool false }
   | LPAREN Exp RPAREN { $2 }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
 Val:
     INTL { Value_of_int $1 }
   | HYPHEN INTL { Value_of_int (- $2) }
-  | TRUE { Value_of_Boolean True }
-  | FALSE { Value_of_Boolean False }
+  | TRUE { Value_of_bool true }
+  | FALSE { Value_of_bool false }

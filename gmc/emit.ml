@@ -422,12 +422,13 @@ struct
  	  (* checks if s is a fresh variable, which is supposed
 	     to be lhs of equality *)
 	  freshvarp := !freshvarp || not (Hashtbl.mem tbl s);
-	  s in
+	  s 
+	in
 	  Buffer.add_substitute b subst s;
 	  if !freshvarp then 
 	    pf ppf "@[let @[%s@]@ in @]@ %a"
 	      (Buffer.contents b) (aux i) rest
-	  else pf ppf "@[%s@] &&@ %a" (Buffer.contents b) (aux i) rest
+	  else pf ppf "(@[%s@]) &&@ %a" (Buffer.contents b) (aux i) rest
     in aux 1 ppf r.rprem
 
   let emit_clause_of_rule env ppf r =
