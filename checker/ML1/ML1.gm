@@ -6,10 +6,9 @@
 
 i in int
 
-(* b in Boolean ::= True | False *)
 b in bool
 
-x in string
+x,y in string
 
 v in Value ::= i | b
 

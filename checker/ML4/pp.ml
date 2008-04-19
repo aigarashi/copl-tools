@@ -48,8 +48,8 @@ let with_paren_R ppf_e e_up ppf e =
 
 let rec print_exp ppf e = match e with
     Exp_of_int i -> pr ppf "%d" i
-  | Exp_of_Boolean True -> pr ppf "true"
-  | Exp_of_Boolean False -> pr ppf "false"
+  | Exp_of_bool true -> pr ppf "true"
+  | Exp_of_bool false -> pr ppf "false"
   | Exp_of_string id -> pp_print_string ppf id
   | BinOp(p, e1, e2) -> 
       let op = 
@@ -88,17 +88,17 @@ and print_env' ppf = function
 
 and print_val ppf = function
     Value_of_int i -> pr ppf "%d" i
-  | Value_of_Boolean True -> pr ppf "true"
-  | Value_of_Boolean False -> pr ppf "false"
+  | Value_of_bool true -> pr ppf "true"
+  | Value_of_bool false -> pr ppf "false"
   | Fun(env, x, e) -> pr ppf "(%a)[fun %s -> %a]" print_env env x print_exp e
   | Rec(env, x, y, e) -> pr ppf "(%a)[rec %s = fun %s -> %a]" print_env env x y print_exp e
 
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "@[@[%a@]@ |- @[%a@] evalto %a@]" print_env env print_exp e print_val v
-  | AppBOp (Lt, v1, v2, Value_of_Boolean True) ->
+  | AppBOp (Lt, v1, v2, Value_of_bool true) ->
       pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
-  | AppBOp (Lt, v1, v2, Value_of_Boolean False) ->
+  | AppBOp (Lt, v1, v2, Value_of_bool false) ->
       pr ppf "@[%a is not less than %a@]" print_val v1 print_val v2
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult"

@@ -1,3 +1,8 @@
+2008-04-19  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/ML?/{ML2.gm, parser.mly, pp.ml}: primitive type bool is
+	used for boolean values and expressions.
+
 2008-04-16  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/ML1/{ML1.gm, parser.mly, pp.ml}: primitive type bool is
