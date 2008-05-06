@@ -105,8 +105,17 @@
 
 \subsection{ML5}
 
+そもそもまだ実装していない．
 パターンマッチの「1st match 優先」をインプリしようとすると，
 「マッチしない」という判断も定式化する必要がある．
+
+\subsection{TypingML2}
+
+if の then, else の型の同一性の検査に失敗するとMatch failure例外
+が発生．マッチング条件に抜けがある？？ (ふたつの outvar の
+同一性を要求する規則が初出？)
+
+解決：\verb+emit_exp_of_premises+ の最後で等式を生成．
 
 \section{FAQ}
 

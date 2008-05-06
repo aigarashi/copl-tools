@@ -4,6 +4,7 @@ open Format
 
 let pf = fprintf
 
+(* common emit functionals *)
 let rec emit_seq ?(spbefore=true) delim emit_elm ppf = function 
     (* spbefore = true means "insert space before delim" *)
     [] -> ()
@@ -401,7 +402,15 @@ struct
 
   let emit_exp_of_premises tbl env ppf r = 
     let rec aux i ppf = function
-      [] -> pf ppf "@ true@ "
+      [] -> 
+	if Hashtbl.fold (fun _ m res -> res || m > 1) tbl false then
+	  begin
+	    pf ppf "@[%a@]@ || " (Rules.emit_eqs 0) tbl;
+	    pf ppf 
+	      "@[(for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false)@]" 
+	      (i-1)
+	  end
+	else pf ppf "@ true@ "
     | J prem :: rest ->
 	begin
 	  pf ppf 
