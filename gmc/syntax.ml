@@ -46,7 +46,7 @@ let base_LCID s = fst (split_LCID s)
 type decl =
       Category
     | MVar of id
-    | TCon of id list * id (* arity *)
+    | TCon of id list * id (* term constructor with arity *)
     | JCon of id list * id list (* arities of inputs and outputs *)
     | IsA of id            (* subcategory *)
 

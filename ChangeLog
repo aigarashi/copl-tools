@@ -1,18 +1,27 @@
+2008-05-07  Atsushi Igarashi  <igarashi@localhost>
+
+	* gmc/emit.ml (emit_ordinal): New function to emit an ordinal
+	number but it doesn't work for numbers > 3 that come with "st",
+	"nd", or "rd".
+	* gmc/emit.ml (emit_coercion): New function to emit a coercion
+	inside terms.
+
 2008-05-06  Atsushi Igarashi  <igarashi@localhost>
+
+	* gmc/lexer.mll: allows primes and underscores for an LCID.
+
+	* gmc/emit.ml (emit_exp_of_premises): generates equations if
+	premises share some output variables or one premise has multiple
+	occurrences of the same variable.
+
+	* checker/TypingML2: new game for typing ML2 expressions.
+	
+	* gmc/emit.ml: newline at the final line for the emitted program.
 
 	* gmc/mode.ml: New module for mode analysis.
 	* gmc/main.ml, gmc/mySupport.ml, gmc/syntax.ml, gmc/syntax.mli: 
 	changes to incorporate mode analysis.
 
-	* gmc/emit.ml: newline at the final line for the emitted program.
-
-	* checker/TypingML2: new game for typing ML2 expressions.
-	
-	* gmc/emit.ml (emit_exp_of_premises): generates equations if
-	_different_ premises share some output variables.  TODO:
-	generation of equations for one premise sharing some output
-	variables.
-	
 2008-04-19  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/ML?/{ML2.gm, parser.mly, pp.ml}: primitive type bool is

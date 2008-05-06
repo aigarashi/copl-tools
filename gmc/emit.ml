@@ -22,6 +22,20 @@ let emit_semiseq emit_elm ppf e = emit_seq ~spbefore:false ";" emit_elm ppf e
 let emit_var env ppf = function
     Var id -> pp_print_string ppf (String.lowercase (Env.lookup_cat env id))
 
+let emit_coercion env ppf (cat', cat) =
+  if cat' <> cat then 
+    if Syntax.Env.is_subcat env cat' cat
+    then pf ppf "%s_of_%s " cat cat'
+    else 
+      failwith ("emit_coercion:" ^ cat ^ " is not a subcategory of " ^ cat')
+
+let emit_ordinal ppf i = (* doesn't work for some numbers *)
+  match i with
+      1 -> pp_print_string ppf "first"
+    | 2 -> pp_print_string ppf "second"
+    | 3 -> pp_print_string ppf "third"
+    | _ -> pf ppf "%d-th" i
+
 module TypeDef = 
 struct
   let rec emit_term this env ppf = function
@@ -71,6 +85,7 @@ end
 
 module Rules = 
 struct
+(* emit a term as a pattern *)
   let emit_term n tbl env cat ppf term = 
     let incr id = 
       let m = try Hashtbl.find tbl id with Not_found -> 0 in 
@@ -84,32 +99,20 @@ struct
 	    try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	  in
-	    if cat' = cat then
-	      pf ppf "%s%s" prefix id
-	    else if Syntax.Env.is_subcat env cat' cat 
-	    then pf ppf "%s_of_%s %s%s" cat cat' prefix id
-	    else 
-	      failwith 
-		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
-      | App (id, []) -> 
-	  let (_, cat') = 
+	    pf ppf "%a%s%s" (emit_coercion env) (cat', cat) prefix id
+      | App (id, ts) -> 
+	  let (cats, cat') = 
 	    try Syntax.Env.lookup_tcon env id with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found")
 	  in
-	    if cat' = cat then pp_print_string ppf id
-	    else if Syntax.Env.is_subcat env cat' cat
-	    then pf ppf "%s_of_%s %s" cat cat' id
-	    else 
-	      failwith 
-		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
-      | App (id, ts) -> 
-	  let (cats, cat') = 
-	    try Syntax.Env.lookup_tcon env (Syntax.base_LCID id) with
-		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
-	  in
-	    if cat' = cat then
-	      let ts = List.map2 (fun x y -> (x, y)) cats ts in 
-	      pf ppf "%s(@[%a@])" id (emit_comseq aux) ts
+	    match ts with 
+		[] -> pf ppf "%a%s" (emit_coercion env) (cat', cat) id
+	      | _ -> 
+		  let ts = List.map2 (fun x y -> (x, y)) cats ts in 
+		    pf ppf "%a(%s(@[%a@]))" 
+		      (emit_coercion env) (cat', cat)
+		      id 
+		      (emit_comseq aux) ts
     in
       aux ppf (cat, term)
 
@@ -195,7 +198,7 @@ struct
 	  merge_tables tbl (emit_pat_of_jdg i env ppf prem) i;
 	  pf ppf " ->@]@ %a@]@ "
 	  (* exp *) (emit_exp_of_premises (i+1) rn tbl env) rest;
-	  pf ppf "@[| _ -> errAt _p_ \"The form of premise is wrong: %s\"@]@]" rn;
+	  pf ppf "@[| _ -> errAt _p_ \"The form of the %a premise is wrong: %s\"@]@]" emit_ordinal i rn;
 	end;
 	pf ppf ")@]"
     | Qexp s :: rest ->
@@ -205,7 +208,9 @@ struct
 	    match Hashtbl.find tbl s with 
 		i :: _ -> (String.make i '_') ^ s
 	      | _ -> raise Not_found
-	  with Not_found -> failwith ("emit_exp_of_premises: " ^s ^ "doesn't appear in preceding premises")
+	  with Not_found -> 
+	    failwith ("emit_exp_of_premises: " ^
+			s ^ " doesn't appear in preceding premises")
 	in
 	  Buffer.add_substitute b subst s;
 	  pf ppf 
@@ -320,6 +325,8 @@ struct
     pf ppf "@[type in_judgment @[= %a@]@]"
       (emit_barseq (emit_jdg env)) jdgs
 
+  (* emit a term as an expression.  Doesn't have to care about
+     multiple occurrences of the same variable. *)
   let emit_term env cat ppf term = 
     let rec aux  ppf (cat, term) = match term with
 	Var id -> 
@@ -327,31 +334,20 @@ struct
 	    try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	  in
-	    if cat' = cat then pp_print_string ppf id
-	    else if Syntax.Env.is_subcat env cat' cat 
-	    then pf ppf "%s_of_%s %s" cat cat' id
-	    else 
-	      failwith 
-		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
-      | App (id, []) -> 
-	  let (_, cat') = 
+	    pf ppf "%a%s" (emit_coercion env) (cat', cat) id
+      | App (id, ts) -> 
+	  let (cats, cat') = 
 	    try Syntax.Env.lookup_tcon env id with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found")
 	  in
-	    if cat' = cat then pp_print_string ppf id
-	    else if Syntax.Env.is_subcat env cat' cat
-	    then pf ppf "%s_of_%s %s" cat cat' id
-	    else 
-	      failwith 
-		("emit_term:" ^ cat ^ " is not a sub category of " ^ cat')
-      | App (id, ts) -> 
-	  let (cats, cat') = 
-	    try Syntax.Env.lookup_tcon env (Syntax.base_LCID id) with
-		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
-	  in
-	    if cat' = cat then
-	      let ts = List.map2 (fun x y -> (x, y)) cats ts in 
-	      pf ppf "%s(@[%a@])" id (emit_comseq aux) ts
+	    match ts with 
+		[] -> pf ppf "%a%s" (emit_coercion env) (cat', cat) id
+	      | _ -> 
+		  let ts = List.map2 (fun x y -> (x, y)) cats ts in 
+		    pf ppf "%a(%s(@[%a@]))" 
+		      (emit_coercion env) (cat', cat)
+		      id 
+		      (emit_comseq aux) ts
     in
       aux ppf (cat, term)
 
@@ -375,7 +371,7 @@ struct
 	  let inargs = take (List.length incats) jdg.args in
 	  let ts = List.map2 (fun x y -> (x, y)) incats inargs in 
 	    pf ppf "In_%s(@[%a@])" jdg.pred
-	    (emit_comseq (fun ppf (cat, t) -> emit_term env cat ppf t)) ts
+	      (emit_comseq (fun ppf (cat, t) -> emit_term env cat ppf t)) ts
 	with Not_found -> failwith ("emit_exp_of_jdg_in: " ^ jdg.pred ^ " not found")
 
   let emit_pat_of_jdg_out tbl env ppf = function
@@ -402,34 +398,34 @@ struct
 
   let emit_exp_of_premises tbl env ppf r = 
     let rec aux i ppf = function
-      [] -> 
-	if Hashtbl.fold (fun _ m res -> res || m > 1) tbl false then
+	[] -> 
+	  if Hashtbl.fold (fun _ m res -> res || m > 1) tbl false then
+	    begin
+	      pf ppf "@[%a@]@ || " (Rules.emit_eqs 0) tbl;
+	      pf ppf 
+		"@[(for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false)@]" 
+		(i-1)
+	    end
+	  else pf ppf "@ true@ "
+      | J prem :: rest ->
 	  begin
-	    pf ppf "@[%a@]@ || " (Rules.emit_eqs 0) tbl;
 	    pf ppf 
-	      "@[(for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false)@]" 
-	      (i-1)
+	      "@[let _d%d_ = make_deriv (%a) in@]@ " i (emit_exp_of_jdg_in env) prem;
+	    pf ppf "@[Stack.push _d%d_ deriv_stack;@]@ " i;
+	    pf ppf 
+	      "@[<v2>@[(match _d%d_.conc with@]@ @[<v3>  %a ->@ @[%a@]@]@ " 
+	      i
+	      (emit_pat_of_jdg_out tbl env) prem
+	      (aux (i+1)) rest;
+	    pf ppf "@[| _ -> for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false@]" i;
+	    pf ppf "@,)@]"
 	  end
-	else pf ppf "@ true@ "
-    | J prem :: rest ->
-	begin
-	  pf ppf 
-	    "@[let _d%d_ = make_deriv (%a) in@]@ " i (emit_exp_of_jdg_in env) prem;
-	  pf ppf "@[Stack.push _d%d_ deriv_stack;@]@ " i;
-	  pf ppf 
-	    "@[<v2>@[(match _d%d_.conc with@]@ @[<v3>  %a ->@ @[%a@]@]@ " 
-	    i
-	    (emit_pat_of_jdg_out tbl env) prem
-	    (aux (i+1)) rest;
-	  pf ppf "@[| _ -> for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false@]" i;
-	  pf ppf "@,)@]"
-	end
-    | Qexp s :: rest ->
-	let b = Buffer.create (String.length s + 10) in
-	let freshvarp = ref false in
-	let subst s =
- 	  (* checks if s is a fresh variable, which is supposed
-	     to be lhs of equality *)
+      | Qexp s :: rest ->
+	  let b = Buffer.create (String.length s + 10) in
+	  let freshvarp = ref false in
+	  let subst s =
+ 	    (* checks if s is a fresh variable, which is supposed
+	       to be lhs of equality *)
 	  freshvarp := !freshvarp || not (Hashtbl.mem tbl s);
 	  s 
 	in

@@ -31,7 +31,7 @@ rule main = parse
 | "[Judgments]" { Parser.HEADER2 }
 | "[Rules]" { Parser.HEADER3 }
 
-| ['a'-'z']+ ['0'-'9']*
+| ['a'-'z']+ ['0'-'9' '_' '\'']*
     { let id = Lexing.lexeme lexbuf in
       try 
         List.assoc id reservedWords
