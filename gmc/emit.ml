@@ -484,7 +484,7 @@ struct
 
   let emit env ppf rules = 
     let rec loop ppf = function
-	[] -> pf ppf "@[| j -> raise (NoApplicableRule j)@]" 
+	[] -> pf ppf "@[| j -> raise (NoApplicableRule j)@]@\n" 
 	  (* need to augment error information *)
       | rule::rest ->
 	  pf ppf "%a@ %a"

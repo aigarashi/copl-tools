@@ -11,7 +11,7 @@ PROGNAME=gmc
 
 # The list of object files for prog1
 # OBJS=syntax.cmx parser.cmx lexer.cmx emit.cmx main.cmx
-OBJS=mySupport.cmo syntax.cmo parser.cmo lexer.cmo emit.cmo main.cmo
+OBJS=mySupport.cmo syntax.cmo parser.cmo lexer.cmo emit.cmo mode.cmo main.cmo
 
 DEPEND += lexer.ml parser.ml
 
@@ -44,7 +44,7 @@ lexer.ml: lexer.mll
 # Clean up
 clean:
 	rm -f $(PROGNAME)
-	rm -f *.cm[iox] *~ parser.ml parser.mli parser.output lexer.ml .depend
+	rm -f *.cm[iox] *~ *.o parser.ml parser.mli parser.output lexer.ml .depend
 
 # Dependencies
 depend:: $(DEPEND)

@@ -46,7 +46,8 @@
 \begin{itemize}
 \item コードの整理
 \item ゲーム用 parser, lexer 記述の負担軽減
-\item 規則のモードチェック
+\item 規則のモードチェックに失敗すると，導出生成を完全に諦めているが，
+本当は，失敗した判断に依存しない部分に関しては導出生成をしてもよい．
 \item 他の体系を書く
 \item 規則名も文字列ではなくヴァリアント化？
 \item make といっしょに自動テスト
@@ -58,7 +59,7 @@
 \item BNF定義, 規則の plain text / TeX 出力
 \item interactive checker / emacs のバッファから使えるようにする (proofgeneral?)
 \item ブラウザから使えるようにする．(要：終わらない導出生成の制御 ---
-  timeout，導出の深さ?)
+  timeout，導出の深さ?，stack overflow を待つ)
 \item ゲーム定義ファイルに ML 関数を定義するセクションを設ける
 \item 導出に失敗する時に partial な導出を生成(「エラー」の specification?)
 \end{itemize}
@@ -101,6 +102,11 @@
 \subsection{ML4}
 
 特に問題なくできている．
+
+\subsection{ML5}
+
+パターンマッチの「1st match 優先」をインプリしようとすると，
+「マッチしない」という判断も定式化する必要がある．
 
 \section{FAQ}
 

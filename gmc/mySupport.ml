@@ -43,6 +43,13 @@ struct
     print_string s;
     print_newline ();
     exit 2
+
+  let warning s = 
+    print_newline ();
+    print_string "Warning: ";
+    print_string s;
+    print_newline ()
+
 end
 
 module Pervasives =

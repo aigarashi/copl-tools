@@ -28,6 +28,12 @@ type decl =
   | JCon of id list * id list
   | IsA of id
 
+(* free variables *)
+module VarSet : Set.S with type elt = id
+
+val fv_of_term : term -> VarSet.t
+
+(* environments *)
 module Env :
   sig
     type t = (id * decl) list

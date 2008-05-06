@@ -1,3 +1,11 @@
+2008-05-06  Atsushi Igarashi  <igarashi@localhost>
+
+	* gmc/mode.ml: New module for mode analysis.
+	* gmc/main.ml, gmc/mySupport.ml, gmc/syntax.ml, gmc/syntax.mli: 
+	changes to incorporate mode analysis.
+
+	* gmc/emit.ml: newline at the final line for the emitted program.
+
 2008-04-19  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/ML?/{ML2.gm, parser.mly, pp.ml}: primitive type bool is

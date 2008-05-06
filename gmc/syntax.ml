@@ -50,6 +50,18 @@ type decl =
     | JCon of id list * id list (* arities of inputs and outputs *)
     | IsA of id            (* subcategory *)
 
+
+module VarSet = Set.Make(
+  struct
+    type t = id
+    let compare = compare 
+  end)
+
+let rec fv_of_term = function
+    Var id -> VarSet.singleton id
+  | App(_, ts) ->
+      List.fold_left (fun s t -> VarSet.union s (fv_of_term t)) VarSet.empty ts
+
 module Env = 
 struct
   open Format
