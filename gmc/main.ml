@@ -31,10 +31,10 @@ let emit_game (g : Syntax.game) =
   print_newline ();  print_newline ();
 
   (* experimental prover generation *)
+  Emit.Prover.emit_jdgdef env std_formatter g.jdgdecls;
   if Mode.check_rules env g.ruledefs 
   then (* mode checking succeeds *)
     begin
-      Emit.Prover.emit_jdgdef env std_formatter g.jdgdecls;
       pp_print_string std_formatter "\
 
 let dummy = Lexing.dummy_pos
@@ -43,10 +43,12 @@ let deriv_stack = Stack.create ()
 exception NoApplicableRule of in_judgment
 ";
       Emit.Prover.emit env std_formatter g.ruledefs
-
     end
   else (* mode check fails *)
-    pp_print_string std_formatter "\
+      pp_print_string std_formatter "\
+
+exception NoApplicableRule of in_judgment
+
 let make_deriv _ = failwith \"make_deriv not implemented due to mode analysis failure\"
 "
 

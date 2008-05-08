@@ -7,7 +7,7 @@ OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES=-I nat -I ML1 -I ML2 -I ML3 -I ML4 -I TypingML2 -I $(GMCDIR)   # all relevant -I options here
+INCLUDES=-I nat -I ML1 -I ML2 -I ML3 -I ML4 -I TypingML2 -I TypingML4 -I $(GMCDIR)   # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
@@ -18,12 +18,14 @@ OBJS=$(GMCDIR)/mySupport.cmx derivation.cmx lexer.cmx \
 		ML3/ml3.cmx \
 		ML4/ml4.cmx \
 		TypingML2/typingMl2.cmx \
+		TypingML4/typingML4.cmx \
 		main.cmx
 
 
 DEPEND += lexer.ml
 
-all: $(GMCDIR)/gmc nat.pack ML1.pack ML2.pack ML3.pack ML4.pack TypingML2.pack $(OBJS) $(DEPEND) 
+all: $(GMCDIR)/gmc nat.pack ML1.pack ML2.pack ML3.pack ML4.pack \
+	TypingML2.pack TypingML4.pack $(OBJS) $(DEPEND) 
 	ocamlopt -o $(PROGNAME) $(OBJS)
 
 %.pack: 
@@ -46,6 +48,7 @@ clean:
 	$(MAKE) -C ML3 clean
 	$(MAKE) -C ML4 clean
 	$(MAKE) -C TypingML2 clean
+	$(MAKE) -C TypingML4 clean
 	rm -f $(PROGNAME)
 	rm -f *.cm[iox] *.o *~ parser.output lexer.ml .depend
 
@@ -53,6 +56,6 @@ clean:
 depend:: $(DEPEND)
 	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml > .depend
 
-main.cmx: nat/nat.cmx ML1/ml1.cmx ML2/ml2.cmx ML3/ml3.cmx ML4/ml4.cmx TypingML2/typingMl2.cmx
+main.cmx: nat/nat.cmx ML1/ml1.cmx ML2/ml2.cmx ML3/ml3.cmx ML4/ml4.cmx TypingML2/typingMl2.cmx TypingML4/typingML4.cmx
 
 -include .depend
