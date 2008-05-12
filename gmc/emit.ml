@@ -433,7 +433,7 @@ struct
 	  if !freshvarp then 
 	    pf ppf "@[let @[%s@]@ in @]@ %a"
 	      (Buffer.contents b) (aux i) rest
-	  else pf ppf "(@[%s@]) &&@ %a" (Buffer.contents b) (aux i) rest
+	  else pf ppf "if (@[%s@]) then@ %a else (for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false)" (Buffer.contents b) (aux i) rest (i - 1)
     in aux 1 ppf r.rprem
 
   let emit_clause_of_rule env ppf r =

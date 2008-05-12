@@ -1,3 +1,8 @@
+2008-05-13  Atsushi Igarashi  <igarashi@localhost>
+
+	* gmc/emit.ml (emit_exp_of_premises): Bug fix.  Be sure to discard
+	all the derivations even when side condition fails.
+
 2008-05-08  Atsushi Igarashi  <igarashi@localhost>
 
 	* checker/TypingML4: new game for typing ML4 expressions.
