@@ -1,7 +1,12 @@
 2008-05-13  Atsushi Igarashi  <igarashi@localhost>
 
+	* gmc/mySupport.ml (print_pos): Bug fix.
+	* checker/main.ml: A small adjustment of the usage message.
+
+	* checker/TypingML4: Fixed a bug in T-LetRec.
 	* gmc/emit.ml (emit_exp_of_premises): Bug fix.  Be sure to discard
 	all the derivations even when side condition fails.
+
 
 2008-05-08  Atsushi Igarashi  <igarashi@localhost>
 

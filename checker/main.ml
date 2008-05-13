@@ -13,9 +13,9 @@ let texp = ref false   (* controls whether output is in TeX *)
 
 let spec = [
     ("-full", Arg.Set fullp, "Display full derivations");
-    ("-TeX", Arg.Set texp, "output in TeX");
-    ("-game", Arg.Set_string gname, "the name of a game");
-    ("-prove", Arg.Set_string jdg, "the judgment to prove");
+    ("-TeX", Arg.Set texp, "Output in TeX");
+    ("-game", Arg.Set_string gname, "Specify the name of a game");
+    ("-prove", Arg.Set_string jdg, "Proving mode; followed by the judgment to prove");
   ]
 
 let games = [
@@ -30,7 +30,9 @@ let games = [
 
 let () = 
   Arg.parse spec (fun s -> filenames := s :: !filenames) 
-    (Printf.sprintf "Usage: %s -game gamename [-full] [-TeX] [filename ...]\n%s -game gamename -prove judgment" commandname commandname);
+    (Printf.sprintf "\
+Usage: %s -game gamename [-full] [-TeX] [filename ...]
+       %s -game gamename [-full] [-TeX] -prove judgment" commandname commandname);
 
   if !gname = "" then err "Game name must be given."
   else

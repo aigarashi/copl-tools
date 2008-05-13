@@ -8,7 +8,7 @@ struct
 
   type 'a with_pos = {p:pos; v:'a}
 
-  let print_pos ochan pos =
+  let print_pos pos =
     eprintf "File \"%s\", line %d, character %d" 
       pos.pos_fname
       pos.pos_lnum
