@@ -78,6 +78,12 @@ Rule :
     Name COLON Judgment COLHYP PremiseList { 
 	{ rname = $1; rconc = $3; rprem = $5 }
     } 
+  | Name COLON Judgment error { 
+	errAt 4 "Syntax error: \":-\" expected"
+    } 
+  | Name error { 
+	errAt 2 "Syntax error: colon expected after a rule name"
+    } 
 
 Name : 
     LCID { $1 }
@@ -90,6 +96,7 @@ RuleSEMIs :
 
 Judgment : 
     UCID LPAREN ComTerms RPAREN { {pred = $1; args = $3} }
+  | UCID LPAREN error { errAt 3 "Syntax error: closing parenthesis expected" }
 
 ComTerms :
     Term { [ $1 ] } 
@@ -99,6 +106,7 @@ Term :
     LCID { Var $1 }
   | UCID { App($1, []) }
   | UCID LPAREN ComTerms RPAREN { App($1, $3) }
+  | UCID LPAREN error { errAt 3 "Syntax error: closing parenthesis expected" }
 
 PremiseList :
     /* empty */ { [] }

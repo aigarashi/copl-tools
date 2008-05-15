@@ -15,7 +15,6 @@ let with_paren lt ppf_e e_up ppf e =
 let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
     BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _) 
-  | If(_, _, _),                      BinOp(Mult, _, _)
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _) 
   | If(_, _, _),                      BinOp(_, _, _)
   | Let(_, _, _),                     BinOp(_ , _, _)
@@ -40,6 +39,7 @@ let (>) e_up e = match e_up, e with
   | App(_, _),                   If(_, _, _)
   | App(_, _),                   Let(_, _, _)
   | App(_, _),                   Abs(_, _)
+  | App(_, _),                   LetRec(_, _, _, _)
   | BinOp(Mult, _, _),           BinOp(_, _, _)
   | BinOp((Plus | Minus), _, _), BinOp((Plus | Minus | Lt), _, _)
       -> true
@@ -88,7 +88,7 @@ let (<) t t_up = match t, t_up with
   | TyFun(_,_),  TyFun(_,_) -> true
   | _ -> false
 
-(* if t is the right operand of t_up, do you need parentheses for e? *)
+(* if t is the right operand of t_up, do you need parentheses for t? *)
 let (>) t_up t = false
 
 let rec print_type ppf t = 

@@ -1,3 +1,12 @@
+2008-05-16  Atsushi Igarashi  <igarashi@localhost>
+
+	* checker/{ML2,ML3,ML4}/pp.ml: Small bug fix.
+	* checker/ML5: New game for ML5 expressions.  Modular
+	pretty-printing routine is imported from TypingML4.  
+	Other games should follow.
+	* checker/Makefile: changes due to the new game.
+	* gmc/parser.mly: better error message.
+
 2008-05-13  Atsushi Igarashi  <igarashi@localhost>
 
 	* gmc/mySupport.ml (print_pos): Bug fix.
