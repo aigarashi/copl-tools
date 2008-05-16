@@ -67,7 +67,7 @@ E-LetRec: EvalTo(env, LetRec(x, y, e1, e2), v) :-
 E-AppRec: EvalTo(env,App(e1, e2), v) :-
          EvalTo(env, e1, Rec(env2, x, y, e0)),
          EvalTo(env, e2, v2),
-         EvalTo(Bind(Bind(env2, y, v2), x, Rec(env2, x, y, e0)), e0, v);
+         EvalTo(Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v);
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;

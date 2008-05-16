@@ -1,4 +1,12 @@
+2008-05-17  Atsushi Igarashi  <igarashi@localhost>
+
+	* gmc/mode.ml: Warning message improvement.
+
 2008-05-16  Atsushi Igarashi  <igarashi@localhost>
+
+	* lexer.mll: An LCID now can contain apostrophes and underscores.
+	* ML5/pp.ml: Cons needs parenthesized when it's an operand of
+	a function application.
 
 	* checker/{ML1,ML2,ML3,ML4,TypingML2}/pp.ml: Adapted more moduler
 	pretty-printing functions.

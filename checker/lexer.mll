@@ -62,7 +62,7 @@ rule main = parse
 | "(*" { comment 1 lexbuf }
 
 (* lowercase names *)
-| ['a'-'z']+ ['0'-'9']*
+| ['a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
     { let name = Lexing.lexeme lexbuf in
       try 
         Hashtbl.find tbl name

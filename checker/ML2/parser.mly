@@ -12,6 +12,7 @@ let errAt i s =
 
 %token EOF
 
+/* common tokens */
 %token BY
 %token LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 %token SEMI
@@ -19,11 +20,13 @@ let errAt i s =
 %token <string> LCID
 %token <int> INTL
 
+/* ML1 */
 %token PLUS EVALTO MINUS MULT IS LESS THAN NOT
 %token AST CROSS HYPHEN LT
 
 %token IF THEN ELSE TRUE FALSE
 
+/* ML2 */
 %token VDASH COMMA
 %token LET EQ IN 
 

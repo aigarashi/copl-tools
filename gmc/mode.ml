@@ -76,4 +76,4 @@ let rec check_rules (env : Env.t) (rs : rule list) (i : int) : bool =
 	    false
 	  end
 
-let check_rules (env : Env.t) (rs : rule list) : bool = check_rules env rs 0
+let check_rules (env : Env.t) (rs : rule list) : bool = check_rules env rs 1

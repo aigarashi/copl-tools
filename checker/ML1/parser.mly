@@ -12,6 +12,7 @@ let errAt i s =
 
 %token EOF
 
+/* common tokens */
 %token BY
 %token LBRACE RBRACE LPAREN RPAREN LBRACKET RBRACKET
 %token SEMI
@@ -19,6 +20,7 @@ let errAt i s =
 %token <string> LCID  /* not used in this game */
 %token <int> INTL
 
+/* ML1 */
 %token PLUS EVALTO MINUS MULT IS LESS THAN NOT
 %token AST CROSS HYPHEN LT
 
