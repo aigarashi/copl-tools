@@ -1,3 +1,9 @@
+2008-05-18  Atsushi Igarashi  <igarashi@localhost>
+
+	* checker/TypingML5: new game for typing ML5 expressions.  ML
+	files other than core.ml are generated, as done for TypingML5, by
+	emacs emerge.
+
 2008-05-17  Atsushi Igarashi  <igarashi@localhost>
 
 	* gmc/mode.ml: Warning message improvement.

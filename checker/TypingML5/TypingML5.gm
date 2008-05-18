@@ -1,0 +1,76 @@
+(*
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML2: ML1 + let (環境)
+  ML3: ML2 + fun (関数抽象・適用)
+  ML4: ML3 + let rec (再帰関数定義)
+  TypingML4: typing for ML4
+  ML5: ML4 + list + match
+  TypingML5: typing for ML5
+*)
+
+[BNF]
+
+i in int
+
+b in bool
+
+x,y in string
+
+t in Types ::= TyBool | TyInt | TyFun(t,t) | TyList(t)
+
+env in Env ::= Empty
+            |  Bind(env,x,t)
+
+e in Exp ::= i
+          | b
+          | x
+          | BinOp(p, e, e)
+          | If(e, e, e)
+          | Let(x, e, e)
+          | Abs(x, e)
+          | App(e, e)
+          | LetRec(x, y, e, e)  (* let rec x y = e in e *)
+	  | Nil
+	  | Cons(e,e)
+	  | Match(e,e,x,y,e)   (* match e with [] -> e | x::y -> e *)
+
+p in Prim ::= Plus | Minus | Mult | Lt
+
+[Judgments]
+
+Typing(env, e; t);
+
+[Rules]
+
+T-Int: 	Typing(env, i, TyInt) :- ;
+T-Bool: Typing(env, b, TyBool) :- ;
+T-If: 	Typing(env, If(e1, e2, e3), t) :- 
+		Typing(env, e1, TyBool), Typing(env, e2, t), Typing(env, e3, t);
+T-Plus: Typing(env, BinOp(Plus, e1, e2), TyInt) :- 
+		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
+T-Minus: Typing(env, BinOp(Minus, e1, e2), TyInt) :- 
+		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
+T-Mult: Typing(env, BinOp(Mult, e1, e2), TyInt) :- 
+		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
+T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
+		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
+T-Var1:  Typing(Bind(env,x,t), x, t) :- ;
+T-Var2:  Typing(Bind(env,y,t1), x, t2) :- `$y <> $x`, Typing(env, x, t2);
+
+T-Let:  Typing(env, Let(x, e1, e2), t2) :-
+		Typing(env, e1, t1), Typing(Bind(env,x,t1), e2, t2);
+
+T-Abs:  Typing(env,Abs(x,e), TyFun(t1,t2)) :- Typing(Bind(env,x,t1), e, t2);
+T-App:  Typing(env,App(e1,e2), t2) :- 
+                Typing(env, e1, TyFun(t1,t2)), Typing(env, e2, t1);
+T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
+	        Typing(Bind(Bind(env, x, TyFun(t1, t2)), 
+                                      y, t1), 
+                        e1, t2), 
+                Typing(Bind(env,x,TyFun(t1,t2)), e2, t);
+T-Nil: Typing(env, Nil, TyList(t)) :- ;
+T-Cons: Typing(env, Cons(e1,e2), TyList(t)) :- Typing(env, e1, t), Typing(env, e2, TyList(t));
+T-Match: Typing(env, Match(e1,e2,x,y,e3), t) :- 
+	 	 Typing(env, e1, TyList(t')), 
+	 	 Typing(env, e2, t),
+		 Typing(Bind(Bind(env, x, t'), y, TyList(t')), e3, t);
