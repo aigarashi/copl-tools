@@ -15,6 +15,7 @@ type game = {
   syndefs : syndef list;
   jdgdecls : (judgment * int) list;
   ruledefs : rule list;
+  mldefs : string option
 }
 
 val split_LCID : string -> (string * string)

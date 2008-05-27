@@ -32,7 +32,8 @@ type rule = {
 type game = {
     syndefs : syndef list;
     jdgdecls : (judgment * int) list;  (* integer denotes the number of inputs *)
-    ruledefs : rule list
+    ruledefs : rule list;
+    mldefs : string option
   }
 
 let split_LCID s =

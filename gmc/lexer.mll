@@ -52,10 +52,13 @@ rule main = parse
       let name = Lexing.lexeme lexbuf in
 	Parser.SYMID (String.sub name 1 (String.length name - 2))
     }
-| '`' [^ '`' '\n']* '`' {
-      let name = Lexing.lexeme lexbuf in
+| '`' ([^ '`' '\n']* as s) '`' {
+(*      let name = Lexing.lexeme lexbuf in
 	Parser.MLexp (String.sub name 1 (String.length name - 2))
+*)
+        Parser.MLexp s
     }
+| "[ML]" (_* as s){ Parser.MLlongexp s }
 | "(*" { comment 1 lexbuf }
 | eof { Parser.EOF }
 

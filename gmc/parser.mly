@@ -23,6 +23,7 @@ let appVar vars = List.map (fun x -> Var x) vars
 %token <Syntax.id> UCID
 %token <Syntax.id> SYMID
 %token <string> MLexp
+%token <string> MLlongexp
 
 %start toplevel
 %type <Syntax.game> toplevel
@@ -30,7 +31,9 @@ let appVar vars = List.map (fun x -> Var x) vars
 
 toplevel :
      HEADER1 BnfDefs HEADER2 JdgDecls HEADER3 RuleDecls EOF
-     { { syndefs = $2; jdgdecls = $4; ruledefs = $6 } }
+     { { syndefs = $2; jdgdecls = $4; ruledefs = $6; mldefs = None } }
+   | HEADER1 BnfDefs HEADER2 JdgDecls HEADER3 RuleDecls MLlongexp EOF
+     { { syndefs = $2; jdgdecls = $4; ruledefs = $6; mldefs = Some $7 } }
 
 BnfDefs :
 /* empty */ { [] }

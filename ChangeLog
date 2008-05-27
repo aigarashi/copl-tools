@@ -1,3 +1,10 @@
+2008-05-28  Atsushi Igarashi  <igarashi@localhost>
+
+	* gmc/{syntax.ml, syntax.mli, parser.mly, lexer.mll, main.ml}: .gm
+	  file now allows ML code at the end of the file with the tag
+	  "[ML]".  The code will be inserted before generated functions so
+	  that they can be referred to by rules of the game.
+
 2008-05-18  Atsushi Igarashi  <igarashi@localhost>
 
 	* checker/TypingML5: new game for typing ML5 expressions.  ML

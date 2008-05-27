@@ -20,13 +20,14 @@ let emit_game (g : Syntax.game) =
   let env = Env.of_game g in
     printf "(* @["; 
     Syntax.Env.print_env env;
-    printf "@] *)"; print_newline(); print_newline();
+    printf "@] *)\n\n";
   print_string "open MySupport.Error"; print_newline ();
   print_string "open MySupport.Pervasives"; print_newline ();
   print_string "open Derivation"; print_newline ();
   Emit.typedef env std_formatter g.syndefs; print_newline ();
   Emit.jdgdef env std_formatter g.jdgdecls; print_newline ();
   print_newline();
+  (match g.mldefs with Some s -> print_string s; print_newline() | None -> ());
   Emit.rules env std_formatter g.ruledefs;
   print_newline ();  print_newline ();
 
