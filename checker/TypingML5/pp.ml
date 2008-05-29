@@ -101,7 +101,9 @@ let rec print_exp ppf e =
 	    print_exp e1
 	    print_exp e2
       | Nil -> pr ppf "[]"
-      | Cons(e1, e2) -> pr ppf "%a :: %a" print_exp e1 print_exp e2
+      | Cons(e1, e2) -> pr ppf "%a :: %a" 
+	    (with_paren_L print_exp e) e1 
+	    (with_paren_R print_exp e) e2
       | Match(e1, e2, x, y, e3) ->
 	  pr ppf "match %a with [] -> %a | %s :: %s -> %a"
 	    print_exp e1

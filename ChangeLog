@@ -1,5 +1,26 @@
+2008-05-29  Atsushi Igarashi  <igarashi@localhost>
+
+	* ML6: new game for ML6 (pattern matching).
+	* test.sh: new cases for ML6.
+
+	* gmc/mySupport.ml (Pervasives.iteri): New function.  Iteration
+	over a list with index (the first element is indexed by 1).
+	
+	* ML5/pp.ml (print_exp): Recovering missing parens for cons.
+	* TypingML5/pp.ml (print_exp): Ditto.
+
+	* gmc/emit.ml (emit_exp_of_premises): If a side condition of the
+	form `$o = ...` contains a fresh metavariable $o, 'let $o = ...'
+	is generated.  $o will be compared with other, later occurrences
+	of the same variable.
+
 2008-05-28  Atsushi Igarashi  <igarashi@localhost>
 
+	* gmc/emit.ml (emit_pat_of_derivs): Side conditions are also given
+	their own index numbers (but not printed in the pattern).  This
+	will allow some metavars in side conditions to appear as declaration
+	in the emitted code.
+	
 	* gmc/{syntax.ml, syntax.mli, parser.mly, lexer.mll, main.ml}: .gm
 	  file now allows ML code at the end of the file with the tag
 	  "[ML]".  The code will be inserted before generated functions so

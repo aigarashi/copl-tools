@@ -35,7 +35,7 @@ module Rules :
       int ->
       (id * decl) list ->
       Format.formatter -> judgment -> (id, int) Hashtbl.t
-    val emit_pat_of_derivs : Format.formatter -> int -> unit
+    val emit_pat_of_derivs : Format.formatter -> Syntax.premise list -> unit
     val merge_tables :
       ('a, 'b list) Hashtbl.t -> ('a, int) Hashtbl.t -> 'b -> unit
     val emit_exp_of_premises :

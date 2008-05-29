@@ -169,10 +169,12 @@ struct
       pf ppf "@]";
       tbl
 
-  let emit_pat_of_derivs ppf n =
-    let rec loop ppf i =
-      if i <= n then begin pf ppf "_d%d_;@ " i; loop ppf (i+1) end
-    in pf ppf "@[@ @ [@[%a@]]@]" loop 1
+  let emit_pat_of_derivs ppf prems =
+    let rec aux ppf i prem =
+      match prem with
+	  J _ -> pf ppf "_d%d_;@ " i
+	| Qexp _ -> ()
+    in pf ppf "@[@ @ [@[%a@]]@]" (fun ppf -> iteri (aux ppf)) prems
 
   let merge_tables master local i =
     let aux id n = (* for each item (id, n) in local *)
@@ -203,26 +205,32 @@ struct
 	pf ppf ")@]"
     | Qexp s :: rest ->
 	let b = Buffer.create (String.length s + 10) in
+	let freshvarp = ref false in
 	let subst s = 
 	  try 
 	    match Hashtbl.find tbl s with 
-		i :: _ -> (String.make i '_') ^ s
+		j :: _ -> (String.make j '_') ^ s
 	      | _ -> raise Not_found
 	  with Not_found -> 
-	    failwith ("emit_exp_of_premises: " ^
+	    (* found a fresh variable, which is assumed to be on lhs *)
+	    Hashtbl.replace tbl s [i];
+	    freshvarp := true; 
+	    (String.make i '_') ^ s
+(*	    failwith ("emit_exp_of_premises: " ^
 			s ^ " doesn't appear in preceding premises")
+*)
 	in
 	  Buffer.add_substitute b subst s;
-	  pf ppf 
-	    "@[if @[%s@]@ then %a@ else errAt _p_ \"Wrong rule application: %s\"@]" 
-	    (Buffer.contents b)
-	    (emit_exp_of_premises i rn tbl env) rest
-	    rn
-
-  let rec count_jdg = function
-      [] -> 0
-    | J _ :: rest -> 1 + count_jdg rest
-    | _ :: rest -> count_jdg rest
+	  if !freshvarp then
+	    pf ppf "@[let @[%s@]@ in@ %a@]" 
+	      (Buffer.contents b)
+	      (emit_exp_of_premises (i+1) rn tbl env) rest
+	  else
+	    pf ppf 
+	      "@[if @[%s@]@ then %a@ else errAt _p_ \"Wrong rule application: %s\"@]" 
+	      (Buffer.contents b)
+	      (emit_exp_of_premises (i+1) rn tbl env) rest
+	      rn
 
   let emit_clause_of_rule env ppf r =
     pf ppf "| @[<4>%a ->@ " emit_pat_of_rule r.rname;
@@ -237,7 +245,7 @@ struct
         begin
   	  pf ppf "@[<v>@[match _derivs_ with@]@ ";
 	  pf ppf "@[<2>%a ->@ %a@]@ "
-	    emit_pat_of_derivs (count_jdg r.rprem)
+	    emit_pat_of_derivs r.rprem
 	    (emit_exp_of_premises 1 r.rname tbl env) r.rprem;
 	  pf ppf "@[| _ -> errAt _p_ \"The number of premises is wrong: %s\"@]@]" r.rname;
 	end;
@@ -381,9 +389,12 @@ struct
 	  let (incats, outcats) = Syntax.Env.lookup_jcon env jdg.pred in
 	  let outargs = drop (List.length incats) jdg.args in
 	  let ts = List.map2 (fun x y -> (x, y)) outcats outargs in 
-	    pf ppf "%s(@[%a,@ %a@])" jdg.pred
-	      (emit_comseq (fun ppf _ -> pp_print_string ppf "_")) incats
-	      (emit_comseq (fun ppf (cat, t) -> Rules.emit_term 0 tbl env cat ppf t)) ts
+	    pf ppf "%s(@[%a" jdg.pred
+	      (emit_comseq (fun ppf _ -> pp_print_string ppf "_")) incats;
+	    (match ts with [] -> pf ppf "@])"
+	       | _ -> 
+		   pf ppf ",@ %a@])"
+		     (emit_comseq (fun ppf (cat, t) -> Rules.emit_term 0 tbl env cat ppf t)) ts)
 	with Not_found -> failwith ("emit_pat_of_jdg_out: " ^ jdg.pred ^ " not found")
 
   let emit_jdg env ppf = function

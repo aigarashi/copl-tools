@@ -10,6 +10,27 @@ let with_paren lt ppf_e e_up ppf e =
   let (<) = lt in
   if e < e_up then pr ppf "(%a)" ppf_e e else pr ppf "%a" ppf_e e
 
+(* precedence for patterns *)
+(* if p is the left operand of p_up, do you need parentheses for p? *)
+let (<) p p_up = match p, p_up with
+  | ConsP(_,_), ConsP(_,_) -> true
+  | _ -> false
+
+(* if p is the right operand of p_up, do you need parentheses for p? *)
+let (>) p_up p = false
+
+let rec print_pat ppf p = 
+  let with_paren_L = with_paren (<) 
+  and with_paren_R = with_paren (fun p_up p -> p > p_up) in
+    match p with
+	Pat_of_string x -> pr ppf "%s" x
+      | WildP -> pr ppf "_"
+      | NilP -> pr ppf "[]"
+      | ConsP(p1,p2) -> 
+	  pr ppf "%a :: %a" 
+	    (with_paren_L print_pat p) p1 
+	    (with_paren_R print_pat p) p2
+
 (* precedence for expressions *)
 (* if e is the left operand of e_up, do you need parentheses for e? *)
 let (<) e e_up = match e, e_up with
@@ -24,13 +45,13 @@ let (<) e e_up = match e, e_up with
   | Let(_, _, _),                     BinOp(_, _, _)
   | Abs(_, _),                        BinOp(_, _, _)
   | LetRec(_, _, _, _),               BinOp(_, _, _)
-  | Match(_, _, _, _, _),             BinOp(_, _, _)
+  | Match(_, _),                      BinOp(_, _, _)
   | BinOp(_, _, _),                   App(_, _)
   | If(_, _, _),                      App(_, _)
   | Let(_, _, _),                     App(_, _)
   | Abs(_, _),                        App(_, _)
   | LetRec(_, _, _, _),               App(_, _)
-  | Match(_, _, _, _, _),             App(_, _)
+  | Match(_, _),                      App(_, _)
   | Cons(_, _),                       App(_, _)
   | BinOp(Lt, _, _),                  Cons(_,_)
   | If(_, _, _),                      Cons(_, _)
@@ -38,7 +59,7 @@ let (<) e e_up = match e, e_up with
   | Abs(_, _),                        Cons(_, _)
   | LetRec(_, _, _, _),               Cons(_, _)
   | Cons(_,_),                        Cons(_, _)
-  | Match(_, _, _, _, _),             Cons(_, _)
+  | Match(_, _),                      Cons(_, _)
       -> true
   | Exp_of_int i,                     App(_, _) when is_negative i -> true
   | _ -> false
@@ -56,7 +77,7 @@ let (>) e_up e = match e_up, e with
   | App(_, _),                   Let(_, _, _)
   | App(_, _),                   Abs(_, _)
   | App(_, _),                   LetRec(_, _, _, _)
-  | App(_, _),                   Match(_, _, _, _, _)
+  | App(_, _),                   Match(_, _)
   | App(_, _),                   Cons(_, _)
   | BinOp(Mult, _, _),           (BinOp(_, _, _) | Cons(_, _))
   | BinOp((Plus | Minus), _, _), (BinOp((Plus | Minus | Lt), _, _) | Cons(_, _))
@@ -105,13 +126,22 @@ let rec print_exp ppf e =
 	  pr ppf "%a :: %a" 
 	    (with_paren_L print_exp e) e1 
 	    (with_paren_R print_exp e) e2
-      | Match(e1, e2, x, y, e3) ->
-	  pr ppf "match %a with [] -> %a | %s :: %s -> %a"
-	    print_exp e1
-	    print_exp e2
-	    x
-	    y
-	    print_exp e3
+      | Match(e, c) ->
+	  pr ppf "match %a with %a"
+	    print_exp e
+	    print_clause c
+
+and print_clause ppf c =
+  let rec loop ppf c = 
+    match c with 
+	EmptyC -> ()
+      | AddC(p, e, c') -> 
+	  pr ppf " | %a -> %a%a" print_pat p print_exp e loop c'
+  in
+    match c with 
+	EmptyC -> ()
+      | AddC(p, e, c') -> 
+	  pr ppf " %a -> %a%a" print_pat p print_exp e loop c'
 
 (* precedence for values *)
 (* if v is the left operand of v_up, do you need parentheses for v? *)
@@ -147,6 +177,10 @@ and print_val ppf v =
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "@[@[%a@]@ |- @[%a@] evalto %a@]" print_env env print_exp e print_val v
+  | Matches (v, p, Res_of_Env env) ->
+      pr ppf "@[@[%a@] matches @[%a@] when @[%a@]@]" print_val v print_pat p print_env env
+  | Matches (v, p, Fail) ->
+      pr ppf "@[@[%a@] doesn't match @[%a@]@]" print_val v print_pat p
   | AppBOp (Lt, v1, v2, Value_of_bool true) ->
       pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
   | AppBOp (Lt, v1, v2, Value_of_bool false) ->
@@ -158,6 +192,8 @@ let print_judgment ppf = function
 let print_pjudgment ppf = function
     In_EvalTo (env, e) ->
       pr ppf "@[%a@]@ |- %a evalto ?" print_env env print_exp e 
+  | In_Matches (v, p) ->
+      pr ppf "@[@[%a@] matches @[%a@] when ?@]" print_val v print_pat p
   | In_AppBOp (Lt, v1, v2) ->
       pr ppf "%a is less than %a ?" print_val v1 print_val v2
   | In_AppBOp (p, v1, v2) -> 
@@ -167,6 +203,10 @@ let print_pjudgment ppf = function
 let tex_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "\\EvalTo{%a}{%a}{%a}" print_env env print_exp e print_val v
+  | Matches (v, p, Res_of_Env env) ->
+      pr ppf "\\Matches{%a}{%a}{%a@}" print_val v print_pat p print_env env
+  | Matches (v, p, Fail) ->
+      pr ppf "\\NoMatch{%a}{%a}" print_val v print_pat p
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "mult" | Lt -> "lt" 
       in pr ppf "\\AppBOp{%a}{%s}{%a}{%a}" print_val v1 op print_val v2 print_val v3

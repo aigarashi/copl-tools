@@ -55,4 +55,11 @@ struct
   let rec pop n s acc =
     if n = 0 then acc
     else let top = Stack.pop s in pop (n-1) s (top :: acc)
+
+  let iteri f l =
+    let rec loop n l =
+      match l with
+	  [] -> ()
+	| x :: l' -> f n x; loop (n+1) l'
+    in loop 1 l
 end
