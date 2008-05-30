@@ -14,7 +14,9 @@ b in bool
 
 x,y in string
 
-t in Types ::= TyBool | TyInt | TyFun(t,t)
+a in string
+
+t in Types ::= TyVar(a) | TyBool | TyInt | TyFun(t,t)
 
 env in Env ::= Empty
             |  Bind(env,x,t)

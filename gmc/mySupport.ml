@@ -62,4 +62,9 @@ struct
 	  [] -> ()
 	| x :: l' -> f n x; loop (n+1) l'
     in loop 1 l
+
+  let rec pos a l = 
+    match l with
+	[] -> raise Not_found
+      | a' :: rest -> if a = a' then 1 else 1 + pos a rest
 end

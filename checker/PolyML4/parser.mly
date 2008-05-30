@@ -21,19 +21,18 @@ let errAt i s =
 %token <int> INTL
 
 /* ML1 */
-%token PLUS MINUS MULT /* EVALTO IS LESS THAN NOT */
+%token PLUS /* EVALTO */ MINUS MULT /* IS LESS THAN NOT */
 %token AST CROSS HYPHEN LT
 
+/* ML2 */
 %token IF THEN ELSE TRUE FALSE
 
-/* ML2 */
+/* ML3 */
 %token VDASH COMMA
 %token LET EQ IN 
 
-/* ML3 */
-%token FUN RARROW
-
 /* ML4 */
+%token FUN RARROW
 %token REC
 
 /* TypingML2 */
@@ -42,6 +41,9 @@ let errAt i s =
 
 /* TypingML4 */
 %token PRIME
+
+/* PolyML4 */
+%token ALL
 
 %start toplevel partialj
 %type <Core.judgment Derivation.t> toplevel
@@ -75,7 +77,7 @@ Derivs:
   | Derivation error { errAt 2 "Syntax error: unmatched brace, or semicolon forgotten?" }
 
 Judgment: 
-    Env VDASH Exp COLON Type { Typing($1, $3, $5) }
+    Env VDASH Exp COLON Type { Typing($1, $3, $5 []) }
   | Env VDASH Exp error { errAt 4 "Syntax error: colon expected" }
   | Env VDASH Exp COLON error { errAt 5 "Syntax error: type expression expected" }
 
@@ -86,11 +88,11 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | Env2 LCID COLON Type { Bind($1, $2, $4) }
+  | Env2 LCID COLON TypeScheme { Bind($1, $2, $4) }
 
 Env2:
     /* empty */ { Empty } 
-  | Env2 LCID COLON Type COMMA { Bind($1, $2, $4) }
+  | Env2 LCID COLON TypeScheme COMMA { Bind($1, $2, $4) }
   
 Exp:
   | LongExp { $1 }
@@ -144,14 +146,31 @@ AExp:
   | LPAREN Exp RPAREN { $2 }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
+TyVarDecls:
+    PRIME LCID { [$2] }
+  | PRIME LCID COMMA TyVarDecls { $2 :: $4 }
+
+TypeScheme:
+    Type { TyScheme_of_Types ($1 []) }
+  | ALL LPAREN TyVarDecls RPAREN LBRACKET Type RBRACKET { 
+	let i = List.length $3 in
+        TyScheme(i, $6 $3)
+    }
+
 Type:
-    AType { $1 }
-  | AType RARROW Type { TyFun($1, $3) }
+    AType { fun ids -> $1 ids }
+  | AType RARROW Type { 
+      fun ids -> let ty1 = $1 ids and ty2 = $3 ids in TyFun(ty1, ty2) 
+    }
 
 AType:
-    INT { TyInt }
-  | BOOL { TyBool }
-  | PRIME LCID { TyVar $2 }
+    INT { fun _ -> TyInt }
+  | BOOL { fun _ -> TyBool }
+  | PRIME LCID { 
+	fun ids -> 
+	  try TyBVar(MySupport.Pervasives.pos $2 ids) 
+	  with Not_found -> TyFVar $2 
+    }
   | LPAREN Type RPAREN { $2 }
   | LPAREN Type error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
     

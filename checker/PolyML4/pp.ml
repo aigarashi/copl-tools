@@ -15,6 +15,7 @@ let with_paren lt ppf_e e_up ppf e =
 let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
     BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _) 
+  | If(_, _, _),                      BinOp(Mult, _, _)
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _) 
   | If(_, _, _),                      BinOp(_, _, _)
   | Let(_, _, _),                     BinOp(_ , _, _)
@@ -39,7 +40,6 @@ let (>) e_up e = match e_up, e with
   | App(_, _),                   If(_, _, _)
   | App(_, _),                   Let(_, _, _)
   | App(_, _),                   Abs(_, _)
-  | App(_, _),                   LetRec(_, _, _, _)
   | BinOp(Mult, _, _),           BinOp(_, _, _)
   | BinOp((Plus | Minus), _, _), BinOp((Plus | Minus | Lt), _, _)
       -> true
@@ -88,27 +88,56 @@ let (<) t t_up = match t, t_up with
   | TyFun(_,_),  TyFun(_,_) -> true
   | _ -> false
 
-(* if t is the right operand of t_up, do you need parentheses for t? *)
+(* if t is the right operand of t_up, do you need parentheses for e? *)
 let (>) t_up t = false
 
-let rec pp_type ppf t = 
+let rec pp_type_aux ids ppf t = 
   let with_paren_L = with_paren (<) 
   and with_paren_R = with_paren (fun e_up e -> e > e_up) in
     match t with
 	TyInt -> pp_print_string ppf "int"
       | TyBool -> pp_print_string ppf "bool"
-      | TyVar a -> pr ppf "'%s" a
+      | TyFVar a -> pr ppf "'%s" a
+      | TyBVar i -> pr ppf "'%s" (List.nth ids i)
       | TyFun(t1, t2) -> 
 	  pr ppf "%a -> %a"
-	    (with_paren_L pp_type t) t1
-	    (with_paren_R pp_type t) t2
+	    (with_paren_L (pp_type_aux ids) t) t1
+	    (with_paren_R (pp_type_aux ids) t) t2
+
+let pp_type ppf t = pp_type_aux [] ppf t
+
+let rec pickfreshname seed ids =
+  let rec name_of_seed i = 
+    let rec aux i = 
+      if is_negative (i - 26) then [char_of_int (i + 97)]
+      else char_of_int (i mod 26 + 97) :: aux (i / 26) in
+    let b = Buffer.create 16 in
+      List.iter (fun c -> Buffer.add_char b c) (aux i);
+      Buffer.contents b
+  in
+  let newname = name_of_seed seed in
+    if List.mem newname ids then pickfreshname (seed + 1) ids
+    else (seed + 1, newname)
+
+let rec pickfreshnames i seed ids =
+  if i = 0 then []
+  else let (newseed, name) = pickfreshname seed ids in
+	 name :: pickfreshnames (i-1) newseed (name::ids)
+
+let pp_typescheme ppf tysc =
+  match tysc with
+      TyScheme_of_Types ty -> pp_type ppf ty
+    | TyScheme(i, ty) -> 
+	let fvs = fv_ty ty in
+	let newnames = pickfreshnames i 0 fvs in
+	  pp_type_aux newnames ppf ty
 
 let rec print_env ppf = function
     Empty -> ()
-  | Bind(env',x,t) -> pr ppf "%a%s : %a" print_env' env' x pp_type t
+  | Bind(env',x,t) -> pr ppf "%a%s : %a" print_env' env' x pp_typescheme t
 and print_env' ppf = function
   | Empty -> ()
-  | Bind(env',x,t) -> pr ppf "%a%s : %a,@ " print_env' env' x pp_type t
+  | Bind(env',x,t) -> pr ppf "%a%s : %a,@ " print_env' env' x pp_typescheme t
 
 let print_judgment ppf = function
     Typing (env, e, t) -> 
@@ -117,6 +146,7 @@ let print_judgment ppf = function
 let print_pjudgment ppf = function
     In_Typing (env, e) ->
       pr ppf "@[%a@]@ |- %a : ?" print_env env print_exp e 
+
 
 let tex_judgment ppf = function
     Typing (env, e, t) -> 

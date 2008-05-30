@@ -1,3 +1,17 @@
+2008-05-30  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* PolyML4: new game for polymorphic typing.  Probably unfinished.
+	* TypingML4: type variables (named by a prime follewed by an
+	alphanumeric name) are added.
+	
+	* checker/lexer.mll: identifiers can now begin with an underscore.
+	An apostrophe can be part of a symbolic name.  Underscore is
+	removed from charcters for symbolic names.
+
+	* gmc/mySupport.ml (Pervasives.pos): New function. pos a l returns
+	the position of a in l.  If a is not in l, it raises Not_found.
+	The first element is 1.
+
 2008-05-29  Atsushi Igarashi  <igarashi@localhost>
 
 	* ML6: new game for ML6 (pattern matching).

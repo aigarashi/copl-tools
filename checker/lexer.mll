@@ -62,7 +62,7 @@ rule main = parse
 | "(*" { comment 1 lexbuf }
 
 (* lowercase names *)
-| ['a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
+| ['a'-'z' '_'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
     { let name = Lexing.lexeme lexbuf in
       try 
         Hashtbl.find tbl name
@@ -70,7 +70,7 @@ rule main = parse
       _ -> lcid name
      }
 (* alphabetical names *)
-| ['A'-'Z' 'a'-'z']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
+| ['A'-'Z' 'a'-'z' '_']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
     { let name = Lexing.lexeme lexbuf in
       try 
         Hashtbl.find tbl name
@@ -85,7 +85,7 @@ rule main = parse
     }
 
 | ['!' '"' '#' '$' '%' '&' '\'' '*' '+' ',' '-' '.' '/' ':' '<' '=' '>' '+' 
-   '@' '^' '_' '`' '~' '|' '?' ';']+ {
+   '@' '^' '`' '~' '|' '?' ';' '\'']+ {
     let sym = Lexing.lexeme lexbuf in
       try Hashtbl.find tbl sym with _ -> id sym
     }

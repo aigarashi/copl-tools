@@ -42,5 +42,8 @@ let v = [
 
   (* TypingML4 *)
   ("'", PRIME);
+
+  (* PolyML4 *)
+  ("All", ALL);
 ] 
 

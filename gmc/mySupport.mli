@@ -15,4 +15,5 @@ module Pervasives :
     val drop : int -> 'a list -> 'a list
     val pop : int -> 'a Stack.t -> 'a list -> 'a list
     val iteri : (int -> 'a -> unit) -> 'a list -> unit
+    val pos : 'a -> 'a list -> int
   end
