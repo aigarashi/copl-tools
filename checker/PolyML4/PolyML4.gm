@@ -102,16 +102,17 @@ exception Not_match
 let inst tysc ty =  (* ty doesn't contain TyBVar *)
   let rec aux subst tysc ty =
     match tysc, ty with
-        TyFVar(a), TyFVar(a') -> if a = a' then subst else raise Not_match
-      | TyBVar(i), ty -> 
+        TyFVar a, TyFVar a' -> if a = a' then subst else raise Not_match
+      | TyBVar i, ty -> 
 	  (try 
 	      if List.assoc i subst = ty then subst
 	      else raise Not_match 
 	    with Not_found -> (i, ty)::subst)
-      | TyBool, TyBool -> subst
+      | TyBool, TyBool 
       | TyInt, TyInt -> subst
       | TyFun(t11, t12), TyFun(t21, t22) -> aux (aux subst t11 t21) t12 t22 
-      | _ -> err "inst: Implementation error!"
+      | _, TyBVar _ -> err "inst: Implementation error!"
+      | _ -> raise Not_match 	
   in
     let TyScheme_of_Types tysc | TyScheme(_, tysc) = tysc in
     try let _ = aux [] tysc ty in true with Not_match -> false

@@ -1,1 +1,1 @@
-/home/lab8/igarashi/work/books/CoPL/tools/checker/common/keywords.mli
+../common/keywords.mli

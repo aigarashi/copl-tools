@@ -98,7 +98,7 @@ let rec pp_type_aux ids ppf t =
 	TyInt -> pp_print_string ppf "int"
       | TyBool -> pp_print_string ppf "bool"
       | TyFVar a -> pr ppf "'%s" a
-      | TyBVar i -> pr ppf "'%s" (List.nth ids i)
+      | TyBVar i -> pr ppf "'%s" (List.nth ids (i-1))
       | TyFun(t1, t2) -> 
 	  pr ppf "%a -> %a"
 	    (with_paren_L (pp_type_aux ids) t) t1
@@ -124,13 +124,24 @@ let rec pickfreshnames i seed ids =
   else let (newseed, name) = pickfreshname seed ids in
 	 name :: pickfreshnames (i-1) newseed (name::ids)
 
+let rec pp_tyvardecls ppf names =
+  match names with 
+      [] -> ()
+    | name::rest -> pr ppf ", '%s%a" name pp_tyvardecls rest
+let pp_tyvardecls ppf names =
+  match names with
+      [] -> MySupport.Error.err "pp_tyvardecls': empty type vars"
+    | name::rest -> pr ppf "'%s%a" name pp_tyvardecls rest
+
 let pp_typescheme ppf tysc =
   match tysc with
       TyScheme_of_Types ty -> pp_type ppf ty
     | TyScheme(i, ty) -> 
 	let fvs = fv_ty ty in
 	let newnames = pickfreshnames i 0 fvs in
-	  pp_type_aux newnames ppf ty
+	  pr ppf "All(%a)[%a]" 
+	    pp_tyvardecls newnames
+	    (pp_type_aux newnames) ty
 
 let rec print_env ppf = function
     Empty -> ()
@@ -141,7 +152,7 @@ and print_env' ppf = function
 
 let print_judgment ppf = function
     Typing (env, e, t) -> 
-      pr ppf "@[@[%a@]@ |- @[%a@]@ : %a@]" print_env env print_exp e pp_type t
+      pr ppf "@[@[%a@]@ |-@ @[@[%a@]@ : %a@]@]" print_env env print_exp e pp_type t
 
 let print_pjudgment ppf = function
     In_Typing (env, e) ->

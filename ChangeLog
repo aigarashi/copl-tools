@@ -1,3 +1,22 @@
+2008-05-30  Atsushi Igarashi  <igarashi@localhost>
+
+	* TypingML2/pp.ml (print_judgment): formatting change.
+
+	* TypingML4/pp.ml (print_judgment): formatting change.
+
+	* PolyML4/PolyML4.gm (inst): bug fix.  RHS shouldn't be a bound
+	type variable.
+
+	* PolyML4/pp.ml (pp_type_aux): List.nth counts elements of a list
+	from 0.
+	
+	* PolyML4/pp.ml (pp_tyvardecls): new function(s) to print a type
+	scheme correctly.
+	
+	* lexer.mll: Only uppercase names can contain hyphens. It prevents
+	'a->'a from being parsed as "'" "a-" ">".  An apostorophe or comma
+	cannot be a part of (long) symbolic names.
+
 2008-05-30  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* PolyML4: new game for polymorphic typing.  Probably unfinished.

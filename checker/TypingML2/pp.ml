@@ -67,7 +67,7 @@ and print_env' ppf = function
 
 let print_judgment ppf = function
     Typing (env, e, t) -> 
-      pr ppf "@[@[%a@]@ |- @[%a@]@ : %a@]" print_env env print_exp e print_type t
+      pr ppf "@[@[%a@]@ |-@ @[@[%a@]@ : %a@]@]" print_env env print_exp e print_type t
 
 let print_pjudgment ppf = function
     In_Typing (env, e) ->

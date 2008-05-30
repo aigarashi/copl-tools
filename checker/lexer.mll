@@ -70,7 +70,8 @@ rule main = parse
       _ -> lcid name
      }
 (* alphabetical names *)
-| ['A'-'Z' 'a'-'z' '_']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
+| ['A'-'Z' 'a'-'z' '_']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
+| ['A'-'Z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
     { let name = Lexing.lexeme lexbuf in
       try 
         Hashtbl.find tbl name
@@ -84,8 +85,8 @@ rule main = parse
 	id (String.sub name 1 (String.length name - 2))
     }
 
-| ['!' '"' '#' '$' '%' '&' '\'' '*' '+' ',' '-' '.' '/' ':' '<' '=' '>' '+' 
-   '@' '^' '`' '~' '|' '?' ';' '\'']+ {
+| ['!' '"' '#' '$' '%' '&' '*' '+' '-' '.' '/' ':' '<' '=' '>' '+' 
+   '@' '^' '`' '~' '|' '?' ';']+ | "\'" | "," {
     let sym = Lexing.lexeme lexbuf in
       try Hashtbl.find tbl sym with _ -> id sym
     }
