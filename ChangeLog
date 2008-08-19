@@ -1,3 +1,7 @@
+2008-08-19  Atsushi Igarashi  <igarashi@localhost>
+
+	* cgi/: New directory for Scheme cgi scripts for web interface.
+
 2008-08-15  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/main.ml, common/link.ml, */parser.mly:
