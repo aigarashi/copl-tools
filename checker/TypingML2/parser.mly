@@ -34,8 +34,9 @@ let errAt i s =
 %token INT BOOL
 %token COLON
 
-%start toplevel partialj
+%start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
+%type <Core.judgment> judgment
 
 %token QM /* stands for question mark to specify holes in a judgment */
 %type <Core.in_judgment> partialj
@@ -46,12 +47,15 @@ toplevel:
     Derivation { $1 }
   | EOF { exit 0 }
 
+judgment: Judgment { $1 }
+
 Derivation: 
     Judgment BY RName LBRACE RBRACE
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY RName LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: a rule name expected" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -78,10 +82,15 @@ partialj :
 Env:
     /* empty */ { Empty } 
   | Env2 LCID COLON Type { Bind($1, $2, $4) }
+  | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
+  | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
 
 Env2:
     /* empty */ { Empty } 
   | Env2 LCID COLON Type COMMA { Bind($1, $2, $4) }
+  | Env2 LCID COLON Type error { errAt 5 "Syntax error: ',' expected" }
+  | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
+  | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
   
 Exp:
   | LongExp { $1 }
@@ -93,6 +102,17 @@ Exp:
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let($2, $4, $6) }
+
+  /* error handling */
+  | IF Exp THEN Exp ELSE error { 
+	errAt 6 "Syntax error: expression expected after else" }
+  | IF Exp THEN error { errAt 4 "Syntax error: expression expected after then" }
+  | IF error { errAt 2 "Syntax error: expression expected after if" }
+  | LET LCID EQ Exp IN error { 
+	errAt 6 "Syntax error: expression expected after in" }
+  | LET LCID EQ error { 
+	errAt 4 "Syntax error: expression expected after =" }
+  | LET error { errAt 2 "Syntax error: lowercase identifier or 'rec' expected after let" }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }

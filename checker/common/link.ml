@@ -1,4 +1,5 @@
 open Lexing
+open MySupport.Error
 
 module Lexer = Lexer.Make(
     struct
@@ -27,7 +28,7 @@ module Lexer = Lexer.Make(
     end
   )
 
-let check_deriv lexbuf fullp texp =
+let check_deriv lexbuf fullp texp ?against =
   let d = Parser.toplevel Lexer.main lexbuf in
   let j = Core.check_deriv d in
     (match fullp, texp with
@@ -39,7 +40,14 @@ let check_deriv lexbuf fullp texp =
 	  Pp.tex_judgment Format.std_formatter d.Derivation.conc
       | false, false ->
 	  Pp.print_judgment Format.std_formatter d.Derivation.conc);
-    Format.print_newline()
+    Format.print_newline();
+    match against with 
+	None -> () 
+      | Some s ->
+	  Format.fprintf Format.std_formatter "against %s" s;
+	  let j' = Parser.judgment Lexer.main (Lexing.from_string s) in
+	    if j <> j' then 
+	      err ("The conclusion of the whole judgment is wrong.\nIt should be " ^ s)
 
 let make_deriv lexbuf fullp texp =
   let j = Parser.partialj Lexer.main lexbuf in

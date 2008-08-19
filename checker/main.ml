@@ -7,12 +7,16 @@ let commandname = "checker"
 let filenames = ref []  (* the name of the input file *)
 let gname = ref ""     (* the name of a game *)
 let jdg = ref ""       (* the judgment to prove *)
+let deriv = ref ""     (* the derivation to check *)
+let concl = ref ""     (*  against this judgment *)
 
 let fullp = ref false  (* controls whether full derivations are shown *)
 let texp = ref false   (* controls whether output is in TeX *)
 
 let spec = [
     ("-full", Arg.Set fullp, "Display full derivations");
+    ("-check", Arg.Set_string deriv, "Derivation to check");
+    ("-against", Arg.Set_string concl, "Expected conclusion");
     ("-TeX", Arg.Set texp, "Output in TeX");
     ("-game", Arg.Set_string gname, "Specify the name of a game");
     ("-prove", Arg.Set_string jdg, "Proving mode; followed by the judgment to prove");
@@ -45,27 +49,28 @@ Usage: %s -game gamename [-full] [-TeX] [filename ...]
 	try List.assoc !gname games with 
 	    Not_found -> failwith ("No such game: " ^ !gname) in
 	if !jdg = "" then (* checker mode *)
-	  begin
-	    let make_lexbuf s = 
-	      let lexbuf = Lexing.from_channel (open_in s) in
-	      let pos = lexbuf.lex_curr_p in
-		lexbuf.lex_curr_p <- { pos with pos_fname = s};
-		lexbuf 
-	    in
-	    let rec loop lexbufs = match lexbufs with
-		[] -> ()
-	      | lexbuf::rest ->
-		  while true do
-		    check_deriv lexbuf !fullp !texp;
-		  done;
-		  loop rest
-	    in 
-	    let lexbufs = 
+	  let against = if !concl = "" then None else Some !concl in
+	  let make_lexbuf s = 
+	    let lexbuf = Lexing.from_channel (open_in s) in
+	    let pos = lexbuf.lex_curr_p in
+	      lexbuf.lex_curr_p <- { pos with pos_fname = s};
+	      lexbuf 
+	  in
+	  let rec loop lexbufs = match lexbufs with
+	      [] -> ()
+	    | lexbuf::rest ->
+		while true do
+		  check_deriv lexbuf !fullp !texp ?against;
+		done;
+		loop rest
+	  in 
+	  let lexbufs = 
+	    if !deriv = "" then (* read from files / stdin *)
 	      match !filenames with
 		  [] -> [Lexing.from_channel stdin]
-		| _ -> List.rev_map make_lexbuf !filenames in
-	      loop lexbufs
-	  end
+		| _ -> List.rev_map make_lexbuf !filenames 
+	    else [Lexing.from_string !deriv]
+	  in loop lexbufs
 	    
 	else (* -prove mode*)
 	  let lexbuf = Lexing.from_string !jdg in

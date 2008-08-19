@@ -1,3 +1,16 @@
+2008-08-15  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/main.ml, common/link.ml, */parser.mly:
+	New option "-against" to matchthe proved judment.
+	
+	* checker/main.ml: New option "-check" followed by the string of
+	the derivation to check.
+
+2008-08-14  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/lexer.mll: '\r' should be included in the set of chars
+	to be ignored.  Otherwise invocation through CGI doesn't work.
+
 2008-05-30  Atsushi Igarashi  <igarashi@localhost>
 
 	* TypingML2/pp.ml (print_judgment): formatting change.

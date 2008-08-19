@@ -21,18 +21,19 @@ let errAt i s =
 %token <int> INTL
 
 /* ML1 */
-%token PLUS /* EVALTO */ MINUS MULT /* IS LESS THAN NOT */
+%token PLUS MINUS MULT /* EVALTO IS LESS THAN NOT */
 %token AST CROSS HYPHEN LT
 
-/* ML2 */
 %token IF THEN ELSE TRUE FALSE
 
-/* ML3 */
+/* ML2 */
 %token VDASH COMMA
 %token LET EQ IN 
 
-/* ML4 */
+/* ML3 */
 %token FUN RARROW
+
+/* ML4 */
 %token REC
 
 /* TypingML2 */
@@ -45,8 +46,9 @@ let errAt i s =
 /* PolyML4 */
 %token ALL
 
-%start toplevel partialj
+%start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
+%type <Core.judgment> judgment
 
 %token QM /* stands for question mark to specify holes in a judgment */
 %type <Core.in_judgment> partialj
@@ -57,12 +59,15 @@ toplevel:
     Derivation { $1 }
   | EOF { exit 0 }
 
+judgment: Judgment { $1 }
+
 Derivation: 
     Judgment BY RName LBRACE RBRACE
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY RName LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: a rule name expected" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -89,10 +94,17 @@ partialj :
 Env:
     /* empty */ { Empty } 
   | Env2 LCID COLON TypeScheme { Bind($1, $2, $4) }
+  | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
+  | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
 
 Env2:
     /* empty */ { Empty } 
+
   | Env2 LCID COLON TypeScheme COMMA { Bind($1, $2, $4) }
+
+  | Env2 LCID COLON Type error { errAt 5 "Syntax error: ',' expected" }
+  | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
+  | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
   
 Exp:
   | LongExp { $1 }
@@ -106,6 +118,31 @@ LongExp:
   | LET LCID EQ Exp IN Exp { Let($2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec($3, $6, $8, $10) }
   | FUN LCID RARROW Exp { Abs($2, $4) }
+
+  /* error handling */
+  | IF Exp THEN Exp ELSE error { 
+	errAt 6 "Syntax error: expression expected after else" }
+  | IF Exp THEN error { errAt 4 "Syntax error: expression expected after then" }
+  | IF error { errAt 2 "Syntax error: expression expected after if" }
+  | LET LCID EQ Exp IN error { 
+	errAt 6 "Syntax error: expression expected after in" }
+  | LET LCID EQ error { 
+	errAt 4 "Syntax error: expression expected after =" }
+  | LET REC LCID EQ FUN LCID RARROW Exp IN error {
+	errAt 10 "Syntax error: expression expected after in" }
+  | LET REC LCID EQ FUN LCID RARROW error { 
+	errAt 8 "Syntax error: expression expected after ->" }
+  | LET REC LCID EQ FUN LCID error {
+	errAt 7 "Syntax error: '->' expected" }
+  | LET REC LCID EQ FUN error { 
+	errAt 6 "Syntax error: lowercase identifier expected" }
+  | LET REC LCID EQ error { errAt 5 "Syntax error: 'fun' expected" }
+  | LET REC LCID error { errAt 4 "Syntax error: '=' expected" }
+  | LET REC error { errAt 3 "Syntax error: lowercase identifier expected" }
+  | LET error { errAt 2 "Syntax error: lowercase identifier or 'rec' expected after let" }
+  | FUN LCID RARROW error { errAt 4 "Syntax error: expression expected" }
+  | FUN LCID error { errAt 3 "Syntax error: '->' expected" }
+  | FUN error { errAt 2 "Syntax error: lowercase identifier expected" }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
@@ -162,6 +199,7 @@ Type:
   | AType RARROW Type { 
       fun ids -> let ty1 = $1 ids and ty2 = $3 ids in TyFun(ty1, ty2) 
     }
+  | AType RARROW error { errAt 3 "Syntax error: type expected after ->" }
 
 AType:
     INT { fun _ -> TyInt }
@@ -171,6 +209,7 @@ AType:
 	  try TyBVar(MySupport.Pervasives.pos $2 ids) 
 	  with Not_found -> TyFVar $2 
     }
+  | PRIME error { errAt 2 "Syntax error: lowercase identifier expected after '" }
   | LPAREN Type RPAREN { $2 }
   | LPAREN Type error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
     

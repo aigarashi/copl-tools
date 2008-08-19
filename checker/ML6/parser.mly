@@ -42,8 +42,9 @@ let errAt i s =
 /* ML6 */
 %token UNDERBAR MATCHES DOESNT WHEN
 
-%start toplevel partialj
+%start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
+%type <Core.judgment> judgment
 
 %token QM /* stands for question mark to specify holes in a judgment */
 %type <Core.in_judgment> partialj
@@ -54,12 +55,15 @@ toplevel:
     Derivation { $1 }
   | EOF { exit 0 }
 
+judgment: Judgment { $1 }
+
 Derivation: 
     Judgment BY RName LBRACE RBRACE
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY RName LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: a rule name expected" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -75,7 +79,7 @@ Derivs:
 
 Judgment: 
     Env VDASH Exp EVALTO Val { EvalTo($1, $3, $5) }
-  | Val MATCHES Pat WHEN Env { Matches($1, $3, Res_of_Env $5) }
+  | Val MATCHES Pat WHEN LPAREN Env RPAREN { Matches($1, $3, Res_of_Env $6) }
   | Val DOESNT MATCH Pat { Matches($1, $4, Fail) }
   | INTL PLUS INTL IS INTL { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | INTL MULT INTL IS INTL { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
@@ -119,11 +123,18 @@ partialj :
 Env:
     /* empty */ { Empty } 
   | Env2 LCID EQ Val { Bind($1, $2, $4) }
+/* error handling */
+  | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
+  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected after :" }
 
 Env2:
     /* empty */ { Empty } 
   | Env2 LCID EQ Val COMMA { Bind($1, $2, $4) }
-  
+/* error handling */
+  | Env2 LCID EQ Val error { errAt 5 "Syntax error: ',' expected" }
+  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected after :" }
+  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
+
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
@@ -199,19 +210,21 @@ AVal:
   | LPAREN Val RPAREN { $2 }
 
 Clauses: 
-    /* empty */ { EmptyC }
-  | Pat RARROW Exp Clauses2 { AddC($1, $3, $4) }
+    Clauses2 Pat RARROW Exp { AddC($2, $4, $1) }
 
 Clauses2:
     /* empty */ { EmptyC }
-  | BAR Pat RARROW Exp Clauses2 { AddC($2, $4, $5) }
+  | Clauses2 Pat RARROW Exp BAR { AddC($2, $4, $1) }
 
 Pat:
     APat { $1 }
   | APat COLCOL Pat { ConsP($1, $3) }
+  | APat COLCOL error { errAt 3 "Syntax error: pattern expected" }
 
 APat:
     LCID { Pat_of_string $1 }
   | LBRACKET RBRACKET { NilP }
   | UNDERBAR { WildP }
   | LPAREN Pat RPAREN { $2 }
+
+  | LPAREN Pat error { errBtw 1 3 "Syntax error: closing paren expected" }

@@ -30,8 +30,9 @@ let errAt i s =
 %token VDASH COMMA
 %token LET EQ IN 
 
-%start toplevel partialj
+%start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
+%type <Core.judgment> judgment
 
 %token QM /* stands for question mark to specify holes in a judgment */
 %type <Core.in_judgment> partialj
@@ -41,6 +42,8 @@ let errAt i s =
 toplevel: 
     Derivation { $1 }
   | EOF { exit 0 }
+
+judgment: Judgment { $1 }
 
 Derivation: 
     Judgment BY RName LBRACE RBRACE
