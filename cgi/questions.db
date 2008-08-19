@@ -1,0 +1,18 @@
+#(;; nat
+					
+  ; learn how to do addition
+  (nat "S(S(Z)) plus Z is S(S(Z))")	
+  (nat "Z plus S(S(Z)) is S(S(Z))")
+  (nat "S(S(Z)) + Z evalto S(S(Z))")
+  (nat "Z + S(S(Z)) evalto S(S(Z))")
+  (nat "S(Z) + S(Z) + S(Z) evalto S(S(S(Z)))")
+  
+  ; lean how to do multiplication
+  (nat "S(S(Z)) mult Z is Z")
+  (nat "S(S(Z)) mult S(Z) is S(S(Z)")
+  (nat "Z mult S(S(Z)) is Z")
+  (nat "S(S(Z)) mult S(S(Z)) is S(S(S(S(Z))")
+  (nat "S(S(S((Z))) + S(S(Z)) * S(Z) evalto S(S(S(S(S(Z)))))")
+  (nat "(S(S(Z)) + S(S(Z))) * Z evalto Z")
+  (nat "Z * (S(S(Z)) + S(S(Z))) evalto Z")
+)
