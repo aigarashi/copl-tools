@@ -150,6 +150,22 @@ LongExp:
   | FUN LCID RARROW Exp { Abs($2, $4) }
   | MATCH Exp WITH Clauses { Match($2, $4) }
 
+NMExp:  
+  /* expression which doesn't end with "match": it appears
+      outside delimiting contexts */
+  | NMLongExp { $1 }
+  | Exp1 { $1 }
+  | Exp1 BinOp1 NMLongExp { BinOp($2, $1, $3) } 
+  | Exp3 COLCOL NMLongExp { Cons($1, $3) }  /* left op. of :: is Exp3 (not Exp2) */
+  | Exp3 BinOp3 NMLongExp { BinOp($2, $1, $3) } 
+  | Exp4 BinOp4 NMLongExp { BinOp($2, $1, $3) } 
+
+NMLongExp: 
+  | IF Exp THEN Exp ELSE NMExp { If($2, $4, $6) }
+  | LET LCID EQ Exp IN NMExp { Let($2, $4, $6) }
+  | LET REC LCID EQ FUN LCID RARROW Exp IN NMExp { LetRec($3, $6, $8, $10) }
+  | FUN LCID RARROW NMExp { Abs($2, $4) }
+
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
   | Exp2 { $1 }
@@ -210,11 +226,8 @@ AVal:
   | LPAREN Val RPAREN { $2 }
 
 Clauses: 
-    Clauses2 Pat RARROW Exp { AddC($2, $4, $1) }
-
-Clauses2:
-    /* empty */ { EmptyC }
-  | Clauses2 Pat RARROW Exp BAR { AddC($2, $4, $1) }
+  | Pat RARROW Exp { AddC($1, $3, EmptyC) }
+  | Pat RARROW NMExp BAR Clauses { AddC($1, $3, $5) }
 
 Pat:
     APat { $1 }

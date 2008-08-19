@@ -11,6 +11,15 @@
 	* checker/lexer.mll: '\r' should be included in the set of chars
 	to be ignored.  Otherwise invocation through CGI doesn't work.
 
+2008-06-14  Atsushi Igarashi  <igarashi@localhost>
+
+	* checker/ML6/parser.mly: Resolved shift/reduce conflict found in
+	nested longexps.
+
+2008-05-31  Atsushi Igarashi  <igarashi@localhost>
+
+	* checker/PolyML4/PolyML4.gm (closure): Fixed a wrong generalization.
+
 2008-05-30  Atsushi Igarashi  <igarashi@localhost>
 
 	* TypingML2/pp.ml (print_judgment): formatting change.

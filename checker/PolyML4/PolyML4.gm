@@ -125,10 +125,10 @@ let closure env ty tysc =
         TyFVar(a), TyFVar(a') -> if a = a' then subst else raise Not_match
       | TyBVar(i), TyFVar(a) -> 
 	  (try 
-	      if List.assoc i subst = a then subst 
+	      if List.assoc a subst = i then subst 
 	      else raise Not_match
 	    with Not_found -> 
-	      if List.mem a fv then raise Not_match else (i, a)::subst)
+	      if List.mem a fv then raise Not_match else (a, i)::subst)
       | TyBool, TyBool -> subst
       | TyInt, TyInt -> subst
       | TyFun(t11, t12), TyFun(t21, t22) -> aux (aux subst t11 t21) t12 t22
