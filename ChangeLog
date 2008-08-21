@@ -1,3 +1,10 @@
+2008-08-21  Atsushi Igarashi  <igarashi@localhost>
+
+	* rules2TeX.scm: Scheme script to format rules in sexp.
+	* gmc/emit.ml (sexp_rules): Generates Scheme definitions:
+	rulenames for the list of rule names and rules for the list
+	of formatted inference rules.
+
 2008-08-21  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* gmc/emit.ml (Emit.SExp): New module to emit rules in sexp forms.

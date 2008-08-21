@@ -357,11 +357,16 @@ let tex_rules rules =
     rules
 
 let sexp_rules rules = 
-  pf std_formatter "(@[<v 1>list";
+  pf std_formatter "(@[<v 1>defire rulenames@ (@[<v 1>list";
+  List.iter (fun r ->
+	       pf std_formatter "@ \"%s\"" r.rname) rules;
+  pf std_formatter "@])@])@.";
+  print_newline();
+  pf std_formatter "(@[<v 1>define rules@ (@[<v 1>list";
   List.iter (fun r -> 
-    pf std_formatter "@ @[<v>%a@]" Rules.SExp.emit r) 
+	       pf std_formatter "@ @[<v>%a@]" Rules.SExp.emit r) 
     rules;
-  pf std_formatter "@])@.";
+  pf std_formatter "@])@])@.";
   
 
 module Prover =
