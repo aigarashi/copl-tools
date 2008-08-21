@@ -1,3 +1,7 @@
+2008-08-22  Atsushi Igarashi  <igarashi@localhost>
+
+	* cgi/Makefile: New file.
+
 2008-08-21  Atsushi Igarashi  <igarashi@localhost>
 
 	* rules2TeX.scm: Scheme script to format rules in sexp.
