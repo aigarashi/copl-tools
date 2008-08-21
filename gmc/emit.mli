@@ -52,6 +52,7 @@ val typedef : Env.t -> Format.formatter -> syndef list -> unit
 val jdgdef : Env.t -> Format.formatter -> (judgment * int) list -> unit
 val rules : Env.t -> Format.formatter -> rule list -> unit
 val tex_rules : rule list -> unit
+val sexp_rules : rule list -> unit
 
 module Prover :
 sig

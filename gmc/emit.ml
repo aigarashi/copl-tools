@@ -267,12 +267,12 @@ struct
       let rec emit_term ppf t = match t with
 	  Var x -> 
 	    let (base, suffix) = Syntax.split_LCID x in
-	      pf ppf "\\metavar@[{%s_{%s}}@]" base suffix
+	      pf ppf "\\mv{%s_{%s}}" base suffix
 	| App (f, ts) -> pf ppf "\\%sTerm@[{%a}@]" f emit_terms ts
       and emit_terms ppf = function
 	  [] -> ()
 	| t :: [] -> emit_term ppf t
-	| t :: rest -> pf ppf "%a}@,{%a" emit_term t emit_terms rest
+	| t :: rest -> pf ppf "%a}@]@,@[{%a" emit_term t emit_terms rest
 
       let emit_qexp ppf s =
 	let b = Buffer.create 30 in
@@ -280,24 +280,66 @@ struct
 	  Buffer.add_substitute b 
 	    (fun s -> 
 	       let (base, suffix) = Syntax.split_LCID s in
-		 "\\metavar{" ^ base ^ "_{" ^ suffix ^ "}}")
+		 "\\mv{" ^ base ^ "_{" ^ suffix ^ "}}")
 	    s;
 	  Buffer.add_char b ')';
 	  pf ppf "%s" (Buffer.contents b)
 
       let rec emit_jdg ppf j = 
-	pf ppf "\\%s{%a}" j.pred emit_terms j.args
+	pf ppf "\\%s@[<2>@[{%a}@]@]" j.pred emit_terms j.args
       and emit_premises ppf = function
 	  [] -> ()
 	| J j :: [] -> emit_jdg ppf j
 	| Qexp q :: [] -> emit_qexp ppf q
 	| J j :: rest -> 
-	    pf ppf "%a@ \\andalso@ %a" emit_jdg j emit_premises rest
+	    pf ppf "@[%a@]@ \\andalso@ %a" emit_jdg j emit_premises rest
 	| Qexp q :: rest -> 
-	    pf ppf "%a@ \\andalso@ %a" emit_qexp q emit_premises rest
+	    pf ppf "@[%a@]@ \\andalso@ %a" emit_qexp q emit_premises rest
 	
       let emit ppf r =
-	pf ppf "@[\\infrule[%s]{%a}{%a}@]" 
+	pf ppf "@[\\infrule[%s]{@;<0 2>@[<v>%a@]@;<0 0>}{@;<0 2>@[<v>%a@]}@]@ " 
+	  r.rname 
+	  emit_premises r.rprem
+	  emit_jdg r.rconc
+	  
+    end
+
+  module SExp =
+    struct
+      let rec emit_term ppf t = match t with
+	  Var x -> 
+	    let (base, suffix) = Syntax.split_LCID x in
+	      pf ppf "(mv \"%s\" \"%s\")" base suffix
+	| App (f, ts) -> pf ppf "(%sTerm@[%a@])" f emit_terms ts
+      and emit_terms ppf = function
+	  [] -> ()
+	| t :: [] -> pf ppf "@ %a" emit_term t
+	| t :: rest -> pf ppf "@ %a@]@[%a" emit_term t emit_terms rest
+
+      let emit_qexp ppf s =
+	let b = Buffer.create 30 in
+(*	  Buffer.add_char b '('; *)
+	  Buffer.add_substitute b 
+	    (fun s -> 
+	       let (base, suffix) = Syntax.split_LCID s in
+		 ",(mv \"" ^ base ^ "\" \"" ^ suffix ^ "\")")
+	    s;
+(*	  Buffer.add_char b ')'; *)
+	  pf ppf "`#\"%s\"" (Buffer.contents b)
+
+      let rec emit_jdg ppf j = 
+	pf ppf "(%s@[<2>@[%a@]@])" j.pred emit_terms j.args
+      and emit_premises ppf = function
+	  [] -> ()
+	| J j :: [] -> pf ppf "@ @[%a@]" emit_jdg j
+	| Qexp q :: [] -> pf ppf "@ @[%a@]" emit_qexp q
+	| J j :: rest -> 
+	    pf ppf "@ @[%a@]%a" emit_jdg j emit_premises rest
+	| Qexp q :: rest -> 
+	    pf ppf "@ @[%a@]%a" emit_qexp q emit_premises rest
+	
+      let emit ppf r =
+	pf ppf "(@[<v 1>infrule@ \"%s\"@;(@[<v 1>list%a@])@;@[<v>%a@]@])" 
 	  r.rname 
 	  emit_premises r.rprem
 	  emit_jdg r.rconc
@@ -310,7 +352,17 @@ and jdgdef = JdgDef.emit
 and rules = Rules.emit
 
 let tex_rules rules = 
-  List.iter (fun r -> Rules.TeX.emit std_formatter r) rules
+  List.iter (fun r -> 
+    pf std_formatter "@[<v>%a@]@." Rules.TeX.emit r) 
+    rules
+
+let sexp_rules rules = 
+  pf std_formatter "(@[<v 1>list";
+  List.iter (fun r -> 
+    pf std_formatter "@ @[<v>%a@]" Rules.SExp.emit r) 
+    rules;
+  pf std_formatter "@])@.";
+  
 
 module Prover =
 struct

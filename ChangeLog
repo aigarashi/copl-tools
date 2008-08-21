@@ -1,3 +1,9 @@
+2008-08-21  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* gmc/emit.ml (Emit.SExp): New module to emit rules in sexp forms.
+	* gmc/emit.ml (sexp_rules): New exported function to emit rules in sexp.
+	* gmc/main.ml: new option -sexp to emit rules in sexp.
+
 2008-08-19  Atsushi Igarashi  <igarashi@localhost>
 
 	* cgi/: New directory for Scheme cgi scripts for web interface.
@@ -5,7 +11,7 @@
 2008-08-15  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/main.ml, common/link.ml, */parser.mly:
-	New option "-against" to matchthe proved judment.
+	New option "-against" to match the proved judment.
 	
 	* checker/main.ml: New option "-check" followed by the string of
 	the derivation to check.

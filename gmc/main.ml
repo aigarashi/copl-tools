@@ -3,12 +3,13 @@ open Lexing
 open Syntax
 open Format
 
-type mode = ML | TeX
+type mode = ML | TeX | SExp
 
 let mode = ref ML
 let filename = ref ""
 
-let spec = [("-TeX", Arg.Unit (fun () -> mode := TeX), "display rules in TeX")]
+let spec = [("-TeX", Arg.Unit (fun () -> mode := TeX), "display rules in TeX");
+	    ("-sexp", Arg.Unit (fun () -> mode := SExp), "display rules in sexp")]
 
 let parse_file (s : string (* as file name*)) =
   let lexbuf = Lexing.from_channel (open_in s) in
@@ -59,3 +60,4 @@ let _ =
     match !mode with
 	ML -> emit_game g
       | TeX -> Emit.tex_rules g.ruledefs
+      | SExp -> Emit.sexp_rules g.ruledefs
