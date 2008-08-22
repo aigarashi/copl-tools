@@ -306,43 +306,46 @@ struct
 
   module SExp =
     struct
-      let rec emit_term ppf t = match t with
+      let rec emit_term gn ppf t = match t with
 	  Var x -> 
 	    let (base, suffix) = Syntax.split_LCID x in
-	      pf ppf "(mv \"%s\" \"%s\")" base suffix
-	| App (f, ts) -> pf ppf "(%sTerm@[%a@])" f emit_terms ts
-      and emit_terms ppf = function
+	      if suffix = "" then
+		pf ppf "(%s:mv \"%s\")" gn base
+	      else pf ppf "(%s:mv \"%s\" \"%s\")" gn base suffix
+	| App (f, ts) -> pf ppf "(%s:%sTerm@[%a@])" gn f (emit_terms gn) ts
+      and emit_terms gn ppf = function
 	  [] -> ()
-	| t :: [] -> pf ppf "@ %a" emit_term t
-	| t :: rest -> pf ppf "@ %a@]@[%a" emit_term t emit_terms rest
+	| t :: [] -> pf ppf "@ %a" (emit_term gn) t
+	| t :: rest -> pf ppf "@ %a@]@[%a" (emit_term gn) t (emit_terms gn) rest
 
-      let emit_qexp ppf s =
+      let emit_qexp gn ppf s =
 	let b = Buffer.create 30 in
 (*	  Buffer.add_char b '('; *)
 	  Buffer.add_substitute b 
 	    (fun s -> 
 	       let (base, suffix) = Syntax.split_LCID s in
-		 ",(mv \"" ^ base ^ "\" \"" ^ suffix ^ "\")")
+		 if suffix = "" then ",("^ gn ^":mv \\\"" ^ base ^ "\\\")"
+		 else ",("^ gn ^":mv \\\"" ^ base ^ "\\\" \\\"" ^ suffix ^ "\\\")")
 	    s;
 (*	  Buffer.add_char b ')'; *)
-	  pf ppf "`#\"%s\"" (Buffer.contents b)
+	  pf ppf "#`\"(%s)\"" (Buffer.contents b)
 
-      let rec emit_jdg ppf j = 
-	pf ppf "(%s@[<2>@[%a@]@])" j.pred emit_terms j.args
-      and emit_premises ppf = function
+      let rec emit_jdg gn ppf j = 
+	pf ppf "(%s:%s@[<2>@[%a@]@])" gn j.pred (emit_terms gn) j.args
+      and emit_premises gn ppf = function
 	  [] -> ()
-	| J j :: [] -> pf ppf "@ @[%a@]" emit_jdg j
-	| Qexp q :: [] -> pf ppf "@ @[%a@]" emit_qexp q
+	| J j :: [] -> pf ppf "@ @[%a@]" (emit_jdg gn) j
+	| Qexp q :: [] -> pf ppf "@ @[%a@]" (emit_qexp gn) q
 	| J j :: rest -> 
-	    pf ppf "@ @[%a@]%a" emit_jdg j emit_premises rest
+	    pf ppf "@ @[%a@]%a" (emit_jdg gn) j (emit_premises gn) rest
 	| Qexp q :: rest -> 
-	    pf ppf "@ @[%a@]%a" emit_qexp q emit_premises rest
+	    pf ppf "@ @[%a@]%a" (emit_qexp gn) q (emit_premises gn) rest
 	
-      let emit ppf r =
+      let emit gn ppf r =
 	pf ppf "(@[<v 1>infrule@ \"%s\"@;(@[<v 1>list%a@])@;@[<v>%a@]@])" 
 	  r.rname 
-	  emit_premises r.rprem
-	  emit_jdg r.rconc
+	  (emit_premises gn) r.rprem
+	  (emit_jdg gn) r.rconc
 	  
     end
 end
@@ -356,15 +359,15 @@ let tex_rules rules =
     pf std_formatter "@[<v>%a@]@." Rules.TeX.emit r) 
     rules
 
-let sexp_rules rules = 
-  pf std_formatter "(@[<v 1>defire rulenames@ (@[<v 1>list";
+let sexp_rules gname rules = 
+  pf std_formatter "(@[<v 1>define rulenames@ (@[<v 1>list";
   List.iter (fun r ->
 	       pf std_formatter "@ \"%s\"" r.rname) rules;
   pf std_formatter "@])@])@.";
   print_newline();
   pf std_formatter "(@[<v 1>define rules@ (@[<v 1>list";
   List.iter (fun r -> 
-	       pf std_formatter "@ @[<v>%a@]" Rules.SExp.emit r) 
+	       pf std_formatter "@ @[<v>%a@]" (Rules.SExp.emit gname) r) 
     rules;
   pf std_formatter "@])@])@.";
   

@@ -24,6 +24,11 @@ p in Prim ::= Plus | Minus | Mult | Lt
 EvalTo(e; v);
 AppBOp(p, v, v; v);
 
+(* AppBOp(Lt, v1, v2, v3) is written "v1 < v2 is v3",
+    or "v1 is less than v2" when v3 is true, 
+    or "v1 is not less than v2" when v3 is false"
+*)
+
 [Rules]
 
 E-Int: 	EvalTo(i, i) :- ;

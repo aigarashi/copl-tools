@@ -1,3 +1,11 @@
+2008-08-22  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* rules2TeX.scm: Game-specific functions defined.
+
+	* gmc/main.ml: Option -sexp takes the name of a game.  It will be
+	attached to constructors in the ouput sexp.
+	* gmc/emit.ml (Emit.SExp): According changes.
+
 2008-08-22  Atsushi Igarashi  <igarashi@localhost>
 
 	* cgi/Makefile: New file.
