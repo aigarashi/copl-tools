@@ -31,14 +31,16 @@ rule main = parse
 | "[Judgments]" { Parser.HEADER2 }
 | "[Rules]" { Parser.HEADER3 }
 
-| ['a'-'z']+ ['0'-'9' '_' '\'']*
+| ['a'-'z']+ ['0'-'9']*  '\''*
+| ['a'-'z']+ '\''* ['0'-'9']*
     { let id = Lexing.lexeme lexbuf in
       try 
         List.assoc id reservedWords
       with
       _ -> Parser.LCID id
      }
-| ['A'-'Z'] ['a'-'z' 'A'-'Z']* ['0'-'9' '_' '\'']*
+| ['A'-'Z'] ['a'-'z' 'A'-'Z']* ['0'-'9']*  '\''*
+| ['A'-'Z'] ['a'-'z' 'A'-'Z']* '\''* ['0'-'9']*
     { let id = Lexing.lexeme lexbuf in
       try 
         List.assoc id reservedWords

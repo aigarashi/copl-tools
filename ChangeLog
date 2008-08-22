@@ -1,3 +1,14 @@
+2008-08-23  Atsushi Igarashi  <igarashi@localhost>
+
+	* gmc/syntax.ml (split_LCID): now splits numbers and primes in the suffix.
+	* gmc/lexer.mll: in LCID and UCID, numbers and primes cannot be mixed.
+	* gmc/emit.ml: According changes.
+
+2008-08-22  Atsushi Igarashi  <igarashi@localhost>
+
+	* cgi/rules2TeX.scm: Formatting functions completed.  There should
+	be a better way, perhaps objects?
+
 2008-08-22  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/ML6/ML6.gm: E-MatchN slightly modified.

@@ -14,4 +14,3 @@ html: $(addsuffix .html,$(GAMES))
 
 clean:
 	-rm $(addsuffix .html,$(GAMES)) $(addsuffix .scm,$(GAMES))
-

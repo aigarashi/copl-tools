@@ -266,8 +266,8 @@ struct
     struct
       let rec emit_term ppf t = match t with
 	  Var x -> 
-	    let (base, suffix) = Syntax.split_LCID x in
-	      pf ppf "\\mv{%s_{%s}}" base suffix
+	    let (base, suffix, primes) = Syntax.split_LCID x in
+	      pf ppf "\\mv{%s%s_{%s}}" base primes suffix
 	| App (f, ts) -> pf ppf "\\%sTerm@[{%a}@]" f emit_terms ts
       and emit_terms ppf = function
 	  [] -> ()
@@ -279,8 +279,8 @@ struct
 	  Buffer.add_char b '(';
 	  Buffer.add_substitute b 
 	    (fun s -> 
-	       let (base, suffix) = Syntax.split_LCID s in
-		 "\\mv{" ^ base ^ "_{" ^ suffix ^ "}}")
+	       let (base, suffix, primes) = Syntax.split_LCID s in
+		 "\\mv{" ^ base ^ primes ^ "_{" ^ suffix ^ "}}")
 	    s;
 	  Buffer.add_char b ')';
 	  pf ppf "%s" (Buffer.contents b)
@@ -308,10 +308,10 @@ struct
     struct
       let rec emit_term gn ppf t = match t with
 	  Var x -> 
-	    let (base, suffix) = Syntax.split_LCID x in
+	    let (base, suffix, primes) = Syntax.split_LCID x in
 	      if suffix = "" then
-		pf ppf "(%s:mv \"%s\")" gn base
-	      else pf ppf "(%s:mv \"%s\" \"%s\")" gn base suffix
+		pf ppf "(%s:mv \"%s%s\")" gn base primes
+	      else pf ppf "(%s:mv \"%s%s\" \"%s\")" gn base primes suffix
 	| App (f, ts) -> pf ppf "(%s:%sTerm@[%a@])" gn f (emit_terms gn) ts
       and emit_terms gn ppf = function
 	  [] -> ()
@@ -323,9 +323,9 @@ struct
 (*	  Buffer.add_char b '('; *)
 	  Buffer.add_substitute b 
 	    (fun s -> 
-	       let (base, suffix) = Syntax.split_LCID s in
-		 if suffix = "" then ",("^ gn ^":mv \\\"" ^ base ^ "\\\")"
-		 else ",("^ gn ^":mv \\\"" ^ base ^ "\\\" \\\"" ^ suffix ^ "\\\")")
+	       let (base, suffix, primes) = Syntax.split_LCID s in
+		 if suffix = "" then ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\")"
+		 else ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\" \\\"" ^ suffix ^ "\\\")")
 	    s;
 (*	  Buffer.add_char b ')'; *)
 	  pf ppf "#`\"(%s)\"" (Buffer.contents b)

@@ -81,7 +81,8 @@ span.rname { font-variant: small-caps; }
       (rule-style)
       (header-LaTeXMathML))
      (html:body
-      rules)))))
+      rules))))
+  0)
 
 ;;; game specific functions follow
 
@@ -136,7 +137,7 @@ span.rname { font-variant: small-caps; }
 
 ;; ML2
 (define (ML2:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma"))))
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "E"))))
 
 (define (ML2:EmptyTerm) 'emptyenv)
 
@@ -284,11 +285,8 @@ span.rname { font-variant: small-caps; }
 (define ML6:AbsTerm ML5:AbsTerm)
 (define ML6:AppTerm ML5:AppTerm)
 (define ML6:LetRecTerm ML5:LetRecTerm)
-
-(define (ML6:NilTerm) "[]")
-
-(define (ML6:ConsTerm v1 v2) 
-  `(,v1 " :: " ,v2))
+(define ML6:NilTerm ML5:NilTerm)
+(define ML6:ConsTerm ML5:ConsTerm)
 
 (define (ML6:MatchTerm e c)
   `("\\mbox{match }" ,e "\\mbox{ with } " ,c))
@@ -309,3 +307,124 @@ span.rname { font-variant: small-caps; }
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }()"))
 	(else
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
+
+;; Typing ML2
+
+(define (TypingML2:TyBoolTerm) "bool")
+(define (TypingML2:TyIntTerm) "int")
+
+(define (TypingML2:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
+					       ("t" "\\tau"))))
+
+(define (TypingML2:EmptyTerm) 'emptyenv)
+
+(define (TypingML2:BindTerm env x t)
+  (if (eq? env 'emptyenv)
+      `(,x ":" ,t)
+      `(,env "," ,x ":" ,t)))
+
+(define TypingML2:BinOpTerm ML2:BinOpTerm)
+(define TypingML2:IfTerm ML2:IfTerm)
+(define TypingML2:LetTerm ML2:LetTerm)
+
+(define TypingML2:PlusTerm ML2:PlusTerm)
+(define TypingML2:MinusTerm ML2:MinusTerm)
+(define TypingML2:MultTerm ML2:MultTerm)
+(define TypingML2:LtTerm ML2:LtTerm)
+
+(define (TypingML2:Typing env e t)
+  `(,env "\\vdash" ,e ":" ,t))
+
+;; TypingML4
+
+(define TypingML4:TyBoolTerm TypingML2:TyBoolTerm)
+(define TypingML4:TyIntTerm TypingML2:TyIntTerm)
+(define (TypingML4:TyFunTerm t1 t2)
+  `(,t1 "\\rightarrow" ,t2))
+
+(define TypingML4:mv TypingML2:mv)
+
+(define TypingML4:EmptyTerm TypingML2:EmptyTerm)
+
+(define TypingML4:BindTerm TypingML2:BindTerm)
+
+(define TypingML4:BinOpTerm TypingML2:BinOpTerm)
+(define TypingML4:IfTerm TypingML2:IfTerm)
+(define TypingML4:LetTerm TypingML2:LetTerm)
+
+(define TypingML4:AbsTerm ML4:AbsTerm)
+(define TypingML4:AppTerm ML4:AppTerm)
+(define TypingML4:LetRecTerm ML4:LetRecTerm)
+
+(define TypingML4:PlusTerm TypingML2:PlusTerm)
+(define TypingML4:MinusTerm TypingML2:MinusTerm)
+(define TypingML4:MultTerm TypingML2:MultTerm)
+(define TypingML4:LtTerm TypingML2:LtTerm)
+
+(define TypingML4:Typing TypingML2:Typing)
+
+;; TypingML5
+
+(define TypingML5:TyBoolTerm TypingML4:TyBoolTerm)
+(define TypingML5:TyIntTerm TypingML4:TyIntTerm)
+(define TypingML5:TyFunTerm TypingML4:TyFunTerm)
+(define (TypingML5:TyListTerm t)
+  `(,t "\\;list"))
+
+(define TypingML5:mv TypingML4:mv)
+
+(define TypingML5:EmptyTerm TypingML4:EmptyTerm)
+
+(define TypingML5:BindTerm TypingML4:BindTerm)
+
+(define TypingML5:BinOpTerm TypingML4:BinOpTerm)
+(define TypingML5:IfTerm TypingML4:IfTerm)
+(define TypingML5:LetTerm TypingML4:LetTerm)
+
+(define TypingML5:AbsTerm TypingML4:AbsTerm)
+(define TypingML5:AppTerm TypingML4:AppTerm)
+(define TypingML5:LetRecTerm TypingML4:LetRecTerm)
+(define TypingML5:NilTerm ML5:NilTerm)
+(define TypingML5:ConsTerm ML5:ConsTerm)
+(define TypingML5:MatchTerm ML5:MatchTerm)
+
+(define TypingML5:PlusTerm TypingML4:PlusTerm)
+(define TypingML5:MinusTerm TypingML4:MinusTerm)
+(define TypingML5:MultTerm TypingML4:MultTerm)
+(define TypingML5:LtTerm TypingML4:LtTerm)
+
+(define TypingML5:Typing TypingML4:Typing)
+
+;; PolyML4
+
+(define PolyML4:TyBoolTerm TypingML4:TyBoolTerm)
+(define PolyML4:TyIntTerm TypingML4:TyIntTerm)
+(define PolyML4:TyFunTerm TypingML4:TyFunTerm)
+
+; (define (PolyML4:TyFVar a))
+; (define (PolyML4:TyBVar a))
+; (define (PolyML4:TySchemeTerm i t))
+
+(define (PolyML4:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
+					       ("t" "\\tau")
+					       ("s" "\\sigma"))))
+
+(define PolyML4:EmptyTerm TypingML4:EmptyTerm)
+(define PolyML4:BindTerm TypingML4:BindTerm)
+
+(define PolyML4:BinOpTerm TypingML4:BinOpTerm)
+(define PolyML4:IfTerm TypingML4:IfTerm)
+(define PolyML4:LetTerm TypingML4:LetTerm)
+(define PolyML4:AbsTerm TypingML4:AbsTerm)
+(define PolyML4:AppTerm TypingML4:AppTerm)
+(define PolyML4:LetRecTerm TypingML4:LetRecTerm)
+
+(define PolyML4:PlusTerm TypingML4:PlusTerm)
+(define PolyML4:MinusTerm TypingML4:MinusTerm)
+(define PolyML4:MultTerm TypingML4:MultTerm)
+(define PolyML4:LtTerm TypingML4:LtTerm)
+
+(define PolyML4:Typing TypingML4:Typing)
+

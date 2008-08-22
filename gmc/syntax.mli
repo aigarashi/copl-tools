@@ -18,7 +18,7 @@ type game = {
   mldefs : string option
 }
 
-val split_LCID : string -> (string * string)
+val split_LCID : string -> string * string * string
 
 val base_LCID : string -> string
 

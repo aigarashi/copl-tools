@@ -37,12 +37,20 @@ type game = {
   }
 
 let split_LCID s =
-  try 
-    let pos = Str.search_forward (Str.regexp "[0-9 _ ']+") s 0 in
-      (Str.string_before s pos, Str.string_after s pos)
-  with Not_found -> (s, "")
+  let base = ignore (Str.string_match (Str.regexp "[a-z]+") s 0); Str.matched_string s in
+  let suffix = 
+    try
+      ignore (Str.search_forward (Str.regexp "[0-9]+") s 0);
+      Str.matched_string s
+    with Not_found -> "" in
+  let primes = 
+    try
+      ignore (Str.search_forward (Str.regexp "'+") s 0);
+      Str.matched_string s
+    with Not_found -> "" in
+    (base, suffix, primes)
 
-let base_LCID s = fst (split_LCID s)
+let base_LCID s = let (base, _, _) = split_LCID s in base
 
 type decl =
       Category
