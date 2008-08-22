@@ -1,5 +1,10 @@
 2008-08-22  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
+	* checker/ML6/ML6.gm: E-MatchN slightly modified.
+	* cgi/Makefile: rule to generate html files of the games.
+
+	* rules2TeX.scm: moved to cgi/.
+
 	* checker/*/parser.mly: A judgment for less than can now be
 	written in two ways.
 

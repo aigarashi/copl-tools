@@ -1,0 +1,311 @@
+#! /usr/bin/gosh
+;; translation from inference rules to MathML
+;;
+;; $Id: $
+
+(use text.html-lite)
+(use text.tree)
+(use srfi-13)
+(use util.list)
+
+(define (normalize-rname rn)
+  (string-downcase (string-filter rn char-alphabetic?)))
+
+(define (infrule name premises concl)
+  (let ((delimited-premises (intersperse " \\qquad " premises))
+	(nameID (normalize-rname name)))
+    (html:div 
+     :id nameID :class "rule" ; :style "display: none;"
+     (html:pre 
+      :class "TeX"
+      (html:div
+       `("$\\displaystyle{\\frac{\n"
+	 ,delimited-premises "}{\n"
+	 ,concl "}}$"
+	 ,(html:span :class "rname" "(" name ")")))))))
+
+(define (mv base suffix alist) 
+  ;; formatting metavariables
+  ;; alist is to transform names to special symbols
+  (let* ((tmp (assoc base alist))
+	 (base (if tmp (cadr tmp) base)))
+    (if suffix
+	#`"\\textcolor{brown}{\\mathbf{,|base|_,suffix}}"
+	#`"\\textcolor{brown}{\\mathbf{,base}}")))
+
+;;;; HTML stuff
+(define (header-LaTeXMathML) ; for loading LaTeXMathML
+  (list (html:script :type "text/javascript" 
+		     :src "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
+	(html:link :rel "stylesheet" :type "text/css" 
+		   :href "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css")))
+
+(define (rule-style) ; style of rules
+  (html:style :type "text/css" "
+div.rule  { text-align: center; }
+span.rname { font-variant: small-caps; }
+"))
+
+(define (js:ShowStuff)
+  ;; Javascipt function to swap display/no display for all content
+  ;; within span tags Click_Menu  (html:script :language "JavaScript" 
+"<!--
+ var current=\"\"; // no rule is displayed at first
+
+ function Show_Stuff(Click_Menu) {
+ // Function that will swap the display/no display for
+ // all content within span/div tags
+
+ if (Click_Menu.style.display == \"none\") {
+   if (current != \"\") current.style.display = \"none\"; 
+   Click_Menu.style.display = \"\";
+   current = Click_Menu;
+ } else {
+   Click_Menu.style.display = \"none\";
+   current = \"\";
+ }
+ }
+ -->")
+
+(define (rnameref rn) ; link to call Show_Stuff
+  (html:a :href #`"javascript:Show_Stuff(,(normalize-rname rn))" rn))
+
+;;; main function
+(define (main args)
+  (load (string-append "./" (cadr args) ".scm"))
+  (write-tree 
+   (list
+    (html-doctype)
+    (html:html
+     (html:head 
+      (rule-style)
+      (header-LaTeXMathML))
+     (html:body
+      rules)))))
+
+;;; game specific functions follow
+
+;; Game nat
+(define (nat:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '()))
+
+(define (nat:STerm n)
+  `("S(" ,n ")"))
+
+(define (nat:ZTerm) "Z")
+
+(define (nat:PTerm e1 e2)
+  `(,e1 "+" ,e2))
+
+(define (nat:MTerm e1 e2)
+  `(,e1 "*" ,e2))
+
+(define (nat:EvalTo e n)
+  `(,e "\\Downarrow" ,n "\n"))
+
+(define (nat:PlusIs n1 n2 n3)
+  `(,n1 "\\mbox{ plus }" ,n2 "\\mbox{ is }" ,n3 "\n"))
+
+(define (nat:MultIs n1 n2 n3)
+  `(,n1 "\\mbox{ mult }" ,n2 "\\mbox{ is }" ,n3 "\n"))
+
+;; ML1
+(define (ML1:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '()))
+
+(define (ML1:BinOpTerm p e1 e2)
+  `(,e1 ,p ,e2))
+
+(define (ML1:IfTerm e1 e2 e3)
+  `("\\mbox{if }" ,e1 "\\mbox{ then }" ,e2 "\\mbox{ else }" ,e3))
+
+(define (ML1:PlusTerm) '+)
+(define (ML1:MinusTerm) '-)
+(define (ML1:MultTerm) '*)
+(define (ML1:LtTerm) '<)
+
+(define (ML1:EvalTo e v)
+  `(,e "\\Downarrow" ,v "\n"))
+
+(define (ML1:AppBOp p v1 v2 v3)
+  (let ((p (cadr (assq p '((+ "\\mbox{ plus }")
+			   (- "\\mbox{ minus }")
+			   (* "\\mbox{ mult }")
+			   (< "\\mbox{ less than }"))))))
+    `(,v1 ,p ,v2 "\\mbox{ is }" ,v3)))
+
+;; ML2
+(define (ML2:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma"))))
+
+(define (ML2:EmptyTerm) 'emptyenv)
+
+(define (ML2:BindTerm env x v)
+  (if (eq? env 'emptyenv)
+      `(,x "=" ,v)
+      `(,env "," ,x "=" ,v)))
+
+(define ML2:BinOpTerm ML1:BinOpTerm)
+(define ML2:IfTerm ML1:IfTerm)
+
+(define (ML2:LetTerm x e1 e2)
+  `("\\mbox{let }" ,x " = " ,e1 "\\mbox{ in }" ,e2))
+
+(define ML2:PlusTerm ML1:PlusTerm)
+(define ML2:MinusTerm ML1:MinusTerm)
+(define ML2:MultTerm ML1:MultTerm)
+(define ML2:LtTerm ML1:LtTerm)
+
+(define (ML2:EvalTo env e v)
+  `(,env "\\vdash" ,@(ML1:EvalTo e v)))
+
+(define ML2:AppBOp ML1:AppBOp)
+
+
+;; ML3
+(define ML3:mv ML2:mv)
+
+(define (ML3:FunTerm env x e)
+  `("\\mbox{(}" ,env "\\mbox{)[fun }" ,x "\\rightarrow" ,e "\\mbox{]}"))
+
+(define ML3:EmptyTerm ML2:EmptyTerm)
+(define ML3:BindTerm ML2:BindTerm)
+(define ML3:BinOpTerm ML2:BinOpTerm)
+(define ML3:IfTerm ML2:IfTerm)
+(define ML3:LetTerm ML2:LetTerm)
+
+(define (ML3:AbsTerm x e)
+  `("\\mbox{fun }" ,x "\\rightarrow" ,e))
+
+(define (ML3:AppTerm e1 e2)
+  `(,e1 "\\;" ,e2))
+
+(define ML3:PlusTerm ML2:PlusTerm)
+(define ML3:MinusTerm ML2:MinusTerm)
+(define ML3:MultTerm ML2:MultTerm)
+(define ML3:LtTerm ML2:LtTerm)
+
+(define ML3:EvalTo ML2:EvalTo)
+
+(define ML3:AppBOp ML2:AppBOp)
+
+;; ML4
+(define ML4:mv ML3:mv)
+
+(define ML4:FunTerm ML3:FunTerm)
+(define (ML4:RecTerm env x y e)
+  `("\\mbox{(}" ,env 
+    "\\mbox{)[rec }" ,x " = \\mbox{ fun }" ,y "\\rightarrow" ,e "\\mbox{]}"))
+
+(define ML4:EmptyTerm ML3:EmptyTerm)
+(define ML4:BindTerm ML3:BindTerm)
+(define ML4:BinOpTerm ML3:BinOpTerm)
+(define ML4:IfTerm ML3:IfTerm)
+(define ML4:LetTerm ML3:LetTerm)
+(define ML4:AbsTerm ML3:AbsTerm)
+(define ML4:AppTerm ML3:AppTerm)
+
+(define (ML4:LetRecTerm x y e1 e2)
+    `("\\mbox{let rec }" ,x "\\; " ,y " = " ,e1 "\\mbox{ in }" ,e2))
+
+(define ML4:PlusTerm ML3:PlusTerm)
+(define ML4:MinusTerm ML3:MinusTerm)
+(define ML4:MultTerm ML3:MultTerm)
+(define ML4:LtTerm ML3:LtTerm)
+
+(define ML4:EvalTo ML3:EvalTo)
+
+(define ML4:AppBOp ML3:AppBOp)
+
+;; ML5
+(define ML5:mv ML4:mv)
+
+(define ML5:FunTerm ML4:FunTerm)
+(define ML5:RecTerm ML4:RecTerm)
+(define (ML5:NilVTerm) "[]")
+(define (ML5:ConsVTerm v1 v2) 
+  `(,v1 "\\mbox{ :: }" ,v2))
+
+(define ML5:EmptyTerm ML4:EmptyTerm)
+(define ML5:BindTerm ML4:BindTerm)
+(define ML5:BinOpTerm ML4:BinOpTerm)
+(define ML5:IfTerm ML4:IfTerm)
+(define ML5:LetTerm ML4:LetTerm)
+(define ML5:AbsTerm ML4:AbsTerm)
+(define ML5:AppTerm ML4:AppTerm)
+(define ML5:LetRecTerm ML4:LetRecTerm)
+
+(define (ML5:NilTerm) "[]")
+
+(define (ML5:ConsTerm v1 v2) 
+  `(,v1 "\\mbox{ :: }" ,v2))
+
+(define (ML5:MatchTerm e1 e2 x y e)
+  `("\\mbox{match }" ,e1 "\\mbox{ with } "
+    "   [] \\rightarrow " ,e2 
+    " \\mid " ,x "\\mbox{ :: } " ,y " \\rightarrow " ,e))
+
+(define ML5:PlusTerm ML4:PlusTerm)
+(define ML5:MinusTerm ML4:MinusTerm)
+(define ML5:MultTerm ML4:MultTerm)
+(define ML5:LtTerm ML4:LtTerm)
+
+(define ML5:EvalTo ML4:EvalTo)
+
+(define ML5:AppBOp ML4:AppBOp)
+
+;; ML6
+(define ML6:mv ML5:mv)
+
+(define ML6:FunTerm ML5:FunTerm)
+(define ML6:RecTerm ML5:RecTerm)
+(define ML6:NilVTerm ML5:NilVTerm)
+(define ML6:ConsVTerm ML5:ConsVTerm)
+
+(define ML6:EmptyTerm ML5:EmptyTerm)
+(define ML6:BindTerm ML5:BindTerm)
+
+(define (ML6:NilPTerm) "[]")
+(define (ML6:ConsPTerm p1 p2)
+  `(,p1 "\\mbox{ :: }" ,p2))
+(define (ML6:WildPTerm) "\\mbox{_}") ;; not legal TeX but works for LaTeXMathML
+
+(define (ML6:FailTerm) 'fail)
+
+(define (ML6:EmptyCTerm) 'emptyclause)
+(define (ML6:AddCTerm p e c)
+  (if (eq? c 'emptyclause)
+      `(,p "\\rightarrow" ,e)
+      `(,p "\\rightarrow" ,e "\\mid" ,c)))
+
+(define ML6:BinOpTerm ML5:BinOpTerm)
+(define ML6:IfTerm ML5:IfTerm)
+(define ML6:LetTerm ML5:LetTerm)
+(define ML6:AbsTerm ML5:AbsTerm)
+(define ML6:AppTerm ML5:AppTerm)
+(define ML6:LetRecTerm ML5:LetRecTerm)
+
+(define (ML6:NilTerm) "[]")
+
+(define (ML6:ConsTerm v1 v2) 
+  `(,v1 " :: " ,v2))
+
+(define (ML6:MatchTerm e c)
+  `("\\mbox{match }" ,e "\\mbox{ with } " ,c))
+
+(define ML6:PlusTerm ML5:PlusTerm)
+(define ML6:MinusTerm ML5:MinusTerm)
+(define ML6:MultTerm ML5:MultTerm)
+(define ML6:LtTerm ML5:LtTerm)
+
+(define ML6:EvalTo ML5:EvalTo)
+
+(define ML6:AppBOp ML5:AppBOp)
+
+(define (ML6:Matches v p res)
+  (cond ((eq? res 'fail)
+	 `(,v "\\mbox{ doesn't match }" ,p))
+	((eq? res 'emptyenv)
+	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }()"))
+	(else
+	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))

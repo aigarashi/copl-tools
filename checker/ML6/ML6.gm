@@ -108,7 +108,7 @@ E-MatchM: EvalTo(env,Match(e0,AddC(p,e,c)),v') :-
               `$env2 = uplus $env $env1`,
             EvalTo(env2,e,v');
 E-MatchN: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
-	    EvalTo(env,e0,v), Matches(v,p,Fail), EvalTo(env,Match(e0,c),v');
+	    EvalTo(env,e0,v), Matches(v,p,Fail), EvalTo(env,Match(v,c),v');
            
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
