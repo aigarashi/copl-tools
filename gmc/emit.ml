@@ -264,43 +264,54 @@ struct
 
   module TeX =
     struct
-      let rec emit_term ppf t = match t with
+      let rec emit_term gn ppf t = match t with
 	  Var x -> 
 	    let (base, suffix, primes) = Syntax.split_LCID x in
-	      pf ppf "\\mv{%s%s_{%s}}" base primes suffix
-	| App (f, ts) -> pf ppf "\\%sTerm@[{%a}@]" f emit_terms ts
-      and emit_terms ppf = function
+	      if suffix = "" then
+		pf ppf "\\%smv{%s%s}" gn base primes
+	      else pf ppf "\\%smv{%s%s_{%s}}" gn base primes suffix
+	| App (f, ts) -> pf ppf "\\%s%sTerm@[{%a}@]" gn f (emit_terms gn) ts
+      and emit_terms gn ppf = function
 	  [] -> ()
-	| t :: [] -> emit_term ppf t
-	| t :: rest -> pf ppf "%a}@]@,@[{%a" emit_term t emit_terms rest
+	| t :: [] -> emit_term gn ppf t
+	| t :: rest -> pf ppf "%a}@]@,@[{%a" (emit_term gn) t (emit_terms gn) rest
 
-      let emit_qexp ppf s =
+      let emit_qexp gn ppf s =
 	let b = Buffer.create 30 in
-	  Buffer.add_char b '(';
 	  Buffer.add_substitute b 
 	    (fun s -> 
 	       let (base, suffix, primes) = Syntax.split_LCID s in
-		 "\\mv{" ^ base ^ primes ^ "_{" ^ suffix ^ "}}")
+		 if suffix = "" then
+		   "\\" ^ gn ^ "mv{" ^ base ^ primes ^ "}" 
+		 else "\\" ^ gn ^ "mv{" ^ base ^ primes ^ "_{" ^ suffix ^ "}}")
 	    s;
-	  Buffer.add_char b ')';
-	  pf ppf "%s" (Buffer.contents b)
+	  pf ppf "(%s)" (Buffer.contents b)
 
-      let rec emit_jdg ppf j = 
-	pf ppf "\\%s@[<2>@[{%a}@]@]" j.pred emit_terms j.args
-      and emit_premises ppf = function
+      let rec emit_jdg gn ppf j = 
+	pf ppf "\\%s%s@[<2>@[{%a}@]@]" gn j.pred (emit_terms gn) j.args
+      and emit_premises gn ppf = function
 	  [] -> ()
-	| J j :: [] -> emit_jdg ppf j
-	| Qexp q :: [] -> emit_qexp ppf q
+	| J j :: [] -> emit_jdg gn ppf j
+	| Qexp q :: [] -> emit_qexp gn ppf q
 	| J j :: rest -> 
-	    pf ppf "@[%a@]@ \\andalso@ %a" emit_jdg j emit_premises rest
+	    pf ppf "@[%a@]@ \\andalso@ %a" (emit_jdg gn) j (emit_premises gn) rest
 	| Qexp q :: rest -> 
-	    pf ppf "@[%a@]@ \\andalso@ %a" emit_qexp q emit_premises rest
-	
-      let emit ppf r =
-	pf ppf "@[\\infrule[%s]{@;<0 2>@[<v>%a@]@;<0 0>}{@;<0 2>@[<v>%a@]}@]@ " 
+	    pf ppf "@[%a@]@ \\andalso@ %a" (emit_qexp gn) q (emit_premises gn) rest
+
+      let normalize_rname s =
+	let b = Buffer.create (String.length s) in
+	String.iter 
+	  (fun c -> if ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || 
+	      ('0' <= c && c <= '9') then Buffer.add_char b c) s; 
+	  Buffer.contents b
+
+      let emit gn ppf r =
+	pf ppf "@[\\long\\def\\%s%s{\\infrule[%s]{@;<0 2>@[<v>%a@]@;<0 0>}{@;<0 2>@[<v>%a@]}}@]@ " 
+	  gn
+	  (normalize_rname r.rname)
 	  r.rname 
-	  emit_premises r.rprem
-	  emit_jdg r.rconc
+	  (emit_premises gn) r.rprem
+	  (emit_jdg gn) r.rconc
 	  
     end
 
@@ -320,14 +331,12 @@ struct
 
       let emit_qexp gn ppf s =
 	let b = Buffer.create 30 in
-(*	  Buffer.add_char b '('; *)
 	  Buffer.add_substitute b 
 	    (fun s -> 
 	       let (base, suffix, primes) = Syntax.split_LCID s in
 		 if suffix = "" then ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\")"
 		 else ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\" \\\"" ^ suffix ^ "\\\")")
 	    s;
-(*	  Buffer.add_char b ')'; *)
 	  pf ppf "#`\"(%s)\"" (Buffer.contents b)
 
       let rec emit_jdg gn ppf j = 
@@ -354,10 +363,15 @@ let typedef = TypeDef.emit
 and jdgdef = JdgDef.emit
 and rules = Rules.emit
 
-let tex_rules rules = 
+let tex_rules gname rules = 
   List.iter (fun r -> 
-    pf std_formatter "@[<v>%a@]@." Rules.TeX.emit r) 
-    rules
+    pf std_formatter "@[<v>%a@]@." (Rules.TeX.emit gname) r) 
+    rules;
+  pf std_formatter "\\def\\%sDisplayAll{@," gname;
+  List.iter (fun r ->
+    pf std_formatter "\\%s%s@," gname (Rules.TeX.normalize_rname r.rname))
+    rules;
+  pf std_formatter "}"
 
 let sexp_rules gname rules = 
   pf std_formatter "(@[<v 1>define rulenames@ (@[<v 1>list";

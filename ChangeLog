@@ -1,5 +1,10 @@
 2008-08-26  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
+	* gmc/emit.ml (Emit.tex_rules): generates a command to list all rules.
+	* gmc/main.ml: Option -TeX also takes the name of a game.  It will be
+	attached to constructors in the ouput TeXcommands.
+	* gmc/emit.ml (Emit.SExp): According changes.
+
 	* checker/*/{pp.keywords.ml}, cgi/rules2TeX.scm: The keyword
 	"mult" is changed to "times".
 

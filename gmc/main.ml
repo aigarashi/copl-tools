@@ -9,7 +9,7 @@ let mode = ref ML
 let filename = ref ""
 let gname = ref ""
 
-let spec = [("-TeX", Arg.Unit (fun () -> mode := TeX), "display rules in TeX");
+let spec = [("-TeX", Arg.String (fun s -> mode := TeX; gname := s), "display rules in TeX");
 	    ("-sexp", 
 	    Arg.String (fun s -> mode := SExp; gname := s), "display rules for game in sexp")]
 
@@ -57,9 +57,9 @@ let make_deriv _ = failwith \"make_deriv not implemented due to mode analysis fa
 "
 
 let _ = 
-  Arg.parse spec (fun s -> filename := s) "Usage: gmc [-TeX | -sexp <game>] filename";
+  Arg.parse spec (fun s -> filename := s) "Usage: gmc [-TeX <game> | -sexp <game>] filename";
   let g = parse_file !filename in
     match !mode with
 	ML -> emit_game g
-      | TeX -> Emit.tex_rules g.ruledefs
+      | TeX -> Emit.tex_rules !gname g.ruledefs
       | SExp -> Emit.sexp_rules !gname g.ruledefs
