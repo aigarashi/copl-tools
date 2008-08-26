@@ -10,7 +10,7 @@ let v = [
   ("evalto", EVALTO);
   
   ("minus", MINUS);
-  ("mult", MULT);
+  ("times", MULT);
   ("plus", PLUS);
   ("is", IS);
   ("less", LESS);

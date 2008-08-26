@@ -11,7 +11,7 @@ let v = [
   ("Z", Z);
   ("evalto", EVALTO);
   ("plus", PLUS);
-  ("mult", MULT);
+  ("times", MULT);
   ("is", IS);
   ("*", AST);
   ("+", CROSS);

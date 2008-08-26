@@ -108,7 +108,7 @@ span.rname { font-variant: small-caps; }
   `(,n1 "\\mbox{ plus }" ,n2 "\\mbox{ is }" ,n3 "\n"))
 
 (define (nat:MultIs n1 n2 n3)
-  `(,n1 "\\mbox{ mult }" ,n2 "\\mbox{ is }" ,n3 "\n"))
+  `(,n1 "\\mbox{ times }" ,n2 "\\mbox{ is }" ,n3 "\n"))
 
 ;; ML1
 (define (ML1:mv base . suffix)
@@ -131,7 +131,7 @@ span.rname { font-variant: small-caps; }
 (define (ML1:AppBOp p v1 v2 v3)
   (let ((p (cadr (assq p '((+ "\\mbox{ plus }")
 			   (- "\\mbox{ minus }")
-			   (* "\\mbox{ mult }")
+			   (* "\\mbox{ times }")
 			   (< "\\mbox{ less than }"))))))
     `(,v1 ,p ,v2 "\\mbox{ is }" ,v3)))
 
