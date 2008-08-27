@@ -268,8 +268,9 @@ struct
 	  Var x -> 
 	    let (base, suffix, primes) = Syntax.split_LCID x in
 	      if suffix = "" then
-		pf ppf "\\%smv{%s%s}" gn base primes
-	      else pf ppf "\\%smv{%s%s_{%s}}" gn base primes suffix
+		pf ppf "\\%smv{%s}{%s}" gn base primes
+	      else pf ppf "\\%smv{%s}{%s_{%s}}" gn base primes suffix
+	| App (f, []) -> pf ppf "\\%s%sTerm" gn f
 	| App (f, ts) -> pf ppf "\\%s%sTerm@[{%a}@]" gn f (emit_terms gn) ts
       and emit_terms gn ppf = function
 	  [] -> ()
@@ -282,8 +283,8 @@ struct
 	    (fun s -> 
 	       let (base, suffix, primes) = Syntax.split_LCID s in
 		 if suffix = "" then
-		   "\\" ^ gn ^ "mv{" ^ base ^ primes ^ "}" 
-		 else "\\" ^ gn ^ "mv{" ^ base ^ primes ^ "_{" ^ suffix ^ "}}")
+		   "\\" ^ gn ^ "mv{" ^ base ^ "}{" ^ primes ^ "}" 
+		 else "\\" ^ gn ^ "mv{" ^ base ^ "}{" ^ primes ^ "_{" ^ suffix ^ "}}")
 	    s;
 	  pf ppf "(%s)" (Buffer.contents b)
 
@@ -298,17 +299,25 @@ struct
 	| Qexp q :: rest -> 
 	    pf ppf "@[%a@]@ \\andalso@ %a" (emit_qexp gn) q (emit_premises gn) rest
 
-      let normalize_rname s =
+      let normalize_name s =
+	let roman = function
+	    '1' -> "i" | '2' -> "ii" | '3' -> "iii" | '4' -> "iv" | '5' -> "v"
+	  | '6' -> "vi" | '7' -> "vii" | '8' -> "viii" | '9' -> "ix" in
 	let b = Buffer.create (String.length s) in
 	String.iter 
-	  (fun c -> if ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || 
-	      ('0' <= c && c <= '9') then Buffer.add_char b c) s; 
+	  (fun c -> 
+	    if ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') then
+	      Buffer.add_char b c 
+	    else if ('1' <= c && c <= '9') then 
+	      Buffer.add_string b (roman c)) 
+	  s; 
 	  Buffer.contents b
 
       let emit gn ppf r =
-	pf ppf "@[\\long\\def\\%s%s{\\infrule[%s]{@;<0 2>@[<v>%a@]@;<0 0>}{@;<0 2>@[<v>%a@]}}@]@ " 
+	let gn = normalize_name gn in
+	  pf ppf "@[\\long\\def\\%s%s{\\infrule[%s]{@;<0 2>@[<v>%a@]@;<0 0>}{@;<0 2>@[<v>%a@]}}@]@ " 
 	  gn
-	  (normalize_rname r.rname)
+	  (normalize_name r.rname)
 	  r.rname 
 	  (emit_premises gn) r.rprem
 	  (emit_jdg gn) r.rconc
@@ -367,9 +376,10 @@ let tex_rules gname rules =
   List.iter (fun r -> 
     pf std_formatter "@[<v>%a@]@." (Rules.TeX.emit gname) r) 
     rules;
-  pf std_formatter "\\def\\%sDisplayAll{@," gname;
+  pf std_formatter "\\def\\%sDisplayAll{@," (Rules.TeX.normalize_name gname);
   List.iter (fun r ->
-    pf std_formatter "\\%s%s@," gname (Rules.TeX.normalize_rname r.rname))
+    pf std_formatter "\\%s%s@," 
+      (Rules.TeX.normalize_name gname) (Rules.TeX.normalize_name r.rname))
     rules;
   pf std_formatter "}"
 

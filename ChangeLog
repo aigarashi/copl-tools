@@ -1,3 +1,7 @@
+2008-08-27  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* gmc/emit.ml: Adapted to cooperate with LaTeX more smoothly.
+
 2008-08-26  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* gmc/emit.ml (Emit.tex_rules): generates a command to list all rules.
