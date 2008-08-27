@@ -1,5 +1,9 @@
 2008-08-27  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
+	* checker/ML6/ML6.gm: Added two missing rules NM-ConsConsL and
+	NM-ConsConsR.
+	* checker/ML?/parser.mly: bugs fixed.
+
 	* gmc/emit.ml: Adapted to cooperate with LaTeX more smoothly.
 
 2008-08-26  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>

@@ -70,6 +70,10 @@ NM-FunCons:  Matches(Fun(env,x,e), ConsP(p1,p2), Fail) :- ;
 NM-RecCons:  Matches(Rec(env,x,y,e), ConsP(p1,p2), Fail) :- ;
 NM-NilCons: Matches(NilV, ConsP(p1,p2), Fail) :- ;
 
+NM-ConsConsL: Matches(ConsV(v1,v2), ConsP(p1,p2), Fail) :- Matches(v1, p1, Fail);
+NM-ConsConsR: Matches(ConsV(v1,v2), ConsP(p1,p2), Fail) :- Matches(v2, p2, Fail);
+
+
 E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
 E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :- 
@@ -108,7 +112,7 @@ E-MatchM: EvalTo(env,Match(e0,AddC(p,e,c)),v') :-
               `$env2 = uplus $env $env1`,
             EvalTo(env2,e,v');
 E-MatchN: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
-	    EvalTo(env,e0,v), Matches(v,p,Fail), EvalTo(env,Match(v,c),v');
+	    EvalTo(env,e0,v), Matches(v,p,Fail), EvalTo(env,Match(e0,c),v');
            
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;

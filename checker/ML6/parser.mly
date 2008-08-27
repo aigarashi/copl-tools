@@ -84,9 +84,9 @@ Judgment:
   | INTL PLUS INTL IS INTL { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | INTL MULT INTL IS INTL { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | INTL MINUS INTL IS INTL { AppBOp(Minus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | INTL LESS THAN INTL IS TRUE { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
-  | INTL LESS THAN INTL IS FALSE { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
-  (* abbreviations for less than *)
+  | INTL LESS THAN INTL IS TRUE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool true) }
+  | INTL LESS THAN INTL IS FALSE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool false) }
+  /* abbreviations for less than */
   | INTL IS LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
   | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
 
