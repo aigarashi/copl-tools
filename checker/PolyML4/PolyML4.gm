@@ -55,12 +55,12 @@ T-Mult: Typing(env, BinOp(Mult, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
-T-Var1:  Typing(Bind(env,x,s), x, t) :- `inst $s $t`;
-T-Var2:  Typing(Bind(env,y,s), x, t) :- `$y <> $x`, Typing(env, x, t);
+T-Var1:  Typing(Bind(env,x,s), x, t) :- `inst $s $t` %$s \succeq $t%;
+T-Var2:  Typing(Bind(env,y,s), x, t) :- `$y <> $x` %$y \neq $x%, Typing(env, x, t);
 
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
 		Typing(env, e1, t1), Typing(Bind(env,x,s), e2, t2),
-                 `closure $env $t1 $s`;
+                 `closure $env $t1 $s` %$s = \mathit{clos}($env, $t1)%;
 
 T-Abs:  Typing(env,Abs(x,e), TyFun(t1,t2)) :- Typing(Bind(env,x,t1), e, t2);
 T-App:  Typing(env,App(e1,e2), t2) :- 
@@ -71,7 +71,7 @@ T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
                                       y, t1), 
                         e1, TyFun(t1,t2)), 
                 Typing(Bind(env,x,s), e2, t),
-                `closure $env (TyFun($t1,$t2)) $s`;
+                `closure $env (TyFun($t1,$t2)) $s` %$s = \mathit{clos}($env,$t1 \rightarrow $t2)%;
 
 
 [ML]

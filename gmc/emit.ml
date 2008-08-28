@@ -93,7 +93,10 @@ struct
 	m 
     in
     let rec aux ppf (cat, term) = match term with
-	Var id -> 
+	(* boolean values are treated specially *)
+	Var ("true" | "false" as b) ->
+	    pf ppf "%a%s" (emit_coercion env) ("bool", cat) b
+      | Var id -> (* other variables *)
 	  let prefix = String.make (incr id + n) '_' in 
 	  let cat' = 
 	    try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
@@ -203,7 +206,7 @@ struct
 	  pf ppf "@[| _ -> errAt _p_ \"The form of the %a premise is wrong: %s\"@]@]" emit_ordinal i rn;
 	end;
 	pf ppf ")@]"
-    | Qexp s :: rest ->
+    | Qexp (s, _) :: rest ->
 	let b = Buffer.create (String.length s + 10) in
 	let freshvarp = ref false in
 	let subst s = 
@@ -220,7 +223,7 @@ struct
 			s ^ " doesn't appear in preceding premises")
 *)
 	in
-	  Buffer.add_substitute b subst s;
+	  add_substitute b subst s;
 	  if !freshvarp then
 	    pf ppf "@[let @[%s@]@ in@ %a@]" 
 	      (Buffer.contents b)
@@ -265,7 +268,8 @@ struct
   module TeX =
     struct
       let rec emit_term gn ppf t = match t with
-	  Var x -> 
+	  Var ("true" | "false" as b) -> pf ppf "\\texttt{%s}" b
+	| Var x -> 
 	    let (base, suffix, primes) = Syntax.split_LCID x in
 	      if suffix = "" then
 		pf ppf "\\%smv{%s}{%s}" gn base primes
@@ -279,7 +283,7 @@ struct
 
       let emit_qexp gn ppf s =
 	let b = Buffer.create 30 in
-	  Buffer.add_substitute b 
+	  add_substitute b 
 	    (fun s -> 
 	       let (base, suffix, primes) = Syntax.split_LCID s in
 		 if suffix = "" then
@@ -293,10 +297,10 @@ struct
       and emit_premises gn ppf = function
 	  [] -> ()
 	| J j :: [] -> emit_jdg gn ppf j
-	| Qexp q :: [] -> emit_qexp gn ppf q
+	| (Qexp (q, None) | Qexp (_, Some q)) :: [] -> emit_qexp gn ppf q
 	| J j :: rest -> 
 	    pf ppf "@[%a@]@ \\andalso@ %a" (emit_jdg gn) j (emit_premises gn) rest
-	| Qexp q :: rest -> 
+	| (Qexp (q, None) | Qexp (_, Some q)) :: rest -> 
 	    pf ppf "@[%a@]@ \\andalso@ %a" (emit_qexp gn) q (emit_premises gn) rest
 
       let normalize_name s =
@@ -326,8 +330,10 @@ struct
 
   module SExp =
     struct
+
       let rec emit_term gn ppf t = match t with
-	  Var x -> 
+	  Var ("true" | "false" as b) -> pf ppf "\"\\\\mbox{%s}\"" b
+	| Var x -> 
 	    let (base, suffix, primes) = Syntax.split_LCID x in
 	      if suffix = "" then
 		pf ppf "(%s:mv \"%s%s\")" gn base primes
@@ -339,13 +345,13 @@ struct
 	| t :: rest -> pf ppf "@ %a@]@[%a" (emit_term gn) t (emit_terms gn) rest
 
       let emit_qexp gn ppf s =
-	let b = Buffer.create 30 in
-	  Buffer.add_substitute b 
+	let b = Buffer.create 40 in
+	  add_substitute b 
 	    (fun s -> 
-	       let (base, suffix, primes) = Syntax.split_LCID s in
-		 if suffix = "" then ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\")"
-		 else ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\" \\\"" ^ suffix ^ "\\\")")
-	    s;
+	      let (base, suffix, primes) = Syntax.split_LCID s in
+		if suffix = "" then ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\")"
+		else ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\" \\\"" ^ suffix ^ "\\\")")
+	    (escaped_for_Scheme s);
 	  pf ppf "#`\"(%s)\"" (Buffer.contents b)
 
       let rec emit_jdg gn ppf j = 
@@ -353,10 +359,11 @@ struct
       and emit_premises gn ppf = function
 	  [] -> ()
 	| J j :: [] -> pf ppf "@ @[%a@]" (emit_jdg gn) j
-	| Qexp q :: [] -> pf ppf "@ @[%a@]" (emit_qexp gn) q
+	| (Qexp (q, None) | Qexp (_, Some q)) :: [] -> 
+	    pf ppf "@ @[%a@]" (emit_qexp gn) q
 	| J j :: rest -> 
 	    pf ppf "@ @[%a@]%a" (emit_jdg gn) j (emit_premises gn) rest
-	| Qexp q :: rest -> 
+	| (Qexp (q, None) | Qexp (_, Some q)) :: rest -> 
 	    pf ppf "@ @[%a@]%a" (emit_qexp gn) q (emit_premises gn) rest
 	
       let emit gn ppf r =
@@ -515,7 +522,7 @@ struct
 	    pf ppf "@[| _ -> for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false@]" i;
 	    pf ppf "@,)@]"
 	  end
-      | Qexp s :: rest ->
+      | Qexp (s, _) :: rest ->
 	  let b = Buffer.create (String.length s + 10) in
 	  let freshvarp = ref false in
 	  let subst s =
@@ -524,7 +531,7 @@ struct
 	  freshvarp := !freshvarp || not (Hashtbl.mem tbl s);
 	  s 
 	in
-	  Buffer.add_substitute b subst s;
+	  add_substitute b subst s;
 	  if !freshvarp then 
 	    pf ppf "@[let @[%s@]@ in @]@ %a"
 	      (Buffer.contents b) (aux i) rest
@@ -558,7 +565,7 @@ struct
       List.iter
 	(function 
 	     J _ -> () 
-	   | Qexp s ->
+	   | Qexp (s, _) ->
 	       let b = Buffer.create (String.length s + 10) in
 	       let freshvarp = ref false in
 	       let subst s = 
@@ -566,7 +573,7 @@ struct
 		    to be lhs of equality *)
 		 freshvarp := !freshvarp || not (Hashtbl.mem tbl' s);
 		 s in
-		 Buffer.add_substitute b subst s;
+		 add_substitute b subst s;
 		 if !freshvarp then
 		   pf ppf "@[let @[%s@]@ in @]@ " (Buffer.contents b)
 		 else (* Actually, this check should be omitted since

@@ -21,7 +21,9 @@ type judgment = {
 
 type premise = 
     J of judgment
-  | Qexp of string  (* quoted ML expression for a side condition *)
+  | Qexp of string * string option
+      (* quoted ML expression for a side condition with 
+	 an optional TeX representation *)
 
 type rule = {
     rname : string;
@@ -155,9 +157,12 @@ struct
 	  of_jdg ((jdg.pred, JCon (in_cats, out_cats)) :: env) rest 
 
   let of_game g =
+    let initial_env =
+      (* boolean values are specially treated *)
+      [("true", MVar "bool"); ("false", MVar "bool")] in
     let catdecls = 
       List.fold_left 
-	(fun env def -> (def.cat, Category)::env) [] g.syndefs in
+	(fun env def -> (def.cat, Category)::env) initial_env g.syndefs in
     let mvardecls =
       List.fold_left 
 	(fun env def -> 

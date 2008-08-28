@@ -46,7 +46,7 @@ let rec check_premises
 	    let newvars = VarSet.union (outvars_of_jdg env jdg) vars_given in
 	      check_premises env newvars rest
 	  else None
-    | Qexp s :: rest -> (* assume a side condition is mode correct and 
+    | Qexp (s, _) :: rest -> (* assume a side condition is mode correct and 
 			all variables in exp are instantiated here *)
 	let b = Buffer.create (String.length s) in
 	let vars = ref VarSet.empty in
@@ -54,7 +54,7 @@ let rec check_premises
 	  vars := VarSet.add s !vars;
 	  s
 	in
-	  Buffer.add_substitute b subst s;
+	  add_substitute b subst s;
 	  check_premises env (VarSet.union vars_given !vars) rest
 
 let check_rule (env : Env.t) (r : rule) : bool =

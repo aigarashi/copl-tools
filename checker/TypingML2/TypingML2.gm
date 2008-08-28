@@ -45,7 +45,7 @@ T-Mult: Typing(env, BinOp(Mult, e1, e2), TyInt) :-
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Var1:  Typing(Bind(env,x,t), x, t) :- ;
-T-Var2:  Typing(Bind(env,y,t1), x, t2) :- `$y <> $x`, Typing(env, x, t2);
+T-Var2:  Typing(Bind(env,y,t1), x, t2) :- `$y <> $x` %$y \neq $x%, Typing(env, x, t2);
 
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
 		Typing(env, e1, t1), Typing(Bind(env,x,t1), e2, t2);

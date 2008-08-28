@@ -1,3 +1,31 @@
+2008-08-28  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/nat/nat.gm: The induction variable for plus and mult 
+	has been swapped (again).
+
+	* cgi/rules2TeX.scm: The metavar for run-time environments is 
+	typeset as \mathcal{E}.
+
+	* gmc/mySupport.ml (Pervasives.add_substitute): Adapted
+	from Buffer.add_substitute with a bug fix.
+	* gmc/mySupport.ml (Pervasives.escaed_for_Scheme): New
+	function (adapted from String.escaped) to make a string escaped
+	for an interpolating string in Scheme: A comma has to be doubled.
+	* gmc/emit.ml (SExp.emit_qexp): now properly escapes commas and
+	backslashes.
+
+	* gmc/emit.ml ({Rules,TeX,SExp}.emit_term): 
+	* gmc/main.ml (Syntax.of_game): true and false are
+	treated as special metavariables of category "bool".  In output,
+	they are never preceded by underscores.
+	* checker/*/ML?.gm (E-IfT, E-IfF): Now, true and false are used in
+	rules.
+	
+	* gmc/syntax.ml, gmc/emit.ml, gmc/lexer.mll, gmc/parser.mly: TeX
+	  presentation for side conditions can be expressed by putting an
+	  TeX string enclosed by % after a side condition `...`.
+	* checker/*/*.gm: TeX presentations of side conditions are added.
+
 2008-08-27  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/ML6/ML6.gm: Added two missing rules NM-ConsConsL and

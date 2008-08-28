@@ -50,11 +50,12 @@
 \item ゲーム用 parser, lexer 記述の負担軽減
 \item 規則のモードチェックに失敗すると，導出生成を完全に諦めているが，
 本当は，失敗した判断に依存しない部分に関しては導出生成をしてもよい．
-\item 他の体系を書く
+\item 体系をいろいろ書く．特に TypingML6, PolyTypingML6．
 \item 規則名も文字列ではなくヴァリアント化？
 \item make といっしょに自動テスト
 \item gmファイル中に宣言された名前の衝突をチェック．
-\item gm ファイルにフォーマット情報も追加できるようにする(特に QExp)．
+\item gm ファイルにフォーマット情報も追加できるようにする．QExpについては
+ 既に可能．
 \end{itemize}
 
 \section{Wish list}
@@ -62,7 +63,7 @@
 \begin{itemize}
 \item BNF定義, 規則の plain text / TeX 出力
 \begin{itemize}
-\item 規則の TeX 出力(html用・Scheme 経由)はほぼ実装済
+\item 規則の TeX 出力(html用・Scheme 経由)は実装済
 \end{itemize}
 \item interactive checker / emacs のバッファから使えるようにする (proofgeneral?)
 \item ブラウザから導出自動生成も使えるようにする．(要：終わらない導出生成の制御 ---

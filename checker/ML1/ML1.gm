@@ -34,9 +34,9 @@ AppBOp(p, v, v; v);
 E-Int: 	EvalTo(i, i) :- ;
 E-Bool: EvalTo(b, b) :- ;
 E-IfT: 	EvalTo(If(e1, e2, e3), v) :- 
-		EvalTo(e1, b), `$b`, EvalTo(e2, v);
+		EvalTo(e1, true), EvalTo(e2, v);
 E-IfF: 	EvalTo(If(e1, e2, e3), v) :- 
-		EvalTo(e1, b), `not $b`, EvalTo(e3, v);
+		EvalTo(e1, false), EvalTo(e3, v);
 E-Plus: EvalTo(BinOp(Plus, e1, e2), i3) :- 
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Plus, i1, i2, i3);
 E-Minus: EvalTo(BinOp(Minus, e1, e2), i3) :- 

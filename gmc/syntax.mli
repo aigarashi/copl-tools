@@ -7,7 +7,9 @@ type judgment = { pred : string; args : term list }
 
 type premise = 
     J of judgment
-  | Qexp of string  (* quoted ML expression for a side condition *)
+  | Qexp of string * string option
+      (* quoted ML expression for a side condition 
+	 with an optional TeX representation *)
 
 type rule = { rname : string; rconc : judgment; rprem : premise list; }
 

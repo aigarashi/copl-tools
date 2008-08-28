@@ -31,8 +31,8 @@ E-Mult:  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1),
                                    EvalTo(e2, n2), 
                                    MultIs(n1, n2, n);
 
-P-Zero: PlusIs(n, Z, n) :- ;
-P-Succ: PlusIs(n1, S(n2), S(n)) :- PlusIs(n1, n2, n) ;
+P-Zero: PlusIs(Z, n, n) :- ;
+P-Succ: PlusIs(S(n1), n2, S(n)) :- PlusIs(n1, n2, n) ;
 
-M-Zero: MultIs(n, Z, Z) :- ;
-M-Succ: MultIs(n1, S(n2), n4) :- MultIs(n1, n2, n3), PlusIs(n3, n1, n4);
+M-Zero: MultIs(Z, n, Z) :- ;
+M-Succ: MultIs(S(n1), n2, n4) :- MultIs(n1, n2, n3), PlusIs(n2, n3, n4);

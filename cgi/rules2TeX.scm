@@ -137,7 +137,7 @@ span.rname { font-variant: small-caps; }
 
 ;; ML2
 (define (ML2:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "E"))))
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}"))))
 
 (define (ML2:EmptyTerm) 'emptyenv)
 

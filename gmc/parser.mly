@@ -17,12 +17,14 @@ let appVar vars = List.map (fun x -> Var x) vars
 %token COLCOLEQ COLON COLHYP COMMA
 %token HEADER1 HEADER2 HEADER3
 %token IN
+%token TRUE FALSE
 %token LPAREN RPAREN
 %token SEMI
 %token <Syntax.id> LCID
 %token <Syntax.id> UCID
 %token <Syntax.id> SYMID
 %token <string> MLexp
+%token <string> TeXexp
 %token <string> MLlongexp
 
 %start toplevel
@@ -114,6 +116,8 @@ Term :
 PremiseList :
     /* empty */ { [] }
   | Judgment { [ J $1 ] }
-  | MLexp { [ Qexp $1 ] }
+  | MLexp { [ Qexp ($1, None) ] }
+  | MLexp TeXexp{ [ Qexp ($1, Some $2) ] }
   | Judgment COMMA PremiseList { J $1 :: $3 }
-  | MLexp COMMA PremiseList { Qexp $1 :: $3 }
+  | MLexp COMMA PremiseList { Qexp ($1, None) :: $3 }
+  | MLexp TeXexp COMMA PremiseList { Qexp ($1, Some $2) :: $4 }

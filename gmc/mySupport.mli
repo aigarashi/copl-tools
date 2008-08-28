@@ -16,4 +16,6 @@ module Pervasives :
     val pop : int -> 'a Stack.t -> 'a list -> 'a list
     val iteri : (int -> 'a -> unit) -> 'a list -> unit
     val pos : 'a -> 'a list -> int
+    val add_substitute : Buffer.t -> (string -> string) -> string -> unit
+    val escaped_for_Scheme : string -> string
   end

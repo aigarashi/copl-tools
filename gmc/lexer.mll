@@ -2,8 +2,8 @@
 open Lexing
 
 let reservedWords = [
-  (* Keywords *)
-  ("in", Parser.IN);
+    (* Keywords *)
+    ("in", Parser.IN);
 ] 
 
 let newline lexbuf =
@@ -55,10 +55,10 @@ rule main = parse
 	Parser.SYMID (String.sub name 1 (String.length name - 2))
     }
 | '`' ([^ '`' '\n']* as s) '`' {
-(*      let name = Lexing.lexeme lexbuf in
-	Parser.MLexp (String.sub name 1 (String.length name - 2))
-*)
         Parser.MLexp s
+    }
+| '%' ([^ '%' '\n']* as s) '%' {
+        Parser.TeXexp s
     }
 | "[ML]" (_* as s){ Parser.MLlongexp s }
 | "(*" { comment 1 lexbuf }

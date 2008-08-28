@@ -9,7 +9,7 @@ html: $(addsuffix .html,$(GAMES))
 %.scm: $(GMC)
 	$(GMC) -sexp $(basename $@) ../checker/$(basename $@)/$(patsubst %.scm,%.gm,$@) > $@
 
-%.html: %.scm
+%.html: %.scm rules2TeX.scm
 	$(RULE2TEX) $(basename $@) > $@
 
 $(GMC):
