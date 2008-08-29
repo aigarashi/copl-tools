@@ -1,3 +1,8 @@
+2008-08-29  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/ML{5,6}/parser.mly: Linearity of pattern variables
+	are checked.
+
 2008-08-28  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/nat/nat.gm: The induction variable for plus and mult 

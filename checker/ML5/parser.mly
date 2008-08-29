@@ -138,7 +138,9 @@ LongExp:
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec($3, $6, $8, $10) }
   | FUN LCID RARROW Exp { Abs($2, $4) }
   | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID COLCOL LCID RARROW Exp
-      { Match($2, $7, $9, $11, $13) }
+      { if $9 = $11 
+	then errBtw 9 11 "These variables shouldn't be the same"
+	else Match($2, $7, $9, $11, $13) }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }

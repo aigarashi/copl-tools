@@ -60,7 +60,7 @@ Usage: %s -game gamename [-full] [-TeX] [filename ...]
 	      [] -> ()
 	    | lexbuf::rest ->
 		while true do
-		  check_deriv lexbuf !fullp !texp ?against;
+		  check_deriv lexbuf ?against !fullp !texp;
 		done;
 		loop rest
 	  in 

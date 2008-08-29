@@ -28,7 +28,7 @@ module Lexer = Lexer.Make(
     end
   )
 
-let check_deriv lexbuf fullp texp ?against =
+let check_deriv lexbuf ?against fullp texp =
   let d = Parser.toplevel Lexer.main lexbuf in
   let j = Core.check_deriv d in
     (match fullp, texp with

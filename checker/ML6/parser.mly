@@ -8,6 +8,21 @@ let errBtw i j s =
 
 let errAt i s =
   MySupport.Error.errAt (Parsing.rhs_start_pos i) s
+
+module S = Set.Make(
+  struct type t = string  let compare = Pervasives.compare end
+)
+
+exception Not_linear
+
+let rec fpv = function 
+    Pat_of_string s -> S.singleton s
+  | NilP -> S.empty
+  | ConsP (p1, p2) -> 
+      let fpv1 = fpv p1 and fpv2 = fpv p2 in
+	if S.is_empty (S.inter fpv1 fpv2) then S.union fpv1 fpv2
+	else raise Not_linear
+  | WildP -> S.empty
 %}
 
 %token EOF
@@ -229,8 +244,14 @@ AVal:
   | LPAREN Val RPAREN { $2 }
 
 Clauses: 
-  | Pat RARROW Exp { AddC($1, $3, EmptyC) }
-  | Pat RARROW NMExp BAR Clauses { AddC($1, $3, $5) }
+  | Pat RARROW Exp { 
+	try ignore (fpv $1); AddC($1, $3, EmptyC) with 
+	    Not_linear -> errBtw 1 1 "Pattern variables should be disjoint"
+      }
+  | Pat RARROW NMExp BAR Clauses {
+	try ignore (fpv $1); AddC($1, $3, $5) with 
+	    Not_linear -> errBtw 1 1 "Pattern variables should be disjoint"
+      }
 
 Pat:
     APat { $1 }
