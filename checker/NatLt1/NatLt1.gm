@@ -1,0 +1,15 @@
+(* ペアノ自然数の和と積 *)
+
+[BNF]
+
+n in Nat ::= Z
+          |  S(n)
+
+[Judgments]
+
+Lt(n1, n2);      
+
+[Rules]
+
+L-Succ: Lt(n, S(n)) :- ;
+L-Trans: Lt(n1, n3) :- Lt(n1, n2), Lt(n2, n3);
