@@ -11,6 +11,23 @@
 (define (normalize-rname rn)
   (string-downcase (string-filter rn char-alphabetic?)))
 
+(define (bnf name mvars terms)
+  (let ((delimited-metavars (intersperse ", " mvars))
+	(delimited-terms (intersperse " \\mid " terms))
+	(nameID (normalize-rname name)))
+    (if (null? delimited-terms)
+	(list delimited-metavars " \\in " name)
+	(list delimited-metavars " \\in " name " \\;\\mbox{::=}\\; " delimited-terms))))
+
+(define (format-bnf bnfdefs)
+  (html:div :class "bnf"
+     (html:pre 
+      :class "TeX"
+      (html:div
+       "$\\displaystyle{\\begin{array}{l}\n"
+       (intersperse " \\\\ " bnfdefs)
+       "\\end{array}}$\n"))))
+
 (define (infrule name premises concl)
   (let ((delimited-premises (intersperse " \\qquad " premises))
 	(nameID (normalize-rname name)))
@@ -36,13 +53,16 @@
 ;;;; HTML stuff
 (define (header-LaTeXMathML) ; for loading LaTeXMathML
   (list (html:script :type "text/javascript" 
-		     :src "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
+;		     :src "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
+		     :src "LaTeXMathML.js")
 	(html:link :rel "stylesheet" :type "text/css" 
-		   :href "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css")))
+;		   :href "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css")))
+		   :href "LaTeXMathML.standardarticle.css")))
 
 (define (rule-style) ; style of rules
   (html:style :type "text/css" "
 div.rule  { text-align: center; }
+div.bnf  { text-align: center; }
 span.rname { font-variant: small-caps; }
 "))
 
@@ -81,6 +101,7 @@ span.rname { font-variant: small-caps; }
       (rule-style)
       (header-LaTeXMathML))
      (html:body
+      (format-bnf bnfdefs)
       rules))))
   0)
 
@@ -95,20 +116,41 @@ span.rname { font-variant: small-caps; }
 
 (define (nat:ZTerm) "Z")
 
-(define (nat:PTerm e1 e2)
-  `(,e1 "+" ,e2))
-
-(define (nat:MTerm e1 e2)
-  `(,e1 "*" ,e2))
-
-(define (nat:EvalTo e n)
-  `(,e "\\Downarrow" ,n "\n"))
-
 (define (nat:PlusIs n1 n2 n3)
-  `(,n1 "\\mbox{ plus }" ,n2 "\\mbox{ is }" ,n3 "\n"))
+  `(,n1 "\\mbox{ plus }" ,n2 "\\mbox{ is }" ,n3))
 
 (define (nat:MultIs n1 n2 n3)
-  `(,n1 "\\mbox{ times }" ,n2 "\\mbox{ is }" ,n3 "\n"))
+  `(,n1 "\\mbox{ times }" ,n2 "\\mbox{ is }" ,n3))
+
+;; Game natLt[1-3]
+(define natLt1:mv nat:mv)
+(define natLt1:STerm nat:STerm)
+(define natLt1:ZTerm nat:ZTerm)
+(define (natLt1:Lt n1 n2)
+  `(,n1 "\\mbox{ is less than }" ,n2))
+
+(define natLt2:mv nat:mv)
+(define natLt2:STerm nat:STerm)
+(define natLt2:ZTerm nat:ZTerm)
+(define natLt2:Lt natLt1:Lt)
+
+(define natLt3:mv nat:mv)
+(define natLt3:STerm nat:STerm)
+(define natLt3:ZTerm nat:ZTerm)
+(define natLt3:Lt natLt1:Lt)
+
+;; Game NatExp
+(define NatExp:mv nat:mv)
+(define NatExp:STerm nat:STerm)
+(define NatExp:ZTerm nat:ZTerm)
+(define NatExp:PlusIs nat:PlusIs)
+(define NatExp:MultIs nat:MultIs)
+(define (NatExp:PTerm e1 e2)
+  `(,e1 "+" ,e2))
+(define (NatExp:MTerm e1 e2)
+  `(,e1 "*" ,e2))
+(define (NatExp:EvalTo e n)
+  `(,e "\\Downarrow" ,n))
 
 ;; ML1
 (define (ML1:mv base . suffix)
@@ -126,7 +168,7 @@ span.rname { font-variant: small-caps; }
 (define (ML1:LtTerm) '<)
 
 (define (ML1:EvalTo e v)
-  `(,e "\\Downarrow" ,v "\n"))
+  `(,e "\\Downarrow" ,v))
 
 (define (ML1:AppBOp p v1 v2 v3)
   (let ((p (cadr (assq p '((+ "\\mbox{ plus }")
@@ -161,7 +203,6 @@ span.rname { font-variant: small-caps; }
   `(,env "\\vdash" ,@(ML1:EvalTo e v)))
 
 (define ML2:AppBOp ML1:AppBOp)
-
 
 ;; ML3
 (define ML3:mv ML2:mv)
@@ -338,12 +379,16 @@ span.rname { font-variant: small-caps; }
 
 ;; TypingML4
 
+(define (TypingML4:TyVarTerm a) a)
 (define TypingML4:TyBoolTerm TypingML2:TyBoolTerm)
 (define TypingML4:TyIntTerm TypingML2:TyIntTerm)
 (define (TypingML4:TyFunTerm t1 t2)
   `(,t1 "\\rightarrow" ,t2))
 
-(define TypingML4:mv TypingML2:mv)
+(define (TypingML4:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
+					       ("t" "\\tau")
+					       ("a" "\\alpha"))))
 
 (define TypingML4:EmptyTerm TypingML2:EmptyTerm)
 
@@ -366,6 +411,7 @@ span.rname { font-variant: small-caps; }
 
 ;; TypingML5
 
+(define TypingML5:TyVarTerm TypingML4:TyVarTerm)
 (define TypingML5:TyBoolTerm TypingML4:TyBoolTerm)
 (define TypingML5:TyIntTerm TypingML4:TyIntTerm)
 (define TypingML5:TyFunTerm TypingML4:TyFunTerm)
@@ -401,6 +447,11 @@ span.rname { font-variant: small-caps; }
 (define PolyML4:TyBoolTerm TypingML4:TyBoolTerm)
 (define PolyML4:TyIntTerm TypingML4:TyIntTerm)
 (define PolyML4:TyFunTerm TypingML4:TyFunTerm)
+
+(define (PolyML4:TyFVarTerm a) a)
+(define (PolyML4:TyBVarTerm i) i)
+(define (PolyML4:TySchemeTerm i t) 
+  `("\\forall" ,i "." ,t))
 
 ; (define (PolyML4:TyFVar a))
 ; (define (PolyML4:TyBVar a))

@@ -24,42 +24,58 @@ let emit_game (g : Syntax.game) =
     printf "(* @["; 
     Syntax.Env.print_env env;
     printf "@] *)\n\n";
-  print_string "open MySupport.Error"; print_newline ();
-  print_string "open MySupport.Pervasives"; print_newline ();
-  print_string "open Derivation"; print_newline ();
-  Emit.typedef env std_formatter g.syndefs; print_newline ();
-  Emit.jdgdef env std_formatter g.jdgdecls; print_newline ();
-  print_newline();
-  (match g.mldefs with Some s -> print_string s; print_newline() | None -> ());
-  Emit.rules env std_formatter g.ruledefs;
-  print_newline ();  print_newline ();
+  pp_print_string std_formatter "
+open MySupport.Error
+open MySupport.Pervasives
+open Derivation
 
-  (* experimental prover generation *)
-  Emit.Prover.emit_jdgdef env std_formatter g.jdgdecls;
-  if Mode.check_rules env g.ruledefs 
-  then (* mode checking succeeds *)
-    begin
-      pp_print_string std_formatter "\
-
-let dummy = Lexing.dummy_pos
-let deriv_stack = Stack.create ()
+";
+  (* Type definition for syntactic entities *)
+  Emit.ML.of_bnf env std_formatter g.syndefs;
+  pp_print_newline std_formatter ();
+  (* Type definition for judgments *)
+  Emit.ML.of_judgments env std_formatter g.jdgdecls; 
+  pp_print_newline std_formatter ();
+  (* Type definition for partial judgments *)
+  Emit.Prover.of_judgments env std_formatter g.jdgdecls;
+  pp_print_string std_formatter "
 
 exception NoApplicableRule of in_judgment
 ";
-      Emit.Prover.emit env std_formatter g.ruledefs
+  (* Emit user-supplied ML definitions *)
+  (match g.mldefs with 
+       Some s -> 
+	 pp_print_string std_formatter s;
+	 pp_print_newline std_formatter () 
+     | None -> ());
+  (* Emit the derivation checker *)
+  Emit.ML.of_rules env std_formatter g.ruledefs;
+  pp_print_newline std_formatter ();  pp_print_newline std_formatter ();
+
+  if Mode.check_rules env g.ruledefs 
+  then (* if mode checking succeeds *)
+    begin
+      (* then, emit the derivation generator *)
+      pp_print_string std_formatter "
+let dummy = Lexing.dummy_pos
+let deriv_stack = Stack.create ()
+";
+      Emit.Prover.of_rules env std_formatter g.ruledefs
     end
   else (* mode check fails *)
-      pp_print_string std_formatter "\
-
-exception NoApplicableRule of in_judgment
-
+      pp_print_string std_formatter "
 let make_deriv _ = failwith \"make_deriv not implemented due to mode analysis failure\"
 "
 
 let _ = 
-  Arg.parse spec (fun s -> filename := s) "Usage: gmc [-TeX <game> | -sexp <game>] filename";
+  Arg.parse spec (fun s -> filename := s) 
+    "Usage: gmc [-TeX <game> | -sexp <game>] filename";
   let g = parse_file !filename in
     match !mode with
 	ML -> emit_game g
-      | TeX -> Emit.tex_rules !gname g.ruledefs
-      | SExp -> Emit.sexp_rules !gname g.ruledefs
+      | TeX ->
+	  Emit.TeX.of_bnf std_formatter !gname g.syndefs;
+	  Emit.TeX.of_rules std_formatter !gname g.ruledefs
+      | SExp -> 
+	  Emit.SExp.of_bnf std_formatter !gname g.syndefs;
+	  Emit.SExp.of_rules std_formatter !gname g.ruledefs

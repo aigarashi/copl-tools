@@ -8,21 +8,19 @@ i in int
 
 b in bool
 
-x,y in string
-
 v in Value ::= i | b
 
 e in Exp ::= i
           | b
-          | BinOp(p, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
 
-p in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
 EvalTo(e; v);
-AppBOp(p, v, v; v);
+AppBOp(op, v, v; v);
 
 (* AppBOp(Lt, v1, v2, v3) is written "v1 < v2 is v3",
     or "v1 is less than v2" when v3 is true, 

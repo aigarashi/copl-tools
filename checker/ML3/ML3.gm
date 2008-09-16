@@ -20,18 +20,18 @@ env in Env ::= Empty
 e in Exp ::= i
           | b
           | x
-          | BinOp(p, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
           | Abs(x, e)
           | App(e, e)
 
-p in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
 EvalTo(env, e; v);
-AppBOp(p, v, v; v);
+AppBOp(op, v, v; v);
 
 [Rules]
 

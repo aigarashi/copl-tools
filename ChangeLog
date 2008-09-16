@@ -1,3 +1,22 @@
+2008-09-16  Atsushi Igarashi  <igarashi@cornet>
+
+	* Misc tidying up.
+	* LaTeX2MathML has been downloaded.
+
+	* checker/ML4/ML4.gm (E-Var, lookup): Variable lookup is changed
+	so that it simply uses an ML function.
+
+2008-09-15  Atsushi Igarashi  <igarashi@cornet>
+
+	* gmc/emit.ml, gmc/emit.mli: tidying up the code
+
+2008-09-14  Atsushi Igarashi  <igarashi@localhost>
+
+	* cgi/rules2TeX.scm (bnf, format-bnf): Scheme functions to emit
+	formatted BNF definitions.
+	* gmc/emit.ml (Rules.TeX.emit_bnf,Rules.SExp.emit_bnf,tex_bnf,sexp_bnf):
+	Functions to emit formatted BNF definitions.
+
 2008-08-29  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/ML{5,6}/parser.mly: Linearity of pattern variables

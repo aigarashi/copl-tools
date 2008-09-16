@@ -23,14 +23,18 @@ let spec = [
   ]
 
 let games = [
-    ("nat", (Nat.Link.check_deriv, Nat.Link.make_deriv));
+    ("Nat", (Nat.Link.check_deriv, Nat.Link.make_deriv));
+    ("NatLt1", (NatLt1.Link.check_deriv, NatLt1.Link.make_deriv));
+    ("NatLt2", (NatLt2.Link.check_deriv, NatLt2.Link.make_deriv));
+    ("NatLt3", (NatLt3.Link.check_deriv, NatLt3.Link.make_deriv));
+    ("NatExp", (NatExp.Link.check_deriv, NatExp.Link.make_deriv));
     ("ML1", (Ml1.Link.check_deriv, Ml1.Link.make_deriv));
     ("ML2", (Ml2.Link.check_deriv, Ml2.Link.make_deriv));
     ("ML3", (Ml3.Link.check_deriv, Ml3.Link.make_deriv));
     ("ML4", (Ml4.Link.check_deriv, Ml4.Link.make_deriv));
     ("ML5", (Ml5.Link.check_deriv, Ml5.Link.make_deriv));
     ("ML6", (Ml6.Link.check_deriv, Ml6.Link.make_deriv));
-    ("TypingML2", (TypingMl2.Link.check_deriv, TypingMl2.Link.make_deriv));
+    ("TypingML2", (TypingML2.Link.check_deriv, TypingML2.Link.make_deriv));
     ("TypingML4", (TypingML4.Link.check_deriv, TypingML4.Link.make_deriv));
     ("TypingML5", (TypingML5.Link.check_deriv, TypingML5.Link.make_deriv));
     ("PolyML4", (PolyML4.Link.check_deriv, PolyML4.Link.make_deriv));
@@ -39,7 +43,7 @@ let games = [
 let () = 
   Arg.parse spec (fun s -> filenames := s :: !filenames) 
     (Printf.sprintf "\
-Usage: %s -game gamename [-full] [-TeX] [filename ...]
+Usage: %s -game gamename [-full] [-TeX] [-against conclusion] [filename ...]
        %s -game gamename [-full] [-TeX] -prove judgment" commandname commandname);
 
   if !gname = "" then err "Game name must be given."

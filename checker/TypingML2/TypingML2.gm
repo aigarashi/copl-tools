@@ -20,11 +20,11 @@ env in Env ::= Empty
 e in Exp ::= i
           | b
           | x
-          | BinOp(p, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
 
-p in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 

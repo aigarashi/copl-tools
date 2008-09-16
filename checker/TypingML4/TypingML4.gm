@@ -24,14 +24,14 @@ env in Env ::= Empty
 e in Exp ::= i
           | b
           | x
-          | BinOp(p, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
           | Abs(x, e)
           | App(e, e)
           | LetRec(x, y, e, e)  (* let rec x y = e in e *)
 
-p in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
@@ -51,8 +51,11 @@ T-Mult: Typing(env, BinOp(Mult, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
+(*
 T-Var1:  Typing(Bind(env,x,t), x, t) :- ;
 T-Var2:  Typing(Bind(env,y,t1), x, t2) :- `$y <> $x` %$y \neq $x%, Typing(env, x, t2);
+*)
+T-Var:  Typing(env, x, t) :- ` $t = lookup $env $x` %$env($x) = $t%;
 
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
 		Typing(env, e1, t1), Typing(Bind(env,x,t1), e2, t2);
@@ -65,3 +68,9 @@ T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
                                       y, t1), 
                         e1, t2), 
                 Typing(Bind(env,x,TyFun(t1,t2)), e2, t);
+[ML]
+
+let rec lookup env x =
+    match env with 
+      Empty -> raise (NoApplicableRule (In_Typing (env, Exp_of_string x)))
+    | Bind(env, x', t) -> if x = x' then t else lookup env x

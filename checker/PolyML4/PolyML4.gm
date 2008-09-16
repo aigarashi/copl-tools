@@ -28,14 +28,14 @@ env in Env ::= Empty
 e in Exp ::= i
           | b
           | x
-          | BinOp(p, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
           | Abs(x, e)
           | App(e, e)
           | LetRec(x, y, e, e)  (* let rec x y = e in e *)
 
-p in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
@@ -55,8 +55,12 @@ T-Mult: Typing(env, BinOp(Mult, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
+(*
 T-Var1:  Typing(Bind(env,x,s), x, t) :- `inst $s $t` %$s \succeq $t%;
 T-Var2:  Typing(Bind(env,y,s), x, t) :- `$y <> $x` %$y \neq $x%, Typing(env, x, t);
+*)
+T-Var:  Typing(env, x, t) :- ` $s = lookup $env $x` %$env($x) = $s%,
+		       	     `inst $s $t` %$s \succeq $t%;
 
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
 		Typing(env, e1, t1), Typing(Bind(env,x,s), e2, t2),
@@ -136,3 +140,8 @@ let closure env ty tysc =
   in 
     let TyScheme_of_Types tysc | TyScheme(_, tysc) = tysc in
     try let _ = aux [] tysc ty in true with Not_match -> false
+
+let rec lookup env x =
+    match env with 
+      Empty -> raise (NoApplicableRule (In_Typing (env, Exp_of_string x)))
+    | Bind(env, x', t) -> if x = x' then t else lookup env x

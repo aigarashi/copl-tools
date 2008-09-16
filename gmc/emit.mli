@@ -8,6 +8,7 @@ val emit_comseq : (Format.formatter -> 'a -> 'b) -> Format.formatter -> 'a list 
 val emit_barseq : (Format.formatter -> 'a -> 'b) -> Format.formatter -> 'a list -> unit
 val emit_var : Env.t -> Format.formatter -> term -> unit
 
+(*
 module TypeDef :
   sig
     val emit : Env.t -> Format.formatter -> syndef list -> unit
@@ -47,15 +48,28 @@ module Rules :
       (id * decl) list -> Format.formatter -> rule -> unit
     val emit : (id * decl) list -> Format.formatter -> rule list -> unit
   end
+*)
 
-val typedef : Env.t -> Format.formatter -> syndef list -> unit
-val jdgdef : Env.t -> Format.formatter -> (judgment * int) list -> unit
-val rules : Env.t -> Format.formatter -> rule list -> unit
-val tex_rules : string -> rule list -> unit
-val sexp_rules : string -> rule list -> unit
-
-module Prover :
+module type EMITTER =
 sig
-  val emit_jdgdef : Env.t -> Format.formatter -> (judgment * int) list -> unit
-  val emit : Env.t -> Format.formatter -> rule list -> unit
+  val of_bnf : Env.t -> Format.formatter -> syndef list -> unit
+  val of_judgments : Env.t -> Format.formatter -> (judgment * int) list -> unit 
+    (* integers specifies how many arguments are considered as input *)
+  val of_rules : (id * decl) list -> Format.formatter -> rule list -> unit
 end
+
+module ML : EMITTER
+
+module type SIMPLE_EMITTER =
+sig
+  val of_bnf : Format.formatter -> string -> syndef list -> unit
+  val of_judgments : Format.formatter -> string -> (judgment * int) list -> unit 
+    (* integers specifies how many arguments are considered as input *)
+  val of_rules : Format.formatter -> string -> rule list -> unit
+end
+
+module TeX : SIMPLE_EMITTER
+
+module SExp : SIMPLE_EMITTER
+
+module Prover : EMITTER

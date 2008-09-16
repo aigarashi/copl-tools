@@ -22,7 +22,7 @@ env in Env ::= Empty
 e in Exp ::= i
           | b
           | x
-          | BinOp(p, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
           | Abs(x, e)
@@ -32,12 +32,12 @@ e in Exp ::= i
 	  | Cons(e,e)
 	  | Match(e,e,x,y,e)   (* match e with [] -> e | x::y -> e *)
 
-p in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
 EvalTo(env, e; v);
-AppBOp(p, v, v; v);
+AppBOp(op, v, v; v);
 
 [Rules]
 
@@ -55,8 +55,11 @@ E-Mult: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
+(*
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
+*)
+E-Var:  EvalTo(env, x, v) :- ` $v = lookup $env $x` %$env($x) = $v%;
 
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
 		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);
@@ -82,3 +85,10 @@ B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
 B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
 B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
+
+[ML]
+
+let rec lookup env x =
+    match env with 
+      Empty -> raise (NoApplicableRule (In_EvalTo (env, Exp_of_string x)))
+    | Bind(env, x', v') -> if x = x' then v' else lookup env x

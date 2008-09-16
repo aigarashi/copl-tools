@@ -29,7 +29,7 @@ c in Clause ::= EmptyC | AddC(p,e,c) (* stands for p -> e | c *)
 e in Exp ::= i
           | b
           | x
-          | BinOp(pr, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
           | Abs(x, e)
@@ -39,14 +39,14 @@ e in Exp ::= i
 	  | Cons(e,e)
 	  | Match(e,c)   (* match e with p1 -> e1 | ... | pn -> en *)
 
-pr in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
   (* renamed due to conflicts with metavars for patterns *)
 
 [Judgments]
 
 Matches(v, p; res); (* The value v matches p according to assignment env *)
 EvalTo(env, e; v);
-AppBOp(pr, v, v; v);
+AppBOp(op, v, v; v);
 
 [Rules]
 
@@ -89,9 +89,11 @@ E-Mult: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
+(*
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
-
+*)
+E-Var:  EvalTo(env, x, v) :- ` $v = lookup $env $x` %$env($x) = $v%;
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
 		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);
 E-Fun: EvalTo(env, Abs(x, e), Fun(env, x, e)) :- ;
@@ -136,3 +138,7 @@ let rec uplus env1 env2 =  (* note that environments are snoc lists *)
      Empty -> env1
    | Bind(env2, x, v) -> Bind(uplus env1 env2, x, v)
 
+let rec lookup env x =
+    match env with 
+      Empty -> raise (NoApplicableRule (In_EvalTo (env, Exp_of_string x)))
+    | Bind(env, x', v') -> if x = x' then v' else lookup env x
