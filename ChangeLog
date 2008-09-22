@@ -1,3 +1,7 @@
+2008-09-17  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker: nat -> Nat 
+
 2008-09-16  Atsushi Igarashi  <igarashi@cornet>
 
 	* Misc tidying up.
