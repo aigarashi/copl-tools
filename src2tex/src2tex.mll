@@ -4,14 +4,14 @@
 
 {
   (*
-     MLVERB : inside #{*} ... #{@} Print text vebatim with #
+     MLVERB : inside #{*}{opt} ... #{@} 
+                 Print text vebatim (feed it to the checker)
      TEX : plain text
      CHARS : inside @
-     VERB : inside #{&} ... #{@}  Print text verbatim without #
-     ML : inside #{#} ... #{@}  
-     SILENT: inside (*@ ... @*) in MLVERB    Print nothing
+     VERB : inside #{&} ... #{@}  Print text verbatim
+     #<-: insert the last output from the checker here
   *)
-  type mode = MLVERB | TEX | CHARS | VERB | ML | SILENT
+  type mode = ML | MLVERB | TEX | CHARS | VERB
 
   let mode = ref TEX
   let newline = ref true
@@ -24,10 +24,8 @@
   let linenum = ref 1
   let filename_of c = !basename ^ "." ^ (string_of_int c)
 
-  let pr s = 
-    if !newline && !mode = MLVERB then 
-      if !firstline then print_string "# " else print_string "  ";
-    if (!mode <> ML) && (!mode <> SILENT) then print_string s;
+  let pr s =
+    if !mode <> ML then print_string s;
     newline := false
 
   let pc = function
@@ -40,11 +38,8 @@
 	    exit 1;
 	  end 
 	else 
-	  begin 
-(*	    if !newline && !mode = MLVERB then 
-	      if !firstline then print_string "# " else print_string "  ";
-*)
-	    if (!mode <> ML) && (!mode <> SILENT) then print_char '\n';
+	  begin
+	    pr "\n";
 	    newline := true;
 	    firstline := false;
 	    inc linenum;
@@ -63,26 +58,24 @@
 	   | '}' -> pr "{\\char'175}"
 (*	   | '\'' -> pr "{\\ensuremath{'}}" *)
 	   | _ -> print_char c)
-    else
-	begin
-	  if !mode = MLVERB && !newline then
-	    if !firstline then print_string "\\textsl{#} " else print_string "  "; 
-	  (match !mode with
-	    ML | SILENT -> ()
-	  | MLVERB -> if c = '$' then pr "{\\$}" else print_char c
-	  | _ -> print_char c); 
-	  newline:=false
-	end
+      else
+	  begin
+	    (match !mode with
+		ML -> ()
+	      | MLVERB -> if c = '$' then pr "{\\$}" else print_char c
+	      | _ -> print_char c); 
+	    newline:=false
+	  end
 }
 
 rule lex = parse
   eof { }
-| "#{#}" [' ' '\t']* '\n' { 
-    mode := ML; newline := true; firstline := true; inc linenum; lex lexbuf
-} 
-| "#{*}" [' ' '\t']* '\n' { 
+| "#{*}" [^'\n']* '\n' { 
     pr "\\begin{progeg}\n"; 
     mode := MLVERB; newline:=true; firstline := true; inc linenum; lex lexbuf  
+  }
+| "#{#}" [^'\n']* '\n' { 
+    mode := ML; newline:=true; firstline := true; inc linenum; lex lexbuf  
   }
 | "#{&}" [' ' '\t']* '\n' { 
     pr "\\begin{progeg}\n"; 
@@ -92,72 +85,55 @@ rule lex = parse
     if (!mode = MLVERB) || (!mode = VERB) then print_string "\\end{progeg}\n";
     mode := TEX; newline:=false; inc linenum; lex lexbuf 
   }
-| "(**" ([^'\n']* as trailer) '\n' { 
-    (match !mode with 
-	MLVERB -> pr "(*"; pr trailer; pr" *)"; mode := SILENT
-      | _ -> pr (Lexing.lexeme lexbuf));
-    lex lexbuf }
-| "**)"  { (match !mode with 
-		SILENT -> mode := MLVERB
-	      | _ -> pr (Lexing.lexeme lexbuf));
-           lex lexbuf }
-| ";;" [';']* 's' [' ' '\t']* '\n' ['\n']? {
-    pr ";;\n"; 
-    newline := true; firstline := true; inc linenum;
-    lex lexbuf 
-    }
 | "#<-" [' ' '\t']* '\n' ['\n']? {
     inc count; 
-    pr (Printf.sprintf "\\begin{progeg}\n# ...;;\n\\showout{ml/%s}\n\\end{progeg}\n" 
+    pr (Printf.sprintf "\\begin{progeg}\\showout{drv/%s}\n\\end{progeg}\n" 
 	   (filename_of !count));
     newline := true; firstline := true; inc linenum;
     lex lexbuf 
   }
-| ";;" [';']* ([^'\n' '@']* '\n' as trailer) ('\n'* as extra_newlines) {
-    pr ";;"; pr trailer;
-      if !mode = MLVERB then
-        begin
-          inc count; 
-	  print_string (Printf.sprintf "\\showout{ml/%s}" (filename_of !count));
-        end; 
-	pr extra_newlines;
+| "#<" [' ' '\t']* '\n' ['\n']? {
+    inc count; 
+    pr (Printf.sprintf "\\input{drv/%s.out}\n" 
+	   (filename_of !count));
     newline := true; firstline := true; inc linenum;
     lex lexbuf 
   }
 | "@@@" {
    (match !mode with
-      CHARS -> (pc '@'; mode := TEX; pr "}}")
-    | ML | VERB | MLVERB -> pr "@@@"
-    | SILENT -> ()
-    | TEX -> (mode := CHARS; pr "\\ensuremath{\\itbox{"; pc '@'));
+       CHARS -> (pc '@'; mode := TEX; pr "}}")
+     | ML -> ()
+     | VERB | MLVERB -> pr "@@@"
+     | TEX -> (mode := CHARS; pr "\\ensuremath{\\itbox{"; pc '@'));
    lex lexbuf
 }
 | "@@" {
    (match !mode with
       CHARS | TEX -> pc '@'
-    | VERB | MLVERB -> pr "@@"
-    | ML | SILENT -> ()); 
+     | ML -> ()
+     | MLVERB | VERB -> pr "@@"); 
    lex lexbuf
 }
 | '@' {
     (match !mode with
        CHARS -> (mode := TEX; pr "}}")
-     | ML | VERB | MLVERB | SILENT -> pc '@'
+     | VERB | MLVERB -> pc '@'
+     | ML -> ()
      | TEX -> (mode := CHARS; pr "\\ensuremath{\\itbox{"));
     lex lexbuf
   } 
 | "\\\\" {
     (match !mode with 
-      ML | MLVERB | TEX | SILENT -> pr "\\\\"
+    | MLVERB | TEX | ML -> pr "\\\\"
     | VERB -> pr "\\bslash{}" 
     | CHARS -> pc '\\'; pc '\\');
     lex lexbuf
 } 
 | '\\' {  (* single backslash *)
     (match !mode with
-      ML | MLVERB | SILENT -> pr "\\bslash{}"
-    | VERB | TEX -> pr "\\"
-    | CHARS -> pc '\\');
+	MLVERB | ML -> pr "\\bslash{}"
+      | VERB | TEX -> pr "\\"
+      | CHARS -> pc '\\');
     lex lexbuf
 }
 | "\\{" {
@@ -169,11 +145,11 @@ rule lex = parse
    lex lexbuf
 } 
 | '{' {
-   (match !mode with ML | MLVERB -> pr "\\curlyopen{}"; | _  -> pc '{');
+   (match !mode with MLVERB -> pr "\\curlyopen{}"; | _  -> pc '{');
    lex lexbuf
 } 
 | '}' {
-   (match !mode with ML | MLVERB -> pr "\\curlyclose{}" | _ -> pc '}');
+   (match !mode with MLVERB -> pr "\\curlyclose{}" | _ -> pc '}');
    lex lexbuf
 } 
 (* This pattern is to insert a narrower space after, e.g., '+.' *)

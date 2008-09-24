@@ -5,7 +5,7 @@ all: $(SRC2DRV) $(SRC2TEX)
 
 $(SRC2DRV): $(SRC2DRV).mll
 	ocamllex $(SRC2DRV).mll
-	ocamlc -o $(SRC2DRv) $(SRC2DRV).ml
+	ocamlc -o $(SRC2DRV) $(SRC2DRV).ml
 
 $(SRC2TEX): $(SRC2TEX).mll
 	ocamllex $(SRC2TEX).mll
