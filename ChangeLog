@@ -1,3 +1,9 @@
+2008-09-25  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/NatExp/pp.ml: adapted for TeX output
+	* checker/NatLt1/pp.ml: adapted for TeX output
+	* checker/Nat/pp.ml: adapted for TeX output
+	
 2008-09-17  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker: nat -> Nat 

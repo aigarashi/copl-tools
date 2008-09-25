@@ -34,8 +34,9 @@
 
 rule lex = parse
   eof { }
-| "#{" ['#' '*'] "}{" (['A'-'Z' 'a'-'z' '-' ' ']* as opt) "}\n" {
+| "#{" ['#' '*'] "}{" (['A'-'Z' 'a'-'z' '(' ')' '-' ' ' '"' '?']* as opt) "}\n" {
     pr (Lexing.lexeme lexbuf); mode := ML; 
+    prerr_string "hoge!\n";
     emit header;
     emit opt;
     emit " <<EOD\n";
