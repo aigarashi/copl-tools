@@ -186,8 +186,9 @@ Type:
 AType:
     INT { TyInt }
   | BOOL { TyBool }
-  | PRIME LCID { TyVar $2 }
+/*  | PRIME LCID { TyVar $2 }
   | PRIME error { errAt 2 "Syntax error: lowercase identifier expected after '" }
+*/
   | LPAREN Type RPAREN { $2 }
   | LPAREN Type error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
     

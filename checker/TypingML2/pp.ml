@@ -1,6 +1,7 @@
 open Format
 open Core
 
+let g = "TypingMLii"
 let pr = fprintf
 
 (* generic functions to generate parens depending on precedence *)
@@ -73,6 +74,42 @@ let print_pjudgment ppf = function
     In_Typing (env, e) ->
       pr ppf "@[%a@]@ |- %a : ?" print_env env print_exp e 
 
+let rec tex_exp ppf e = 
+    let with_paren_L = with_paren (<)
+    and with_paren_R = with_paren (fun e_up e -> e > e_up) in
+      match e with
+	  Exp_of_int i -> pr ppf "%d" i
+	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
+	| Exp_of_string id -> pp_print_string ppf id
+	| BinOp(p, e1, e2) -> 
+	    let op = 
+	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
+	      pr ppf "\\%sBinOpTerm{%a}{%s}{%a}" g
+		(with_paren_L tex_exp e) e1 
+		op
+		(with_paren_R tex_exp e) e2
+	| If(e1, e2, e3) ->
+	    pr ppf "\\%sIfTerm{%a}{%a}{%a}" g
+	      tex_exp e1 
+	      tex_exp e2
+	      tex_exp e3 
+	| Let(x, e1, e2) ->
+	    pr ppf "\\%sLetTerm{%s}{%a}{%a}" g
+	      x
+	      tex_exp e1
+	      tex_exp e2
+
+let tex_type ppf = function
+    TyInt -> pr ppf "\\%sTyIntTerm" g
+  | TyBool -> pr ppf "\\%sTyBoolTerm" g
+
+let rec tex_env ppf = function
+    Empty -> ()
+  | Bind(env',x,t) -> pr ppf "%a%s : %a" tex_env' env' x tex_type t
+and tex_env' ppf = function
+  | Empty -> ()
+  | Bind(env',x,t) -> pr ppf "%a%s : %a,@ " tex_env' env' x tex_type t
+
 let tex_judgment ppf = function
     Typing (env, e, t) -> 
-      pr ppf "\\Typing{%a}{%a}{%a}" print_env env print_exp e print_type t
+      pr ppf "\\%sTyping{%a}{%a}{%a}" g tex_env env tex_exp e tex_type t

@@ -1,6 +1,8 @@
 open Format
 open Core
 
+let g = "MLvi"
+
 let pr = fprintf
 
 let is_negative i = (i < 0)
@@ -30,6 +32,18 @@ let rec print_pat ppf p =
 	  pr ppf "%a :: %a" 
 	    (with_paren_L print_pat p) p1 
 	    (with_paren_R print_pat p) p2
+
+let rec tex_pat ppf p = 
+  let with_paren_L = with_paren (<) 
+  and with_paren_R = with_paren (fun p_up p -> p > p_up) in
+    match p with
+	Pat_of_string x -> pr ppf "%s" x
+      | WildP -> pr ppf "\\%sWildPTerm" g
+      | NilP -> pr ppf "\\%sNilPTerm" g
+      | ConsP(p1,p2) -> 
+	  pr ppf "\\%sConsPTerm{%a}{%a}" g
+	    (with_paren_L tex_pat p) p1 
+	    (with_paren_R tex_pat p) p2
 
 (* precedence for expressions *)
 (* if e is the left operand of e_up, do you need parentheses for e? *)
@@ -143,6 +157,54 @@ and print_clause ppf c =
       | AddC(p, e, c') -> 
 	  pr ppf " %a -> %a%a" print_pat p print_exp e loop c'
 
+let rec tex_exp ppf e = 
+  let with_paren_L = with_paren (<)
+  and with_paren_R = with_paren (fun e_up e -> e > e_up) in
+    match e with
+	Exp_of_int i -> pr ppf "%d" i
+      | Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
+      | Exp_of_string id -> pp_print_string ppf id
+      | BinOp(p, e1, e2) -> 
+	  let op = 
+	    match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
+	    pr ppf "\\%sBinOpTerm{%a}{%s}{%a}" g
+	      (with_paren_L tex_exp e) e1 
+	      op
+	      (with_paren_R tex_exp e) e2
+      | If(e1, e2, e3) ->
+	  pr ppf "\\%sIfTerm{%a}{%a}{%a}" g
+	    tex_exp e1 
+	    tex_exp e2
+	    tex_exp e3 
+      | Let(x, e1, e2) ->
+	  pr ppf "\\%sLetTerm{%s}{%a}{%a}" g
+	    x
+	    tex_exp e1
+	    tex_exp e2
+      | Abs(x, e) ->
+	  pr ppf "\\%sFunTerm{%s}{%a}" g x tex_exp e
+      | App(e1, e2) ->
+	  pr ppf "\\%sAppTerm{%a}{%a}" g
+	    (with_paren_L tex_exp e) e1
+	    (with_paren_R tex_exp e) e2
+      | LetRec(x, y, e1, e2) ->
+	  pr ppf "\\%sLetRecTerm{%s}{%s}{%a}{%a}" g 
+	    x y tex_exp e1 tex_exp e2
+      | Nil -> pr ppf "\\%sNilTerm" g
+      | Cons(e1, e2) -> 
+	  pr ppf "\\%sConsTerm{%a}{%a}" g
+	    (with_paren_L tex_exp e) e1 
+	    (with_paren_R tex_exp e) e2
+      | Match(e, c) ->
+	  pr ppf "\\%sMatchTerm{%a}{%a}" g
+	    tex_exp e
+	    tex_clause c
+
+and tex_clause ppf = function
+    EmptyC -> pr ppf "\\%sEmptyCTerm" g
+  | AddC(p, e, c') -> 
+      pr ppf "\\%sAddCTerm{%a}{%a}{%a}" g tex_pat p tex_exp e tex_clause c'
+
 (* precedence for values *)
 (* if v is the left operand of v_up, do you need parentheses for v? *)
 let (<) v v_up = match v, v_up with
@@ -174,6 +236,28 @@ and print_val ppf v =
 	    (with_paren_L print_val v) v1 
 	    (with_paren_R print_val v) v2
 
+let rec tex_env ppf = function
+    Empty -> ()
+  | Bind(env',x,v) -> pr ppf "%a%s = %a" tex_env' env' x tex_val v 
+and tex_env' ppf = function
+  | Empty -> ()
+  | Bind(env',x,v) -> pr ppf "%a%s = %a,@ " tex_env' env' x tex_val v 
+
+and tex_val ppf v = 
+  let with_paren_L = with_paren (<) 
+  and with_paren_R = with_paren (fun v_up v -> v > v_up) in
+    match v with
+	Value_of_int i -> pr ppf "%d" i
+      | Value_of_bool b -> pp_print_string ppf (string_of_bool b)
+      | Fun(env, x, e) -> pr ppf "\\%sFunTerm{%a}{%s}{%a}" g tex_env env x tex_exp e
+      | Rec(env, x, y, e) -> pr ppf "\\%sRecTerm{%a}{%s}{%s}{%a}" g 
+	  tex_env env x y tex_exp e
+      | NilV -> pr ppf "\\%sNilVTerm" g
+      | ConsV(v1,v2) -> 
+	  pr ppf "\\%sConsVTerm{%a}{%a}" g
+	    (with_paren_L tex_val v) v1 
+	    (with_paren_R tex_val v) v2
+
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "@[@[%a@]@ |- @[%a@] evalto %a@]" print_env env print_exp e print_val v
@@ -200,14 +284,18 @@ let print_pjudgment ppf = function
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
       in pr ppf "%a %s %a is ?" print_val v1 op print_val v2
 
+let tex_res ppf = function
+    Res_of_Env env -> tex_env ppf env
+  | Fail -> pr ppf "\\%sFailTerm" g
+
 let tex_judgment ppf = function
     EvalTo (env, e, v) -> 
-      pr ppf "\\EvalTo{%a}{%a}{%a}" print_env env print_exp e print_val v
-  | Matches (v, p, Res_of_Env env) ->
-      pr ppf "\\Matches{%a}{%a}{%a@}" print_val v print_pat p print_env env
-  | Matches (v, p, Fail) ->
-      pr ppf "\\NoMatch{%a}{%a}" print_val v print_pat p
+      pr ppf "\\%sEvalTo{%a}{%a}{%a}" g tex_env env tex_exp e tex_val v
+  | Matches (v, p, r) ->
+      pr ppf "\\%sMatches{%a}{%a}{%a}" g tex_val v tex_pat p tex_res r
   | AppBOp (p, v1, v2, v3) -> 
-      let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times" | Lt -> "lt" 
-      in pr ppf "\\AppBOp{%a}{%s}{%a}{%a}" print_val v1 op print_val v2 print_val v3
-    
+      let op = "\\" ^ g ^ match p with 
+	  Plus -> "PlusTerm" | Minus -> "MinusTerm"
+	| Mult -> "MultTerm" | Lt -> "LTTerm" 
+      in pr ppf "\\%sAppBOp{%a}{%s}{%a}{%a}" g
+	   tex_val v1 op tex_val v2 tex_val v3

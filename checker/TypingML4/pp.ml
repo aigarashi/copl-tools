@@ -1,6 +1,8 @@
 open Format
 open Core
 
+let g = "TypingMLiv"
+
 let pr = fprintf
 
 let is_negative i = (i < 0)
@@ -82,6 +84,40 @@ let rec print_exp ppf e =
 	    print_exp e1
 	    print_exp e2
 
+let rec tex_exp ppf e = 
+    let with_paren_L = with_paren (<)
+    and with_paren_R = with_paren (fun e_up e -> e > e_up) in
+      match e with
+	  Exp_of_int i -> pr ppf "%d" i
+	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
+	| Exp_of_string id -> pp_print_string ppf id
+	| BinOp(p, e1, e2) -> 
+	    let op = 
+	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
+	      pr ppf "\\%sBinOpTerm{%a}{%s}{%a}" g
+		(with_paren_L tex_exp e) e1 
+		op
+		(with_paren_R tex_exp e) e2
+	| If(e1, e2, e3) ->
+	    pr ppf "\\%sIfTerm{%a}{%a}{%a}" g
+	      tex_exp e1 
+	      tex_exp e2
+	      tex_exp e3 
+	| Let(x, e1, e2) ->
+	    pr ppf "\\%sLetTerm{%s}{%a}{%a}" g
+	      x
+	      tex_exp e1
+	      tex_exp e2
+	| Abs(x, e) ->
+	    pr ppf "\\%sFunTerm{%s}{%a}" g x tex_exp e
+	| App(e1, e2) ->
+	    pr ppf "\\%sAppTerm{%a}{%a}" g
+	      (with_paren_L tex_exp e) e1
+	      (with_paren_R tex_exp e) e2
+	| LetRec(x, y, e1, e2) ->
+	    pr ppf "\\%sLetRecTerm{%s}{%s}{%a}{%a}" g 
+	      x y tex_exp e1 tex_exp e2
+
 (* if t is the left operand of t_up, do you need parentheses for t? *)
 let (<) t t_up = match t, t_up with
     (* -> is right associative *)
@@ -91,33 +127,52 @@ let (<) t t_up = match t, t_up with
 (* if t is the right operand of t_up, do you need parentheses for t? *)
 let (>) t_up t = false
 
-let rec pp_type ppf t = 
+let rec print_type ppf t = 
   let with_paren_L = with_paren (<) 
   and with_paren_R = with_paren (fun e_up e -> e > e_up) in
     match t with
 	TyInt -> pp_print_string ppf "int"
       | TyBool -> pp_print_string ppf "bool"
-      | TyVar a -> pr ppf "'%s" a
+(*      | TyVar a -> pr ppf "'%s" a *)
       | TyFun(t1, t2) -> 
 	  pr ppf "%a -> %a"
-	    (with_paren_L pp_type t) t1
-	    (with_paren_R pp_type t) t2
+	    (with_paren_L print_type t) t1
+	    (with_paren_R print_type t) t2
+
+let rec tex_type ppf t = 
+  let with_paren_L = with_paren (<) 
+  and with_paren_R = with_paren (fun e_up e -> e > e_up) in
+    match t with
+	TyInt -> pr ppf "\\%sTyIntTerm" g
+      | TyBool -> pr ppf "\\%sTyBoolTerm" g
+(*      | TyVar a -> pr ppf "'%s" a *)
+      | TyFun(t1, t2) -> 
+	  pr ppf "\\%sTyFunTerm{%a}{%a}" g
+	    (with_paren_L tex_type t) t1
+	    (with_paren_R tex_type t) t2
 
 let rec print_env ppf = function
     Empty -> ()
-  | Bind(env',x,t) -> pr ppf "%a%s : %a" print_env' env' x pp_type t
+  | Bind(env',x,t) -> pr ppf "%a%s : %a" print_env' env' x print_type t
 and print_env' ppf = function
   | Empty -> ()
-  | Bind(env',x,t) -> pr ppf "%a%s : %a,@ " print_env' env' x pp_type t
+  | Bind(env',x,t) -> pr ppf "%a%s : %a,@ " print_env' env' x print_type t
 
 let print_judgment ppf = function
     Typing (env, e, t) -> 
-      pr ppf "@[@[%a@]@ |-@ @[@[%a@]@ : %a@]@]" print_env env print_exp e pp_type t
+      pr ppf "@[@[%a@]@ |-@ @[@[%a@]@ : %a@]@]" print_env env print_exp e print_type t
 
 let print_pjudgment ppf = function
     In_Typing (env, e) ->
       pr ppf "@[%a@]@ |- %a : ?" print_env env print_exp e 
 
+let rec tex_env ppf = function
+    Empty -> ()
+  | Bind(env',x,t) -> pr ppf "%a%s : %a" tex_env' env' x tex_type t
+and tex_env' ppf = function
+  | Empty -> ()
+  | Bind(env',x,t) -> pr ppf "%a%s : %a,@ " tex_env' env' x tex_type t
+
 let tex_judgment ppf = function
     Typing (env, e, t) -> 
-      pr ppf "\\Typing{%a}{%a}{%a}" print_env env print_exp e pp_type t
+      pr ppf "\\%sTyping{%a}{%a}{%a}" g tex_env env tex_exp e tex_type t

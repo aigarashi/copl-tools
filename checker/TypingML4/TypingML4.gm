@@ -16,7 +16,7 @@ x,y in string
 
 a in string
 
-t in Types ::= TyVar(a) | TyBool | TyInt | TyFun(t,t)
+t in Types ::= (* TyVar(a) | *) TyBool | TyInt | TyFun(t,t)
 
 env in Env ::= Empty
             |  Bind(env,x,t)

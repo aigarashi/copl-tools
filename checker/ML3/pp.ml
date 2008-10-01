@@ -1,6 +1,8 @@
 open Format
 open Core
 
+let g = "MLiii"
+
 let pr = fprintf
 
 let is_negative i = (i < 0)
@@ -48,8 +50,7 @@ let rec print_exp ppf e =
     and with_paren_R = with_paren (fun e_up e -> e > e_up) in
       match e with
 	  Exp_of_int i -> pr ppf "%d" i
-	| Exp_of_bool true -> pr ppf "true"
-	| Exp_of_bool false -> pr ppf "false"
+	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
 	| Exp_of_string id -> pp_print_string ppf id
 	| BinOp(p, e1, e2) -> 
 	    let op = 
@@ -108,10 +109,56 @@ let print_pjudgment ppf = function
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
       in pr ppf "%a %s %a is ?" print_val v1 op print_val v2
 
+let rec tex_exp ppf e = 
+    let with_paren_L = with_paren (<)
+    and with_paren_R = with_paren (fun e_up e -> e > e_up) in
+      match e with
+	  Exp_of_int i -> pr ppf "%d" i
+	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
+	| Exp_of_string id -> pp_print_string ppf id
+	| BinOp(p, e1, e2) -> 
+	    let op = 
+	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
+	      pr ppf "\\%sBinOpTerm{%a}{%s}{%a}" g
+		(with_paren_L tex_exp e) e1 
+		op
+		(with_paren_R tex_exp e) e2
+	| If(e1, e2, e3) ->
+	    pr ppf "\\%sIfTerm{%a}{%a}{%a}" g
+	      tex_exp e1 
+	      tex_exp e2
+	      tex_exp e3 
+	| Let(x, e1, e2) ->
+	    pr ppf "\\%sLetTerm{%s}{%a}{%a}" g
+	      x
+	      tex_exp e1
+	      tex_exp e2
+	| Abs(x, e) ->
+	    pr ppf "\\%sFunTerm{%s}{%a}" g x tex_exp e
+	| App(e1, e2) ->
+	    pr ppf "\\%sAppTerm{%a}{%a}" g
+	      (with_paren_L tex_exp e) e1
+	      (with_paren_R tex_exp e) e2
+
+let rec tex_env ppf = function
+    Empty -> ()
+  | Bind(env',x,v) -> pr ppf "%a%s = %a" tex_env' env' x tex_val v 
+and tex_env' ppf = function
+  | Empty -> ()
+  | Bind(env',x,v) -> pr ppf "%a%s = %a,@ " tex_env' env' x tex_val v 
+
+and tex_val ppf = function
+    Value_of_int i -> pr ppf "%d" i
+  | Value_of_bool b -> pp_print_string ppf (string_of_bool b)
+  | Fun(env, x, e) -> pr ppf "\\%sFunTerm{%a}{%s}{%a}" g tex_env env x tex_exp e
+
 let tex_judgment ppf = function
     EvalTo (env, e, v) -> 
-      pr ppf "\\EvalTo{%a}{%a}{%a}" print_env env print_exp e print_val v
+      pr ppf "\\%sEvalTo{%a}{%a}{%a}" g tex_env env tex_exp e tex_val v
   | AppBOp (p, v1, v2, v3) -> 
-      let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times" | Lt -> "lt" 
-      in pr ppf "\\AppBOp{%a}{%s}{%a}{%a}" print_val v1 op print_val v2 print_val v3
-    
+      let op = match p with 
+	  Plus -> "\\MLiiiPlusTerm" | Minus -> "\\MLiiiMinusTerm"
+	| Mult -> "\\MLiiiMultTerm" | Lt -> "\\MLiiiLTTerm" 
+      in pr ppf "\\%sAppBOp{%a}{%s}{%a}{%a}" g
+	   tex_val v1 op tex_val v2 tex_val v3
+

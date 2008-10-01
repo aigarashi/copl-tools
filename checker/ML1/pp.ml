@@ -1,6 +1,8 @@
 open Format
 open Core
 
+let g = "MLi"
+
 let pr = fprintf
 
 (* generic functions to generate parens depending on precedence *)
@@ -48,7 +50,7 @@ let rec print_exp ppf e =
 	      print_exp e2
 	      print_exp e3 
 
-let rec print_val ppf = function
+let print_val ppf = function
     Value_of_int i -> pr ppf "%d" i
   | Value_of_bool b -> pp_print_string ppf (string_of_bool b)
 
@@ -70,9 +72,35 @@ let print_pjudgment ppf = function
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
       in pr ppf "@[%a %s %a is ?@]" print_val v1 op print_val v2
 
+let rec tex_exp ppf e = 
+    let with_paren_L = with_paren (<)
+    and with_paren_R = with_paren (fun e_up e -> e > e_up) in
+      match e with
+	  Exp_of_int i -> pr ppf "%d" i
+	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
+	| BinOp(p, e1, e2) -> 
+	    let op = 
+	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
+	      pr ppf "\\%sBinOpTerm{%a}{%s}{%a}" g
+		(with_paren_L tex_exp e) e1 
+		op
+		(with_paren_R tex_exp e) e2
+	| If(e1, e2, e3) ->
+	    pr ppf "\\%sIfTerm{%a}{%a}{%a}" g
+	      tex_exp e1 
+	      tex_exp e2
+	      tex_exp e3 
+
+let tex_val ppf = function
+    Value_of_int i -> pr ppf "%d" i
+  | Value_of_bool b -> pp_print_string ppf (string_of_bool b)
+
 let tex_judgment ppf = function
-    EvalTo (e, v) -> pr ppf "\\EvalTo{%a}{%a}" print_exp e print_val v
+    EvalTo (e, v) -> pr ppf "\\%sEvalTo{%a}{%a}" g tex_exp e tex_val v
   | AppBOp (p, v1, v2, v3) -> 
-      let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times" | Lt -> "lt" 
-      in pr ppf "\\AppBOp{%a}{%s}{%a}{%a}" print_val v1 op print_val v2 print_val v3
+      let op = match p with 
+	  Plus -> "\\MLiPlusTerm" | Minus -> "\\MLiMinusTerm" 
+	| Mult -> "\\MLiMultTerm" | Lt -> "\\MLiLTTerm" 
+      in pr ppf "\\%sAppBOp{%a}{%s}{%a}{%a}" 
+	   g tex_val v1 op tex_val v2 tex_val v3
     
