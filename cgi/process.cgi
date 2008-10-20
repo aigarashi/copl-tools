@@ -94,11 +94,13 @@
 	     (html:head (html:style :type "text/css" *style*))
 	     (html:body
 	      html-msg
-	      (html:h1 "Debug information:")
-	      (html:h2 "Input:")
-	      (html:pre (html-escape-string params))
-	      (html:h2 "Output:")
-	      (html:pre (html-escape-string result))
+	      (if *debug*
+		  (list
+		   (html:h1 "Debug information:")
+		   (html:h2 "Input:")
+		   (html:pre (html-escape-string params))
+		   (html:h2 "Output:")
+		   (html:pre (html-escape-string result))))
 	      ))))
 	 (list
 	  (cgi-header)
