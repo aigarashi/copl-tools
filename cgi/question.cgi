@@ -3,6 +3,7 @@
 (use www.cgi)
 (use text.html-lite)
 
+(load "./site-local.scm")
 (load "./global.scm")
 
 (define *style* "
