@@ -11,7 +11,7 @@
   "localweb.sato.kuis.kyoto-u.ac.jp")
 
 (define-constant *passwd* ;; user-password assoc list
-  '(("igarashi" . "hogehoge")
+  '(("igarashi" . "Iwv9xWu5eDmQw")
 
     ))
 

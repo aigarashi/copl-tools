@@ -22,7 +22,9 @@
 
 (define (check-passwd name passwd)
   (let ((x (assoc name *passwd*)))
-    (if (pair? x) (equal? passwd (cdr x)) #f)))
+    (and (pair? x) 
+	 (equal? (sys-crypt passwd (cdr x)) 
+		 (cdr x)))))
 
 (define (display-login-page)
   (list
