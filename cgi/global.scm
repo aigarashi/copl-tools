@@ -1,9 +1,6 @@
 ;; global.scm
 ;; define global variables
 
-(define-constant *system-dir* ;; where the system resides
-  "/home/lab8/igarashi/local_html/system/")
-
 (define *userdb-dir* ;; user database directory
   (string-append *system-dir* "users/"))
 
@@ -15,6 +12,7 @@
 
 (define-constant *passwd* ;; user-password assoc list
   '(("igarashi" . "hogehoge")
+
     ))
 
 (define-constant *style* "

@@ -5,6 +5,7 @@
 (use rfc.cookie)
 (use util.list)
 
+(load "./site-local.scm")
 (load "./global.scm")
 (load "./userdb.scm")
 
