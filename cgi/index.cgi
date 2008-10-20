@@ -34,7 +34,7 @@
     (html:input :type "submit" :value "ログイン"))))
 
 (define-constant gamelist
-  '("nat" 
+  '("Nat" "NatLt1" "NatLt2" "NatLt3" "NatExp" 
     "ML1"
     ))
 
@@ -125,7 +125,7 @@
 		   (construct-cookie-string 
 		    `(("loginas" ,name 
 		       :domain ,*domainname*
-		       :path "/~igarashi/system/"
+		       :path "/~igarashi/dc/"
 		       :expires ,(- (sys-time) 1) 
 		       :max-age 0))))
        (html-doctype)
@@ -159,7 +159,7 @@
 		   (construct-cookie-string 
 		    `(("loginas" ,lname 
 		       :domain ,*domainname*
-		       :path "/~igarashi/system/"
+		       :path "/~igarashi/dc/"
 		       :expires ,(+ (sys-time) 86400) 
 		       :max-age 86400))))
        (html-doctype)
@@ -185,7 +185,7 @@
 	   (html:p "ログアウトするには，まずログインしてください"))
 	  (else '()))
 	 (display-login-page)
-	 (display-sandbox "ログインしていなくても遊べます"))))))))
+	 #;(display-sandbox "ログインしていなくても遊べます"))))))))
 
 (cgi-output-character-encoding "utf-8")
 (cgi-main main :merge-cookies #t)

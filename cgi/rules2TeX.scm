@@ -108,43 +108,43 @@ span.rname { font-variant: small-caps; }
 ;;; game specific functions follow
 
 ;; Game nat
-(define (nat:mv base . suffix)
+(define (Nat:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '()))
 
-(define (nat:STerm n)
+(define (Nat:STerm n)
   `("S(" ,n ")"))
 
-(define (nat:ZTerm) "Z")
+(define (Nat:ZTerm) "Z")
 
-(define (nat:PlusIs n1 n2 n3)
+(define (Nat:PlusIs n1 n2 n3)
   `(,n1 "\\mbox{ plus }" ,n2 "\\mbox{ is }" ,n3))
 
-(define (nat:MultIs n1 n2 n3)
+(define (Nat:MultIs n1 n2 n3)
   `(,n1 "\\mbox{ times }" ,n2 "\\mbox{ is }" ,n3))
 
-;; Game natLt[1-3]
-(define natLt1:mv nat:mv)
-(define natLt1:STerm nat:STerm)
-(define natLt1:ZTerm nat:ZTerm)
-(define (natLt1:Lt n1 n2)
+;; Game NatLt[1-3]
+(define NatLt1:mv Nat:mv)
+(define NatLt1:STerm Nat:STerm)
+(define NatLt1:ZTerm Nat:ZTerm)
+(define (NatLt1:Lt n1 n2)
   `(,n1 "\\mbox{ is less than }" ,n2))
 
-(define natLt2:mv nat:mv)
-(define natLt2:STerm nat:STerm)
-(define natLt2:ZTerm nat:ZTerm)
-(define natLt2:Lt natLt1:Lt)
+(define NatLt2:mv Nat:mv)
+(define NatLt2:STerm Nat:STerm)
+(define NatLt2:ZTerm Nat:ZTerm)
+(define NatLt2:Lt NatLt1:Lt)
 
-(define natLt3:mv nat:mv)
-(define natLt3:STerm nat:STerm)
-(define natLt3:ZTerm nat:ZTerm)
-(define natLt3:Lt natLt1:Lt)
+(define NatLt3:mv Nat:mv)
+(define NatLt3:STerm Nat:STerm)
+(define NatLt3:ZTerm Nat:ZTerm)
+(define NatLt3:Lt NatLt1:Lt)
 
 ;; Game NatExp
-(define NatExp:mv nat:mv)
-(define NatExp:STerm nat:STerm)
-(define NatExp:ZTerm nat:ZTerm)
-(define NatExp:PlusIs nat:PlusIs)
-(define NatExp:MultIs nat:MultIs)
+(define NatExp:mv Nat:mv)
+(define NatExp:STerm Nat:STerm)
+(define NatExp:ZTerm Nat:ZTerm)
+(define NatExp:PlusIs Nat:PlusIs)
+(define NatExp:MultIs Nat:MultIs)
 (define (NatExp:PTerm e1 e2)
   `(,e1 "+" ,e2))
 (define (NatExp:MTerm e1 e2)
