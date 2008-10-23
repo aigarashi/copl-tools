@@ -8,7 +8,7 @@
 	  (let ((segment1 (string-copy str 0 n))
 		(segment2 (string-copy str n)))
 	    (string-concatenate (list segment1 tag segment2))))
-      (string-concatenate (list str tag))))
+      (string-concatenate (list str " " tag))))
 
 (define (insert-tag line char tag str-list)
   (if (null? str-list) '()
