@@ -30,8 +30,13 @@
     (list (process-exit-status process) result errmsg)))
 
 (define (parse-errmsg s)
-  (let ((m (#/line\s([0-9]+),\scharacter\s([0-9]+)/ s)))
-    (if m (list (string->number (m 1)) (string->number (m 2))) #f)))
+  (let ((m1 (#/line\s([0-9]+),\scharacter\s([0-9]+) -- line\s([0-9]+),\scharacter\s([0-9]+)/ s))
+	(m2 (#/line\s([0-9]+),\scharacter\s([0-9]+)/ s)))
+    (if m1 (cons (list (string->number (m1 1)) (string->number (m1 2)))
+		 (list (string->number (m1 3)) (string->number (m1 4))))
+	(if m2 (cons (list (string->number (m2 1)) (string->number (m2 2)))
+		     '())
+	      #f))))
 
 (define (display-result result deriv no uname game)
   (if (zero? (car result))  ;; if the process return code is 0
@@ -53,7 +58,7 @@
       (begin
 	(unless (zero? no)
 		;; if no <> 0, then it must be the case that uname is set
-		(write-log uname (format "Q #~d not solved!" no) :header #t))
+		(write-log uname (format "Solving Q #~d failed!" no) :header #t))
 	(write-log uname 
 		   (format "check failed in game ~a\n~a" game (caddr result))
 		   :header #t)
@@ -61,9 +66,9 @@
 	(list
 	 (html:p "残念...")
 	 (html:pre (html-escape-string (caddr result))) 
-	 (html:pre (let ((lc1 (parse-errmsg (caddr result))))
-		     (if lc1
-			 (emphasize deriv lc1)
+	 (html:pre (let ((lc (parse-errmsg (caddr result))))
+		     (if lc
+			 (emphasize deriv (car lc) (cdr lc))
 			 deriv)))
 	 (html:hr)
 	 (html:table

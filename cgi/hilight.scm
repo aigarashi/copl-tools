@@ -18,9 +18,7 @@
 	  (cons (car str-list)
 		(insert-tag (- line 1) char tag (cdr str-list))))))
 
-(define (emphasize s lc1 . lc2)
-;  (let-keywords 
-;   options ((lc2 :to #f))
+(define (emphasize s lc1 lc2)
    (let ((lines (string-split s #[\n\r])))
      (string-join
       (insert-tag 
