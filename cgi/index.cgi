@@ -30,7 +30,7 @@
   (list
    (html:form 
     :action thisurl :method "post"
-    (html:p "ソフトウェア基礎論演習システムへようこそ")
+    (html:h1 "ソフトウェア基礎論演習システムへようこそ")
 					;(html:p "ログインしてください")
     (html:p "ユーザ名:" (html:input :type "text" :name "name"))
     (html:p "パスワード:" (html:input :type "password" :name "passwd"))
