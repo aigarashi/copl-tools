@@ -68,7 +68,8 @@ span.rname { font-variant: small-caps; }
 
 (define (js:ShowStuff)
   ;; Javascipt function to swap display/no display for all content
-  ;; within span tags Click_Menu  (html:script :language "JavaScript" 
+  ;; within span tags Click_Menu  
+(html:script :language "JavaScript" 
 "<!--
  var current=\"\"; // no rule is displayed at first
 

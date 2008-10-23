@@ -28,14 +28,16 @@
 
 (define (display-login-page)
   (list
-   (html:form 
-    :action thisurl :method "post"
-    (html:p "ログインしてください")
-    (html:p "ユーザ名:" (html:input :type "text" :name "name"))
-    (html:p "パスワード:" (html:input :type "password" :name "passwd"))
-    (html:input :type "hidden" :name "command" :value "login")
-    (html:input :type "submit" :value "ログイン"))))
-
+   (html:center
+    (html:form 
+     :action thisurl :method "post"
+     (html:p "ソフトウェア基礎論演習システムへようこそ")
+     ;(html:p "ログインしてください")
+     (html:p "ユーザ名:" (html:input :type "text" :name "name"))
+     (html:p "パスワード:" (html:input :type "password" :name "passwd"))
+     (html:input :type "hidden" :name "command" :value "login")
+     (html:input :type "submit" :value "ログイン")))))
+  
 (define-constant gamelist
   '("Nat" "NatLt1" "NatLt2" "NatLt3" "NatExp" 
     "ML1"
