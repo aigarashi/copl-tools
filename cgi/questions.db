@@ -10,7 +10,7 @@
   (Nat "Z times S(S(Z)) is Z")
   (Nat "S(S(Z)) times Z is Z")
   (Nat "S(S(Z)) times S(Z) is S(S(Z))")
-  (Nat "S(S(Z)) times S(S(Z)) is S(S(S(S(Z))")
+  (Nat "S(S(Z)) times S(S(Z)) is S(S(S(S(Z))))")
 
   ;; NatLt
   (NatLt1 "S(S(Z)) is less than S(S(S(Z)))")
