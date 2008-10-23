@@ -89,7 +89,7 @@
 	       (map (lambda (n)
 		      (html:td
 		       (if (zero? n)
-			   " "
+			   "&nbsp;"
 			   (html:a :href #`"question.cgi?no=,n" n)))) rows)))
 	    (slices ns 10 #t 0)))))
 
