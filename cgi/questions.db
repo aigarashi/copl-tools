@@ -26,7 +26,7 @@
   (NatExp "Z + S(S(Z)) evalto S(S(Z))")
   (NatExp "S(S(Z)) + Z evalto S(S(Z))")
   (NatExp "S(Z) + S(Z) + S(Z) evalto S(S(S(Z)))")
-  (NatExp "S(S(S((Z))) + S(S(Z)) * S(Z) evalto S(S(S(S(S(Z)))))")
+  (NatExp "S(S(S(Z)) + S(S(Z)) * S(Z) evalto S(S(S(S(S(Z)))))")
   (NatExp "(S(S(Z)) + S(S(Z))) * Z evalto Z")
   (NatExp "Z * (S(S(Z)) + S(S(Z))) evalto Z")
 
