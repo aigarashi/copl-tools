@@ -30,4 +30,13 @@
   (NatExp "(S(S(Z)) + S(S(Z))) * Z evalto Z")
   (NatExp "Z * (S(S(Z)) + S(S(Z))) evalto Z")
 
+  ;; ML1
+  (ML1 "3 + 5 evalto 8")
+  (ML1 "8 - 2 - 3 evalto 3")
+  (ML1 "(4 + 5) * (1 - 10) evalto -81")
+  (ML1 "if 4 < 5 then 2 + 3 else 8 * 8 evalto 5")
+  (ML1 "3 + if -23 < -2 * 8 then 8 else 2 + 4 evalto 11")
+  (ML1 "3 + (if -23 < -2 * 8 then 8 else 2) + 4 evalto 15")
+
+  ;; ML2
 )

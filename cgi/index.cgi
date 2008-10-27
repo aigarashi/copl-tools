@@ -135,8 +135,8 @@
        (html-doctype)
        (html:html
 	(html:head
-	 (html:meta :http-equiv "Refresh" :content "5;url=index.cgi"))
-	(html:head (html:style :type "text/css" *style*))
+	 (html:meta :http-equiv "Refresh" :content "5;url=index.cgi")
+	 (html:style :type "text/css" *style*))
 	(html:body
 	 (html:p "ログアウトしました．")))))
      (name  ;; he/she has already logged in
@@ -144,7 +144,9 @@
        (cgi-header)
        (html-doctype)
        (html:html
-	(html:head (html:style :type "text/css" *style*))
+	(html:head 
+	 (html:title "ソフトウェア基礎論演習システム")
+	 (html:style :type "text/css" *style*))
 	(html:body
 	 (display-menu name)
 	 (display-sandbox "問題を解かずに遊ぶこともできます")
@@ -168,7 +170,9 @@
 		       :max-age 86400))))
        (html-doctype)
        (html:html
-	(html:head (html:style :type "text/css" *style*))
+	(html:head 
+	 (html:title "ソフトウェア基礎論演習システム")
+	 (html:style :type "text/css" *style*))
 	(html:body
 	 (html:p "ログインに成功しました!")
 	 (display-menu lname)
@@ -180,7 +184,9 @@
        (cgi-header)
        (html-doctype)
        (html:html
-	(html:head (html:style :type "text/css" *style*))
+	(html:head 
+	 (html:title "ソフトウェア基礎論演習システム")
+	 (html:style :type "text/css" *style*))
 	(html:body
 	 (cond
 	  ((eq? command 'login)

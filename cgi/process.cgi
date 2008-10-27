@@ -76,7 +76,7 @@
 	       (list
 		(html:a :href "" :onclick "history.back(); return false"
 			"今の問題にもどる")
-		(html:a :href "index.cgi" "もっと問題を解く"))))))))
+		(html:a :href "index.cgi" "あきらめて別の問題を解く"))))))))
 
 (cgi-main
  (lambda (params)
