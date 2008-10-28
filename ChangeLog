@@ -1,3 +1,24 @@
+2008-10-28  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/process.cgi (main): removes garbage in output.
+
+2008-10-23  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/hilight.scm (emphasize): Now lc2 is a required argument.
+
+	* cgi/process.cgi (display-result,parse-errmsg): Parsing error
+	messages of the form "line x, character y -- line z, character w".
+
+	* cgi/index.cgi (display-qlist): space for the solved problem has
+	been replaced by &nbsp;
+	
+	* cgi/questions.db: many typos:  We should automate the check
+	to make sure the expression is valid.
+	
+2008-10-20  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/questions.db: Questions rearranged.
+
 2008-09-29  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/*/pp.ml: adapted for TeX output

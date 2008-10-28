@@ -9,14 +9,18 @@ struct
   type 'a with_pos = {p:pos; v:'a}
 
   let print_pos pos =
-    eprintf "File \"%s\", line %d, character %d" 
-      pos.pos_fname
+    (if pos.pos_fname = "" then
+      eprintf "line %d, character %d"
+      else
+	eprintf "File \"%s\", line %d, character %d" pos.pos_fname)
       pos.pos_lnum
       (pos.pos_cnum - pos.pos_bol)
 
   let print_2pos pos1 pos2 =
-    eprintf "File \"%s\", %d.%d--%d.%d" 
-      pos1.pos_fname
+    (if pos1.pos_fname = "" then
+	eprintf "line %d, character %d -- line %d, character %d"
+      else
+	eprintf "File \"%s\", line %d, character %d -- line %d, character %d" pos1.pos_fname)
       pos1.pos_lnum
       (pos1.pos_cnum - pos1.pos_bol)
       pos2.pos_lnum
