@@ -47,7 +47,7 @@
    (html:form 
     :name "sandbox" :action "process.cgi" :method "post"
     (html:p msg)
-    (html:p "ゲーム名を選んでください: "
+    (html:p "導出システム名を選んでください: "
 	    (html:select :name "game"
 			 (map (lambda (g) (html:option :value g g)) gamelist))
 	    (html:input :type "submit" :value "送信"))

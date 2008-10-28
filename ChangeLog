@@ -1,3 +1,9 @@
+2008-10-28  Atsushi Igarashi  <igarashi@cornet>
+
+	* cgi/process.cgi (main): improved error message.
+	* cgi/index.cgi (display-sandbox):
+ 	* cgi/question.cgi (display-q): more consistent message.
+
 2008-10-28  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/process.cgi (main): removes garbage in output.

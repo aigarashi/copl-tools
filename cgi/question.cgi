@@ -2,6 +2,7 @@
 
 (use www.cgi)
 (use text.html-lite)
+(use srfi-13)
 
 (load "./site-local.scm")
 (load "./global.scm")
@@ -31,10 +32,13 @@
 		 (html:input :type "hidden" :name "game" :value game)
 		 (html:input :type "hidden" :name "no" :value n)
 		 (html:input :type "hidden" :name "problem" :value goal)
-		 (html:input :type "submit" :value "解答を送信"))))
+		 (html:input :type "submit" :value "解答を送信")))
+	       (rulesurl (html:a 
+			  :href (string-concatenate (list "games/" game ".html")) 
+			  game)))
 	  (list
 	   (html:h1 "第" n "問")
-	   (html:p "体系 " game " で判断 " (html:br)
+	   (html:p "導出システム " rulesurl " で判断 " (html:br)
 		   "&nbsp; &nbsp;" goal (html:br)
 		   " を導出せよ")
 	   (html:h1 "解答欄")
