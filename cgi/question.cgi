@@ -34,7 +34,8 @@
 		 (html:input :type "hidden" :name "problem" :value goal)
 		 (html:input :type "submit" :value "解答を送信")))
 	       (rulesurl (html:a 
-			  :href (string-concatenate (list "games/" game ".html")) 
+			  :href (string-concatenate (list "games/" 
+							  (symbol->string game) ".html")) 
 			  game)))
 	  (list
 	   (html:h1 "第" n "問")
