@@ -54,10 +54,10 @@
 (define (header-LaTeXMathML) ; for loading LaTeXMathML
   (list (html:script :type "text/javascript" 
 ;		     :src "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
-		     :src "LaTeXMathML.js")
+		     :src "../LaTeXMathML.js")
 	(html:link :rel "stylesheet" :type "text/css" 
 ;		   :href "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css")))
-		   :href "LaTeXMathML.standardarticle.css")))
+		   :href "../LaTeXMathML.standardarticle.css")))
 
 (define (rule-style) ; style of rules
   (html:style :type "text/css" "
@@ -86,7 +86,7 @@ span.rname { font-variant: small-caps; }
    current = \"\";
  }
  }
- -->")
+ -->"))
 
 (define (rnameref rn) ; link to call Show_Stuff
   (html:a :href #`"javascript:Show_Stuff(,(normalize-rname rn))" rn))

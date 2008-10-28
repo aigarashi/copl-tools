@@ -6,6 +6,7 @@
 
 2008-10-28  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
+	* cgi/rules2TeX.scm (header-LaTeXMathML): url change.
 	* cgi/process.cgi (main): removes garbage in output.
 
 2008-10-23  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>

@@ -7,6 +7,7 @@ GAMES=Nat NatLt1 NatLt2 NatLt3 NatExp \
 	TypingML2 TypingML4 TypingML5 PolyML4
 
 html: $(addsuffix .html,$(GAMES))
+	mv $^ games
 
 %.scm: $(GMC)
 	$(GMC) -sexp $(basename $@) ../checker/$(basename $@)/$(patsubst %.scm,%.gm,$@) > $@
@@ -20,4 +21,4 @@ $(GMC):
 	make -C $(GMCDIR)
 
 clean:
-	-rm $(addsuffix .html,$(GAMES)) $(addsuffix .scm,$(GAMES))
+	-rm $(addsuffix .html, $(GAMES)) $(addsuffix .scm,$(GAMES))
