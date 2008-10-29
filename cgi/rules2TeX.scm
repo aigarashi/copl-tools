@@ -158,7 +158,7 @@ span.rname { font-variant: small-caps; }
   (mv base (and (pair? suffix) (car suffix)) '()))
 
 (define (ML1:BinOpTerm p e1 e2)
-  `(,e1 ,p ,e2))
+  `(,e1 "\\," ,p "\\," ,e2))
 
 (define (ML1:IfTerm e1 e2 e3)
   `("\\mbox{if }" ,e1 "\\mbox{ then }" ,e2 "\\mbox{ else }" ,e3))
@@ -182,10 +182,10 @@ span.rname { font-variant: small-caps; }
 (define (ML2:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}"))))
 
-(define (ML2:EmptyTerm) 'emptyenv)
+(define (ML2:EmptyTerm) "\\cdot")
 
 (define (ML2:BindTerm env x v)
-  (if (eq? env 'emptyenv)
+  (if (equal? env "\\cdot")
       `(,x "=" ,v)
       `(,env "," ,x "=" ,v)))
 
@@ -345,7 +345,7 @@ span.rname { font-variant: small-caps; }
 (define (ML6:Matches v p res)
   (cond ((eq? res 'fail)
 	 `(,v "\\mbox{ doesn't match }" ,p))
-	((eq? res 'emptyenv)
+	((equal? res "\\cdot")
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }()"))
 	(else
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
@@ -359,10 +359,10 @@ span.rname { font-variant: small-caps; }
   (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
 					       ("t" "\\tau"))))
 
-(define (TypingML2:EmptyTerm) 'emptyenv)
+(define (TypingML2:EmptyTerm) "\\cdot")
 
 (define (TypingML2:BindTerm env x t)
-  (if (eq? env 'emptyenv)
+  (if (equal? env "\\cdot")
       `(,x ":" ,t)
       `(,env "," ,x ":" ,t)))
 

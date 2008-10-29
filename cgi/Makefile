@@ -7,6 +7,7 @@ GAMES=Nat NatLt1 NatLt2 NatLt3 NatExp \
 	TypingML2 TypingML4 TypingML5 PolyML4
 
 html: $(addsuffix .html,$(GAMES))
+	-mkdir games
 	mv $^ games
 
 %.scm: $(GMC)
@@ -22,3 +23,5 @@ $(GMC):
 
 clean:
 	-rm $(addsuffix .html, $(GAMES)) $(addsuffix .scm,$(GAMES))
+	-rm -rf games
+

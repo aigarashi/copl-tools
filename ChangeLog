@@ -1,3 +1,8 @@
+2008-10-29  Atsushi Igarashi  <igarashi@cornet>
+
+	* cgi/questions.db: ML2 questions added.
+	* cgi/rules2TeX.scm: spacing around binary op adjusted.
+
 2008-10-28  Atsushi Igarashi  <igarashi@cornet>
 
 	* cgi/process.cgi (main): improved error message.
