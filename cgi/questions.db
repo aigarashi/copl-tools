@@ -56,14 +56,14 @@
   (ML3 "|- let twice = fun f -> fun x -> f (f x) in twice (fun x -> x * x) 2 evalto 16")
   (ML3 "|- let twice = fun f -> fun x -> f (f x) in twice twice (fun x -> x * x) 2 evalto 65536")
   (ML3 "|- let compose = fun f -> fun g -> fun x -> f (g x) in 
-           let p = fun x -> x * x in
-           let q = fun x -> x + 4 in
-           compose p q 4 
-           evalto 64")
+   let p = fun x -> x * x in
+   let q = fun x -> x + 4 in
+   compose p q 4 
+  evalto 64")
   (ML3 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
-           let k = fun x -> fun y -> x in
-           s k k 7
-           evalto 7")
+   let k = fun x -> fun y -> x in
+   s k k 7
+  evalto 7")
 
   ;; ML4
   (ML4 "|- let rec fact = fun n ->
@@ -71,14 +71,14 @@
            fact 3
            evalto 6")
   (ML4 "|- let rec fib = fun n -> if n < 3 then 1 else fib (n-1) + fib (n-2) in
-           fib 5
-           evalto 5")
+   fib 5
+  evalto 5")
   (ML4 "|- let rec sum = fun f -> fun n ->
-             if n < 1 then 0 else f n + sum f (n - 1) in 
-           sum (fun x -> x * x) 2
-           evalto 5")
+     if n < 1 then 0 else f n + sum f (n - 1) in 
+   sum (fun x -> x * x) 2
+  evalto 5")
   (ML4 "|- let fact = fun self -> fun n ->
-             if n < 2 then 1 else n * self self (n - 1) in
-           fact fact 3
-           evalto 6")
+     if n < 2 then 1 else n * self self (n - 1) in
+   fact fact 3
+  evalto 6")
 )

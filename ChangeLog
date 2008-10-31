@@ -1,3 +1,9 @@
+2008-10-31  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/: Each question comes with a link to a web page showing the
+	rules of the game.
+	* cgi/questions.db: ML3/ML4 questions added.
+
 2008-10-29  Atsushi Igarashi  <igarashi@cornet>
 
 	* cgi/questions.db: ML2 questions added.
