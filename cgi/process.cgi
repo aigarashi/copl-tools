@@ -114,10 +114,10 @@
 	  (html:html
 	   (html:body
 	    (html:p
-	     (cond ((not (or (zero? no)) uname)
-		    "ログインしてください")
-		   ((not deriv)
-		    "空ファイルが送信されたようです")
-		   ((not game)
-		    "このURLを直接アクセスしないでください")))))))))
+	     (cond [(not (or (zero? no)) uname)
+		    "ログインしてください"]
+		   [(not deriv)
+		    "空ファイルが送信されたようです"]
+		   [(not game)
+		    "このURLを直接アクセスしないでください"]))))))))
  :merge-cookies #t)

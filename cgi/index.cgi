@@ -10,6 +10,15 @@
 (load "./userdb.scm")
 
 (define-constant thisurl "index.cgi")
+
+(define header 
+  (html:head 
+   (html:title "ソフトウェア基礎論演習システム")
+   (html:meta 
+    :http-equiv "content-type" 
+    :content "text/html; charset=utf-8")
+   (html:style :type "text/css" *style*)))
+
 (define (command-url com . options)
   (string-concatenate
    (list 
@@ -135,7 +144,7 @@
        (html-doctype)
        (html:html
 	(html:head
-	 (html:meta :http-equiv "Refresh" :content "5;url=index.cgi")
+	 (html:meta :http-equiv "Refresh" :content "3;url=index.cgi")
 	 (html:style :type "text/css" *style*))
 	(html:body
 	 (html:p "ログアウトしました．")))))
@@ -144,9 +153,7 @@
        (cgi-header)
        (html-doctype)
        (html:html
-	(html:head 
-	 (html:title "ソフトウェア基礎論演習システム")
-	 (html:style :type "text/css" *style*))
+	header
 	(html:body
 	 (display-menu name)
 	 (display-sandbox "問題を解かずに遊ぶこともできます")
@@ -170,9 +177,7 @@
 		       :max-age 86400))))
        (html-doctype)
        (html:html
-	(html:head 
-	 (html:title "ソフトウェア基礎論演習システム")
-	 (html:style :type "text/css" *style*))
+	header
 	(html:body
 	 (html:p "ログインに成功しました!")
 	 (display-menu lname)
@@ -184,9 +189,7 @@
        (cgi-header)
        (html-doctype)
        (html:html
-	(html:head 
-	 (html:title "ソフトウェア基礎論演習システム")
-	 (html:style :type "text/css" *style*))
+	header
 	(html:body
 	 (cond
 	  ((eq? command 'login)
