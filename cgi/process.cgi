@@ -114,7 +114,7 @@
 	  (html:html
 	   (html:body
 	    (html:p
-	     (cond [(not (or (zero? no)) uname)
+	     (cond [(not (or (zero? no) uname))
 		    "ログインしてください"]
 		   [(not deriv)
 		    "空ファイルが送信されたようです"]
