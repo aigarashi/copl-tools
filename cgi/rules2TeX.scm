@@ -238,7 +238,7 @@ span.rname { font-variant: small-caps; }
 (define ML4:FunTerm ML3:FunTerm)
 (define (ML4:RecTerm env x y e)
   `("\\mbox{(}" ,env 
-    "\\mbox{)[rec }" ,x " = \\mbox{ fun }" ,y "\\rightarrow" ,e "\\mbox{]}"))
+    "\\mbox{)[rec }" ,x " = \\mbox{fun }" ,y "\\rightarrow" ,e "\\mbox{]}"))
 
 (define ML4:EmptyTerm ML3:EmptyTerm)
 (define ML4:BindTerm ML3:BindTerm)
@@ -249,7 +249,7 @@ span.rname { font-variant: small-caps; }
 (define ML4:AppTerm ML3:AppTerm)
 
 (define (ML4:LetRecTerm x y e1 e2)
-    `("\\mbox{let rec }" ,x "\\; " ,y " = " ,e1 "\\mbox{ in }" ,e2))
+    `("\\mbox{let rec }" ,x " = \\mbox{fun }" ,y " \\rightarrow " ,e1 "\\mbox{ in }" ,e2))
 
 (define ML4:PlusTerm ML3:PlusTerm)
 (define ML4:MinusTerm ML3:MinusTerm)
