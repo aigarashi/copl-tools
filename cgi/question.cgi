@@ -49,7 +49,7 @@
 		      (html:input :type "file" :name "derivation")
 		      commonform)
 	   (html:form :action "process.cgi" :method "post"
-	    (html:textarea :name "derivation" :rows "25" :cols "80"  goal)
+	    (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off" goal)
 	    commonform)))
 	;; if n is too large
 	(html:p "そんな問題はありません"))))

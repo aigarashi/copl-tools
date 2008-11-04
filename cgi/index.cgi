@@ -48,7 +48,7 @@
   
 (define-constant gamelist
   '("Nat" "NatLt1" "NatLt2" "NatLt3" "NatExp" 
-    "ML1" "ML2" "ML3" "ML4"
+    "ML1" "ML2" "ML3" "ML4" "ML5" "ML6"
     ))
 
 (define (display-sandbox msg)
@@ -60,7 +60,7 @@
 	    (html:select :name "game"
 			 (map (lambda (g) (html:option :value g g)) gamelist))
 	    (html:input :type "submit" :value "送信"))
-    (html:textarea :name "derivation" :rows "25" :cols "80"
+    (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off"
 		   "ここに導出を書いてください")
     (html:input :type "hidden" :name "no" :value 0))
   (html:script :type "text/javascript" "<!--
