@@ -39,8 +39,8 @@
 			  game)))
 	  (list
 	   (html:h1 "第" n "問")
-	   (html:p "導出システム " rulesurl " で判断 " (html:br)
-		   "&nbsp; &nbsp;" (html:pre goal) (html:br)
+	   (html:p "導出システム " rulesurl " で判断 " #;(html:br)
+		   #;"&nbsp; &nbsp;" (html:pre goal) #;(html:br)
 		   " を導出せよ")
 	   (html:h1 "解答欄")
 	   (html:form :enctype "multipart/form-data"
