@@ -70,7 +70,7 @@
              if n < 2 then 1 else n * fact (n - 1) in
            fact 3
            evalto 6")
-  (ML4 "|- let rec fib = fun n -> if n < 3 then 1 else fib (n-1) + fib (n-2) in
+  (ML4 "|- let rec fib = fun n -> if n < 3 then 1 else fib (n - 1) + fib (n - 2) in
    fib 5
   evalto 5")
   (ML4 "|- let rec sum = fun f -> fun n ->
