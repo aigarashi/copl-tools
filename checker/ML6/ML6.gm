@@ -55,7 +55,7 @@ M-Var:  Matches(v, x, Bind(Empty,x,v)) :- ;
 M-Nil:  Matches(NilV, NilP, Empty) :- ;
 M-Cons: Matches(ConsV(v1, v2), ConsP(p1, p2), env) :-
            Matches(v1, p1, env1), Matches(v2, p2, env2),
-(*            `disjoint $env1 $env2` %dom($env1)\cap dom($env2) = \emptyset%,*)
+            (*`disjoint $env1 $env2` %dom($env1)\cap dom($env2) = \emptyset%,*)
             `$env = uplus $env1 $env2` %$env = $env1 \uplus $env2%;
 M-Wild: Matches(v, WildP, Empty) :- ;
 
@@ -66,7 +66,7 @@ NM-FunNil:  Matches(Fun(env,x,e), NilP, Fail) :- ;
 NM-RecNil:  Matches(Rec(env,x,y,e), NilP, Fail) :- ;
 *)
 NM-ConsNil: Matches(ConsV(v1,v2), NilP, Fail) :- ;
-
+(*
 (*
 NM-IntCons:  Matches(i, ConsP(p1,p2), Fail) :- ;
 NM-BoolCons: Matches(b, ConsP(p1,p2), Fail) :- ;

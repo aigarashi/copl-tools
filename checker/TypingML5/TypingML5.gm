@@ -24,7 +24,7 @@ env in Env ::= Empty
 e in Exp ::= i
           | b
           | x
-          | BinOp(p, e, e)
+          | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
           | Abs(x, e)
@@ -34,7 +34,7 @@ e in Exp ::= i
 	  | Cons(e,e)
 	  | Match(e,e,x,y,e)   (* match e with [] -> e | x::y -> e *)
 
-p in Prim ::= Plus | Minus | Mult | Lt
+op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
