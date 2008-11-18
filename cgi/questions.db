@@ -117,4 +117,72 @@
      | (x :: _) :: l' -> x :: heads l' in
    heads ((1 :: 2 :: []) :: [] :: (3 :: []) :: [])
   evalto 1 :: 3 :: []")
+
+  ;; TypingML5
+  (TypingML5 "|- 3 + 5 : int")
+  (TypingML5 "|- if 4 < 5 then 2 + 3 else 8 * 8 : int")
+  (TypingML5 "x : bool, y : int |- if x then y + 1 else y - 1 : int")
+  (TypingML5 "|- let x = 3 < 2 in let y = 5 in if x then y else 2 : int")
+
+  ;; function types
+  (TypingML5 "|- fun x -> x + 1 : int -> int")
+  (TypingML5 "|- let f = fun x -> x + 1 in f 4 : int")
+  (TypingML5 "|- fun f -> f 0 + f 1 : (int -> int) -> int")
+  (TypingML5 "|- let max = fun x -> fun y -> if x < y then y else x in max 3 5 : int")
+
+  ;; nil is polymorphic
+  (TypingML5 "|- 4 :: [] : int list")
+  (TypingML5 "|- true :: false :: [] : bool list")
+
+  ;; polymorphic combinators
+  (TypingML5 "|- fun x -> fun y -> x : int -> int -> int")
+  (TypingML5 "|- fun x -> fun y -> x : bool -> int -> bool")
+  (TypingML5 "|- let k = fun x -> fun y -> x in k 3 true : int")
+  (TypingML5 "|- let k = fun x -> fun y -> x in k (1::[]) 3 : int list")
+  (TypingML5 "|- let k = fun x -> fun y -> x in k true (fun x -> x + 1) : bool")
+
+  (TypingML5 "|- let compose = fun f -> fun g -> fun x -> f (g x) in
+   let p = fun x -> x * x in
+   let q = fun x -> x + 4 in
+   compose p q : int -> int")
+  (TypingML5 "|- let compose = fun f -> fun g -> fun x -> f (g x) in
+   let p = fun x -> if x then 3 else 4 in
+   let q = fun x -> x < 4 in
+   compose p q : int -> int")
+  
+  ;; SKK is polymorphic identity
+  (TypingML5 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
+   let k = fun x -> fun y -> x in
+   s k k : int -> int")
+
+  (TypingML5 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
+   let k = fun x -> fun y -> x in
+   s k k (fun x -> x + 1) : int -> int")
+
+   ;; recursive functions
+  (TypingML5 "|- let rec fact = fun n ->
+     if n < 2 then 1 else n * fact (n - 1) in
+     fact 3 
+  : int")
+  (TypingML5 "|- let rec sum = fun f -> fun n ->
+     if n < 1 then 0 else f n + sum f (n - 1) in 
+   sum (fun x -> x * x) 2 
+   : int")
+
+   ;; polymorphism in lists
+   (TypingML5 "|- let l = (fun x -> x) :: (fun y -> 2) :: (fun z -> z + 3) :: [] in 2 : int")
+
+   (TypingML5 "let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
+    length : int list -> int")
+
+   (TypingML5 "let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
+    length ((fun x -> x) :: (fun y -> y + 3) :: []) : int")
+
+   (TypingML5 "|- let rec append = fun l1 -> fun l2 -> 
+     match l1 with [] -> l2 | x :: y -> x :: append y l2 in
+     append : int list -> int list -> int list")
+
+   (TypingML5 "|- let rec append = fun l1 -> fun l2 -> 
+     match l1 with [] -> l2 | x :: y -> x :: append y l2 in
+     append (true :: []) (false :: []) : bool list")
 )

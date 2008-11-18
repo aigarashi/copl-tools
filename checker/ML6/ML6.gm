@@ -24,7 +24,7 @@ p in Pat ::= x | NilP | ConsP(p,p) | WildP (* wildcard pattern *)
 
 res in Res ::= env | Fail (* result of matching *)
 
-c in Clause ::= EmptyC | AddC(p,e,c) (* stands for p -> e | c *)
+c in Clauses ::= EmptyC | AddC(p,e,c) (* stands for p -> e | c *)
 
 e in Exp ::= i
           | b
@@ -66,7 +66,6 @@ NM-FunNil:  Matches(Fun(env,x,e), NilP, Fail) :- ;
 NM-RecNil:  Matches(Rec(env,x,y,e), NilP, Fail) :- ;
 *)
 NM-ConsNil: Matches(ConsV(v1,v2), NilP, Fail) :- ;
-(*
 (*
 NM-IntCons:  Matches(i, ConsP(p1,p2), Fail) :- ;
 NM-BoolCons: Matches(b, ConsP(p1,p2), Fail) :- ;
