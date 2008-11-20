@@ -152,22 +152,22 @@
   
   ;; SKK is polymorphic identity
   (TypingML5 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
-   let k = fun x -> fun y -> x in
-   s k k : int -> int")
+   let k1 = fun x -> fun y -> x in
+   let k2 = fun x -> fun y -> x in
+   s k1 k2 : int -> int")
 
   (TypingML5 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
-   let k = fun x -> fun y -> x in
-   s k k (fun x -> x + 1) : int -> int")
+   let k1 = fun x -> fun y -> x in
+   let k2 = fun x -> fun y -> x in
+   s k1 k2 (fun x -> x + 1) : int -> int")
 
    ;; recursive functions
   (TypingML5 "|- let rec fact = fun n ->
      if n < 2 then 1 else n * fact (n - 1) in
-     fact 3 
-  : int")
+     fact 3 : int")
   (TypingML5 "|- let rec sum = fun f -> fun n ->
      if n < 1 then 0 else f n + sum f (n - 1) in 
-   sum (fun x -> x * x) 2 
-   : int")
+   sum (fun x -> x * x) 2 : int")
 
    ;; polymorphism in lists
    (TypingML5 "|- let l = (fun x -> x) :: (fun y -> 2) :: (fun z -> z + 3) :: [] in 2 : int")
