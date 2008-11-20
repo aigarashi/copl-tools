@@ -185,4 +185,8 @@
    (TypingML5 "|- let rec append = fun l1 -> fun l2 -> 
      match l1 with [] -> l2 | x :: y -> x :: append y l2 in
      append (true :: []) (false :: []) : bool list")
+
+   (TypingML5 "|- let rec map = fun f -> fun l ->
+     match l with [] -> [] | x :: y -> f x :: map f y in
+     map (fun x -> x < 3) (4 :: 5 :: 1 :: []) : bool list")
 )
