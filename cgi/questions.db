@@ -172,10 +172,10 @@
    ;; polymorphism in lists
    (TypingML5 "|- let l = (fun x -> x) :: (fun y -> 2) :: (fun z -> z + 3) :: [] in 2 : int")
 
-   (TypingML5 "let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
+   (TypingML5 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
     length : int list -> int")
 
-   (TypingML5 "let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
+   (TypingML5 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
     length ((fun x -> x) :: (fun y -> y + 3) :: []) : int")
 
    (TypingML5 "|- let rec append = fun l1 -> fun l2 -> 
