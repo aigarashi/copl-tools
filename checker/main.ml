@@ -38,6 +38,7 @@ let games = [
     ("TypingML4", (TypingML4.Link.check_deriv, TypingML4.Link.make_deriv));
     ("TypingML5", (TypingML5.Link.check_deriv, TypingML5.Link.make_deriv));
     ("PolyML4", (PolyML4.Link.check_deriv, PolyML4.Link.make_deriv));
+    ("PolyML5", (PolyML5.Link.check_deriv, PolyML5.Link.make_deriv));
   ]
 
 let () = 
