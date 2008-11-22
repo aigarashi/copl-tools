@@ -44,7 +44,8 @@ let v = [
   ("'", PRIME);
 
   (* PolyML4 *)
-  ("All", ALL);
+(*  ("All", ALL); *)
+  (".", DOT);
 
   (* ML5 expressions *)
   ("match", MATCH);

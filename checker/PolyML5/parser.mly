@@ -45,7 +45,8 @@ let errAt i s =
 
 /* PolyML4 */
 %token PRIME
-%token ALL
+/* %token ALL */
+%token DOT
 
 /* TypingML5 */
 %token LIST
@@ -197,13 +198,14 @@ AExp:
 
 TyVarDecls:
     PRIME LCID { [$2] }
-  | PRIME LCID COMMA TyVarDecls { $2 :: $4 }
+  | PRIME LCID /* COMMA */ TyVarDecls { $2 :: $3 }
 
 TypeScheme:
     Type { TyScheme_of_Types ($1 []) }
-  | ALL LPAREN TyVarDecls RPAREN LBRACKET Type RBRACKET { 
-	let i = List.length $3 in
-        TyScheme(i, $6 $3)
+/*  | ALL LPAREN TyVarDecls RPAREN LBRACKET Type RBRACKET */
+  | TyVarDecls DOT Type { 
+	let i = List.length $1 in
+        TyScheme(i, $3 $1)
     }
 
 Type:

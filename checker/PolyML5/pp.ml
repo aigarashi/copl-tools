@@ -163,7 +163,7 @@ let rec pickfreshnames i seed ids =
 let rec pp_tyvardecls ppf names =
   match names with 
       [] -> ()
-    | name::rest -> pr ppf ", '%s%a" name pp_tyvardecls rest
+    | name::rest -> pr ppf " '%s%a" name pp_tyvardecls rest
 let pp_tyvardecls ppf names =
   match names with
       [] -> MySupport.Error.err "pp_tyvardecls': empty type vars"
@@ -175,7 +175,7 @@ let pp_typescheme ppf tysc =
     | TyScheme(i, ty) -> 
 	let fvs = fv_ty ty in
 	let newnames = pickfreshnames i 0 fvs in
-	  pr ppf "All(%a)[%a]" 
+	  pr ppf "%a.%a" 
 	    pp_tyvardecls newnames
 	    (pp_type_aux newnames) ty
 
