@@ -1,5 +1,7 @@
 #! /usr/bin/gosh
 
+;; TODO: add a link to go back to the problem list
+
 (use www.cgi)
 (use text.html-lite)
 (use srfi-13)

@@ -4,7 +4,7 @@ RULE2TEX=./rules2TeX.scm
 
 GAMES=Nat NatLt1 NatLt2 NatLt3 NatExp \
 	ML1 ML2 ML3 ML4 ML5 ML6 \
-	TypingML2 TypingML4 TypingML5 PolyML4
+	TypingML2 TypingML4 TypingML5 PolyML4 PolyML5
 
 html: $(addsuffix .html,$(GAMES))
 	-mkdir games

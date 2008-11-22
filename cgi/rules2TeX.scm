@@ -449,10 +449,8 @@ span.rname { font-variant: small-caps; }
 (define PolyML4:TyIntTerm TypingML4:TyIntTerm)
 (define PolyML4:TyFunTerm TypingML4:TyFunTerm)
 
-(define (PolyML4:TyFVarTerm a) a)
-(define (PolyML4:TyBVarTerm i) i)
-(define (PolyML4:TySchemeTerm i t) 
-  `("\\forall" ,i "." ,t))
+(define (PolyML4:TyFVarTerm a) `("'" ,a))
+(define (PolyML4:TyBVarTerm i) "")
 
 ; (define (PolyML4:TyFVar a))
 ; (define (PolyML4:TyBVar a))
@@ -463,6 +461,12 @@ span.rname { font-variant: small-caps; }
 					       ("t" "\\tau")
 					       ("s" "\\sigma"))))
 
+(define (PolyML4:TySchemeTerm i t) 
+  `(,(PolyML4:TyFVarTerm (PolyML4:mv "a" "1"))
+    "\\cdots"
+    ,(PolyML4:TyFVarTerm (PolyML4:mv "a" "n"))
+    "." ,t))
+    
 (define PolyML4:EmptyTerm TypingML4:EmptyTerm)
 (define PolyML4:BindTerm TypingML4:BindTerm)
 
@@ -480,3 +484,37 @@ span.rname { font-variant: small-caps; }
 
 (define PolyML4:Typing TypingML4:Typing)
 
+;; PolyML5
+
+(define PolyML5:TyBoolTerm TypingML5:TyBoolTerm)
+(define PolyML5:TyIntTerm TypingML5:TyIntTerm)
+(define PolyML5:TyFunTerm TypingML5:TyFunTerm)
+(define PolyML5:TyListTerm TypingML5:TyListTerm)
+
+(define PolyML5:TyFVarTerm PolyML4:TyFVarTerm)
+(define PolyML5:TyBVarTerm PolyML4:TyBVarTerm)
+(define PolyML5:TySchemeTerm PolyML4:TySchemeTerm)
+
+(define PolyML5:mv PolyML4:mv)
+
+(define PolyML5:EmptyTerm TypingML5:EmptyTerm)
+
+(define PolyML5:BindTerm TypingML5:BindTerm)
+
+(define PolyML5:BinOpTerm TypingML5:BinOpTerm)
+(define PolyML5:IfTerm TypingML5:IfTerm)
+(define PolyML5:LetTerm TypingML5:LetTerm)
+
+(define PolyML5:AbsTerm TypingML5:AbsTerm)
+(define PolyML5:AppTerm TypingML5:AppTerm)
+(define PolyML5:LetRecTerm TypingML5:LetRecTerm)
+(define PolyML5:NilTerm TypingML5:NilTerm)
+(define PolyML5:ConsTerm TypingML5:ConsTerm)
+(define PolyML5:MatchTerm TypingML5:MatchTerm)
+
+(define PolyML5:PlusTerm TypingML5:PlusTerm)
+(define PolyML5:MinusTerm TypingML5:MinusTerm)
+(define PolyML5:MultTerm TypingML5:MultTerm)
+(define PolyML5:LtTerm TypingML5:LtTerm)
+
+(define PolyML5:Typing TypingML5:Typing)

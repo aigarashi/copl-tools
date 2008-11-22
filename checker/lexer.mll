@@ -91,7 +91,7 @@ rule main = parse
       try Hashtbl.find tbl sym with _ -> id sym
     }
 
-| '-'? ['0' - '9']+
+| ['0' - '9']+
     { intl (int_of_string (Lexing.lexeme lexbuf)) }
 
 | eof { eof }
