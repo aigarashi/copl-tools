@@ -49,6 +49,7 @@
 (define-constant gamelist
   '("Nat" "NatLt1" "NatLt2" "NatLt3" "NatExp" 
     "ML1" "ML2" "ML3" "ML4" "ML5" "ML6"
+    "TypingML5"
     ))
 
 (define (display-sandbox msg)
