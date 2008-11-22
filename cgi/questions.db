@@ -225,7 +225,7 @@
    (PolyML5 "|- let rec map = fun f -> fun l ->
      match l with [] -> [] | x :: y -> f x :: map f y in
    let f = map (fun x -> x) in
-   let a = f (3 :: []) in f (true : []) : bool list")
+   let a = f (3 :: []) in f (true :: []) : bool list")
 
    (PolyML5 "|- let f = fun x -> 
              let g = fun y -> x :: [] in 
