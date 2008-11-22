@@ -1,3 +1,7 @@
+2008-11-21  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/PolyML5/PolyML5.gm: New game for polymorphic typing for lists.
+
 2008-10-31  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/: Each question comes with a link to a web page showing the
