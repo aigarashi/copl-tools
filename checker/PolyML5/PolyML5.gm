@@ -68,7 +68,8 @@ T-Var:  Typing(env, x, t) :- ` $s = lookup $env $x` %$env($x) = $s%,
 
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
 		Typing(env, e1, t1), Typing(Bind(env,x,s), e2, t2),
-                 `closure $env $t1 $s` %$s = \mathit{clos}($env, $t1)%;
+                 `closure $env $t1 $s` 
+                 %$s = '$a1 \cdots '$an. $t1 \mbox{ and } \{'$a1,\ldots,'$an\} \cap \mathit{FTV}($env) = \emptyset%;
 
 T-Abs:  Typing(env,Abs(x,e), TyFun(t1,t2)) :- Typing(Bind(env,x,t1), e, t2);
 T-App:  Typing(env,App(e1,e2), t2) :- 
@@ -79,7 +80,8 @@ T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
                                       y, t1), 
                         e1, TyFun(t1,t2)), 
                 Typing(Bind(env,x,s), e2, t),
-                `closure $env (TyFun($t1,$t2)) $s` %$s = \mathit{clos}($env,$t1 \rightarrow $t2)%;
+                `closure $env (TyFun($t1,$t2)) $s`
+                 %$s = '$a1 \cdots '$an. $t1 \rightarrow $t2 \mbox{ and } \{'$a1,\ldots,'$an\} \cap \mathit{FTV}($env) = \emptyset%;
 
 T-Nil: Typing(env, Nil, TyList(t)) :- ;
 T-Cons: Typing(env, Cons(e1,e2), TyList(t)) :- Typing(env, e1, t), Typing(env, e2, TyList(t));
