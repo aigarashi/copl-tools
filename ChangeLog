@@ -1,5 +1,8 @@
 2008-11-22  Atsushi Igarashi  <igarashi@cornet>
 
+	* checker/lexer.mll: tokens for integer literals are now changed
+	to one without minus; parsers should take care of unary minus.
+	
 	* checker/PolyML5/{pp.ml,keywords.ml,parser.mly}: Syntax for type
 	   schemes changed from All('a,'b)['a->'b->'a] 
 	   to 'a 'b.'a->'b->'a.
