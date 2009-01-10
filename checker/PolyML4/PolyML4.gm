@@ -74,7 +74,7 @@ T-App:  Typing(env,App(e1,e2), t2) :-
 T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
 	        Typing(Bind(Bind(env, x, TyFun(t1, t2)), 
                                       y, t1), 
-                        e1, TyFun(t1,t2)), 
+                        e1, t2), 
                 Typing(Bind(env,x,s), e2, t),
                 `closure $env (TyFun($t1,$t2)) $s` 
                  %$s = '$a1 \cdots '$an. $t1 \rightarrow $t2 \mbox{ and } \{'$a1,\ldots,'$an\} \cap \mathit{FTV}($env) = \emptyset%;

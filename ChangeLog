@@ -1,3 +1,7 @@
+2009-01-10  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/PolyML{4,5}/PolyML{4,5}.gm: debugging T-LetRec.
+
 2008-11-22  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/lexer.mll: tokens for integer literals are now changed
