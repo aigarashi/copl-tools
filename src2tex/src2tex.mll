@@ -136,6 +136,10 @@ rule lex = parse
       | CHARS -> pc '\\');
     lex lexbuf
 }
+| "->" {
+   (match !mode with VERB | CHARS -> pr "\\(\\rightarrow{}\\)" | _  -> pr "->");
+   lex lexbuf
+} 
 | "\\{" {
    (match !mode with VERB -> pr "\\curlyopen{}" | _  -> pc '\\'; pc '{');
    lex lexbuf

@@ -42,6 +42,21 @@
   \label{fig:nat.gm}
 \end{figure}
 
+\section{日々の運用作業}
+
+\begin{itemize}
+\item ユーザパスワードの生成:
+\begin{verbatim}
+makepasswd --chars 8 --crypt
+\end{verbatim}
+で表示されるひとつ目がパスワードそのもの，ふたつ目を site-local.scm に登録する．
+
+\item ゲーム定義が変更されたら: checker を make してコピーする．
+tools/cgi で make してゲーム定義の html を生成，games/ にコピー
+(local の方で試してからやるのがよい．)
+\end{itemize}
+
+
 \section{TODO}
 
 \begin{itemize}
@@ -57,6 +72,7 @@
 \item gm ファイルにフォーマット情報も追加できるようにする．QExpについては
  既に可能．
 \item 単項マイナスの取扱を OCaml と同じにする．
+\item パスワードの生成をシステムでできるようにする．
 \end{itemize}
 
 \section{Wish list}
