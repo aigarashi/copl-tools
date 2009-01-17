@@ -149,7 +149,7 @@ BinOp3:
     AST { Mult }
 
 AExp:
-    INTL { Exp_of_int $1 }
+    SInt { Exp_of_int $1 }
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
   | LCID { Exp_of_string $1 }
