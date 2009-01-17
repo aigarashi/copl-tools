@@ -66,46 +66,46 @@ Derivs:
 
 Judgment: 
     Env VDASH Exp EVALTO Val { EvalTo($1, $3, $5) }
-  | INTL PLUS INTL IS INTL { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | INTL MULT INTL IS INTL { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | INTL MINUS INTL IS INTL { AppBOp(Minus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | INTL LESS THAN INTL IS TRUE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool true) }
-  | INTL LESS THAN INTL IS FALSE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool false) }
+  | SInt PLUS SInt IS SInt { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
+  | SInt MULT SInt IS SInt { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
+  | SInt MINUS SInt IS SInt { AppBOp(Minus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
+  | SInt LESS THAN SInt IS TRUE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool true) }
+  | SInt LESS THAN SInt IS FALSE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool false) }
   /* abbreviations for less than */
-  | INTL IS LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
-  | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
+  | SInt IS LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
+  | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
 
   | Env VDASH Exp error { errAt 4 "Syntax error: 'evalto' expected" }
   | Env VDASH Exp EVALTO error { errAt 5 "Syntax error: value expected" }
-  | INTL PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | INTL PLUS INTL error { errAt 4 "Syntax error: 'is' expected" }
-  | INTL PLUS INTL IS error { errAt 5 "Syntax error: natural number expected" }
-  | INTL MULT error { errAt 3 "Syntax error: natural number expected" }
-  | INTL MULT INTL error { errAt 4 "Syntax error: 'is' expected" }
-  | INTL MULT INTL IS error { errAt 5 "Syntax error: natural number expected" }
-  | INTL MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | INTL MINUS INTL error { errAt 4 "Syntax error: 'is' expected" }
-  | INTL MINUS INTL IS error { errAt 5 "Syntax error: natural number expected" }
+  | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: 'is' expected" }
+  | SInt PLUS SInt IS error { errAt 5 "Syntax error: natural number expected" }
+  | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: 'is' expected" }
+  | SInt MULT SInt IS error { errAt 5 "Syntax error: natural number expected" }
+  | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: 'is' expected" }
+  | SInt MINUS SInt IS error { errAt 5 "Syntax error: natural number expected" }
 
 partialj :
     Env VDASH Exp EVALTO QM { In_EvalTo($1, $3) }
-  | INTL PLUS INTL IS QM { In_AppBOp(Plus, Value_of_int $1, Value_of_int $3) }
-  | INTL MULT INTL IS QM { In_AppBOp(Mult, Value_of_int $1, Value_of_int $3) }
-  | INTL MINUS INTL IS QM { In_AppBOp(Minus, Value_of_int $1, Value_of_int $3) }
-/*  | INTL IS LESS THAN INTL { In_AppBOp(Lt, Value_of_int $1, Value_of_int $5) }
-  | INTL IS NOT LESS THAN INTL { AppBOp(Lt, Value_of_int $1, Value_of_int $6) }
+  | SInt PLUS SInt IS QM { In_AppBOp(Plus, Value_of_int $1, Value_of_int $3) }
+  | SInt MULT SInt IS QM { In_AppBOp(Mult, Value_of_int $1, Value_of_int $3) }
+  | SInt MINUS SInt IS QM { In_AppBOp(Minus, Value_of_int $1, Value_of_int $3) }
+/*  | SInt IS LESS THAN SInt { In_AppBOp(Lt, Value_of_int $1, Value_of_int $5) }
+  | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6) }
 */
   | Env VDASH Exp error { errAt 4 "Syntax error: 'evalto' expected" }
   | Env VDASH Exp EVALTO error { errAt 5 "Syntax error: '?' expected" }
-  | INTL PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | INTL PLUS INTL error { errAt 4 "Syntax error: \'is\' expected" }
-  | INTL PLUS INTL IS error { errAt 5 "Syntax error: '?' expected" }
-  | INTL MULT error { errAt 3 "Syntax error: natural number expected" }
-  | INTL MULT INTL error { errAt 4 "Syntax error: \'is\' expected" }
-  | INTL MULT INTL IS error { errAt 5 "Syntax error: '?' expected" }
-  | INTL MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | INTL MINUS INTL error { errAt 4 "Syntax error: \'is\' expected" }
-  | INTL MINUS INTL IS error { errAt 5 "Syntax error: '?' expected" }
+  | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt PLUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
+  | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MULT SInt IS error { errAt 5 "Syntax error: '?' expected" }
+  | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
     /* empty */ { Empty } 
@@ -150,15 +150,17 @@ BinOp3:
 
 AExp:
     INTL { Exp_of_int $1 }
-  | HYPHEN INTL { Exp_of_int (- $2) }
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
   | LCID { Exp_of_string $1 }
   | LPAREN Exp RPAREN { $2 }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
+SInt: /* signed int */
+    INTL { $1 }
+  | HYPHEN INTL { - $2 }
+
 Val:
-    INTL { Value_of_int $1 }
-  | HYPHEN INTL { Value_of_int (- $2) }
+    SInt { Value_of_int $1 }
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }

@@ -1,3 +1,8 @@
+2009-01-17  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/ML?/parser.mly: Minus numbers have been disallowed to
+	appear in some judgments due to the fix for unary minus.
+
 2009-01-10  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/PolyML{4,5}/PolyML{4,5}.gm: debugging T-LetRec.
