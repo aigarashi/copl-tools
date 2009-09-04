@@ -122,11 +122,15 @@ struct
 	      match ts with 
 		  [] -> pf ppf "%a%s" (emit_coercion env) (cat', cat) id
 		| _ -> 
-		    let ts = List.map2 (fun x y -> (x, y)) cats ts in 
-		      pf ppf "%a(%s(@[%a@]))" 
-			(emit_coercion env) (cat', cat)
-			id 
-			(emit_comseq aux) ts
+		    try
+		      let ts = List.map2 (fun x y -> (x, y)) cats ts in 
+			pf ppf "%a(%s(@[%a@]))" 
+			  (emit_coercion env) (cat', cat)
+			  id 
+			  (emit_comseq aux) ts
+		    with Invalid_argument("List.map2") -> 
+		      failwith ("emit_term: arity mismatch for " ^ id)
+
       in
 	aux ppf (cat, term)
 
@@ -499,11 +503,15 @@ struct
 	    match ts with 
 		[] -> pf ppf "%a%s" (emit_coercion env) (cat', cat) id
 	      | _ -> 
-		  let ts = List.map2 (fun x y -> (x, y)) cats ts in 
-		    pf ppf "%a(%s(@[%a@]))" 
-		      (emit_coercion env) (cat', cat)
-		      id 
-		      (emit_comseq aux) ts
+		  try
+		    let ts = List.map2 (fun x y -> (x, y)) cats ts in 
+		      pf ppf "%a(%s(@[%a@]))" 
+			(emit_coercion env) (cat', cat)
+			id 
+			(emit_comseq aux) ts
+		  with Invalid_argument("List.map2") -> 
+		    failwith ("emit_term: arity mismatch for " ^ id)
+
     in
       aux ppf (cat, term)
 
