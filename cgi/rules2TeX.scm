@@ -260,6 +260,50 @@ span.rname { font-variant: small-caps; }
 
 (define ML4:AppBOp ML3:AppBOp)
 
+;; ML4Cont
+(define ML4Cont:mv ML4:mv)
+
+(define ML4Cont:FunTerm ML4:FunTerm)
+(define ML4Cont:RecTerm ML4:RecTerm)
+(define (ML4Cont:ContTerm k)
+  `("[" ,k "]"))
+
+(define ML4Cont:EmptyTerm ML4:EmptyTerm)
+(define ML4Cont:BindTerm ML4:BindTerm)
+(define ML4Cont:BinOpTerm ML4:BinOpTerm)
+(define ML4Cont:IfTerm ML4:IfTerm)
+(define ML4Cont:LetTerm ML4:LetTerm)
+(define ML4Cont:AbsTerm ML4:AbsTerm)
+(define ML4Cont:AppTerm ML4:AppTerm)
+(define ML4Cont:LetRecTerm ML4:LetRecTerm)
+(define (ML4Cont:LetCcTerm x e)
+  `("\\mbox{letcc }" ,x "\\mbox{ in }" ,e))
+
+(define (ML4Cont:RetKTerm) '("\\mbox{_}"))
+(define (ML4Cont:EvalRKTerm env e op k)
+  `("\\{" ,env "\\vdash " ,@(ML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
+(define (ML4Cont:AppOpKTerm v op k)
+  `("\\{" ,@(ML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
+(define (ML4Cont:BranchKTerm env e1 e2 k)
+  `("\\{" ,env "\\vdash \\mbox{if _ then }" ,e1 "\\mbox{ else }" ,e2 "\\} \\gg" ,k))
+(define (ML4Cont:LetBodyKTerm env x e k)
+  `("\\{" ,env "\\vdash \\mbox{let }" ,x "= \\mbox{_} \\mbox{ in } " ,e "\\} \\gg k"))
+(define (ML4Cont:EvalArgKTerm env e k)
+  `("\\{" ,env "\\vdash \\mbox{_}\\, " ,e "\\} \\gg" ,k))
+(define (ML4Cont:AppFunKTerm v k)
+  `("\\{" ,v "\\,\\mbox{_}\\} \\gg " ,k))
+
+(define ML4Cont:PlusTerm ML4:PlusTerm)
+(define ML4Cont:MinusTerm ML4:MinusTerm)
+(define ML4Cont:MultTerm ML4:MultTerm)
+(define ML4Cont:LtTerm ML4:LtTerm)
+
+(define (ML4Cont:EvalTo env k e v)
+  `(,env "\\vdash" ,e " \\gg " ,k "\\Downarrow" ,v))
+(define ML4Cont:AppBOp ML4:AppBOp)
+(define (ML4Cont:AppK k v1 v2)
+  `(,v1 "\\gg" ,k "\\Downarrow" ,v2))
+
 ;; ML5
 (define ML5:mv ML4:mv)
 

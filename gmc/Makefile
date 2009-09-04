@@ -48,6 +48,6 @@ clean:
 
 # Dependencies
 depend:: $(DEPEND)
-	$(OCAMLDEP) $(INCLUDES) -native *.mli *.ml > .depend
+	$(OCAMLDEP) $(INCLUDES) *.mli *.ml > .depend
 
 -include .depend

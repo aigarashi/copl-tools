@@ -1,0 +1,12 @@
+.gm から html で整形された規則を生成するには：
+
+・tools/cgi/rules2TeX.scm にその体系用の整形関数を書く
+
+    gmc で SExp フォームを出力してそれを評価している
+
+  make で games 以下に html がはかれる．
+
+  後は手動コピー!？
+
+・games.tex にマクロを書く
+

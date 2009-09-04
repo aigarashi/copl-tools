@@ -169,6 +169,7 @@ struct
 	      pf ppf "%s(@[%a@])" jdg.pred
 		(emit_comseq (fun ppf (cat, t) -> emit_term n tbl env cat ppf t)) ts
 	  with Not_found -> failwith ("emit_jdg: " ^ jdg.pred ^ " not found")
+	    | Invalid_argument("List.map2") -> failwith ("emit_jdg: arity mismatch for " ^ jdg.pred)
 
     let emit_pat_of_rule ppf rname =
       pf ppf 
@@ -357,14 +358,14 @@ struct
 	(emit_jdg gn) r.rconc
 	
   let of_bnf ppf gname syndefs =
-    pf ppf "\\long\\def\\%sDisplayBNF{@,\[\\begin{array}{l}@\n"
+    pf ppf "\\long\\def\\%sDisplayBNF{@,\\[\\begin{array}{l}@\n"
       (normalize_name gname);
     List.iter 
       (fun sd -> 
 	 emit_bnf (normalize_name gname) ppf sd;
 	 pf ppf "\\\\@\n") 
       syndefs;
-    pf ppf "\\end{array}\]@,}@."
+    pf ppf "\\end{array}\\]@,}@."
 
   let of_judgments _ = failwith "Emit.TeX.of_judgments not implemented"
 
