@@ -136,11 +136,11 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | Env2 LCID EQ Val { Bind($1, $2, $4) }
+  | Env2 LCID EQ Val { Bind($1, Var $2, $4) }
 
 Env2:
     /* empty */ { Empty } 
-  | Env2 LCID EQ Val COMMA { Bind($1, $2, $4) }
+  | Env2 LCID EQ Val COMMA { Bind($1, Var $2, $4) }
   
 Exp:
   | LongExp { $1 }
@@ -151,10 +151,10 @@ Exp:
 
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
-  | LET LCID EQ Exp IN Exp { Let($2, $4, $6) }
-  | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec($3, $6, $8, $10) }
-  | LETCC LCID IN Exp { LetCc($2, $4) }
-  | FUN LCID RARROW Exp { Abs($2, $4) }
+  | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
+  | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
+  | FUN LCID RARROW Exp { Abs(Var $2, $4) }
+  | LETCC LCID IN Exp { LetCc(Var $2, $4) }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
@@ -191,7 +191,7 @@ AExp:
     INTL { Exp_of_int $1 }
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
-  | LCID { Exp_of_string $1 }
+  | LCID { Exp_of_Var (Var $1) }
   | LPAREN Exp RPAREN { $2 }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
@@ -203,9 +203,9 @@ Val:
     SInt { Value_of_int $1 }
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
-  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, $6, $8) }
+  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
   | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
-      { Rec($2, $6, $9, $11) }
+      { Rec($2, Var $6, Var $9, $11) }
   | LBRACKET Cont RBRACKET { Cont $2 }
 
 BinOp: BinOp1 {$1} | BinOp2 {$1} | BinOp3 {$1} 
@@ -228,7 +228,7 @@ Cont:
   | LBRACE Env VDASH IF Hole THEN Exp ELSE Exp RBRACE OptCont
      { BranchK($2, $7, $9, $11) }
   | LBRACE Env VDASH LET LCID EQ Hole IN Exp RBRACE OptCont
-     { LetBodyK($2, $5, $9, $11) }
+     { LetBodyK($2, Var $5, $9, $11) }
   | LBRACE Env VDASH Hole AExp RBRACE OptCont { EvalArgK($2, $5, $7) }
   | LBRACE Val Hole RBRACE OptCont { AppFunK($2, $5) }
 

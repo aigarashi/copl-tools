@@ -7,13 +7,13 @@
   ML5full: ML5 + error handling
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
 b in bool
 
-x,y in string
+x,y in Var
 
 v in Value ::= i | b | Fun(env, x, e) | Rec(env, x, y, e) | NilV | ConsV(v,v)
 

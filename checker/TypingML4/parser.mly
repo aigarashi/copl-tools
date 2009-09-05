@@ -90,13 +90,13 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | Env2 LCID COLON Type { Bind($1, $2, $4) }
+  | Env2 LCID COLON Type { Bind($1, Var $2, $4) }
   | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
   | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
 
 Env2:
     /* empty */ { Empty } 
-  | Env2 LCID COLON Type COMMA { Bind($1, $2, $4) }
+  | Env2 LCID COLON Type COMMA { Bind($1, Var $2, $4) }
   | Env2 LCID COLON Type error { errAt 5 "Syntax error: ',' expected" }
   | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
   | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
@@ -110,9 +110,9 @@ Exp:
 
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
-  | LET LCID EQ Exp IN Exp { Let($2, $4, $6) }
-  | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec($3, $6, $8, $10) }
-  | FUN LCID RARROW Exp { Abs($2, $4) }
+  | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
+  | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
+  | FUN LCID RARROW Exp { Abs(Var $2, $4) }
 
   /* error handling */
   | IF Exp THEN Exp ELSE error { 
@@ -174,7 +174,7 @@ AExp:
     INTL { Exp_of_int $1 }
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
-  | LCID { Exp_of_string $1 }
+  | LCID { Exp_of_Var (Var $1) }
   | LPAREN Exp RPAREN { $2 }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 

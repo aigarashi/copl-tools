@@ -60,16 +60,32 @@ struct
     let rec of_bnf env ppf = function
 	[] -> failwith "Empty syntax definition"
       | sdef :: rest -> match sdef.body with
-	    [] -> of_bnf env ppf rest
+	    [] when (String.uncapitalize sdef.cat = sdef.cat) -> 
+	      (* if a category name starts with a lower case letter and its body is empty, then
+		 skip emitting a type definition *)
+	      of_bnf env ppf rest
+	  | [] -> 
+	      (* if a category name starts with an uppercase letter and its body is empty, then
+		 emit a type definition, which wraps string *)
+	      pf ppf "@[type %s = %s of string@]@\n" (String.lowercase sdef.cat) sdef.cat;
+	      emit_typedef2 env ppf rest
 	  | _ -> 
 	      pf ppf "@[type %s @[= %a@]@]@ " 
 		(String.lowercase sdef.cat)
 		(emit_barseq (emit_term sdef.cat env)) sdef.body;
-	      emit_typedef2 env ppf rest;
+	      emit_typedef2 env ppf rest
     and emit_typedef2 env ppf = function
 	[] -> ()
       | sdef :: rest -> match sdef.body with
-	    [] -> emit_typedef2 env ppf rest
+	    [] when (String.uncapitalize sdef.cat = sdef.cat) -> 
+	      (* if a category name starts with a lower case letter and its body is empty, then
+		 skip emitting a type definition *)
+	      emit_typedef2 env ppf rest
+	  | [] -> 
+	      (* if a category name starts with an uppercase letter and its body is empty, then
+		 emit a type definition, which wraps string *)
+	      pf ppf "@[and %s = %s of string@]@\n" (String.lowercase sdef.cat) sdef.cat;
+	      emit_typedef2 env ppf rest
 	  | _ -> 	
 	      pf ppf "@[and %s @[= %a@]@]@\n" (String.lowercase sdef.cat)
 		(emit_barseq (emit_term sdef.cat env)) sdef.body;

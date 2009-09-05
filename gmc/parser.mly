@@ -39,9 +39,11 @@ toplevel :
 
 BnfDefs :
 /* empty */ { [] }
-  | ComLCIDs IN UCID COLCOLEQ BarForms BnfDefs 
+  | ComLCIDs IN UCID COLCOLEQ BarForms BnfDefs /* New inductive type */
      { { mvars = $1; cat = $3; body = $5} :: $6 }
   | ComLCIDs IN LCID BnfDefs  /* ML primitive type */
+     { { mvars = $1; cat = $3; body = []} :: $4 }
+  | ComLCIDs IN UCID BnfDefs  /* New set type */
      { { mvars = $1; cat = $3; body = []} :: $4 }
 
 BarForms :

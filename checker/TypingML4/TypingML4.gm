@@ -6,15 +6,15 @@
   TypingML4: typing for ML4
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
 b in bool
 
-x,y in string
+x,y in Var
 
-a in string
+a in TVar
 
 t in Types ::= (* TyVar(a) | *) TyBool | TyInt | TyFun(t,t)
 
@@ -72,5 +72,5 @@ T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
 
 let rec lookup env x =
     match env with 
-      Empty -> raise (NoApplicableRule (In_Typing (env, Exp_of_string x)))
+      Empty -> raise (NoApplicableRule (In_Typing (env, Exp_of_Var x)))
     | Bind(env, x', t) -> if x = x' then t else lookup env x

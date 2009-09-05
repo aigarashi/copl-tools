@@ -27,7 +27,7 @@ rule main = parse
 | ":" { Parser.COLON }
 | "," { Parser.COMMA }
 | ";" { Parser.SEMI }
-| "[BNF]" { Parser.HEADER1 }
+| "[Syntax]" { Parser.HEADER1 }
 | "[Judgments]" { Parser.HEADER2 }
 | "[Rules]" { Parser.HEADER3 }
 

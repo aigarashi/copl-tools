@@ -4,13 +4,13 @@
   ML3: ML2 + fun (関数抽象・適用)
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
 b in bool
 
-x,y in string
+x,y in Var
 
 v in Value ::= i | b | Fun(env, x, e)
 

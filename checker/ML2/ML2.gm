@@ -3,13 +3,13 @@
   ML2: ML1 + let (´Ä¶­)
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
 b in bool
 
-x,y in string
+x,y in Var
 
 v in Value ::= i | b
 

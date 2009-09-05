@@ -1,15 +1,26 @@
 2009-09-05  Atsushi Igarashi  <igarashi@cornet>
 
-	* gmc/emit.ml (ML.Rules.emit_jdg, ML.Rules.emit_term, Prover.emit_term,): 
-	error handling for the failure of List.map2.
+	* gmc/lexer.mll: Header name change: [BNF] -> [Syntax]
+	* checker/ML6/pp.ml (print_judgment): Added missing parentheses after "when".
+	* gmc/{emit.ml, parser.mly}: Support for a new form of syntax definition:
 
-	* cgi/Makefile: Changes for ML4Cont
-	* cgi/README:
-	* cgi/rules2TeX.scm
+	   x \in Var
+
+	  (without ::= ...), which generates an OCaml type definition
+
+	   type var = Var of string
+
+	  which can be used to express different sets of identifiers.
 
 2009-09-04  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
+	* gmc/emit.ml (ML.Rules.emit_jdg, ML.Rules.emit_term, Prover.emit_term,): 
+	error handling for the failure of List.map2.
+
 	* checker/ML4Cont/ML4Cont.gm: New game for first-class continuations.
+	* cgi/Makefile: Changes for ML4Cont
+	* cgi/README:
+	* cgi/rules2TeX.scm
 
 2009-07-30  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 

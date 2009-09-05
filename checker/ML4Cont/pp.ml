@@ -57,7 +57,7 @@ let rec print_exp =
 	  Exp_of_int i -> pr ppf "%d" i
 	| Exp_of_bool true -> pr ppf "true"
 	| Exp_of_bool false -> pr ppf "false"
-	| Exp_of_string id -> pp_print_string ppf id
+	| Exp_of_Var (Var id) -> pp_print_string ppf id
 	| BinOp(p, e1, e2) -> 
 	    let op = 
 	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
@@ -70,37 +70,37 @@ let rec print_exp =
 	      print_exp e1 
 	      print_exp e2
 	      print_exp e3 
-	| Let(x, e1, e2) ->
+	| Let(Var x, e1, e2) ->
 	    pr ppf "let %s = %a in %a"
 	      x
 	      print_exp e1
 	      print_exp e2
-	| Abs(x, e) ->
+	| Abs(Var x, e) ->
 	    pr ppf "fun %s -> %a" x print_exp e
 	| App(e1, e2) ->
 	    pr ppf "%a %a" 
 	      (with_paren_L print_exp e) e1
 	      (with_paren_R print_exp e) e2
-	| LetRec(x, y, e1, e2) ->
+	| LetRec(Var x, Var y, e1, e2) ->
 	    pr ppf "let rec %s = fun %s -> %a in %a" x y
 	      print_exp e1
 	      print_exp e2
-	| LetCc(x, e) ->
+	| LetCc(Var x, e) ->
 	    pr ppf "letcc %s in %a" x print_exp e
 
 let rec print_env ppf = function
     Empty -> ()
-  | Bind(env',x,v) -> pr ppf "%a%s = %a" print_env' env' x print_val v 
+  | Bind(env', Var x, v) -> pr ppf "%a%s = %a" print_env' env' x print_val v 
 and print_env' ppf = function
   | Empty -> ()
-  | Bind(env',x,v) -> pr ppf "%a%s = %a,@ " print_env' env' x print_val v 
+  | Bind(env', Var x, v) -> pr ppf "%a%s = %a,@ " print_env' env' x print_val v 
 
 and print_val ppf = function
     Value_of_int i -> pr ppf "%d" i
   | Value_of_bool true -> pr ppf "true"
   | Value_of_bool false -> pr ppf "false"
-  | Fun(env, x, e) -> pr ppf "(%a)[fun %s -> %a]" print_env env x print_exp e
-  | Rec(env, x, y, e) -> pr ppf "(%a)[rec %s = fun %s -> %a]" print_env env x y print_exp e
+  | Fun(env, Var x, e) -> pr ppf "(%a)[fun %s -> %a]" print_env env x print_exp e
+  | Rec(env, Var x, Var y, e) -> pr ppf "(%a)[rec %s = fun %s -> %a]" print_env env x y print_exp e
   | Cont k -> pr ppf "[%a]" print_cont k
 and print_cont = 
   let with_paren_R = with_paren (fun e_up e -> e > e_up) in
@@ -125,7 +125,7 @@ and print_cont =
 	    print_exp e1
 	    print_exp e2
 	    print_optcont k
-      | LetBodyK(env, x, e, k) ->
+      | LetBodyK(env, Var x, e, k) ->
 	  pr ppf "@[{%a |- let %s = _ in %a}@]%a"
 	    print_env env
 	    x
@@ -178,7 +178,7 @@ let rec tex_exp ppf e =
       match e with
 	  Exp_of_int i -> pr ppf "%d" i
 	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
-	| Exp_of_string id -> pp_print_string ppf id
+	| Exp_of_Var (Var id) -> pp_print_string ppf id
 	| BinOp(p, e1, e2) -> 
 	    let op = 
 	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
@@ -191,36 +191,36 @@ let rec tex_exp ppf e =
 	      tex_exp e1 
 	      tex_exp e2
 	      tex_exp e3 
-	| Let(x, e1, e2) ->
+	| Let(Var x, e1, e2) ->
 	    pr ppf "\\%sLetTerm{%s}{%a}{%a}" g
 	      x
 	      tex_exp e1
 	      tex_exp e2
-	| Abs(x, e) ->
+	| Abs(Var x, e) ->
 	    pr ppf "\\%sFunTerm{%s}{%a}" g x tex_exp e
 	| App(e1, e2) ->
 	    pr ppf "\\%sAppTerm{%a}{%a}" g
 	      (with_paren_L tex_exp e) e1
 	      (with_paren_R tex_exp e) e2
-	| LetRec(x, y, e1, e2) ->
+	| LetRec(Var x, Var y, e1, e2) ->
 	    pr ppf "\\%sLetRecTerm{%s}{%s}{%a}{%a}" g 
 	      x y tex_exp e1 tex_exp e2
-	| LetCc(x, e) ->
+	| LetCc(Var x, e) ->
 	    pr ppf "\\%sLetCcTerm{%s}{%a}" g 
 	      x tex_exp e
 
 let rec tex_env ppf = function
     Empty -> ()
-  | Bind(env',x,v) -> pr ppf "%a%s = %a" tex_env' env' x tex_val v 
+  | Bind(env', Var x, v) -> pr ppf "%a%s = %a" tex_env' env' x tex_val v 
 and tex_env' ppf = function
   | Empty -> ()
-  | Bind(env',x,v) -> pr ppf "%a%s = %a,@ " tex_env' env' x tex_val v 
+  | Bind(env', Var x, v) -> pr ppf "%a%s = %a,@ " tex_env' env' x tex_val v 
 
 and tex_val ppf = function
     Value_of_int i -> pr ppf "%d" i
   | Value_of_bool b -> pp_print_string ppf (string_of_bool b)
-  | Fun(env, x, e) -> pr ppf "\\%sFunTerm{%a}{%s}{%a}" g tex_env env x tex_exp e
-  | Rec(env, x, y, e) -> pr ppf "\\%sRecTerm{%a}{%s}{%s}{%a}" g 
+  | Fun(env, Var x, e) -> pr ppf "\\%sFunTerm{%a}{%s}{%a}" g tex_env env x tex_exp e
+  | Rec(env, Var x, Var y, e) -> pr ppf "\\%sRecTerm{%a}{%s}{%s}{%a}" g 
       tex_env env x y tex_exp e
   | Cont k -> pr ppf "\\%sContTerm{%a}" g tex_cont k
 and tex_cont ppf = function
@@ -236,7 +236,7 @@ and tex_cont ppf = function
   | BranchK(env, e1, e2, k) ->
       pr ppf "\\%sBranchKTerm{%a}{%a}{%a}{%a}" g
 	tex_env env  tex_exp e1  tex_exp e2  tex_cont k
-  | LetBodyK(env, x, e, k) ->
+  | LetBodyK(env, Var x, e, k) ->
       pr ppf "\\%sLetBodyKTerm{%a}{%s}{%a}{%a}" g
 	tex_env env  x  tex_exp e  tex_cont k
   | EvalArgK(env, e, k) ->

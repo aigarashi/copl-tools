@@ -2,7 +2,7 @@
     ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
@@ -44,7 +44,7 @@ E-Mult: EvalTo(BinOp(Mult, e1, e2), i3) :-
 E-Lt: 	EvalTo(BinOp(Lt, e1, e2), b3) :-
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Lt, i1, i2, b3);
 
-B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
+B-Plus: AppBOp(Plus, i1, i2, i3) :- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
 B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
 B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;

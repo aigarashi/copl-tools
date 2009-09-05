@@ -7,13 +7,13 @@
   ML6: ML5 + pattern matching
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
 b in bool
 
-x,y in string
+x,y in Var
 
 v in Value ::= i | b | Fun(env, x, e) | Rec(env, x, y, e) | NilV | ConsV(v,v)
 
@@ -143,5 +143,5 @@ let rec uplus env1 env2 =  (* note that environments are snoc lists *)
 
 let rec lookup env x =
     match env with 
-      Empty -> raise (NoApplicableRule (In_EvalTo (env, Exp_of_string x)))
+      Empty -> raise (NoApplicableRule (In_EvalTo (env, Exp_of_Var x)))
     | Bind(env, x', v') -> if x = x' then v' else lookup env x

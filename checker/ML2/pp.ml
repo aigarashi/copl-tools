@@ -36,7 +36,7 @@ let rec print_exp ppf e =
       match e with
 	  Exp_of_int i -> pr ppf "%d" i
 	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
-	| Exp_of_string id -> pp_print_string ppf id
+	| Exp_of_Var (Var id) -> pp_print_string ppf id
 	| BinOp(p, e1, e2) -> 
 	    let op = 
 	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
@@ -49,7 +49,7 @@ let rec print_exp ppf e =
 	      print_exp e1 
 	      print_exp e2
 	      print_exp e3 
-	| Let(x, e1, e2) ->
+	| Let(Var x, e1, e2) ->
 	    pr ppf "let %s = %a in %a"
 	      x
 	      print_exp e1
@@ -62,10 +62,10 @@ let rec print_val ppf = function
 
 let rec print_env ppf = function
     Empty -> ()
-  | Bind(env',x,v) -> pr ppf "%a%s = %a" print_env' env' x print_val v 
+  | Bind(env',Var x,v) -> pr ppf "%a%s = %a" print_env' env' x print_val v 
 and print_env' ppf = function
   | Empty -> ()
-  | Bind(env',x,v) -> pr ppf "%a%s = %a,@ " print_env' env' x print_val v 
+  | Bind(env',Var x,v) -> pr ppf "%a%s = %a,@ " print_env' env' x print_val v 
 
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 
@@ -93,7 +93,7 @@ let rec tex_exp ppf e =
       match e with
 	  Exp_of_int i -> pr ppf "%d" i
 	| Exp_of_bool b -> pp_print_string ppf (string_of_bool b)
-	| Exp_of_string id -> pp_print_string ppf id
+	| Exp_of_Var (Var id) -> pp_print_string ppf id
 	| BinOp(p, e1, e2) -> 
 	    let op = 
 	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
@@ -106,7 +106,7 @@ let rec tex_exp ppf e =
 	      tex_exp e1 
 	      tex_exp e2
 	      tex_exp e3 
-	| Let(x, e1, e2) ->
+	| Let(Var x, e1, e2) ->
 	    pr ppf "\\%sLetTerm{%s}{%a}{%a}" g
 	      x
 	      tex_exp e1

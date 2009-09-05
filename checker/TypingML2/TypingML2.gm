@@ -4,13 +4,13 @@
   TypingML2: typing for ML2
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
 b in bool
 
-x,y in string
+x,y in Var
 
 t in Types ::= TyBool | TyInt
 

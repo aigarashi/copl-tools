@@ -8,15 +8,15 @@
   PolyML5: PolyML4 + list
 *)
 
-[BNF]
+[Syntax]
 
 i in int
 
 b in bool
 
-x,y in string
+x,y in Var
 
-a in string
+a in TVar
 
 t in Types ::= TyFVar(a) | TyBVar(i) | TyBool | TyInt | TyFun(t,t) | TyList(t)
   (* if s contains TyBVar(i), it should be a part of type scheme *)
@@ -95,7 +95,7 @@ T-Match: Typing(env, Match(e1,e2,x,y,e3), t) :-
 (* free variables in a type (scheme) *)
 let rec fv_ty_aux ty res =
   match ty with
-      TyFVar(a) -> a :: res
+      TyFVar(TVar a) -> a :: res
     | TyFun(ty1, ty2) -> fv_ty_aux ty1 (fv_ty_aux ty2 res)
     | TyList ty -> fv_ty_aux ty res
     | _ -> res
@@ -141,7 +141,7 @@ let closure env ty tysc =
   let rec aux subst tysc ty =
     match tysc, ty with
         TyFVar(a), TyFVar(a') -> if a = a' then subst else raise Not_match
-      | TyBVar(i), TyFVar(a) -> 
+      | TyBVar(i), TyFVar(TVar a) -> 
       	  (try 
 	      if List.assoc a subst = i then subst 
 	      else raise Not_match
@@ -159,5 +159,5 @@ let closure env ty tysc =
 
 let rec lookup env x =
     match env with 
-      Empty -> raise (NoApplicableRule (In_Typing (env, Exp_of_string x)))
+      Empty -> raise (NoApplicableRule (In_Typing (env, Exp_of_Var x)))
     | Bind(env, x', t) -> if x = x' then t else lookup env x

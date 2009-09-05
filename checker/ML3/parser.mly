@@ -112,11 +112,11 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | Env2 LCID EQ Val { Bind($1, $2, $4) }
+  | Env2 LCID EQ Val { Bind($1, Var $2, $4) }
 
 Env2:
     /* empty */ { Empty } 
-  | Env2 LCID EQ Val COMMA { Bind($1, $2, $4) }
+  | Env2 LCID EQ Val COMMA { Bind($1, Var $2, $4) }
   
 Exp:
   | LongExp { $1 }
@@ -127,8 +127,8 @@ Exp:
 
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
-  | LET LCID EQ Exp IN Exp { Let($2, $4, $6) }
-  | FUN LCID RARROW Exp { Abs($2, $4) }
+  | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
+  | FUN LCID RARROW Exp { Abs(Var $2, $4) }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
@@ -165,7 +165,7 @@ AExp:
     INTL { Exp_of_int $1 }
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
-  | LCID { Exp_of_string $1 }
+  | LCID { Exp_of_Var (Var $1) }
   | LPAREN Exp RPAREN { $2 }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
@@ -177,5 +177,5 @@ Val:
     SInt { Value_of_int $1 }
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
-  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, $6, $8) }
+  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
 
