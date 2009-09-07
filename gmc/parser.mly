@@ -118,8 +118,12 @@ Term :
 PremiseList :
     /* empty */ { [] }
   | Judgment { [ J $1 ] }
-  | MLexp { [ Qexp ($1, None) ] }
-  | MLexp TeXexp{ [ Qexp ($1, Some $2) ] }
+  | Qexp { [ $1 ] }
   | Judgment COMMA PremiseList { J $1 :: $3 }
-  | MLexp COMMA PremiseList { Qexp ($1, None) :: $3 }
-  | MLexp TeXexp COMMA PremiseList { Qexp ($1, Some $2) :: $4 }
+  | Qexp COMMA PremiseList { $1 :: $3 }
+
+Qexp :
+    MLexp { Qexp($1, None, None) }
+  | MLexp TeXexp { Qexp($1, Some $2, None) }
+  | MLexp MLexp { Qexp($1, None, Some $2) }
+  | MLexp MLexp TeXexp { Qexp($1, Some $3, Some $2) }

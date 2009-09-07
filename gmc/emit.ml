@@ -27,7 +27,7 @@ let emit_coercion env ppf (cat', cat) =
     if Syntax.Env.is_subcat env cat' cat
     then pf ppf "%s_of_%s " cat cat'
     else 
-      failwith ("emit_coercion:" ^ cat ^ " is not a subcategory of " ^ cat')
+      failwith ("emit_coercion:" ^ cat' ^ " is not a subcategory of " ^ cat)
 
 let emit_ordinal ppf i = (* doesn't work for some numbers *)
   match i with
@@ -238,7 +238,7 @@ struct
 	    pf ppf "@[| _ -> errAt _p_ \"The form of the %a premise is wrong: %s\"@]@]" emit_ordinal i rn;
 	  end;
 	  pf ppf ")@]"
-      | Qexp (s, _) :: rest ->
+      | Qexp (s, _, _) :: rest ->
 	  let b = Buffer.create (String.length s + 10) in
 	  let freshvarp = ref false in
 	  let subst s = 
@@ -348,10 +348,10 @@ struct
   let rec emit_premises gn ppf = function
       [] -> ()
     | J j :: [] -> emit_jdg gn ppf j
-    | (Qexp (q, None) | Qexp (_, Some q)) :: [] -> emit_qexp gn ppf q
+    | (Qexp (q, None, _) | Qexp (_, Some q, _)) :: [] -> emit_qexp gn ppf q
     | J j :: rest -> 
 	pf ppf "@[%a@]@ \\andalso@ %a" (emit_jdg gn) j (emit_premises gn) rest
-    | (Qexp (q, None) | Qexp (_, Some q)) :: rest -> 
+    | (Qexp (q, None, _) | Qexp (_, Some q, _)) :: rest -> 
 	pf ppf "@[%a@]@ \\andalso@ %a" (emit_qexp gn) q (emit_premises gn) rest
 
   let normalize_name s =
@@ -440,11 +440,11 @@ struct
   let rec emit_premises gn ppf = function
       [] -> ()
     | J j :: [] -> pf ppf "@ @[%a@]" (emit_jdg gn) j
-    | (Qexp (q, None) | Qexp (_, Some q)) :: [] -> 
+    | (Qexp (q, None, _) | Qexp (_, Some q, _)) :: [] -> 
 	pf ppf "@ @[%a@]" (emit_qexp gn) q
     | J j :: rest -> 
 	pf ppf "@ @[%a@]%a" (emit_jdg gn) j (emit_premises gn) rest
-    | (Qexp (q, None) | Qexp (_, Some q)) :: rest -> 
+    | (Qexp (q, None, _) | Qexp (_, Some q, _)) :: rest -> 
 	pf ppf "@ @[%a@]%a" (emit_qexp gn) q (emit_premises gn) rest
 	  
   let emit gn ppf r =
@@ -603,7 +603,8 @@ struct
 	    pf ppf "@[| _ -> for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false@]" i;
 	    pf ppf "@,)@]"
 	  end
-      | Qexp (s, _) :: rest ->
+      | Qexp (s, _, None) :: rest 
+      | Qexp (_, _, Some s) :: rest ->
 	  let b = Buffer.create (String.length s + 10) in
 	  let freshvarp = ref false in
 	  let subst s =
@@ -613,7 +614,7 @@ struct
 	  s 
 	in
 	  add_substitute b subst s;
-	  if !freshvarp then 
+	  if !freshvarp then (* a fresh variable is in s *)
 	    pf ppf "@[let @[%s@]@ in @]@ %a"
 	      (Buffer.contents b) (aux i) rest
 	  else pf ppf "if (@[%s@]) then@ %a else (for j = 1 to %d do ignore (Stack.pop deriv_stack) done; false)" (Buffer.contents b) (aux i) rest (i - 1)
@@ -646,7 +647,8 @@ struct
       List.iter
 	(function 
 	     J _ -> () 
-	   | Qexp (s, _) ->
+	   | Qexp (s, _, None)
+	   | Qexp (_, _, Some s) ->
 	       let b = Buffer.create (String.length s + 10) in
 	       let freshvarp = ref false in
 	       let subst s = 

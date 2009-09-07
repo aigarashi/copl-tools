@@ -3,7 +3,7 @@
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用)
   ML4: ML3 + let rec (再帰関数定義)
-  ML4Cont: ML4 + call/cc (継続)
+  ContML4: ML4 + letcc (継続)
 *)
 
 [Syntax]

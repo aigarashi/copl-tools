@@ -21,9 +21,10 @@ type judgment = {
 
 type premise = 
     J of judgment
-  | Qexp of string * string option
+  | Qexp of string * string option * string option
       (* quoted ML expression for a side condition with 
-	 an optional TeX representation *)
+	 an optional TeX representation,
+         followed by an optional quoted expression for derivation generation  *)
 
 type rule = {
     rname : string;

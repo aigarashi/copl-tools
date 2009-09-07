@@ -1,6 +1,6 @@
-PROGNAME = ML4Cont
-MODULEPATH = Ml4Cont
-PACKED=ml4Cont
+PROGNAME = ContML4
+MODULEPATH = ContML4
+PACKED=contML4
 
 -include ../common/Makefile.game
 

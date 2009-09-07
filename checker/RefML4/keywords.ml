@@ -44,9 +44,11 @@ let v = [
   (* ML4 expressions *)
   ("rec", REC);
 
-  (* ContML4 *)
-  (">>", GTGT);
-  ("letcc", LETCC);
-  ("_", UNDERSCORE);
+  (* RefML4 *)
+  ("!", BANG);
+  (":=", COLONEQ);
+  ("ref", REF);
+  ("@", AT);
+  ("/", SLASH);
 ] 
 

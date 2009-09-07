@@ -1,3 +1,7 @@
+2009-09-07  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/RefML4, cgi/rules2TeX.scm : New game for references.
+
 2009-09-05  Atsushi Igarashi  <igarashi@cornet>
 
 	* gmc/lexer.mll: Header name change: [BNF] -> [Syntax]
@@ -14,7 +18,7 @@
 
 2009-09-04  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
-	* gmc/emit.ml (ML.Rules.emit_jdg, ML.Rules.emit_term, Prover.emit_term,): 
+	* gmc/emit.ml (ML.Rules.emit_jdg, ML.Rules.emit_term, Prover.emit_term): 
 	error handling for the failure of List.map2.
 
 	* checker/ML4Cont/ML4Cont.gm: New game for first-class continuations.
