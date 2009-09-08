@@ -146,7 +146,7 @@ and print_optcont ppf = function
 
 let print_judgment ppf = function
     EvalTo (env, k, e, v) -> 
-      pr ppf "@[@[%a@]@ |- @[@[%a@]%a@ evalto %a@]@]" 
+      pr ppf "@[@[%a@]@ |- @[@[%a@]@[%a@]@ evalto %a@]@]" 
 	print_env env 
 	print_exp e 
 	print_optcont k
@@ -159,7 +159,7 @@ let print_judgment ppf = function
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
       in pr ppf "@[%a %s %a is %a@]" print_val v1 op print_val v2 print_val v3
   | AppK (k, v1, v2) ->
-      pr ppf "@[%a >> %a evalto %a@]" print_val v1 print_cont k print_val v2
+      pr ppf "@[%a => %a evalto %a@]" print_val v1 print_cont k print_val v2
 
 let print_pjudgment ppf = function
     In_EvalTo (env, k, e) ->
@@ -170,7 +170,7 @@ let print_pjudgment ppf = function
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
       in pr ppf "%a %s %a is ?" print_val v1 op print_val v2
   | In_AppK (k, v) ->
-      pr ppf "@[%a >> %a evalto ?@]" print_val v print_cont k
+      pr ppf "@[%a => %a evalto ?@]" print_val v print_cont k
 
 let rec tex_exp ppf e = 
     let with_paren_L = with_paren (<)

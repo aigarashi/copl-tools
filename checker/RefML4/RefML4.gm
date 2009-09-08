@@ -84,7 +84,7 @@ E-Loc: EvalTo(s, env, l, l, s) :- ;
 
 E-Ref: EvalTo(s, env, NewRef(e), l, Block(s1, l, v)) :-
          EvalTo(s, env, e, v, s1),
-         `newlocp $s1 $l`  `$l = newloc ()` %$l \not \in dom($s1)%;
+         `newlocp $s1 $l`  `$l = newloc ()` %$l \notin dom($s1)%;
 
 E-Deref: EvalTo(s, env, Deref(e), v, s1) :-
            EvalTo(s, env, e, l, s1),
@@ -93,7 +93,7 @@ E-Assign: EvalTo(s, env, Assign(e1, e2), v, s1) :-
             EvalTo(s, env, e1, l, s1),
             EvalTo(s1, env, e2, v, s2),
             `$s3 = update_store $s2 $env $l $v (Assign($e1,$e2))`
-            %$s3 = $s2\{$l = $v\}%;
+            %$s3 = $s2[$l = $v]%;
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;

@@ -1,6 +1,15 @@
+2009-09-08  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/ContML4: Syntax change:  ">>" in "v >> k evalto v" has
+	been changed to "=>".
+	
+	* checker/ContML1, cgi/rules2TeX.scm: New game ContML1 for a
+	gentle introduction to the idea of continuations.
+	
+
 2009-09-07  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
-	* checker/RefML4, cgi/rules2TeX.scm : New game for references.
+	* checker/RefML4, cgi/rules2TeX.scm : New game RefML4 for references.
 
 2009-09-05  Atsushi Igarashi  <igarashi@cornet>
 
@@ -8,7 +17,7 @@
 	* checker/ML6/pp.ml (print_judgment): Added missing parentheses after "when".
 	* gmc/{emit.ml, parser.mly}: Support for a new form of syntax definition:
 
-	   x \in Var
+	   x in Var
 
 	  (without ::= ...), which generates an OCaml type definition
 

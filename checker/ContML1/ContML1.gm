@@ -1,0 +1,52 @@
+(* 
+    ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
+    ContML1: CPS-style ML1
+*)
+
+[Syntax]
+
+i in int
+
+b in bool
+
+v in Value ::= i | b
+
+e in Exp ::= i
+          | b
+          | BinOp(op, e, e)
+          | If(e, e, e)
+
+op in Prim ::= Plus | Minus | Mult | Lt
+
+k in Cont ::= RetK             (* _ *)
+           | EvalRK(e,op,k)    (* {_ op e} >> k *)
+           | AppOpK(v,op,k)    (* {v op _} >> k *)
+           | BranchK(e,e,k)    (* {if _ then e else e} >> k *)
+
+[Judgments]
+
+EvalTo(k, e; v);
+AppBOp(op, v, v; v);
+AppK(k, v; v);
+
+[Rules]
+
+E-Int: 	EvalTo(k, i, v) :- AppK(k, i, v);
+E-Bool: EvalTo(k, b, v) :- AppK(k, b, v);
+E-BinOp: EvalTo(k, BinOp(op, e1, e2), v) :- EvalTo(EvalRK(e2, op, k), e1, v);
+E-If: EvalTo(k, If(e1, e2, e3), v) :- EvalTo(BranchK(e2, e3, k), e1, v);
+
+K-Ret: AppK(RetK, v, v) :- ;
+K-EvalR: AppK(EvalRK(e, op, k), v1, v2) :- EvalTo(AppOpK(v1, op, k), e, v2);
+K-Plus: AppK(AppOpK(i1, Plus, k), i2, v) :- AppBOp(Plus, i1, i2, i3), AppK(k, i3, v);
+K-Minus: AppK(AppOpK(i1, Minus, k), i2, v) :- AppBOp(Minus, i1, i2, i3), AppK(k, i3, v);
+K-Mult: AppK(AppOpK(i1, Mult, k), i2, v) :- AppBOp(Mult, i1, i2, i3), AppK(k, i3, v);
+K-Lt: AppK(AppOpK(i1, Lt, k), i2, v) :- AppBOp(Lt, i1, i2, b3), AppK(k, b3, v);
+
+K-IfT: AppK(BranchK(e1, e2, k), true, v) :- EvalTo(k, e1, v);
+K-IfF: AppK(BranchK(e1, e2, k), false, v) :- EvalTo(k, e2, v);
+
+B-Plus: AppBOp(Plus, i1, i2, i3) :- `$i3 = $i1 + $i2`;
+B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
+B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
+B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;

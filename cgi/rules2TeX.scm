@@ -178,6 +178,31 @@ span.rname { font-variant: small-caps; }
 			   (< "\\mbox{ less than }"))))))
     `(,v1 ,p ,v2 "\\mbox{ is }" ,v3)))
 
+;; ContML1
+(define ContML1:mv ML1:mv)
+
+(define ContML1:BinOpTerm ML1:BinOpTerm)
+(define ContML1:IfTerm ML1:IfTerm)
+
+(define (ContML1:RetKTerm) '("\\mbox{_}"))
+(define (ContML1:EvalRKTerm e op k)
+  `("\\{" ,@(ML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
+(define (ContML1:AppOpKTerm v op k)
+  `("\\{" ,@(ML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
+(define (ContML1:BranchKTerm e1 e2 k)
+  `("\\{" "\\mbox{if _ then }" ,e1 "\\mbox{ else }" ,e2 "\\} \\gg" ,k))
+
+(define ContML1:PlusTerm ML1:PlusTerm)
+(define ContML1:MinusTerm ML1:MinusTerm)
+(define ContML1:MultTerm ML1:MultTerm)
+(define ContML1:LtTerm ML1:LtTerm)
+
+(define (ContML1:EvalTo k e v)
+  `(,e " \\gg " ,k "\\Downarrow" ,v))
+(define ContML1:AppBOp ML1:AppBOp)
+(define (ContML1:AppK k v1 v2)
+  `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
+
 ;; ML2
 (define (ML2:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}"))))
@@ -302,7 +327,7 @@ span.rname { font-variant: small-caps; }
   `(,env "\\vdash" ,e " \\gg " ,k "\\Downarrow" ,v))
 (define ContML4:AppBOp ML4:AppBOp)
 (define (ContML4:AppK k v1 v2)
-  `(,v1 "\\gg" ,k "\\Downarrow" ,v2))
+  `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
 
 ;; RefML4
 (define RefML4:mv ML4:mv)
