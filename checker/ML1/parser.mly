@@ -48,6 +48,7 @@ let tbl = Hashtbl.create 1024
 
 %%
 
+/* common part start */
 toplevel: 
     MacroDefs Derivation { $2 }
   | EOF { exit 0 }
@@ -68,6 +69,8 @@ Derivs:
   | Derivation SEMI RBRACE { [ $1 ] } 
   | Derivation SEMI Derivs { $1::$3 }
   | Derivation error { errAt 2 "Syntax error: unmatched brace, or semicolon forgotten?" }
+
+/* common part end */
 
 Judgment: 
     Exp EVALTO Val { EvalTo($1, $3) }
@@ -111,6 +114,7 @@ partialj :
   | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
   | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
+
 
 Exp:
   | LongExp { $1 }
@@ -160,7 +164,7 @@ Val:
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
 
-/******** experimental feature for macro defitinions *********/
+/******** experimental feature for macro definitions *********/
 
 MacroDefs: 
     /* empty */ { () }

@@ -1,8 +1,8 @@
 open Parser
 
 let v = [
-    ("exp", fun s -> MVEXP s);
-    ("value", fun s -> MVVALUE s);
+    ("e", fun s -> MVEXP s);
+    ("v", fun s -> MVVALUE s);
 ]
 
 
