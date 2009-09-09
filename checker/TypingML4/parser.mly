@@ -43,6 +43,8 @@ let errAt i s =
 /* TypingML4 */
 %token PRIME
 
+/******** experimental feature for macro defitinions *********/
+%token DEF EQ
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
 %type <Core.judgment> judgment

@@ -41,7 +41,7 @@ OBJS=$(GMCDIR)/mySupport.cmx derivation.cmx lexer.cmx \
 DEPEND += lexer.ml
 
 all: $(GMCDIR)/gmc $(addsuffix .pack,$(GAMES)) $(OBJS) $(DEPEND) 
-	ocamlopt -o $(PROGNAME) $(OBJS)
+	ocamlopt -o $(PROGNAME) str.cmxa $(OBJS)
 
 %.pack: 
 	$(MAKE) -C `basename $@ .pack` depend

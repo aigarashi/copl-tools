@@ -39,6 +39,8 @@ let errAt i s =
 /* RefML4 */
 %token BANG COLONEQ REF AT SLASH
 
+/******** experimental feature for macro defitinions *********/
+%token DEF EQ
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
 %type <Core.judgment> judgment

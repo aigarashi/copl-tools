@@ -16,6 +16,8 @@ module Make(X :
       val rbrace : token
       val lbracket : token
       val rbracket : token
+      val eq : token
+      val def : token
       val eof : token
 
       val intl : int -> token
@@ -24,6 +26,7 @@ module Make(X :
     end
 
     module K : sig val v : (string * P.token) list end
+    module MV : sig val v : (string * (string -> P.token)) list end
   end
 ) =
 struct 
@@ -42,6 +45,16 @@ let newline lexbuf =
     lexbuf.lex_curr_p <-
       { pos with pos_lnum = pos.pos_lnum + 1; pos_bol = pos.pos_cnum }
 
+let find_mv mv = 
+  let tbl = 
+    List.map (fun (name, token) -> (Str.regexp ("^\\$" ^ name) ,token)) X.MV.v in
+  let rec aux = function
+      [] -> raise Not_found
+    | (regexp, token) :: rest -> 
+	if Str.string_match regexp mv 0 then token mv
+	else aux rest
+  in
+    aux tbl
 }
 
 rule main = parse
@@ -59,6 +72,8 @@ rule main = parse
 | "}" { rbrace }
 | "[" { lbracket }
 | "]" { rbracket }
+| "=" { eq }
+| "def" { def }
 | "(*" { comment 1 lexbuf }
 
 (* lowercase names *)
@@ -93,6 +108,16 @@ rule main = parse
 
 | ['0' - '9']+
     { intl (int_of_string (Lexing.lexeme lexbuf)) }
+
+(* macro names *)
+| '$' ['A'-'Z' 'a'-'z' '_']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
+| '$' ['A'-'Z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']* {
+      let name = Lexing.lexeme lexbuf in
+      try 
+        find_mv name
+      with
+      _ -> id name
+    }
 
 | eof { eof }
 

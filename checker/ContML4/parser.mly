@@ -39,6 +39,8 @@ let errAt i s =
 /* ContML4 */
 %token GTGT DRARROW LETCC UNDERSCORE
 
+%token DEF EQ
+
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
 %type <Core.judgment> judgment

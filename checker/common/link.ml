@@ -21,10 +21,13 @@ module Lexer = Lexer.Make(
 	and lparen = LPAREN
 	and rbracket = RBRACKET
 	and lbracket = LBRACKET
+	and eq = EQ
+        and def = DEF
 	and qm = QM
       end 
 
       module K = Keywords
+      module MV = MacroVars
     end
   )
 

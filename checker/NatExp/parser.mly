@@ -22,6 +22,8 @@ let errAt i s =
 %token PLUS EVALTO MULT IS
 %token AST CROSS S Z
 
+/******** experimental feature for macro defitinions *********/
+%token DEF EQ
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
 %type <Core.judgment> judgment

@@ -8,6 +8,14 @@ let errBtw i j s =
 
 let errAt i s =
   MySupport.Error.errAt (Parsing.rhs_start_pos i) s
+
+(******** experimental feature for macro defitinions *********)
+(* The following definition could be automatically generated from .gm *)
+type sobj = Exp of Core.exp
+	  | Value of Core.value
+	  | Prim of Core.prim
+
+let tbl = Hashtbl.create 1024
 %}
 
 %token EOF
@@ -26,6 +34,11 @@ let errAt i s =
 
 %token IF THEN ELSE TRUE FALSE
 
+/******** experimental feature for macro defitinions *********/
+%token DEF EQ
+%token <string> MVEXP
+%token <string> MVVALUE
+
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
 %type <Core.judgment> judgment
@@ -36,7 +49,7 @@ let errAt i s =
 %%
 
 toplevel: 
-    Derivation { $1 }
+    MacroDefs Derivation { $2 }
   | EOF { exit 0 }
 
 judgment: Judgment { $1 }
@@ -146,3 +159,29 @@ Val:
     SInt { Value_of_int $1 }
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
+
+/******** experimental feature for macro defitinions *********/
+
+MacroDefs: 
+    /* empty */ { () }
+  | MacroDef MacroDefs { () }
+
+MacroDef:
+  | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
+  | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
+
+Val: MVVALUE { 
+  try
+    match Hashtbl.find tbl $1 with 
+      Value v -> v
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+}
+
+AExp: MVEXP {
+  try 
+    match Hashtbl.find tbl $1 with
+      Exp e -> e
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
