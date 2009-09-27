@@ -89,7 +89,7 @@ E-Ref: EvalTo(s, env, NewRef(e), l, Block(s1, l, v)) :-
 E-Deref: EvalTo(s, env, Deref(e), v, s1) :-
            EvalTo(s, env, e, l, s1),
            `$v = lookup_store $s1 $env $l` %$s1($l) = $v%;
-E-Assign: EvalTo(s, env, Assign(e1, e2), v, s1) :-
+E-Assign: EvalTo(s, env, Assign(e1, e2), v, s3) :-
             EvalTo(s, env, e1, l, s1),
             EvalTo(s1, env, e2, v, s2),
             `$s3 = update_store $s2 $env $l $v (Assign($e1,$e2))`

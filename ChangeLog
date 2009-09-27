@@ -1,3 +1,7 @@
+2009-09-25  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/RefML4/RefML4.gm: bug fix in E-Assign.
+
 2009-09-08  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/ContML4: Syntax change:  ">>" in "v >> k evalto v" has
