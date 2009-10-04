@@ -1,7 +1,7 @@
 open Format
 open Core
 
-let g = "NatExp"
+let g = "EvalNatExp"
 
 let pr = fprintf
 

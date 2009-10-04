@@ -1,7 +1,7 @@
 open Format
 open Core
 
-let g = "NatLti"
+let g = "CompareNati"
 
 let pr = fprintf
 

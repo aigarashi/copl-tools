@@ -24,10 +24,10 @@ let spec = [
 
 let games = [
     ("Nat", (Nat.Link.check_deriv, Nat.Link.make_deriv));
-    ("NatLt1", (NatLt1.Link.check_deriv, NatLt1.Link.make_deriv));
-    ("NatLt2", (NatLt2.Link.check_deriv, NatLt2.Link.make_deriv));
-    ("NatLt3", (NatLt3.Link.check_deriv, NatLt3.Link.make_deriv));
-    ("NatExp", (NatExp.Link.check_deriv, NatExp.Link.make_deriv));
+    ("CompareNat1", (CompareNat1.Link.check_deriv, CompareNat1.Link.make_deriv));
+    ("CompareNat2", (CompareNat2.Link.check_deriv, CompareNat2.Link.make_deriv));
+    ("CompareNat3", (CompareNat3.Link.check_deriv, CompareNat3.Link.make_deriv));
+    ("EvalNatExp", (EvalNatExp.Link.check_deriv, EvalNatExp.Link.make_deriv));
     ("ML1", (Ml1.Link.check_deriv, Ml1.Link.make_deriv));
     ("ML2", (Ml2.Link.check_deriv, Ml2.Link.make_deriv));
     ("ML3", (Ml3.Link.check_deriv, Ml3.Link.make_deriv));

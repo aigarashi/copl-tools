@@ -1,3 +1,11 @@
+2009-10-04  Atsushi Igarashi  <igarashi@cornet>
+
+	* Game names have been changed considerably:
+	   NatExp -> EvalNatExp
+	   NatLtX -> CompareNatLtX
+
+	* New game ReduceNatExp (not finished).
+
 2009-09-25  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/RefML4/RefML4.gm: bug fix in E-Assign.

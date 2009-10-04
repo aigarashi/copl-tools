@@ -8,7 +8,7 @@ OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
 
-GAMES=Nat NatLt1 NatLt2 NatLt3 NatExp ML1 ML2 ML3 ML4 ContML1 ContML4 RefML4 ML5 ML6 TypingML2 TypingML4 TypingML5 PolyML4 PolyML5
+GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ML1 ML2 ML3 ML4 ContML1 ContML4 RefML4 ML5 ML6 TypingML2 TypingML4 TypingML5 PolyML4 PolyML5
 
 INCLUDES=$(foreach game,$(GAMES),-I $(game)) -I $(GMCDIR)
 
@@ -17,10 +17,10 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 OBJS=$(GMCDIR)/mySupport.cmx derivation.cmx lexer.cmx \
 		Nat/nat.cmx \
-		NatLt1/natLt1.cmx \
-		NatLt2/natLt2.cmx \
-		NatLt3/natLt3.cmx \
-		NatExp/natExp.cmx \
+		CompareNat1/compareNat1.cmx \
+		CompareNat2/compareNat2.cmx \
+		CompareNat3/compareNat3.cmx \
+		EvalNatExp/evalNatExp.cmx \
 		ML1/ml1.cmx \
 		ML2/ml2.cmx \
 		ML3/ml3.cmx \
@@ -58,10 +58,10 @@ lexer.ml: lexer.mll
 # Clean up
 clean:
 #	$(foreach game,$(GAMES), $(MAKE) -C $(game) clean)
-	$(MAKE) -C NatLt1 clean
-	$(MAKE) -C NatLt2 clean
-	$(MAKE) -C NatLt3 clean
-	$(MAKE) -C NatExp clean
+	$(MAKE) -C CompareNat1 clean
+	$(MAKE) -C CompareNat2 clean
+	$(MAKE) -C CompareNat3 clean
+	$(MAKE) -C EvalNatExp clean
 	$(MAKE) -C ML1 clean
 	$(MAKE) -C ML2 clean
 	$(MAKE) -C ML3 clean
@@ -83,7 +83,7 @@ clean:
 depend:: $(DEPEND)
 	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml > .depend
 
-main.cmx: Nat/nat.cmx NatLt1/natLt1.cmx NatLt2/natLt2.cmx NatLt3/natLt3.cmx NatExp/natExp.cmx \
+main.cmx: Nat/nat.cmx CompareNat1/compareNat1.cmx CompareNat2/compareNat2.cmx CompareNat3/compareNat3.cmx EvalNatExp/evalNatExp.cmx \
 	ML1/ml1.cmx ML2/ml2.cmx ML3/ml3.cmx ML4/ml4.cmx ContML1/contML1.cmx ContML4/contML4.cmx RefML4/refML4.cmx ML5/ml5.cmx ML6/ml6.cmx \
 	TypingML2/typingML2.cmx TypingML4/typingML4.cmx TypingML5/typingML5.cmx \
 	PolyML4/polyML4.cmx PolyML5/polyML5.cmx
