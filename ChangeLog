@@ -4,7 +4,7 @@
 	   NatExp -> EvalNatExp
 	   NatLtX -> CompareNatLtX
 
-	* New game ReduceNatExp (not finished).
+	* ReduceNatExp: New game (not finished).
 
 2009-09-25  Atsushi Igarashi  <igarashi@cornet>
 
@@ -12,7 +12,7 @@
 
 2009-09-09  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
-	* ML1/parser.mly, common/link.ml (Lexer), common/Makefile.game,
+	* ML1/parser.mly, common/link.ml, common/Makefile.game,
 	lexer.mll, Makefile, ML1/macroVars.ml: 
 
 	Support of definitions.  Lexer recognizes '$' followed by a
@@ -23,9 +23,9 @@
 	  def $<name> = <some expression>;
 
 	The category of <some expression> depends on the <name>.  When
-	Parser reduces a definition, it register the definition to a hash
+	Parser reduces a definition, it registers the definition to a hash
 	table and when it's referenced in the following part, the hash
-	table is looked up.
+	table will be looked up.
 
 	* */macroVars.ml:  New files to list up macro variable names.
 	But, they should be generated from *.gm automatically.

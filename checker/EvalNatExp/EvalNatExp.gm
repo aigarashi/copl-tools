@@ -27,7 +27,7 @@ E-Const: EvalTo(n, n) :- ;
 E-Plus:  EvalTo(P(e1, e2), n) :- EvalTo(e1, n1), 
                                    EvalTo(e2, n2), 
                                    PlusIs(n1, n2, n);
-E-Mult:  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
+E-Times:  EvalTo(M(e1, e2), n) :- EvalTo(e1, n1), 
                                    EvalTo(e2, n2), 
                                    MultIs(n1, n2, n);
 
