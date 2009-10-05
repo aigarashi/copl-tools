@@ -44,6 +44,27 @@ sig
   val of_rules : (id * decl) list -> Format.formatter -> rule list -> unit
 end
 
+module MacroVars =
+struct
+  let rec of_bnf env ppf = function
+      [] -> ()
+    | sdef :: rest -> match sdef.body with
+	  [] -> (* if the body is empty, then it's no worth allowing definition, so skip *)
+	    of_bnf env ppf rest
+	| _ -> let token = "MV" ^ String.uppercase sdef.cat in
+		 List.iter 
+		   (fun id -> pf ppf "@[(\"%s\", fun s -> %s s);@]@\n" id token)
+		   sdef.mvars;
+   	         of_bnf env ppf rest
+
+  let of_bnf env ppf syndef =
+    pf ppf "module MacroVars =@\n";
+    pf ppf "struct@\n";
+    pf ppf "open Parser@\nlet v = [@\n";
+    of_bnf env ppf syndef;
+    pf ppf "]@\nend@\n@\n"
+end
+
 module ML =
 struct
   module TypeDef = 

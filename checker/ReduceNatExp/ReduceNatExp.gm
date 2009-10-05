@@ -18,6 +18,7 @@ e in Exp ::= n
 (* セミコロンは入力と出力の区切り．宣言にだけ必要 *)
 
 OneStepTo(e; e);      
+OneStepToD(e; e);      
 MultiStepTo(e, e);
 PlusIs(n1, n2; n3);
 MultIs(n1, n2; n3);
@@ -33,9 +34,18 @@ R-PlusR: OneStepTo(P(e1, e2), P(e1, e2')) :- OneStepTo(e2, e2');
 R-TimesL: OneStepTo(M(e1, e2), M(e1', e2)) :- OneStepTo(e1, e1');
 R-TimesR: OneStepTo(M(e1, e2), M(e1, e2')) :- OneStepTo(e2, e2');
 
-MR-Refl: MultiStepTo(e, e) :- ;
-MR-Trans: MultiStepTo(e, e'') :- MultiStepTo(e, e'), MultiStepTo(e', e'');
-MR-OneStep: MultiStepTo(e, e') :- OneStepTo(e, e');
+DR-Plus: OneStepToD(P(n1, n2), n3) :- PlusIs(n1, n2, n3);
+DR-Times: OneStepToD(M(n1, n2), n3) :- MultIs(n1, n2, n3);
+
+DR-PlusL: OneStepToD(P(e1, e2), P(e1', e2)) :- OneStepToD(e1, e1');
+DR-PlusR: OneStepToD(P(n1, e2), P(n1, e2')) :- OneStepToD(e2, e2');
+
+DR-TimesL: OneStepToD(M(e1, e2), M(e1', e2)) :- OneStepToD(e1, e1');
+DR-TimesR: OneStepToD(M(n1, e2), M(n1, e2')) :- OneStepToD(e2, e2');
+
+MR-Zero: MultiStepTo(e, e) :- ;
+MR-Multi: MultiStepTo(e, e'') :- MultiStepTo(e, e'), MultiStepTo(e', e'');
+MR-One: MultiStepTo(e, e') :- OneStepTo(e, e');
 
 P-Zero: PlusIs(Z, n, n) :- ;
 P-Succ: PlusIs(S(n1), n2, S(n)) :- PlusIs(n1, n2, n) ;

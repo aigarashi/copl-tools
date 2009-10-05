@@ -290,7 +290,7 @@ span.rname { font-variant: small-caps; }
 
 (define ContML4:FunTerm ML4:FunTerm)
 (define ContML4:RecTerm ML4:RecTerm)
-(define (ContML4:ContTerm k)
+(define (ContML4:ContFTerm k)
   `("[" ,k "]"))
 
 (define ContML4:EmptyTerm ML4:EmptyTerm)

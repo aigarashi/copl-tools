@@ -30,6 +30,10 @@ open MySupport.Pervasives
 open Derivation
 
 ";
+  (* Macro variable name list *)
+  (*
+  Emit.MacroVars.of_bnf env std_formatter g.syndefs;
+  *)
   (* Type definition for syntactic entities *)
   Emit.ML.of_bnf env std_formatter g.syndefs;
   pp_print_newline std_formatter ();

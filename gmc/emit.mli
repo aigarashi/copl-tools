@@ -58,9 +58,14 @@ sig
   val of_rules : (id * decl) list -> Format.formatter -> rule list -> unit
 end
 
+module MacroVars :
+sig
+  val of_bnf : Env.t -> Format.formatter -> syndef list -> unit
+end
+
 module ML : EMITTER
 
-module type SIMPLE_EMITTER =
+module type SIMPLE_EMITTER = (* emitter without environment information *)
 sig
   val of_bnf : Format.formatter -> string -> syndef list -> unit
   val of_judgments : Format.formatter -> string -> (judgment * int) list -> unit 

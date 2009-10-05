@@ -10,6 +10,28 @@
 
 	* checker/RefML4/RefML4.gm: bug fix in E-Assign.
 
+2009-09-09  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* ML1/parser.mly, common/link.ml (Lexer), common/Makefile.game,
+	lexer.mll, Makefile, ML1/macroVars.ml: 
+
+	Support of definitions.  Lexer recognizes '$' followed by a
+	category name as a macro name.  The category names and their
+	corresponding tokens are listed in macroVars.ml.  The concrete
+	syntax for definitions is
+
+	  def $<name> = <some expression>;
+
+	The category of <some expression> depends on the <name>.  When
+	Parser reduces a definition, it register the definition to a hash
+	table and when it's referenced in the following part, the hash
+	table is looked up.
+
+	* */macroVars.ml:  New files to list up macro variable names.
+	But, they should be generated from *.gm automatically.
+	
+	* */parser.mly:  Adaptation for the introduction of definitions.
+
 2009-09-08  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/ContML4: Syntax change:  ">>" in "v >> k evalto v" has
