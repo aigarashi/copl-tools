@@ -1,0 +1,44 @@
+(* ペアノ自然数の和と積 *)
+
+[Syntax]
+
+n in Nat ::= Z
+          |  S(n)
+
+e in Exp ::= n
+          |  P(e,e)
+          |  M(e,e)
+
+(*
+  Nat, Exp, n:Nat, m:Nat, Z:Nat[], S:Nat[Nat], Nat <: Exp,
+*)
+
+[Judgments]
+
+(* セミコロンは入力と出力の区切り．宣言にだけ必要 *)
+
+OneStepTo(e; e);      
+MultiStepTo(e, e);
+PlusIs(n1, n2; n3);
+MultIs(n1, n2; n3);
+
+[Rules]
+
+R-Plus: OneStepTo(P(n1, n2), n3) :- PlusIs(n1, n2, n3);
+R-Times: OneStepTo(M(n1, n2), n3) :- MultIs(n1, n2, n3);
+
+R-PlusL: OneStepTo(P(e1, e2), P(e1', e2)) :- OneStepTo(e1, e1');
+R-PlusR: OneStepTo(P(e1, e2), P(e1, e2')) :- OneStepTo(e2, e2');
+
+R-TimesL: OneStepTo(M(e1, e2), M(e1', e2)) :- OneStepTo(e1, e1');
+R-TimesR: OneStepTo(M(e1, e2), M(e1, e2')) :- OneStepTo(e2, e2');
+
+MR-Refl: MultiStepTo(e, e) :- ;
+MR-Trans: MultiStepTo(e, e'') :- MultiStepTo(e, e'), MultiStepTo(e', e'');
+MR-OneStep: MultiStepTo(e, e') :- OneStepTo(e, e');
+
+P-Zero: PlusIs(Z, n, n) :- ;
+P-Succ: PlusIs(S(n1), n2, S(n)) :- PlusIs(n1, n2, n) ;
+
+T-Zero: MultIs(Z, n, Z) :- ;
+T-Succ: MultIs(S(n1), n2, n4) :- MultIs(n1, n2, n3), PlusIs(n2, n3, n4);
