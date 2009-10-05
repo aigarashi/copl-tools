@@ -101,7 +101,7 @@ and print_val ppf = function
   | Value_of_bool false -> pr ppf "false"
   | Fun(env, Var x, e) -> pr ppf "(%a)[fun %s -> %a]" print_env env x print_exp e
   | Rec(env, Var x, Var y, e) -> pr ppf "(%a)[rec %s = fun %s -> %a]" print_env env x y print_exp e
-  | Cont k -> pr ppf "[%a]" print_cont k
+  | ContF k -> pr ppf "[%a]" print_cont k
 and print_cont = 
   let with_paren_R = with_paren (fun e_up e -> e > e_up) in
     fun ppf -> function 
@@ -222,7 +222,7 @@ and tex_val ppf = function
   | Fun(env, Var x, e) -> pr ppf "\\%sFunTerm{%a}{%s}{%a}" g tex_env env x tex_exp e
   | Rec(env, Var x, Var y, e) -> pr ppf "\\%sRecTerm{%a}{%s}{%s}{%a}" g 
       tex_env env x y tex_exp e
-  | Cont k -> pr ppf "\\%sContTerm{%a}" g tex_cont k
+  | ContF k -> pr ppf "\\%sContFTerm{%a}" g tex_cont k
 and tex_cont ppf = function
     RetK -> pr ppf "\\%sRetKTerm{}" g
   | EvalRK(env, e, p, k) ->

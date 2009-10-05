@@ -8,6 +8,15 @@ let errBtw i j s =
 
 let errAt i s =
   MySupport.Error.errAt (Parsing.rhs_start_pos i) s
+
+(******** experimental feature for macro defitinions *********)
+(* The following definition could be automatically generated from .gm *)
+type sobj = Exp of Core.exp
+	  | Value of Core.value
+	  | Env of Core.env
+	  | Cont of Core.cont
+
+let tbl = Hashtbl.create 1024
 %}
 
 %token EOF
@@ -39,7 +48,13 @@ let errAt i s =
 /* ContML4 */
 %token GTGT DRARROW LETCC UNDERSCORE
 
+/******** experimental feature for macro defitinions *********/
 %token DEF EQ
+%token <string> MVEXP
+%token <string> MVVALUE
+%token <string> MVENV
+%token <string> MVCONT
+
 
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
@@ -51,7 +66,7 @@ let errAt i s =
 %%
 
 toplevel: 
-    Derivation { $1 }
+    MacroDefs Derivation { $2 }
   | EOF { exit 0 }
 
 judgment: Judgment { $1 }
@@ -208,7 +223,7 @@ Val:
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
   | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
       { Rec($2, Var $6, Var $9, $11) }
-  | LBRACKET Cont RBRACKET { Cont $2 }
+  | LBRACKET Cont RBRACKET { ContF $2 }
 
 BinOp: BinOp1 {$1} | BinOp2 {$1} | BinOp3 {$1} 
 
@@ -234,3 +249,46 @@ Cont:
   | LBRACE Env VDASH Hole AExp RBRACE OptCont { EvalArgK($2, $5, $7) }
   | LBRACE Val Hole RBRACE OptCont { AppFunK($2, $5) }
 
+/******** experimental feature for macro defintions *********/
+
+MacroDefs: 
+    /* empty */ { () }
+  | MacroDef MacroDefs { () }
+
+MacroDef:
+  | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
+  | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
+  | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
+  | DEF MVCONT EQ Cont SEMI { Hashtbl.add tbl $2 (Cont $4) }
+
+Val: MVVALUE { 
+  try
+    match Hashtbl.find tbl $1 with 
+      Value v -> v
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+}
+
+AExp: MVEXP {
+  try 
+    match Hashtbl.find tbl $1 with
+      Exp e -> e
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
+
+Env: MVENV {
+  try 
+    match Hashtbl.find tbl $1 with
+      Env e -> e
+    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
+
+Cont: MVCONT {
+  try 
+    match Hashtbl.find tbl $1 with
+      Cont k -> k
+    | _ -> errAt 1 "Cannot happen! Cont: MVCONT" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }

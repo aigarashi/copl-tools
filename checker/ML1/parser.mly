@@ -13,7 +13,6 @@ let errAt i s =
 (* The following definition could be automatically generated from .gm *)
 type sobj = Exp of Core.exp
 	  | Value of Core.value
-	  | Prim of Core.prim
 
 let tbl = Hashtbl.create 1024
 %}
@@ -164,7 +163,7 @@ Val:
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
 
-/******** experimental feature for macro definitions *********/
+/******** experimental feature for macro defintions *********/
 
 MacroDefs: 
     /* empty */ { () }

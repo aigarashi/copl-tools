@@ -9,6 +9,14 @@ let errBtw i j s =
 let errAt i s =
   MySupport.Error.errAt (Parsing.rhs_start_pos i) s
 
+(******** experimental feature for macro defitinions *********)
+(* The following definition could be automatically generated from .gm *)
+type sobj = Exp of Core.exp
+	  | Value of Core.value
+	  | Env of Core.env
+
+let tbl = Hashtbl.create 1024
+
 module S = Set.Make(
   struct type t = string  let compare = Pervasives.compare end
 )
@@ -59,6 +67,10 @@ let rec fpv = function
 
 /******** experimental feature for macro defitinions *********/
 %token DEF EQ
+%token <string> MVEXP
+%token <string> MVVALUE
+%token <string> MVENV
+
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
 %type <Core.judgment> judgment
@@ -69,7 +81,7 @@ let rec fpv = function
 %%
 
 toplevel: 
-    Derivation { $1 }
+    MacroDefs Derivation { $2 }
   | EOF { exit 0 }
 
 judgment: Judgment { $1 }
@@ -270,3 +282,38 @@ APat:
   | LPAREN Pat RPAREN { $2 }
 
   | LPAREN Pat error { errBtw 1 3 "Syntax error: closing paren expected" }
+
+/******** experimental feature for macro defintions *********/
+
+MacroDefs: 
+    /* empty */ { () }
+  | MacroDef MacroDefs { () }
+
+MacroDef:
+  | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
+  | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
+  | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
+
+Val: MVVALUE { 
+  try
+    match Hashtbl.find tbl $1 with 
+      Value v -> v
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+}
+
+AExp: MVEXP {
+  try 
+    match Hashtbl.find tbl $1 with
+      Exp e -> e
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
+
+Env: MVENV {
+  try 
+    match Hashtbl.find tbl $1 with
+      Env e -> e
+    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }

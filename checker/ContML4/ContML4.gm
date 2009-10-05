@@ -14,7 +14,7 @@ b in bool
 
 x,y in Var
 
-v in Value ::= i | b | Fun(env, x, e) | Rec(env, x, y, e) | Cont(k)
+v in Value ::= i | b | Fun(env, x, e) | Rec(env, x, y, e) | ContF(k)
 
 env in Env ::= Empty
             |  Bind(env,x,v)
@@ -67,7 +67,7 @@ E-LetRec: EvalTo(env, k, LetRec(x,y,e1,e2), v) :-
             EvalTo(Bind(env, x, Rec(env,x,y,e1)), k, e2, v);
 
 E-LetCc: EvalTo(env, k, LetCc(x, e), v) :-
-            EvalTo(Bind(env,x,Cont(k)), k, e, v);
+            EvalTo(Bind(env,x,ContF(k)), k, e, v);
 
 K-Ret: AppK(RetK, v, v) :- ;
 K-EvalR: AppK(EvalRK(env,e,op,k), v1, v2) :- EvalTo(env, AppOpK(v1,op,k), e, v2);
@@ -84,7 +84,7 @@ K-EvalArg: AppK(EvalArgK(env, e, k), v1, v) :- EvalTo(env, AppFunK(v1, k), e, v)
 
 K-EvalFun: AppK(AppFunK(Fun(env, x, e), k), v1, v2) :- EvalTo(Bind(env,x,v1), k, e, v2);
 K-EvalFunR: AppK(AppFunK(Rec(env, x, y, e), k), v1, v2) :- EvalTo(Bind(Bind(env, x, Rec(env,x,y,e)), y, v1), k, e, v2);
-K-EvalFunC: AppK(AppFunK(Cont(k1), k2), v1, v2) :- AppK(k1, v1, v2);
+K-EvalFunC: AppK(AppFunK(ContF(k1), k2), v1, v2) :- AppK(k1, v1, v2);
 
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;

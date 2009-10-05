@@ -47,7 +47,10 @@ let newline lexbuf =
 
 let find_mv mv = 
   let tbl = 
-    List.map (fun (name, token) -> (Str.regexp ("^\\$" ^ name) ,token)) X.MV.v in
+    List.map 
+      (fun (name, token) -> 
+	(Str.regexp ("^\\$" ^ name ^ "['0'-'9' '_' '\'']*") ,token)) 
+      X.MV.v in
   let rec aux = function
       [] -> raise Not_found
     | (regexp, token) :: rest -> 
