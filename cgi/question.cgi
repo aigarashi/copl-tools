@@ -30,11 +30,12 @@
 	(let* ((game (car q))
 	       (goal (cadr q))
 	       (commonform 
-		(list
-		 (html:input :type "hidden" :name "game" :value game)
-		 (html:input :type "hidden" :name "no" :value n)
-		 (html:input :type "hidden" :name "problem" :value goal)
-		 (html:input :type "submit" :value "解答を送信")))
+		(lambda (label)
+		  (list
+		   (html:input :type "hidden" :name "game" :value game)
+		   (html:input :type "hidden" :name "no" :value n)
+		   (html:input :type "hidden" :name "problem" :value goal)
+		   (html:input :type "submit" :value label)))
 	       (rulesurl (html:a 
 			  :href (string-concatenate (list "games/" 
 							  (symbol->string game) ".html")) 
@@ -49,10 +50,10 @@
 		      :action "process.cgi" :method "post"
 		      (html:label "解答ファイル:")
 		      (html:input :type "file" :name "derivation")
-		      commonform)
+		      (commonform "ファイルを送信"))
 	   (html:form :action "process.cgi" :method "post"
 	    (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off" goal)
-	    commonform)))
+	    (commonform "フォームの解答を送信"))))
 	;; if n is too large
 	(html:p "そんな問題はありません"))))
 
