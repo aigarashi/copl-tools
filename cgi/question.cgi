@@ -35,7 +35,7 @@
 		   (html:input :type "hidden" :name "game" :value game)
 		   (html:input :type "hidden" :name "no" :value n)
 		   (html:input :type "hidden" :name "problem" :value goal)
-		   (html:input :type "submit" :value label)))
+		   (html:input :type "submit" :value label))))
 	       (rulesurl (html:a 
 			  :href (string-concatenate (list "games/" 
 							  (symbol->string game) ".html")) 
