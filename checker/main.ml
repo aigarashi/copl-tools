@@ -28,6 +28,7 @@ let games = [
     ("CompareNat2", (CompareNat2.Link.check_deriv, CompareNat2.Link.make_deriv));
     ("CompareNat3", (CompareNat3.Link.check_deriv, CompareNat3.Link.make_deriv));
     ("EvalNatExp", (EvalNatExp.Link.check_deriv, EvalNatExp.Link.make_deriv));
+    ("ReduceNatExp", (ReduceNatExp.Link.check_deriv, ReduceNatExp.Link.make_deriv));
     ("ML1", (Ml1.Link.check_deriv, Ml1.Link.make_deriv));
     ("ML2", (Ml2.Link.check_deriv, Ml2.Link.make_deriv));
     ("ML3", (Ml3.Link.check_deriv, Ml3.Link.make_deriv));

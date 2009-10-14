@@ -1,3 +1,10 @@
+2009-10-14  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/ReduceNatExp: implemented.
+	* cgi/questions.db: Questions revised.
+	* cgi/index.cgi (main): transition from logout to login is set to
+	2 seconds.
+
 2009-10-04  Atsushi Igarashi  <igarashi@cornet>
 
 	* Game names have been changed considerably:

@@ -47,9 +47,10 @@
     (html:input :type "submit" :value "ログイン"))))
   
 (define-constant gamelist
-  '("Nat" "NatLt1" "NatLt2" "NatLt3" "NatExp" 
-    "ML1" "ML2" "ML3" "ML4" "ML5" "ML6"
-    "TypingML5" "PolyML5"
+  '("Nat" "CompareNat1" "CompareNat2" "CompareNat3" "EvalNatExp" 
+    "ReduceNatExp"
+    ;;    "ML1" "ML2" "ML3" "ML4" "ML5" "ML6"
+    ;;    "TypingML5" "PolyML5"
     ))
 
 (define (display-sandbox msg)
@@ -104,6 +105,9 @@
 	    (slices ns 10 #t 0)))))
 
 (define (pad-numlist l padding)
+  ;; (pad-numlist l padding) generates a list of integers such that
+  ;; the n-th element is either n (if n also appears in l) or
+  ;; padding otherwise.  l is assumed to be sorted.
   (define (aux i ns)
     (if (null? ns) '()
 	(if (= i (car ns)) 
@@ -145,7 +149,7 @@
        (html-doctype)
        (html:html
 	(html:head
-	 (html:meta :http-equiv "Refresh" :content "3;url=index.cgi")
+	 (html:meta :http-equiv "Refresh" :content "2;url=index.cgi")
 	 (html:style :type "text/css" *style*))
 	(html:body
 	 (html:p "ログアウトしました．")))))

@@ -17,9 +17,9 @@ e in Exp ::= n
 
 (* セミコロンは入力と出力の区切り．宣言にだけ必要 *)
 
-OneStepTo(e; e);      
-OneStepToD(e; e);      
-MultiStepTo(e, e);
+OneStepTo(e, e);        (*  e ---> e *)
+OneStepToD(e; e);       (*  e -d-> e *)
+MultiStepTo(e, e);      (*  e -*-> e *)
 PlusIs(n1, n2; n3);
 MultIs(n1, n2; n3);
 
