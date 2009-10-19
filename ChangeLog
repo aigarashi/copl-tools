@@ -1,3 +1,7 @@
+2009-10-19  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/derivation.ml (print_derivs): Modified the way a derivation is printed.
+
 2009-10-14  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/question.cgi (display-q): Different labels for buttons to
