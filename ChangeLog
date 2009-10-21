@@ -1,3 +1,15 @@
+2009-10-21  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/process.cgi: set Content-Type to "text/html; charset=utf-8".
+	* cgi/index.cgi (main): transition from logout to login is set to
+	0 seconds.
+
+2009-10-20  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* checker/lexer.mll: "-d->" is added to a special symbol.  It was
+	a bad idea to have a symbol like this.
+	* checker/Makefile: bug fix.
+	
 2009-10-19  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/derivation.ml (print_derivs): Modified the way a derivation is printed.
@@ -9,7 +21,7 @@
 	* checker/ReduceNatExp: implemented.
 	* cgi/questions.db: Questions revised.
 	* cgi/index.cgi (main): transition from logout to login is set to
-	2 seconds.
+	1 second.
 
 2009-10-04  Atsushi Igarashi  <igarashi@cornet>
 

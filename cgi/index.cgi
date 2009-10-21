@@ -149,7 +149,7 @@
        (html-doctype)
        (html:html
 	(html:head
-	 (html:meta :http-equiv "Refresh" :content "2;url=index.cgi")
+	 (html:meta :http-equiv "Refresh" :content "0;url=index.cgi")
 	 (html:style :type "text/css" *style*))
 	(html:body
 	 (html:p "ログアウトしました．")))))

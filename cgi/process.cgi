@@ -93,10 +93,15 @@
 	   (write-log uname deriv)
 	   (write-log uname (make-string 70 #\-))
 	   (list
-	    (cgi-header)
+	    (cgi-header
+	    :content-type "text/html; charset=utf-8")
 	    (html-doctype)
 	    (html:html
-	     (html:head (html:style :type "text/css" *style*))
+	     (html:head 
+	      (html:meta 
+	       :http-equiv "content-type" 
+	       :content "text/html; charset=utf-8")
+	      (html:style :type "text/css" *style*))
 	     (html:body
 	      html-msg
 	      (if *debug*
@@ -109,9 +114,15 @@
 		  '())
 	      ))))
 	 (list
-	  (cgi-header)
+	  (cgi-header
+	    :content-type "text/html; charset=utf-8")
 	  (html-doctype)
 	  (html:html
+	   (html:head 
+	    (html:meta 
+	     :http-equiv "content-type" 
+	     :content "text/html; charset=utf-8")
+	    (html:style :type "text/css" *style*))
 	   (html:body
 	    (html:p
 	     (cond [(not (or (zero? no) uname))

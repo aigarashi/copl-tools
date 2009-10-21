@@ -103,6 +103,7 @@ rule main = parse
 	id (String.sub name 1 (String.length name - 2))
     }
 
+| "-d->"
 | ['!' '"' '#' '$' '%' '&' '*' '+' '-' '.' '/' ':' '<' '=' '>' '+' 
    '@' '^' '`' '~' '|' '?' ';']+ | "\'" | "," {
     let sym = Lexing.lexeme lexbuf in

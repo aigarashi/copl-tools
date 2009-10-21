@@ -60,6 +60,7 @@ lexer.ml: lexer.mll
 # Clean up
 clean:
 #	$(foreach game,$(GAMES), $(MAKE) -C $(game) clean)
+	$(MAKE) -C Nat clean
 	$(MAKE) -C CompareNat1 clean
 	$(MAKE) -C CompareNat2 clean
 	$(MAKE) -C CompareNat3 clean

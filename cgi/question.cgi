@@ -64,7 +64,11 @@
        (cgi-header)
        (html-doctype)
        (html:html
-	(html:head (html:style :type "text/css" *style*))
+	(html:head
+	 (html:meta 
+	  :http-equiv "content-type" 
+	  :content "text/html; charset=utf-8")
+	 (html:style :type "text/css" *style*))
 	(html:body
 	 (if q (display-q (string->number q))
 	     (html:p "Error: the question number has to be specified"))))))))
