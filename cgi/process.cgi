@@ -68,7 +68,7 @@
 	(write-log uname "--")
 	(list
 	 (if (zero? (string-length (caddr result)))
-	     (html: "入力が空じゃありませんか？")
+	     (html:p "入力が空じゃありませんか？")
 	     (html:p "残念..."))
 	 (html:pre (html-escape-string (caddr result))) 
 	 (html:pre (let ((lc (parse-errmsg (caddr result))))
