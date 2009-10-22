@@ -39,9 +39,10 @@
 	      #f))))
 
 (define (display-result result deriv no uname game)
-  (if (and (zero? (car result) (not (zero? (string-length (cadr result))))))
-      ;; if the process return code is 0
-      ;; and returns a non-empty string
+  (if (and (zero? (car result))
+	   (not (zero? (string-length (cadr result)))))
+	   ;; if the process return code is 0
+           ;; and returns a non-empty string
       ;; 正解!
       (begin
 	;; recording the result
