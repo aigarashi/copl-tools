@@ -67,16 +67,14 @@
 		   :header #t)
 	(write-log uname "--")
 	(list
-	 (if (zero? (string-length (cadr result)))
-	     (list 
-	      (html:p "入力が空です．"))
-	     (list
-	      (html:p "残念...")
-	      (html:pre (html-escape-string (caddr result))) 
-	      (html:pre (let ((lc (parse-errmsg (caddr result))))
-			  (if lc
-			      (emphasize deriv (car lc) (cdr lc))
-			      deriv)))))
+	 (if (zero? (string-length (caddr result)))
+	     (html: "入力が空じゃありませんか？")
+	     (html:p "残念..."))
+	 (html:pre (html-escape-string (caddr result))) 
+	 (html:pre (let ((lc (parse-errmsg (caddr result))))
+		     (if lc
+			 (emphasize deriv (car lc) (cdr lc))
+			 deriv)))
 	 (html:hr)
 	 (html:table
 	  (map (lambda (s) (html:tr (html:td s)))
