@@ -39,7 +39,9 @@
 	      #f))))
 
 (define (display-result result deriv no uname game)
-  (if (zero? (car result))  ;; if the process return code is 0
+  (if (and (zero? (car result) (not (zero? (string-length (cadr result))))))
+      ;; if the process return code is 0
+      ;; and returns a non-empty string
       ;; 正解!
       (begin
 	;; recording the result
@@ -64,12 +66,16 @@
 		   :header #t)
 	(write-log uname "--")
 	(list
-	 (html:p "残念...")
-	 (html:pre (html-escape-string (caddr result))) 
-	 (html:pre (let ((lc (parse-errmsg (caddr result))))
-		     (if lc
-			 (emphasize deriv (car lc) (cdr lc))
-			 deriv)))
+	 (if (zero? (string-length (cadr result)))
+	     (list 
+	      (html:p "入力が空です．"))
+	     (list
+	      (html:p "残念...")
+	      (html:pre (html-escape-string (caddr result))) 
+	      (html:pre (let ((lc (parse-errmsg (caddr result))))
+			  (if lc
+			      (emphasize deriv (car lc) (cdr lc))
+			      deriv)))))
 	 (html:hr)
 	 (html:table
 	  (map (lambda (s) (html:tr (html:td s)))

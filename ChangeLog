@@ -1,3 +1,9 @@
+2009-10-22  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/process.cgi (display-result): Fixed a bug, which accepts the
+	empty string (or strings consisting of only space characters) as a
+	right one!
+
 2009-10-21  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/process.cgi: set Content-Type to "text/html; charset=utf-8".

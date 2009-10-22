@@ -37,7 +37,7 @@ let errAt i s =
 
 toplevel: 
     Derivation { $1 }
-  | EOF { exit 0 }
+  | EOF { exit 0 } 
 
 judgment: Judgment { $1 }
 
