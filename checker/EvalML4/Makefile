@@ -1,6 +1,6 @@
-PROGNAME = ML4
-MODULEPATH = Ml4
-PACKED=ml4
+PROGNAME = EvalML4
+MODULEPATH = EvalML4
+PACKED=EvalML4
 
 -include ../common/Makefile.game
 

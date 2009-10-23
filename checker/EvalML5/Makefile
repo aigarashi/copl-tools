@@ -1,6 +1,6 @@
-PROGNAME = ML5
-MODULEPATH = Ml5
-PACKED=ml5
+PROGNAME = EvalML5
+MODULEPATH = EvalML5
+PACKED=EvalML5
 
 -include ../common/Makefile.game
 
