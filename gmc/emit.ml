@@ -22,12 +22,17 @@ let emit_semiseq emit_elm ppf e = emit_seq ~spbefore:false ";" emit_elm ppf e
 let emit_var env ppf = function
     Var id -> pp_print_string ppf (String.lowercase (Env.lookup_cat env id))
 
-let emit_coercion env ppf (cat', cat) =
-  if cat' <> cat then 
-    if Syntax.Env.is_subcat env cat' cat
-    then pf ppf "%s_of_%s " cat cat'
-    else 
-      failwith ("emit_coercion:" ^ cat' ^ " is not a subcategory of " ^ cat)
+let emit_coercion env ppf (cat', cat, cont) =
+  let rec loop ppf l = match l with
+      [] -> failwith "emit_coercion: Can't happen"
+    | [_] -> pf ppf "%a" cont ()
+    | supcat :: ((subcat :: _) as rest) ->
+	pf ppf "(%s_of_%s %a)" supcat subcat loop rest
+  in
+    match Syntax.Env.is_subcat env cat' cat with
+      (_ :: _) as cats -> loop ppf cats
+    | [] ->
+	failwith ("emit_coercion:" ^ cat' ^ " is not a subcategory of " ^ cat)
 
 let emit_ordinal ppf i = (* doesn't work for some numbers *)
   match i with
@@ -143,28 +148,30 @@ struct
       let rec aux ppf (cat, term) = match term with
 	  (* boolean values are treated specially *)
 	  Var ("true" | "false" as b) ->
-	    pf ppf "%a%s" (emit_coercion env) ("bool", cat) b
+	    pf ppf "%a" (emit_coercion env)
+	      ("bool", cat, (fun ppf () -> pf ppf "%s" b))
 	| Var id -> (* other variables *)
 	    let prefix = String.make (incr id + n) '_' in 
 	    let cat' = 
 	      try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
 		  Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	    in
-	      pf ppf "%a%s%s" (emit_coercion env) (cat', cat) prefix id
+	      pf ppf "%a" (emit_coercion env)
+		(cat', cat, fun ppf () -> pf ppf "%s%s" prefix id)
 	| App (id, ts) -> 
 	    let (cats, cat') = 
 	      try Syntax.Env.lookup_tcon env id with
 		  Not_found -> failwith ("emit_term: " ^ id ^ " not found")
 	    in
 	      match ts with 
-		  [] -> pf ppf "%a%s" (emit_coercion env) (cat', cat) id
+		  [] -> pf ppf "%a" (emit_coercion env) 
+		    (cat', cat, fun ppf () -> pf ppf "%s" id)
 		| _ -> 
 		    try
 		      let ts = List.map2 (fun x y -> (x, y)) cats ts in 
-			pf ppf "%a(%s(@[%a@]))" 
-			  (emit_coercion env) (cat', cat)
-			  id 
-			  (emit_comseq aux) ts
+			pf ppf "%a" 
+			  (emit_coercion env) (cat', cat, fun ppf () ->
+			    pf ppf "(%s(@[%a@]))" id (emit_comseq aux) ts)
 		    with Invalid_argument("List.map2") -> 
 		      failwith ("emit_term: arity mismatch for " ^ id)
 
@@ -531,21 +538,22 @@ struct
 	    try Syntax.Env.lookup_cat env (Syntax.base_LCID id) with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found") 
 	  in
-	    pf ppf "%a%s" (emit_coercion env) (cat', cat) id
+	    pf ppf "%a" (emit_coercion env)
+	      (cat', cat, fun ppf () -> pf ppf "%s" id)
       | App (id, ts) -> 
 	  let (cats, cat') = 
 	    try Syntax.Env.lookup_tcon env id with
 		Not_found -> failwith ("emit_term: " ^ id ^ " not found")
 	  in
 	    match ts with 
-		[] -> pf ppf "%a%s" (emit_coercion env) (cat', cat) id
+		[] -> pf ppf "%a" (emit_coercion env)
+		                  (cat', cat, fun ppf () -> pf ppf "%s" id)
 	      | _ -> 
 		  try
 		    let ts = List.map2 (fun x y -> (x, y)) cats ts in 
-		      pf ppf "%a(%s(@[%a@]))" 
-			(emit_coercion env) (cat', cat)
-			id 
-			(emit_comseq aux) ts
+		      pf ppf "%a" 
+			(emit_coercion env) (cat', cat, fun ppf () ->
+			  pf ppf "(%s(@[%a@]))" id (emit_comseq aux) ts)
 		  with Invalid_argument("List.map2") -> 
 		    failwith ("emit_term: arity mismatch for " ^ id)
 

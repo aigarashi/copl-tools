@@ -1,3 +1,4 @@
+;-*-Scheme-*-
 #(;; Nat
 					
   ; learn how to do addition
@@ -38,20 +39,22 @@
   (ReduceNatExp "S(Z) * S(Z) + S(Z) * S(Z) -*-> S(S(Z))")
 
   ;; EvalML1
-  (ML1 "3 + 5 evalto 8")
-  (ML1 "8 - 2 - 3 evalto 3")
-  (ML1 "(4 + 5) * (1 - 10) evalto -81")
-  (ML1 "if 4 < 5 then 2 + 3 else 8 * 8 evalto 5")
-  (ML1 "3 + if -23 < -2 * 8 then 8 else 2 + 4 evalto 11")
-  (ML1 "3 + (if -23 < -2 * 8 then 8 else 2) + 4 evalto 15")
+  (EvalML1 "3 + 5 evalto 8")
+  (EvalML1 "8 - 2 - 3 evalto 3")
+  (EvalML1 "(4 + 5) * (1 - 10) evalto -81")
+  (EvalML1 "if 4 < 5 then 2 + 3 else 8 * 8 evalto 5")
+  (EvalML1 "3 + if -23 < -2 * 8 then 8 else 2 + 4 evalto 11")
+  (EvalML1 "3 + (if -23 < -2 * 8 then 8 else 2) + 4 evalto 15")
 
+  ;; EvalML1Err
+  
   ;; EvalML2
-  (ML2 "x = 3, y = 2 |- x evalto 3")
-  (ML2 "x = true, y = 4 |- if x then y + 1 else y - 1 evalto 5")
-  (ML2 "|- let x = 1 + 2 in x * 4 evalto 12")
-  (ML2 "|- let x = 3 * 3 in let y = 4 * x in x + y evalto 45")
-  (ML2 "x = 3 |- let x = x * 2 in x + x evalto 12")
-  (ML2 "|- let x = let y = 3 - 2 in y * y in let y = 4 in x + y evalto 5")
+  (EvalML2 "x = 3, y = 2 |- x evalto 3")
+  (EvalML2 "x = true, y = 4 |- if x then y + 1 else y - 1 evalto 5")
+  (EvalML2 "|- let x = 1 + 2 in x * 4 evalto 12")
+  (EvalML2 "|- let x = 3 * 3 in let y = 4 * x in x + y evalto 45")
+  (EvalML2 "x = 3 |- let x = x * 2 in x + x evalto 12")
+  (EvalML2 "|- let x = let y = 3 - 2 in y * y in let y = 4 in x + y evalto 5")
 
 ;;   ;; EvalML3
 ;;   (EvalML3 "|- fun x -> x + 1 evalto ()[fun x -> x + 1]")

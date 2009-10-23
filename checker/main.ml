@@ -31,6 +31,7 @@ let games = [
     ("EvalNatExp", (EvalNatExp.Link.check_deriv, EvalNatExp.Link.make_deriv));
     ("ReduceNatExp", (ReduceNatExp.Link.check_deriv, ReduceNatExp.Link.make_deriv));
     ("EvalML1", (EvalML1.Link.check_deriv, EvalML1.Link.make_deriv));
+    ("EvalML1Err", (EvalML1Err.Link.check_deriv, EvalML1Err.Link.make_deriv));
     ("EvalML2", (EvalML2.Link.check_deriv, EvalML2.Link.make_deriv));
     ("EvalML3", (EvalML3.Link.check_deriv, EvalML3.Link.make_deriv));
     ("EvalML4", (EvalML4.Link.check_deriv, EvalML4.Link.make_deriv));

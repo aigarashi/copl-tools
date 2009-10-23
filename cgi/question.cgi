@@ -1,4 +1,5 @@
 #! /usr/bin/gosh
+;-*-Scheme-*-
 
 ;; TODO: add a link to go back to the problem list
 

@@ -1,4 +1,5 @@
 #! /usr/bin/gosh
+;-*-Scheme-*-
 ;; translation from inference rules to MathML
 ;;
 ;; $Id: $
@@ -170,162 +171,180 @@ span.rname { font-variant: small-caps; }
 (define (ReduceNatExp:OneStepToD e1 e2)
   `(,e1 "\\stackrel{d}{\\longrightarrow}" ,e2))
 
-;; ML1
-(define (ML1:mv base . suffix)
+;; EvalML1
+(define (EvalML1:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '()))
 
-(define (ML1:BinOpTerm p e1 e2)
+(define (EvalML1:BinOpTerm p e1 e2)
   `(,e1 "\\," ,p "\\," ,e2))
 
-(define (ML1:IfTerm e1 e2 e3)
+(define (EvalML1:IfTerm e1 e2 e3)
   `("\\mbox{if }" ,e1 "\\mbox{ then }" ,e2 "\\mbox{ else }" ,e3))
 
-(define (ML1:PlusTerm) '+)
-(define (ML1:MinusTerm) '-)
-(define (ML1:MultTerm) '*)
-(define (ML1:LtTerm) '<)
+(define (EvalML1:PlusTerm) '+)
+(define (EvalML1:MinusTerm) '-)
+(define (EvalML1:MultTerm) '*)
+(define (EvalML1:LtTerm) '<)
 
-(define (ML1:EvalTo e v)
+(define (EvalML1:EvalTo e v)
   `(,e "\\Downarrow" ,v))
 
-(define (ML1:AppBOp p v1 v2 v3)
+(define (EvalML1:AppBOp p v1 v2 v3)
   (let ((p (cadr (assq p '((+ "\\mbox{ plus }")
 			   (- "\\mbox{ minus }")
 			   (* "\\mbox{ times }")
 			   (< "\\mbox{ less than }"))))))
     `(,v1 ,p ,v2 "\\mbox{ is }" ,v3)))
 
-;; ContML1
-(define ContML1:mv ML1:mv)
+;; EvalML1Err
+(define EvalML1Err:mv EvalML1:mv)
 
-(define ContML1:BinOpTerm ML1:BinOpTerm)
-(define ContML1:IfTerm ML1:IfTerm)
+(define EvalML1Err:BinOpTerm EvalML1:BinOpTerm)
+
+(define EvalML1Err:IfTerm EvalML1:IfTerm)
+
+(define EvalML1Err:PlusTerm EvalML1:PlusTerm)
+(define EvalML1Err:MinusTerm EvalML1:MinusTerm)
+(define EvalML1Err:MultTerm EvalML1:MultTerm)
+(define EvalML1Err:LtTerm EvalML1:LtTerm)
+
+(define EvalML1Err:ErrorTerm "\\mbox{ \textbf{error} }")
+
+(define EvalML1Err:EvalTo EvalML1:EvalTo)
+(define EvalML1Err:AppBOp EvalML1:AppBOp)
+
+
+;; ContML1
+(define ContML1:mv EvalML1:mv)
+
+(define ContML1:BinOpTerm EvalML1:BinOpTerm)
+(define ContML1:IfTerm EvalML1:IfTerm)
 
 (define (ContML1:RetKTerm) '("\\mbox{_}"))
 (define (ContML1:EvalRKTerm e op k)
-  `("\\{" ,@(ML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
+  `("\\{" ,@(EvalML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
 (define (ContML1:AppOpKTerm v op k)
-  `("\\{" ,@(ML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
+  `("\\{" ,@(EvalML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
 (define (ContML1:BranchKTerm e1 e2 k)
   `("\\{" "\\mbox{if _ then }" ,e1 "\\mbox{ else }" ,e2 "\\} \\gg" ,k))
 
-(define ContML1:PlusTerm ML1:PlusTerm)
-(define ContML1:MinusTerm ML1:MinusTerm)
-(define ContML1:MultTerm ML1:MultTerm)
-(define ContML1:LtTerm ML1:LtTerm)
+(define ContML1:PlusTerm EvalML1:PlusTerm)
+(define ContML1:MinusTerm EvalML1:MinusTerm)
+(define ContML1:MultTerm EvalML1:MultTerm)
+(define ContML1:LtTerm EvalML1:LtTerm)
 
 (define (ContML1:EvalTo k e v)
   `(,e " \\gg " ,k "\\Downarrow" ,v))
-(define ContML1:AppBOp ML1:AppBOp)
+(define ContML1:AppBOp EvalML1:AppBOp)
 (define (ContML1:AppK k v1 v2)
   `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
 
-;; ML2
-(define (ML2:mv base . suffix)
+;; EvalML2
+(define (EvalML2:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}"))))
 
-(define (ML2:EmptyTerm) "\\cdot")
+(define (EvalML2:EmptyTerm) "\\cdot")
 
-(define (ML2:BindTerm env x v)
+(define (EvalML2:BindTerm env x v)
   (if (equal? env "\\cdot")
       `(,x "=" ,v)
       `(,env "," ,x "=" ,v)))
 
-(define ML2:BinOpTerm ML1:BinOpTerm)
-(define ML2:IfTerm ML1:IfTerm)
+(define EvalML2:BinOpTerm EvalML1:BinOpTerm)
+(define EvalML2:IfTerm EvalML1:IfTerm)
 
-(define (ML2:LetTerm x e1 e2)
+(define (EvalML2:LetTerm x e1 e2)
   `("\\mbox{let }" ,x " = " ,e1 "\\mbox{ in }" ,e2))
 
-(define ML2:PlusTerm ML1:PlusTerm)
-(define ML2:MinusTerm ML1:MinusTerm)
-(define ML2:MultTerm ML1:MultTerm)
-(define ML2:LtTerm ML1:LtTerm)
+(define EvalML2:PlusTerm EvalML1:PlusTerm)
+(define EvalML2:MinusTerm EvalML1:MinusTerm)
+(define EvalML2:MultTerm EvalML1:MultTerm)
+(define EvalML2:LtTerm EvalML1:LtTerm)
 
-(define (ML2:EvalTo env e v)
-  `(,env "\\vdash" ,@(ML1:EvalTo e v)))
+(define (EvalML2:EvalTo env e v)
+  `(,env "\\vdash" ,@(EvalML1:EvalTo e v)))
 
-(define ML2:AppBOp ML1:AppBOp)
+(define EvalML2:AppBOp EvalML1:AppBOp)
 
-;; ML3
-(define ML3:mv ML2:mv)
+;; EvalML3
+(define EvalML3:mv EvalML2:mv)
 
-(define (ML3:FunTerm env x e)
+(define (EvalML3:FunTerm env x e)
   `("\\mbox{(}" ,env "\\mbox{)[fun }" ,x "\\rightarrow" ,e "\\mbox{]}"))
 
-(define ML3:EmptyTerm ML2:EmptyTerm)
-(define ML3:BindTerm ML2:BindTerm)
-(define ML3:BinOpTerm ML2:BinOpTerm)
-(define ML3:IfTerm ML2:IfTerm)
-(define ML3:LetTerm ML2:LetTerm)
+(define EvalML3:EmptyTerm EvalML2:EmptyTerm)
+(define EvalML3:BindTerm EvalML2:BindTerm)
+(define EvalML3:BinOpTerm EvalML2:BinOpTerm)
+(define EvalML3:IfTerm EvalML2:IfTerm)
+(define EvalML3:LetTerm EvalML2:LetTerm)
 
-(define (ML3:AbsTerm x e)
+(define (EvalML3:AbsTerm x e)
   `("\\mbox{fun }" ,x "\\rightarrow" ,e))
 
-(define (ML3:AppTerm e1 e2)
+(define (EvalML3:AppTerm e1 e2)
   `(,e1 "\\;" ,e2))
 
-(define ML3:PlusTerm ML2:PlusTerm)
-(define ML3:MinusTerm ML2:MinusTerm)
-(define ML3:MultTerm ML2:MultTerm)
-(define ML3:LtTerm ML2:LtTerm)
+(define EvalML3:PlusTerm EvalML2:PlusTerm)
+(define EvalML3:MinusTerm EvalML2:MinusTerm)
+(define EvalML3:MultTerm EvalML2:MultTerm)
+(define EvalML3:LtTerm EvalML2:LtTerm)
 
-(define ML3:EvalTo ML2:EvalTo)
+(define EvalML3:EvalTo EvalML2:EvalTo)
 
-(define ML3:AppBOp ML2:AppBOp)
+(define EvalML3:AppBOp EvalML2:AppBOp)
 
-;; ML4
-(define ML4:mv ML3:mv)
+;; EvalML4
+(define EvalML4:mv EvalML3:mv)
 
-(define ML4:FunTerm ML3:FunTerm)
-(define (ML4:RecTerm env x y e)
+(define EvalML4:FunTerm EvalML3:FunTerm)
+(define (EvalML4:RecTerm env x y e)
   `("\\mbox{(}" ,env 
     "\\mbox{)[rec }" ,x " = \\mbox{fun }" ,y "\\rightarrow" ,e "\\mbox{]}"))
 
-(define ML4:EmptyTerm ML3:EmptyTerm)
-(define ML4:BindTerm ML3:BindTerm)
-(define ML4:BinOpTerm ML3:BinOpTerm)
-(define ML4:IfTerm ML3:IfTerm)
-(define ML4:LetTerm ML3:LetTerm)
-(define ML4:AbsTerm ML3:AbsTerm)
-(define ML4:AppTerm ML3:AppTerm)
+(define EvalML4:EmptyTerm EvalML3:EmptyTerm)
+(define EvalML4:BindTerm EvalML3:BindTerm)
+(define EvalML4:BinOpTerm EvalML3:BinOpTerm)
+(define EvalML4:IfTerm EvalML3:IfTerm)
+(define EvalML4:LetTerm EvalML3:LetTerm)
+(define EvalML4:AbsTerm EvalML3:AbsTerm)
+(define EvalML4:AppTerm EvalML3:AppTerm)
 
-(define (ML4:LetRecTerm x y e1 e2)
+(define (EvalML4:LetRecTerm x y e1 e2)
     `("\\mbox{let rec }" ,x " = \\mbox{fun }" ,y " \\rightarrow " ,e1 "\\mbox{ in }" ,e2))
 
-(define ML4:PlusTerm ML3:PlusTerm)
-(define ML4:MinusTerm ML3:MinusTerm)
-(define ML4:MultTerm ML3:MultTerm)
-(define ML4:LtTerm ML3:LtTerm)
+(define EvalML4:PlusTerm EvalML3:PlusTerm)
+(define EvalML4:MinusTerm EvalML3:MinusTerm)
+(define EvalML4:MultTerm EvalML3:MultTerm)
+(define EvalML4:LtTerm EvalML3:LtTerm)
 
-(define ML4:EvalTo ML3:EvalTo)
+(define EvalML4:EvalTo EvalML3:EvalTo)
 
-(define ML4:AppBOp ML3:AppBOp)
+(define EvalML4:AppBOp EvalML3:AppBOp)
 
 ;; ContML4
-(define ContML4:mv ML4:mv)
+(define ContML4:mv EvalML4:mv)
 
-(define ContML4:FunTerm ML4:FunTerm)
-(define ContML4:RecTerm ML4:RecTerm)
+(define ContML4:FunTerm EvalML4:FunTerm)
+(define ContML4:RecTerm EvalML4:RecTerm)
 (define (ContML4:ContFTerm k)
   `("[" ,k "]"))
 
-(define ContML4:EmptyTerm ML4:EmptyTerm)
-(define ContML4:BindTerm ML4:BindTerm)
-(define ContML4:BinOpTerm ML4:BinOpTerm)
-(define ContML4:IfTerm ML4:IfTerm)
-(define ContML4:LetTerm ML4:LetTerm)
-(define ContML4:AbsTerm ML4:AbsTerm)
-(define ContML4:AppTerm ML4:AppTerm)
-(define ContML4:LetRecTerm ML4:LetRecTerm)
+(define ContML4:EmptyTerm EvalML4:EmptyTerm)
+(define ContML4:BindTerm EvalML4:BindTerm)
+(define ContML4:BinOpTerm EvalML4:BinOpTerm)
+(define ContML4:IfTerm EvalML4:IfTerm)
+(define ContML4:LetTerm EvalML4:LetTerm)
+(define ContML4:AbsTerm EvalML4:AbsTerm)
+(define ContML4:AppTerm EvalML4:AppTerm)
+(define ContML4:LetRecTerm EvalML4:LetRecTerm)
 (define (ContML4:LetCcTerm x e)
   `("\\mbox{letcc }" ,x "\\mbox{ in }" ,e))
 
 (define (ContML4:RetKTerm) '("\\mbox{_}"))
 (define (ContML4:EvalRKTerm env e op k)
-  `("\\{" ,env "\\vdash " ,@(ML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
+  `("\\{" ,env "\\vdash " ,@(EvalML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
 (define (ContML4:AppOpKTerm v op k)
-  `("\\{" ,@(ML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
+  `("\\{" ,@(EvalML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
 (define (ContML4:BranchKTerm env e1 e2 k)
   `("\\{" ,env "\\vdash \\mbox{if _ then }" ,e1 "\\mbox{ else }" ,e2 "\\} \\gg" ,k))
 (define (ContML4:LetBodyKTerm env x e k)
@@ -335,25 +354,25 @@ span.rname { font-variant: small-caps; }
 (define (ContML4:AppFunKTerm v k)
   `("\\{" ,v "\\,\\mbox{_}\\} \\gg " ,k))
 
-(define ContML4:PlusTerm ML4:PlusTerm)
-(define ContML4:MinusTerm ML4:MinusTerm)
-(define ContML4:MultTerm ML4:MultTerm)
-(define ContML4:LtTerm ML4:LtTerm)
+(define ContML4:PlusTerm EvalML4:PlusTerm)
+(define ContML4:MinusTerm EvalML4:MinusTerm)
+(define ContML4:MultTerm EvalML4:MultTerm)
+(define ContML4:LtTerm EvalML4:LtTerm)
 
 (define (ContML4:EvalTo env k e v)
   `(,env "\\vdash" ,e " \\gg " ,k "\\Downarrow" ,v))
-(define ContML4:AppBOp ML4:AppBOp)
+(define ContML4:AppBOp EvalML4:AppBOp)
 (define (ContML4:AppK k v1 v2)
   `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
 
 ;; RefML4
-(define RefML4:mv ML4:mv)
+(define RefML4:mv EvalML4:mv)
 
-(define RefML4:FunTerm ML4:FunTerm)
-(define RefML4:RecTerm ML4:RecTerm)
+(define RefML4:FunTerm EvalML4:FunTerm)
+(define RefML4:RecTerm EvalML4:RecTerm)
 
-(define RefML4:EmptyTerm ML4:EmptyTerm)
-(define RefML4:BindTerm ML4:BindTerm)
+(define RefML4:EmptyTerm EvalML4:EmptyTerm)
+(define RefML4:BindTerm EvalML4:BindTerm)
 
 (define (RefML4:EmptySTerm) "\\cdot")
 
@@ -362,12 +381,12 @@ span.rname { font-variant: small-caps; }
       `(,x "=" ,v)
       `(,env ", " ,x "=" ,v)))
 
-(define RefML4:BinOpTerm ML4:BinOpTerm)
-(define RefML4:IfTerm ML4:IfTerm)
-(define RefML4:LetTerm ML4:LetTerm)
-(define RefML4:AbsTerm ML4:AbsTerm)
-(define RefML4:AppTerm ML4:AppTerm)
-(define RefML4:LetRecTerm ML4:LetRecTerm)
+(define RefML4:BinOpTerm EvalML4:BinOpTerm)
+(define RefML4:IfTerm EvalML4:IfTerm)
+(define RefML4:LetTerm EvalML4:LetTerm)
+(define RefML4:AbsTerm EvalML4:AbsTerm)
+(define RefML4:AppTerm EvalML4:AppTerm)
+(define RefML4:LetRecTerm EvalML4:LetRecTerm)
 (define (RefML4:NewRefTerm e)
   `("ref " ,e))
 (define (RefML4:DerefTerm e)
@@ -375,99 +394,99 @@ span.rname { font-variant: small-caps; }
 (define (RefML4:AssignTerm e1 e2)
   `(,e1 " := " ,e2))
 
-(define RefML4:PlusTerm ML4:PlusTerm)
-(define RefML4:MinusTerm ML4:MinusTerm)
-(define RefML4:MultTerm ML4:MultTerm)
-(define RefML4:LtTerm ML4:LtTerm)
+(define RefML4:PlusTerm EvalML4:PlusTerm)
+(define RefML4:MinusTerm EvalML4:MinusTerm)
+(define RefML4:MultTerm EvalML4:MultTerm)
+(define RefML4:LtTerm EvalML4:LtTerm)
 
 (define (RefML4:EvalTo s1 env e v s2)
-  `(,s1 " / " ,@(ML4:EvalTo env e v) " / " ,s2))
+  `(,s1 " / " ,@(EvalML4:EvalTo env e v) " / " ,s2))
 
-(define RefML4:AppBOp ML4:AppBOp)
+(define RefML4:AppBOp EvalML4:AppBOp)
 
-;; ML5
-(define ML5:mv ML4:mv)
+;; EvalML5
+(define EvalML5:mv EvalML4:mv)
 
-(define ML5:FunTerm ML4:FunTerm)
-(define ML5:RecTerm ML4:RecTerm)
-(define (ML5:NilVTerm) "[]")
-(define (ML5:ConsVTerm v1 v2) 
+(define EvalML5:FunTerm EvalML4:FunTerm)
+(define EvalML5:RecTerm EvalML4:RecTerm)
+(define (EvalML5:NilVTerm) "[]")
+(define (EvalML5:ConsVTerm v1 v2) 
   `(,v1 "\\mbox{ :: }" ,v2))
 
-(define ML5:EmptyTerm ML4:EmptyTerm)
-(define ML5:BindTerm ML4:BindTerm)
-(define ML5:BinOpTerm ML4:BinOpTerm)
-(define ML5:IfTerm ML4:IfTerm)
-(define ML5:LetTerm ML4:LetTerm)
-(define ML5:AbsTerm ML4:AbsTerm)
-(define ML5:AppTerm ML4:AppTerm)
-(define ML5:LetRecTerm ML4:LetRecTerm)
+(define EvalML5:EmptyTerm EvalML4:EmptyTerm)
+(define EvalML5:BindTerm EvalML4:BindTerm)
+(define EvalML5:BinOpTerm EvalML4:BinOpTerm)
+(define EvalML5:IfTerm EvalML4:IfTerm)
+(define EvalML5:LetTerm EvalML4:LetTerm)
+(define EvalML5:AbsTerm EvalML4:AbsTerm)
+(define EvalML5:AppTerm EvalML4:AppTerm)
+(define EvalML5:LetRecTerm EvalML4:LetRecTerm)
 
-(define (ML5:NilTerm) "[]")
+(define (EvalML5:NilTerm) "[]")
 
-(define (ML5:ConsTerm v1 v2) 
+(define (EvalML5:ConsTerm v1 v2) 
   `(,v1 "\\mbox{ :: }" ,v2))
 
-(define (ML5:MatchTerm e1 e2 x y e)
+(define (EvalML5:MatchTerm e1 e2 x y e)
   `("\\mbox{match }" ,e1 "\\mbox{ with } "
     "   [] \\rightarrow " ,e2 
     " \\mid " ,x "\\mbox{ :: } " ,y " \\rightarrow " ,e))
 
-(define ML5:PlusTerm ML4:PlusTerm)
-(define ML5:MinusTerm ML4:MinusTerm)
-(define ML5:MultTerm ML4:MultTerm)
-(define ML5:LtTerm ML4:LtTerm)
+(define EvalML5:PlusTerm EvalML4:PlusTerm)
+(define EvalML5:MinusTerm EvalML4:MinusTerm)
+(define EvalML5:MultTerm EvalML4:MultTerm)
+(define EvalML5:LtTerm EvalML4:LtTerm)
 
-(define ML5:EvalTo ML4:EvalTo)
+(define EvalML5:EvalTo EvalML4:EvalTo)
 
-(define ML5:AppBOp ML4:AppBOp)
+(define EvalML5:AppBOp EvalML4:AppBOp)
 
-;; ML6
-(define ML6:mv ML5:mv)
+;; EvalML6
+(define EvalML6:mv EvalML5:mv)
 
-(define ML6:FunTerm ML5:FunTerm)
-(define ML6:RecTerm ML5:RecTerm)
-(define ML6:NilVTerm ML5:NilVTerm)
-(define ML6:ConsVTerm ML5:ConsVTerm)
+(define EvalML6:FunTerm EvalML5:FunTerm)
+(define EvalML6:RecTerm EvalML5:RecTerm)
+(define EvalML6:NilVTerm EvalML5:NilVTerm)
+(define EvalML6:ConsVTerm EvalML5:ConsVTerm)
 
-(define ML6:EmptyTerm ML5:EmptyTerm)
-(define ML6:BindTerm ML5:BindTerm)
+(define EvalML6:EmptyTerm EvalML5:EmptyTerm)
+(define EvalML6:BindTerm EvalML5:BindTerm)
 
-(define (ML6:NilPTerm) "[]")
-(define (ML6:ConsPTerm p1 p2)
+(define (EvalML6:NilPTerm) "[]")
+(define (EvalML6:ConsPTerm p1 p2)
   `(,p1 "\\mbox{ :: }" ,p2))
-(define (ML6:WildPTerm) "\\mbox{_}") ;; not legal TeX but works for LaTeXMathML
+(define (EvalML6:WildPTerm) "\\mbox{_}") ;; not legal TeX but works for LaTeXMathML
 
-(define (ML6:FailTerm) 'fail)
+(define (EvalML6:FailTerm) 'fail)
 
-(define (ML6:EmptyCTerm) 'emptyclause)
-(define (ML6:AddCTerm p e c)
+(define (EvalML6:EmptyCTerm) 'emptyclause)
+(define (EvalML6:AddCTerm p e c)
   (if (eq? c 'emptyclause)
       `(,p "\\rightarrow" ,e)
       `(,p "\\rightarrow" ,e "\\mid" ,c)))
 
-(define ML6:BinOpTerm ML5:BinOpTerm)
-(define ML6:IfTerm ML5:IfTerm)
-(define ML6:LetTerm ML5:LetTerm)
-(define ML6:AbsTerm ML5:AbsTerm)
-(define ML6:AppTerm ML5:AppTerm)
-(define ML6:LetRecTerm ML5:LetRecTerm)
-(define ML6:NilTerm ML5:NilTerm)
-(define ML6:ConsTerm ML5:ConsTerm)
+(define EvalML6:BinOpTerm EvalML5:BinOpTerm)
+(define EvalML6:IfTerm EvalML5:IfTerm)
+(define EvalML6:LetTerm EvalML5:LetTerm)
+(define EvalML6:AbsTerm EvalML5:AbsTerm)
+(define EvalML6:AppTerm EvalML5:AppTerm)
+(define EvalML6:LetRecTerm EvalML5:LetRecTerm)
+(define EvalML6:NilTerm EvalML5:NilTerm)
+(define EvalML6:ConsTerm EvalML5:ConsTerm)
 
-(define (ML6:MatchTerm e c)
+(define (EvalML6:MatchTerm e c)
   `("\\mbox{match }" ,e "\\mbox{ with } " ,c))
 
-(define ML6:PlusTerm ML5:PlusTerm)
-(define ML6:MinusTerm ML5:MinusTerm)
-(define ML6:MultTerm ML5:MultTerm)
-(define ML6:LtTerm ML5:LtTerm)
+(define EvalML6:PlusTerm EvalML5:PlusTerm)
+(define EvalML6:MinusTerm EvalML5:MinusTerm)
+(define EvalML6:MultTerm EvalML5:MultTerm)
+(define EvalML6:LtTerm EvalML5:LtTerm)
 
-(define ML6:EvalTo ML5:EvalTo)
+(define EvalML6:EvalTo EvalML5:EvalTo)
 
-(define ML6:AppBOp ML5:AppBOp)
+(define EvalML6:AppBOp EvalML5:AppBOp)
 
-(define (ML6:Matches v p res)
+(define (EvalML6:Matches v p res)
   (cond ((eq? res 'fail)
 	 `(,v "\\mbox{ doesn't match }" ,p))
 	((equal? res "\\cdot")
@@ -475,7 +494,7 @@ span.rname { font-variant: small-caps; }
 	(else
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
 
-;; Typing ML2
+;; Typing EvalML2
 
 (define (TypingML2:TyBoolTerm) "bool")
 (define (TypingML2:TyIntTerm) "int")
@@ -491,14 +510,14 @@ span.rname { font-variant: small-caps; }
       `(,x ":" ,t)
       `(,env "," ,x ":" ,t)))
 
-(define TypingML2:BinOpTerm ML2:BinOpTerm)
-(define TypingML2:IfTerm ML2:IfTerm)
-(define TypingML2:LetTerm ML2:LetTerm)
+(define TypingML2:BinOpTerm EvalML2:BinOpTerm)
+(define TypingML2:IfTerm EvalML2:IfTerm)
+(define TypingML2:LetTerm EvalML2:LetTerm)
 
-(define TypingML2:PlusTerm ML2:PlusTerm)
-(define TypingML2:MinusTerm ML2:MinusTerm)
-(define TypingML2:MultTerm ML2:MultTerm)
-(define TypingML2:LtTerm ML2:LtTerm)
+(define TypingML2:PlusTerm EvalML2:PlusTerm)
+(define TypingML2:MinusTerm EvalML2:MinusTerm)
+(define TypingML2:MultTerm EvalML2:MultTerm)
+(define TypingML2:LtTerm EvalML2:LtTerm)
 
 (define (TypingML2:Typing env e t)
   `(,env "\\vdash" ,e ":" ,t))
@@ -524,9 +543,9 @@ span.rname { font-variant: small-caps; }
 (define TypingML4:IfTerm TypingML2:IfTerm)
 (define TypingML4:LetTerm TypingML2:LetTerm)
 
-(define TypingML4:AbsTerm ML4:AbsTerm)
-(define TypingML4:AppTerm ML4:AppTerm)
-(define TypingML4:LetRecTerm ML4:LetRecTerm)
+(define TypingML4:AbsTerm EvalML4:AbsTerm)
+(define TypingML4:AppTerm EvalML4:AppTerm)
+(define TypingML4:LetRecTerm EvalML4:LetRecTerm)
 
 (define TypingML4:PlusTerm TypingML2:PlusTerm)
 (define TypingML4:MinusTerm TypingML2:MinusTerm)
@@ -557,9 +576,9 @@ span.rname { font-variant: small-caps; }
 (define TypingML5:AbsTerm TypingML4:AbsTerm)
 (define TypingML5:AppTerm TypingML4:AppTerm)
 (define TypingML5:LetRecTerm TypingML4:LetRecTerm)
-(define TypingML5:NilTerm ML5:NilTerm)
-(define TypingML5:ConsTerm ML5:ConsTerm)
-(define TypingML5:MatchTerm ML5:MatchTerm)
+(define TypingML5:NilTerm EvalML5:NilTerm)
+(define TypingML5:ConsTerm EvalML5:ConsTerm)
+(define TypingML5:MatchTerm EvalML5:MatchTerm)
 
 (define TypingML5:PlusTerm TypingML4:PlusTerm)
 (define TypingML5:MinusTerm TypingML4:MinusTerm)

@@ -1,3 +1,5 @@
+;-*-Scheme-*-
+
 (use text.html-lite)
 (use srfi-13)
 

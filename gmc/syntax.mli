@@ -45,7 +45,7 @@ module Env :
     val lookup_cat : t -> id -> id
     val lookup_tcon : t -> id -> id list * id
     val lookup_jcon : t -> id -> id list * id list
-    val is_subcat : t -> id -> id -> bool
+    val is_subcat : t -> id -> id -> id list (* bool *)
     val of_body : t -> id -> term list -> t
     val of_jdg : t -> (judgment * int) list -> t
     val of_game : game -> t

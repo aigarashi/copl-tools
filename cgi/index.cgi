@@ -1,4 +1,5 @@
 #! /usr/bin/gosh
+;-*-Scheme-*-
 
 (use www.cgi)
 (use text.html-lite)

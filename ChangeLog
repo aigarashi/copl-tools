@@ -1,5 +1,12 @@
 2009-10-23  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
+	* checker/EvalML1Err: New game, which implements ML1 + errors (as
+	a result of evaluatinng expressions.
+
+	* gmc/emit.ml, gmc/syntax.ml, gmc/syntax.mli: Coercion can be
+	indirect, that is, there can be one or more intermediate
+	categories between given two categories.
+
 	* checker: Renaming of games MLx to EvalMLx.
 	
 	* cgi/process.cgi: reverted yesterday's change.

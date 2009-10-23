@@ -128,11 +128,36 @@ struct
 	JCon (incat, outcat) -> (incat, outcat)
       | _ -> raise Not_found
 
-  let rec is_subcat env cat1 cat2 = match env with
-      [] -> false
-    | (c, IsA c') :: rest when c = cat1 && c' = cat2 -> true
-    | _ :: rest -> is_subcat rest cat1 cat2
-	
+  let rec collect_proper_subcats env cat = match env with
+      [] -> []
+    | (c, IsA c') :: rest when c' = cat -> c :: collect_proper_subcats rest cat
+    | _ :: rest -> collect_proper_subcats rest cat
+
+  let rec is_subcat env cat1 cat2 = 
+    (* returns the list (path) of intermediate categories (cat1 and
+       cat2 inclusive) between cat1 and cat2 in the descending
+       order *)
+    if cat1 = cat2 then [cat1]
+    else
+      let proper_subcats = collect_proper_subcats env cat2 in
+	match proper_subcats with
+	    [] -> (* there is no sub categories of cat2 *) []
+	  | _ -> 
+	      if List.mem cat1 proper_subcats then [cat2; cat1]
+	      else
+		let rec aux = function 
+		    (* returns the first path found *)
+		    [] -> []
+		  | l :: _ -> cat2 :: l
+		  | [] :: rest -> aux rest 
+		in aux (List.map (fun c -> is_subcat env cat1 c) proper_subcats)
+
+(*
+    let rec is_subcat env cat1 cat2 = match env with
+	[] -> false
+      | (c, IsA c') :: rest when c = cat1 && c' = cat2 -> true
+      | _ :: rest -> is_subcat rest cat1 cat2
+*)  
   let rec of_body env cat = function
       [] -> env
     | Var id :: rest -> 
@@ -142,10 +167,10 @@ struct
 	let argcats = 
 	  List.map 
 	    (fun (Var x) -> 
-	       let MVar cat = 
-		 try List.assoc x env with 
-		  Not_found -> failwith (x ^ " not found") 
-	       in cat) vars 
+	      let MVar cat = 
+		try List.assoc x env with 
+		    Not_found -> failwith (x ^ " not found") 
+	      in cat) vars 
 	in of_body ((id, TCon (argcats, cat)) :: env) cat rest
 
   let rec of_jdg env = function

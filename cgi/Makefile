@@ -3,7 +3,8 @@ GMC=$(GMCDIR)/gmc
 RULE2TEX=./rules2TeX.scm
 
 GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp
-#	ML1 ML2 ML3 ML4 ContML1 ContML4 RefML4 ML5 ML6 \
+	EvalML1 EvalML2 EvalML3 EvalML4 ContML1 ContML4 RefML4 EvalML5 EvalML6 \
+	EvalML1Err
 #	TypingML2 TypingML4 TypingML5 PolyML4 PolyML5
 
 html: $(addsuffix .html,$(GAMES))
