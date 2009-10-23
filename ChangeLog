@@ -1,3 +1,15 @@
+2009-10-23  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/process.cgi: reverted yesterday's change.
+	* checker/main.ml, */parser.mly: 
+	Fixed a bug, which accepts the empty string (or
+	strings consisting of only space characters) as a right one!
+
+	Now, each parser should accepts a toplevel EOF but raise the
+	exception End_of_file in the action.
+	
+        * checker/mySupport.ml: Symbolic link to ../gmc/mySupport.ml
+	
 2009-10-22  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/process.cgi (display-result): Fixed a bug, which accepts the

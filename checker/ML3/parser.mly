@@ -58,7 +58,7 @@ let tbl = Hashtbl.create 1024
 
 toplevel: 
     MacroDefs Derivation { $2 }
-  | EOF { exit 0 }
+  | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
 

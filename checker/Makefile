@@ -11,12 +11,12 @@ OCAMLLEX=ocamllex
 GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
 	ML1 ML2 ML3 ML4 ContML1 ContML4 RefML4 ML5 ML6 TypingML2 TypingML4 TypingML5 PolyML4 PolyML5
 
-INCLUDES=$(foreach game,$(GAMES),-I $(game)) -I $(GMCDIR)
+INCLUDES=$(foreach game,$(GAMES),-I $(game)) # -I $(GMCDIR)
 
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
-OBJS=$(GMCDIR)/mySupport.cmx derivation.cmx lexer.cmx \
+OBJS=mySupport.cmx derivation.cmx lexer.cmx \
 		Nat/nat.cmx \
 		CompareNat1/compareNat1.cmx \
 		CompareNat2/compareNat2.cmx \

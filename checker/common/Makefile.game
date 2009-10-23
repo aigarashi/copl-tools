@@ -6,13 +6,13 @@ OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES=-I . -I .. -I $(GMCDIR)    # all relevant -I options here
+INCLUDES=-I . -I .. # -I $(GMCDIR)    # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 
 # The list of object files for prog1
-# OBJS=$(GMCDIR)/mySupport.cmx ../common/derivation.cmx ../common/lexer.cmx \
+# OBJS=../mySupport.cmx ../common/derivation.cmx ../common/lexer.cmx \
 #      core.cmx pp.cmx parser.cmx keywords.cmx main.cmx
 
 OBJS=core.cmx pp.cmx parser.cmx keywords.cmx macroVars.cmx link.cmx
