@@ -46,13 +46,6 @@
     (html:input :type "hidden" :name "command" :value "login")
     (html:input :type "submit" :value "ログイン"))))
   
-(define-constant gamelist
-  '("Nat" "CompareNat1" "CompareNat2" "CompareNat3" "EvalNatExp" 
-    "ReduceNatExp"
-    ;;    "ML1" "ML2" "ML3" "ML4" "ML5" "ML6"
-    ;;    "TypingML5" "PolyML5"
-    ))
-
 (define (display-sandbox msg)
   (list
    (html:form 
@@ -60,7 +53,7 @@
     (html:p msg)
     (html:p "導出システム名を選んでください: "
 	    (html:select :name "game"
-			 (map (lambda (g) (html:option :value g g)) gamelist))
+			 (map (lambda (g) (html:option :value g g)) *gamelist*))
 	    (html:input :type "submit" :value "送信"))
     (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off"
 		   "ここに導出を書いてください")
