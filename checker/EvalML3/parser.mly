@@ -41,6 +41,9 @@ let tbl = Hashtbl.create 1024
 /* ML3 */
 %token FUN RARROW
 
+/* ML4 */
+%token REC
+
 /******** experimental feature for macro defitinions *********/
 %token DEF EQ
 %token <string> MVEXP
@@ -142,6 +145,7 @@ Exp:
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
+  | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
   | FUN LCID RARROW Exp { Abs(Var $2, $4) }
 
 Exp1:
@@ -192,6 +196,8 @@ Val:
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
+  | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
+      { Rec($2, Var $6, Var $9, $11) }
 
 /******** experimental feature for macro defintions *********/
 

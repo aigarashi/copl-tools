@@ -41,5 +41,7 @@ let v = [
   ("->", RARROW);
   ("fun", FUN);
 
+  (* ML4 expressions *)
+  ("rec", REC);
 ] 
 
