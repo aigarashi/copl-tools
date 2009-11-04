@@ -1,3 +1,9 @@
+2009-11-04  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/EvalML3: integrates recursive functions from ML4.  So,
+	  ML4 should be removed and ML5 and ML6 will be called ML4 and
+	  ML5, respectively, from now on.
+
 2009-10-23  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/EvalML1Err: New game, which implements ML1 + errors (as

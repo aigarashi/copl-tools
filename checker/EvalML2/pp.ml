@@ -122,9 +122,9 @@ let tex_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "\\%sEvalTo{%a}{%a}{%a}" g tex_env env tex_exp e tex_val v
   | AppBOp (p, v1, v2, v3) -> 
-      let op = match p with 
-	  Plus -> "\\MLiiPlusTerm" | Minus -> "\\MLiiMinusTerm"
-	| Mult -> "\\MLiiMultTerm" | Lt -> "\\MLiiLTTerm" 
+      let op = "\\" ^ g ^ match p with 
+	  Plus -> "PlusTerm" | Minus -> "MinusTerm"
+	| Mult -> "MultTerm" | Lt -> "LTTerm" 
       in pr ppf "\\%sAppBOp{%a}{%s}{%a}{%a}" g
 	   tex_val v1 op tex_val v2 tex_val v3
     

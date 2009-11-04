@@ -31,7 +31,8 @@
      "&" 'prefix))))
 
 (define (check-passwd name passwd)
-  (let ((x (assoc name *passwd*)))
+  (let ((x (or (lookupdb name 'passwd) ;; first look up the user's db file
+	       (assoc name *passwd*)))
     (and (pair? x) 
 	 (equal? (sys-crypt passwd (cdr x)) 
 		 (cdr x)))))
@@ -63,14 +64,8 @@
   document.sandbox.derivation.select();
 //-->")))
 
-(define (read-userdb name)
-  (call-with-input-file (dbfile name)
-    (lambda (in) (if (port? in) (read in) *empty-userdb*))
-    :if-does-not-exist #f))
-
 (define (display-menu name)
-  (let* ((userinfo (read-userdb name))
-	 (solved (cdr (assoc 'solved userinfo)))
+  (let* ((solved (cdr (lookupdb name 'solved)))
 	 (no-q (how-many-q)))
     (list
      (html:h1 "ようこそ " name "さん!")
