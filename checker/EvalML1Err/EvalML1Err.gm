@@ -100,3 +100,16 @@ E-LtErrorL:	EvalTo(BinOp(Lt, e1, e2), Error) :-
 E-LtErrorR:	EvalTo(BinOp(Lt, e1, e2), Error) :-
 		EvalTo(e2, Error);
 
+E-IfInt:        EvalTo(If(e1, e2, e3), Error) :-
+                EvalTo(e1, i);
+
+E-IfError:     EvalTo(If(e1, e2, e3), Error) :-
+                EvalTo(e1, Error);
+
+E-IfTError:     EvalTo(If(e1, e2, e3), Error) :-
+                EvalTo(e1, true),
+                EvalTo(e2, Error);
+
+E-IfFError:     EvalTo(If(e1, e2, e3), Error) :-
+                EvalTo(e1, false),
+		EvalTo(e3, Error);

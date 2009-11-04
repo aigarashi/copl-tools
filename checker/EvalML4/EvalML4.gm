@@ -1,10 +1,8 @@
 (*
   ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
   ML2: ML1 + let (´Ä¶­)
-  ML3: ML2 + fun (´Ø¿ôÃê¾Ý¡¦Å¬ÍÑ)
-  ML4: ML3 + let rec (ºÆµ¢´Ø¿ôÄêµÁ)
-  ML5: ML4 + list + match
-  ML6: ML5 + pattern matching
+  ML3: ML2 + fun (´Ø¿ôÃê¾Ý¡¦Å¬ÍÑ) + let rec (ºÆµ¢´Ø¿ôÄêµÁ)
+  ML4: ML3 + list + match
 *)
 
 [Syntax]
@@ -20,12 +18,6 @@ v in Value ::= i | b | Fun(env, x, e) | Rec(env, x, y, e) | NilV | ConsV(v,v)
 env in Env ::= Empty
             |  Bind(env,x,v)
 
-p in Pat ::= x | NilP | ConsP(p,p) | WildP (* wildcard pattern *)
-
-res in Res ::= env | Fail (* result of matching *)
-
-c in Clauses ::= EmptyC | AddC(p,e,c) (* stands for p -> e | c *)
-
 e in Exp ::= i
           | b
           | x
@@ -37,46 +29,16 @@ e in Exp ::= i
           | LetRec(x, y, e, e)  (* let rec x y = e in e *)
 	  | Nil
 	  | Cons(e,e)
-	  | Match(e,c)   (* match e with p1 -> e1 | ... | pn -> en *)
+	  | Match(e,e,x,y,e)   (* match e with [] -> e | x::y -> e *)
 
 op in Prim ::= Plus | Minus | Mult | Lt
-  (* renamed due to conflicts with metavars for patterns *)
 
 [Judgments]
 
-Matches(v, p; res); (* The value v matches p according to assignment env *)
 EvalTo(env, e; v);
 AppBOp(op, v, v; v);
 
 [Rules]
-
-(* pattern matching *)
-M-Var:  Matches(v, x, Bind(Empty,x,v)) :- ;
-M-Nil:  Matches(NilV, NilP, Empty) :- ;
-M-Cons: Matches(ConsV(v1, v2), ConsP(p1, p2), env) :-
-           Matches(v1, p1, env1), Matches(v2, p2, env2),
-            (*`disjoint $env1 $env2` %dom($env1)\cap dom($env2) = \emptyset%,*)
-            `$env = uplus $env1 $env2` %$env = $env1 \uplus $env2%;
-M-Wild: Matches(v, WildP, Empty) :- ;
-
-(*
-NM-IntNil:  Matches(i, NilP, Fail) :- ;
-NM-BoolNil: Matches(b, NilP, Fail) :- ;
-NM-FunNil:  Matches(Fun(env,x,e), NilP, Fail) :- ;
-NM-RecNil:  Matches(Rec(env,x,y,e), NilP, Fail) :- ;
-*)
-NM-ConsNil: Matches(ConsV(v1,v2), NilP, Fail) :- ;
-(*
-NM-IntCons:  Matches(i, ConsP(p1,p2), Fail) :- ;
-NM-BoolCons: Matches(b, ConsP(p1,p2), Fail) :- ;
-NM-FunCons:  Matches(Fun(env,x,e), ConsP(p1,p2), Fail) :- ;
-NM-RecCons:  Matches(Rec(env,x,y,e), ConsP(p1,p2), Fail) :- ;
-*)
-NM-NilCons: Matches(NilV, ConsP(p1,p2), Fail) :- ;
-
-NM-ConsConsL: Matches(ConsV(v1,v2), ConsP(p1,p2), Fail) :- Matches(v1, p1, Fail);
-NM-ConsConsR: Matches(ConsV(v1,v2), ConsP(p1,p2), Fail) :- Matches(v2, p2, Fail);
-
 
 E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
@@ -97,6 +59,7 @@ E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
 *)
 E-Var:  EvalTo(env, x, v) :- ` $v = lookup $env $x` %$env($x) = $v%;
+
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
 		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);
 E-Fun: EvalTo(env, Abs(x, e), Fun(env, x, e)) :- ;
@@ -113,33 +76,16 @@ E-AppRec: EvalTo(env,App(e1, e2), v) :-
          EvalTo(Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v);
 E-Nil: EvalTo(env,Nil,NilV) :- ;
 E-Cons: EvalTo(env,Cons(e1,e2),ConsV(v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
-E-MatchM: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
-	    EvalTo(env,e0,v), Matches(v,p,env1), 
-              `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
-            EvalTo(env2,e,v');
-E-MatchN: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
-	    EvalTo(env,e0,v), Matches(v,p,Fail), EvalTo(env,Match(e0,c),v');
-           
+E-MatchNil: EvalTo(env,Match(e1,e2,x,y,e3),v) :- EvalTo(env,e1,NilV), EvalTo(env,e2,v);
+E-MatchCons: EvalTo(env,Match(e1,e2,x,y,e3),v) :- 
+	     EvalTo(env,e1,ConsV(v1,v2)), EvalTo(Bind(Bind(env,x,v1), y,v2), e3, v);
+
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
 B-Times: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
 B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
-
-let rec in_dom x = function
-     Empty -> false
-   | Bind(env, y, _) -> x = y || in_dom x env
-
-let rec disjoint env1 env2 =
-  match env1 with
-     Empty -> true
-   | Bind(env1, x, _) -> not (in_dom x env2) && disjoint env1 env2
-
-let rec uplus env1 env2 =  (* note that environments are snoc lists *)
-  match env2 with
-     Empty -> env1
-   | Bind(env2, x, v) -> Bind(uplus env1 env2, x, v)
 
 let rec lookup env x =
     match env with 

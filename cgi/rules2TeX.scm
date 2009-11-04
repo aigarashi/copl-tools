@@ -272,6 +272,10 @@ span.rname { font-variant: small-caps; }
 (define (EvalML3:FunTerm env x e)
   `("\\mbox{(}" ,env "\\mbox{)[fun }" ,x "\\rightarrow" ,e "\\mbox{]}"))
 
+(define (EvalML3:RecTerm env x y e)
+  `("\\mbox{(}" ,env 
+    "\\mbox{)[rec }" ,x " = \\mbox{fun }" ,y "\\rightarrow" ,e "\\mbox{]}"))
+
 (define EvalML3:EmptyTerm EvalML2:EmptyTerm)
 (define EvalML3:BindTerm EvalML2:BindTerm)
 (define EvalML3:BinOpTerm EvalML2:BinOpTerm)
@@ -284,6 +288,9 @@ span.rname { font-variant: small-caps; }
 (define (EvalML3:AppTerm e1 e2)
   `(,e1 "\\;" ,e2))
 
+(define (EvalML3:LetRecTerm x y e1 e2)
+    `("\\mbox{let rec }" ,x " = \\mbox{fun }" ,y " \\rightarrow " ,e1 "\\mbox{ in }" ,e2))
+
 (define EvalML3:PlusTerm EvalML2:PlusTerm)
 (define EvalML3:MinusTerm EvalML2:MinusTerm)
 (define EvalML3:MultTerm EvalML2:MultTerm)
@@ -293,35 +300,8 @@ span.rname { font-variant: small-caps; }
 
 (define EvalML3:AppBOp EvalML2:AppBOp)
 
-;; EvalML4
-(define EvalML4:mv EvalML3:mv)
 
-(define EvalML4:FunTerm EvalML3:FunTerm)
-(define (EvalML4:RecTerm env x y e)
-  `("\\mbox{(}" ,env 
-    "\\mbox{)[rec }" ,x " = \\mbox{fun }" ,y "\\rightarrow" ,e "\\mbox{]}"))
-
-(define EvalML4:EmptyTerm EvalML3:EmptyTerm)
-(define EvalML4:BindTerm EvalML3:BindTerm)
-(define EvalML4:BinOpTerm EvalML3:BinOpTerm)
-(define EvalML4:IfTerm EvalML3:IfTerm)
-(define EvalML4:LetTerm EvalML3:LetTerm)
-(define EvalML4:AbsTerm EvalML3:AbsTerm)
-(define EvalML4:AppTerm EvalML3:AppTerm)
-
-(define (EvalML4:LetRecTerm x y e1 e2)
-    `("\\mbox{let rec }" ,x " = \\mbox{fun }" ,y " \\rightarrow " ,e1 "\\mbox{ in }" ,e2))
-
-(define EvalML4:PlusTerm EvalML3:PlusTerm)
-(define EvalML4:MinusTerm EvalML3:MinusTerm)
-(define EvalML4:MultTerm EvalML3:MultTerm)
-(define EvalML4:LtTerm EvalML3:LtTerm)
-
-(define EvalML4:EvalTo EvalML3:EvalTo)
-
-(define EvalML4:AppBOp EvalML3:AppBOp)
-
-;; ContML4
+;; ContML4  -> Should be renamed to EvalContML3
 (define ContML4:mv EvalML4:mv)
 
 (define ContML4:FunTerm EvalML4:FunTerm)
@@ -365,7 +345,7 @@ span.rname { font-variant: small-caps; }
 (define (ContML4:AppK k v1 v2)
   `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
 
-;; RefML4
+;; RefML4  Should be renamed to EvalRefML3
 (define RefML4:mv EvalML4:mv)
 
 (define RefML4:FunTerm EvalML4:FunTerm)
@@ -404,33 +384,78 @@ span.rname { font-variant: small-caps; }
 
 (define RefML4:AppBOp EvalML4:AppBOp)
 
+;; EvalML4
+(define EvalML4:mv EvalML3:mv)
+
+(define EvalML4:FunTerm EvalML3:FunTerm)
+(define EvalML4:RecTerm EvalML3:RecTerm)
+(define (EvalML4:NilVTerm) "[]")
+(define (EvalML4:ConsVTerm v1 v2) 
+  `(,v1 "\\mbox{ :: }" ,v2))
+
+(define EvalML4:EmptyTerm EvalML3:EmptyTerm)
+(define EvalML4:BindTerm EvalML3:BindTerm)
+(define EvalML4:BinOpTerm EvalML3:BinOpTerm)
+(define EvalML4:IfTerm EvalML3:IfTerm)
+(define EvalML4:LetTerm EvalML3:LetTerm)
+(define EvalML4:AbsTerm EvalML3:AbsTerm)
+(define EvalML4:AppTerm EvalML3:AppTerm)
+(define EvalML4:LetRecTerm EvalML3:LetRecTerm)
+
+(define (EvalML4:NilTerm) "[]")
+
+(define (EvalML4:ConsTerm v1 v2) 
+  `(,v1 "\\mbox{ :: }" ,v2))
+
+(define (EvalML4:MatchTerm e1 e2 x y e)
+  `("\\mbox{match }" ,e1 "\\mbox{ with } "
+    "   [] \\rightarrow " ,e2 
+    " \\mid " ,x "\\mbox{ :: } " ,y " \\rightarrow " ,e))
+
+(define EvalML4:PlusTerm EvalML3:PlusTerm)
+(define EvalML4:MinusTerm EvalML3:MinusTerm)
+(define EvalML4:MultTerm EvalML3:MultTerm)
+(define EvalML4:LtTerm EvalML3:LtTerm)
+
+(define EvalML4:EvalTo EvalML3:EvalTo)
+
+(define EvalML4:AppBOp EvalML3:AppBOp)
+
 ;; EvalML5
 (define EvalML5:mv EvalML4:mv)
 
 (define EvalML5:FunTerm EvalML4:FunTerm)
 (define EvalML5:RecTerm EvalML4:RecTerm)
-(define (EvalML5:NilVTerm) "[]")
-(define (EvalML5:ConsVTerm v1 v2) 
-  `(,v1 "\\mbox{ :: }" ,v2))
+(define EvalML5:NilVTerm EvalML4:NilVTerm)
+(define EvalML5:ConsVTerm EvalML4:ConsVTerm)
 
 (define EvalML5:EmptyTerm EvalML4:EmptyTerm)
 (define EvalML5:BindTerm EvalML4:BindTerm)
+
+(define (EvalML5:NilPTerm) "[]")
+(define (EvalML5:ConsPTerm p1 p2)
+  `(,p1 "\\mbox{ :: }" ,p2))
+(define (EvalML5:WildPTerm) "\\mbox{_}") ;; not legal TeX but works for LaTeXMathML
+
+(define (EvalML5:FailTerm) 'fail)
+
+(define (EvalML5:EmptyCTerm) 'emptyclause)
+(define (EvalML5:AddCTerm p e c)
+  (if (eq? c 'emptyclause)
+      `(,p "\\rightarrow" ,e)
+      `(,p "\\rightarrow" ,e "\\mid" ,c)))
+
 (define EvalML5:BinOpTerm EvalML4:BinOpTerm)
 (define EvalML5:IfTerm EvalML4:IfTerm)
 (define EvalML5:LetTerm EvalML4:LetTerm)
 (define EvalML5:AbsTerm EvalML4:AbsTerm)
 (define EvalML5:AppTerm EvalML4:AppTerm)
 (define EvalML5:LetRecTerm EvalML4:LetRecTerm)
+(define EvalML5:NilTerm EvalML4:NilTerm)
+(define EvalML5:ConsTerm EvalML4:ConsTerm)
 
-(define (EvalML5:NilTerm) "[]")
-
-(define (EvalML5:ConsTerm v1 v2) 
-  `(,v1 "\\mbox{ :: }" ,v2))
-
-(define (EvalML5:MatchTerm e1 e2 x y e)
-  `("\\mbox{match }" ,e1 "\\mbox{ with } "
-    "   [] \\rightarrow " ,e2 
-    " \\mid " ,x "\\mbox{ :: } " ,y " \\rightarrow " ,e))
+(define (EvalML5:MatchTerm e c)
+  `("\\mbox{match }" ,e "\\mbox{ with } " ,c))
 
 (define EvalML5:PlusTerm EvalML4:PlusTerm)
 (define EvalML5:MinusTerm EvalML4:MinusTerm)
@@ -441,52 +466,7 @@ span.rname { font-variant: small-caps; }
 
 (define EvalML5:AppBOp EvalML4:AppBOp)
 
-;; EvalML6
-(define EvalML6:mv EvalML5:mv)
-
-(define EvalML6:FunTerm EvalML5:FunTerm)
-(define EvalML6:RecTerm EvalML5:RecTerm)
-(define EvalML6:NilVTerm EvalML5:NilVTerm)
-(define EvalML6:ConsVTerm EvalML5:ConsVTerm)
-
-(define EvalML6:EmptyTerm EvalML5:EmptyTerm)
-(define EvalML6:BindTerm EvalML5:BindTerm)
-
-(define (EvalML6:NilPTerm) "[]")
-(define (EvalML6:ConsPTerm p1 p2)
-  `(,p1 "\\mbox{ :: }" ,p2))
-(define (EvalML6:WildPTerm) "\\mbox{_}") ;; not legal TeX but works for LaTeXMathML
-
-(define (EvalML6:FailTerm) 'fail)
-
-(define (EvalML6:EmptyCTerm) 'emptyclause)
-(define (EvalML6:AddCTerm p e c)
-  (if (eq? c 'emptyclause)
-      `(,p "\\rightarrow" ,e)
-      `(,p "\\rightarrow" ,e "\\mid" ,c)))
-
-(define EvalML6:BinOpTerm EvalML5:BinOpTerm)
-(define EvalML6:IfTerm EvalML5:IfTerm)
-(define EvalML6:LetTerm EvalML5:LetTerm)
-(define EvalML6:AbsTerm EvalML5:AbsTerm)
-(define EvalML6:AppTerm EvalML5:AppTerm)
-(define EvalML6:LetRecTerm EvalML5:LetRecTerm)
-(define EvalML6:NilTerm EvalML5:NilTerm)
-(define EvalML6:ConsTerm EvalML5:ConsTerm)
-
-(define (EvalML6:MatchTerm e c)
-  `("\\mbox{match }" ,e "\\mbox{ with } " ,c))
-
-(define EvalML6:PlusTerm EvalML5:PlusTerm)
-(define EvalML6:MinusTerm EvalML5:MinusTerm)
-(define EvalML6:MultTerm EvalML5:MultTerm)
-(define EvalML6:LtTerm EvalML5:LtTerm)
-
-(define EvalML6:EvalTo EvalML5:EvalTo)
-
-(define EvalML6:AppBOp EvalML5:AppBOp)
-
-(define (EvalML6:Matches v p res)
+(define (EvalML5:Matches v p res)
   (cond ((eq? res 'fail)
 	 `(,v "\\mbox{ doesn't match }" ,p))
 	((equal? res "\\cdot")
@@ -494,7 +474,7 @@ span.rname { font-variant: small-caps; }
 	(else
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
 
-;; Typing EvalML2
+;; TypingML2
 
 (define (TypingML2:TyBoolTerm) "bool")
 (define (TypingML2:TyIntTerm) "int")
@@ -522,7 +502,7 @@ span.rname { font-variant: small-caps; }
 (define (TypingML2:Typing env e t)
   `(,env "\\vdash" ,e ":" ,t))
 
-;; TypingML4
+;; TypingML4  Should be renamed to TypingML3
 
 (define (TypingML4:TyVarTerm a) a)
 (define TypingML4:TyBoolTerm TypingML2:TyBoolTerm)
@@ -543,9 +523,9 @@ span.rname { font-variant: small-caps; }
 (define TypingML4:IfTerm TypingML2:IfTerm)
 (define TypingML4:LetTerm TypingML2:LetTerm)
 
-(define TypingML4:AbsTerm EvalML4:AbsTerm)
-(define TypingML4:AppTerm EvalML4:AppTerm)
-(define TypingML4:LetRecTerm EvalML4:LetRecTerm)
+(define TypingML4:AbsTerm EvalML3:AbsTerm)
+(define TypingML4:AppTerm EvalML3:AppTerm)
+(define TypingML4:LetRecTerm EvalML3:LetRecTerm)
 
 (define TypingML4:PlusTerm TypingML2:PlusTerm)
 (define TypingML4:MinusTerm TypingML2:MinusTerm)
@@ -554,7 +534,7 @@ span.rname { font-variant: small-caps; }
 
 (define TypingML4:Typing TypingML2:Typing)
 
-;; TypingML5
+;; TypingML5  Should be renamed to TypingML4
 
 (define TypingML5:TyVarTerm TypingML4:TyVarTerm)
 (define TypingML5:TyBoolTerm TypingML4:TyBoolTerm)
@@ -576,9 +556,9 @@ span.rname { font-variant: small-caps; }
 (define TypingML5:AbsTerm TypingML4:AbsTerm)
 (define TypingML5:AppTerm TypingML4:AppTerm)
 (define TypingML5:LetRecTerm TypingML4:LetRecTerm)
-(define TypingML5:NilTerm EvalML5:NilTerm)
-(define TypingML5:ConsTerm EvalML5:ConsTerm)
-(define TypingML5:MatchTerm EvalML5:MatchTerm)
+(define TypingML5:NilTerm EvalML4:NilTerm)
+(define TypingML5:ConsTerm EvalML4:ConsTerm)
+(define TypingML5:MatchTerm EvalML4:MatchTerm)
 
 (define TypingML5:PlusTerm TypingML4:PlusTerm)
 (define TypingML5:MinusTerm TypingML4:MinusTerm)
@@ -587,7 +567,7 @@ span.rname { font-variant: small-caps; }
 
 (define TypingML5:Typing TypingML4:Typing)
 
-;; PolyML4
+;; PolyML4 Should be renamed to ...PolyTypingML3
 
 (define PolyML4:TyBoolTerm TypingML4:TyBoolTerm)
 (define PolyML4:TyIntTerm TypingML4:TyIntTerm)
@@ -628,7 +608,7 @@ span.rname { font-variant: small-caps; }
 
 (define PolyML4:Typing TypingML4:Typing)
 
-;; PolyML5
+;; PolyML5 Should be renamed to PolyTypingML4
 
 (define PolyML5:TyBoolTerm TypingML5:TyBoolTerm)
 (define PolyML5:TyIntTerm TypingML5:TyIntTerm)
