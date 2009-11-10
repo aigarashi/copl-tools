@@ -32,10 +32,10 @@
 
 (define (check-passwd name passwd)
   (let ((x (or (lookupdb name 'passwd) ;; first look up the user's db file
-	       (assoc name *passwd*)))
-    (and (pair? x) 
+	       (assoc name *passwd*))))
+    (and (pair? x)
 	 (equal? (sys-crypt passwd (cdr x)) 
-		 (cdr x))))))
+		 (cdr x)))))
 
 (define (display-login-page)
   (list
