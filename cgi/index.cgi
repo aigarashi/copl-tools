@@ -35,7 +35,7 @@
 	       (assoc name *passwd*)))
     (and (pair? x) 
 	 (equal? (sys-crypt passwd (cdr x)) 
-		 (cdr x)))))
+		 (cdr x))))))
 
 (define (display-login-page)
   (list
