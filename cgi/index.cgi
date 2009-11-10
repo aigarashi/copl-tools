@@ -175,9 +175,9 @@
 	(html:body
 	 (html:p "ログインに成功しました!")
 	 (display-menu lname)
-	 (display-sandbox "問題を解かずに遊ぶこともできます"))
-	(html:hr)
-	(html:a :href (string-append thisurl "?command=logout") "ログアウト"))))
+	 (display-sandbox "問題を解かずに遊ぶこともできます")
+	 (html:hr)
+	 (html:a :href (string-append thisurl "?command=logout") "ログアウト")))))
      (else
       (list
        (cgi-header)
@@ -192,7 +192,8 @@
 	   (html:p "ログアウトするには，まずログインしてください"))
 	  (else '()))
 	 (display-login-page)
-	 #;(display-sandbox "ログインしていなくても遊べます"))))))))
+	 ;(display-sandbox "ログインしていなくても遊べます")
+	 )))))))
 
 (cgi-output-character-encoding "utf-8")
 (cgi-main main :merge-cookies #t)
