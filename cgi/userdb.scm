@@ -79,7 +79,7 @@
 		 (db (if (port? in) (read in) *empty-userdb*))
 		 (entry (assoc key db))
 		 (oldentry (if entry (cdr entry) #f)))
-	    (receive (out tempfile) (sys-mktemp dbname)
+	    (receive (out tempfile) (sys-mkstemp dbname)
 		     (dynamic-wind
 			 (lambda ())
 			 (lambda ()
