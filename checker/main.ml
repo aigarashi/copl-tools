@@ -36,6 +36,8 @@ let games = [
     ("EvalML3", (EvalML3.Link.check_deriv, EvalML3.Link.make_deriv));
     ("EvalML4", (EvalML4.Link.check_deriv, EvalML4.Link.make_deriv));
     ("EvalML5", (EvalML5.Link.check_deriv, EvalML5.Link.make_deriv));
+    ("NamelessML3", (NamelessML3.Link.check_deriv, NamelessML3.Link.make_deriv));
+    ("EvalNamelessML3", (EvalNamelessML3.Link.check_deriv, EvalNamelessML3.Link.make_deriv));
     ("ContML1", (ContML1.Link.check_deriv, ContML1.Link.make_deriv));
     ("ContML4", (ContML4.Link.check_deriv, ContML4.Link.make_deriv));
     ("RefML4", (RefML4.Link.check_deriv, RefML4.Link.make_deriv));

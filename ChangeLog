@@ -1,3 +1,10 @@
+2009-11-14  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/NamelessML3: New game, which implements translation from
+	ML3 to nameless (de Bruijn style) ML3.
+	* checker/EvalNamelessML3: New game, which implements evaluation
+	of nameless ML3.  Variable lookup is now an atomic operation.
+
 2009-11-08  Atsushi Igarashi  <igarashi@cornet>
 
 	* cgi/questions.db: Added questions for EvalML1Err.

@@ -474,6 +474,76 @@ span.rname { font-variant: small-caps; }
 	(else
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
 
+;; EvalNamelessML3
+(define EvalNamelessML3:mv EvalML3:mv)
+
+(define (EvalNamelessML3:FunTerm env e)
+  `("\\mbox{(}" ,env "\\mbox{)[fun }. \\rightarrow" ,e "\\mbox{]}"))
+
+(define (EvalNamelessML3:RecTerm env e)
+  `("\\mbox{(}" ,env 
+    "\\mbox{)[rec .} = \\mbox{fun }. \\rightarrow" ,e "\\mbox{]}"))
+
+(define EvalNamelessML3:EmptyTerm EvalML3:EmptyTerm)
+(define (EvalNamelessML3:BindTerm env v)
+  (if (equal? env "\\cdot")
+      v
+      `(,env "," ,v)))
+
+(define (EvalNamelessML3:IndexTerm n) `("#" ,n))
+(define EvalNamelessML3:BinOpDTerm EvalML3:BinOpTerm)
+(define EvalNamelessML3:IfDTerm EvalML3:IfTerm)
+(define (EvalNamelessML3:LetDTerm e1 e2)
+  `("\\mbox{let } . = " ,e1 "\\mbox{ in }" ,e2))
+
+(define (EvalNamelessML3:AbsDTerm e)
+  `("\\mbox{fun } . \\rightarrow" ,e))
+(define EvalNamelessML3:AppDTerm EvalML3:AppTerm)
+(define (EvalNamelessML3:LetRecDTerm e1 e2)
+    `("\\mbox{let rec } . = \\mbox{fun } . \\rightarrow " ,e1 "\\mbox{ in }" ,e2))
+
+(define EvalNamelessML3:PlusTerm EvalML3:PlusTerm)
+(define EvalNamelessML3:MinusTerm EvalML3:MinusTerm)
+(define EvalNamelessML3:MultTerm EvalML3:MultTerm)
+(define EvalNamelessML3:LtTerm EvalML3:LtTerm)
+
+(define EvalNamelessML3:EvalTo EvalML3:EvalTo)
+(define EvalNamelessML3:AppBOp EvalML3:AppBOp)
+
+;; NamelessML3
+(define NamelessML3:mv EvalML3:mv)
+
+(define NamelessML3:EmptyTerm EvalML3:EmptyTerm)
+(define (NamelessML3:BindTerm env x)
+  (if (equal? env "\\cdot")
+      v
+      `(,env "," ,x)))
+
+(define NamelessML3:BinOpTerm EvalML3:BinOpTerm)
+(define NamelessML3:IfTerm EvalML3:IfTerm)
+(define NamelessML3:LetTerm EvalML3:LetTerm)
+(define NamelessML3:AbsTerm EvalML3:AbsTerm)
+(define NamelessML3:AppTerm EvalML3:AppTerm)
+(define NamelessML3:LetRecTerm EvalML3:LetRecTerm)
+
+(define NamelessML3:PlusTerm EvalML3:PlusTerm)
+(define NamelessML3:MinusTerm EvalML3:MinusTerm)
+(define NamelessML3:MultTerm EvalML3:MultTerm)
+(define NamelessML3:LtTerm EvalML3:LtTerm)
+
+(define NamelessML3:IndexTerm EvalNamelessML3:IndexTerm)
+(define NamelessML3:BinOpDTerm EvalNamelessML3:BinOpDTerm)
+(define NamelessML3:IfDTerm EvalNamelessML3:IfDTerm)
+(define NamelessML3:LetDTerm EvalNamelessML3:LetDTerm)
+(define NamelessML3:AbsDTerm EvalNamelessML3:AbsDTerm)
+(define NamelessML3:AppDTerm EvalNamelessML3:AppDTerm)
+(define NamelessML3:LetRecDTerm EvalNamelessML3:LetRecDTerm)
+
+(define (NamelessML3:TranslateTo env e d)
+  `(,env "\\vdash" ,e "\\Rightarrow" ,d))
+
+(define NamelessML3:AppBOp EvalML3:AppBOp)
+
 ;; TypingML2
 
 (define (TypingML2:TyBoolTerm) "bool")
