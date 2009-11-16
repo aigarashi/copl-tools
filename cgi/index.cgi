@@ -31,7 +31,9 @@
      "&" 'prefix))))
 
 (define (check-passwd name passwd)
-  (let ((x (or (lookupdb name 'passwd) ;; first look up the user's db file
+  (let ((x (or ;; first look up the user's db file
+               ;(and (file-exists? (dbname name)) (lookupdb name 'passwd)) 
+	       ;; or look up the password file
 	       (assoc name *passwd*))))
     (and (pair? x)
 	 (equal? (sys-crypt passwd (cdr x)) 
