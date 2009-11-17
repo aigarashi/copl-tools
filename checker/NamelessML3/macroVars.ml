@@ -2,7 +2,7 @@ open Parser
 
 let v = [
     ("e", fun s -> MVEXP s);
-    ("v", fun s -> MVVALUE s);
+    ("d", fun s -> MVDBEXP s);
     ("env", fun s -> MVENV s);
 ]
 

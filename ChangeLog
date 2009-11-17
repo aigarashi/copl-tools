@@ -1,3 +1,15 @@
+2009-11-17  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/NamelessML3/macroVars.ml: now allows one to give a name
+	to de Bruijn expressions.
+
+	* cgi/index.cgi, cgi/global.scm: Added a facility to show
+	messages.  It shows the content of file news.html at the system
+	directory.
+
+	* checker/lexer.mll: now detects illegal characters.
+	* checker/*/parser.mly: more error recovery actions.
+
 2009-11-16  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/index.cgi (check-passwd): Lookup in the user's db file disabled

@@ -49,7 +49,6 @@ let tbl = Hashtbl.create 1024
 %token DEF EQ
 %token <string> MVEXP
 %token <string> MVDBEXP
-%token <string> MVVALUE
 %token <string> MVENV
 
 %start toplevel partialj judgment

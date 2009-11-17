@@ -7,6 +7,9 @@
 (define *question-db* ;; database file for questions
   (string-append *system-dir* "questions.db"))
 
+(define *news*
+  (string-append *system-dir* "news.html"))
+
 (define-constant *style* "
   span.error {
     background-color : #ffcccc;

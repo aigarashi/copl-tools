@@ -49,7 +49,10 @@
     (html:p "パスワード:" (html:input :type "password" :name "passwd"))
     (html:input :type "hidden" :name "command" :value "login")
     (html:input :type "submit" :value "ログイン"))))
-  
+
+(define (display-news)
+  (file->string *news* :if-does-not-exist #f))
+
 (define (display-sandbox msg)
   (list
    (html:form 
@@ -71,6 +74,7 @@
 	 (no-q (how-many-q)))
     (list
      (html:h1 "ようこそ " name "さん!")
+     (display-news)
      (html:h2 "未解答問題")
      (display-qlist (pad-numlist (solved->unsolved no-q solved) 0))
      (html:h2 "解答済み問題")
