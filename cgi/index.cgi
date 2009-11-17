@@ -5,6 +5,7 @@
 (use text.html-lite)
 (use rfc.cookie)
 (use util.list)
+(use file.util)
 
 (load "./site-local.scm")
 (load "./global.scm")
