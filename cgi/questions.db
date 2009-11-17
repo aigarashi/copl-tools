@@ -113,7 +113,7 @@
      if n < 2 then 1 else n * fact (n - 1) in
      fact 3
 ==>
-|- let rec . = fun . -> 
+   let rec . = fun . -> 
      if #0 < 2 then 1 else #0 * #1 (#0 - 1) in #0 3")
   (EvalNamelessML3 "|- let rec . = fun . -> 
      if #0 < 2 then 1 else #0 * #1 (#0 - 1) in #0 3
