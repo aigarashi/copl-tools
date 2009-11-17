@@ -60,7 +60,10 @@ Tr-Lt: TranslateTo(env, BinOp(Lt, e1, e2), BinOpD(Lt, d1, d2)) :-
 		TranslateTo(env, e1, d1), TranslateTo(env, e2, d2);
 
 Tr-Var1:  TranslateTo(Bind(env,x), x, Index(n)) :- `$n = 0`;
-Tr-Var2:  TranslateTo(Bind(env,y), x, Index(n2)) :- `$y <> $x` %$y \neq $x%, TranslateTo(env, x, Index(n)), `$n2 = $n + 1`;
+Tr-Var2:  TranslateTo(Bind(env,y), x, Index(n2)) :- 
+                 `$y <> $x` %$y \neq $x%, 
+                 TranslateTo(env, x, Index(n1)),
+                 `$n2 = $n1 + 1`;
 
 Tr-Let:  TranslateTo(env, Let(x, e1, e2), LetD(d1, d2)) :-
 		TranslateTo(env, e1, d1), TranslateTo(Bind(env,x), e2, d2);

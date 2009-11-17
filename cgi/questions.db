@@ -59,40 +59,65 @@
   (EvalML2 "x = 3 |- let x = x * 2 in x + x evalto 12")
   (EvalML2 "|- let x = let y = 3 - 2 in y * y in let y = 4 in x + y evalto 5")
 
-;;   ;; EvalML3
-;;   (EvalML3 "|- fun x -> x + 1 evalto ()[fun x -> x + 1]")
-;;   (EvalML3 "|- let y = 2 in fun x -> x + y evalto (y=2)[fun x -> x + y]")
-;;   (EvalML3 "|- let sq = fun x -> x * x in sq 3 + sq 4 evalto 25")
-;;   (EvalML3 "|- let sm = fun f -> f 3 + f 4 in sm (fun x -> x * x) evalto 25")
-;;   (EvalML3 "|- let max = fun x -> fun y -> if x < y then y else x in max 3 5 evalto 5")
-;;   (EvalML3 "|- let a = 3 in let f = fun y -> y * a in let a = 5 in f 4 evalto 12")
-;;   (EvalML3 "|- let twice = fun f -> fun x -> f (f x) in twice (fun x -> x * x) 2 evalto 16")
-;;   (EvalML3 "|- let twice = fun f -> fun x -> f (f x) in twice twice (fun x -> x * x) 2 evalto 65536")
-;;   (EvalML3 "|- let compose = fun f -> fun g -> fun x -> f (g x) in 
-;;    let p = fun x -> x * x in
-;;    let q = fun x -> x + 4 in
-;;    compose p q 4 
-;;   evalto 64")
-;;   (EvalML3 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
-;;    let k = fun x -> fun y -> x in
-;;    s k k 7
-;;   evalto 7")
+  ;; EvalML3
+  (EvalML3 "|- fun x -> x + 1 evalto ()[fun x -> x + 1]")
+  (EvalML3 "|- let y = 2 in fun x -> x + y evalto (y=2)[fun x -> x + y]")
+  (EvalML3 "|- let sq = fun x -> x * x in sq 3 + sq 4 evalto 25")
+  (EvalML3 "|- let sm = fun f -> f 3 + f 4 in sm (fun x -> x * x) evalto 25")
+  (EvalML3 "|- let max = fun x -> fun y -> if x < y then y else x in max 3 5 evalto 5")
+  (EvalML3 "|- let a = 3 in let f = fun y -> y * a in let a = 5 in f 4 evalto 12")
+  (EvalML3 "|- let twice = fun f -> fun x -> f (f x) in twice (fun x -> x * x) 2 evalto 16")
+  (EvalML3 "|- let twice = fun f -> fun x -> f (f x) in twice twice (fun x -> x * x) 2 evalto 65536")
+  (EvalML3 "|- let compose = fun f -> fun g -> fun x -> f (g x) in 
+   let p = fun x -> x * x in
+   let q = fun x -> x + 4 in
+   compose p q 4 
+  evalto 64")
+  (EvalML3 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
+   let k = fun x -> fun y -> x in
+   s k k 7
+  evalto 7")
 
-;;   (EvalML3 "|- let rec fact = fun n ->
-;;              if n < 2 then 1 else n * fact (n - 1) in
-;;            fact 3
-;;            evalto 6")
-;;   (EvalML3 "|- let rec fib = fun n -> if n < 3 then 1 else fib (n - 1) + fib (n - 2) in
-;;    fib 5
-;;   evalto 5")
-;;   (EvalML3 "|- let rec sum = fun f -> fun n ->
-;;      if n < 1 then 0 else f n + sum f (n - 1) in 
-;;    sum (fun x -> x * x) 2
-;;   evalto 5")
-;;   (EvalML3 "|- let fact = fun self -> fun n ->
-;;      if n < 2 then 1 else n * self self (n - 1) in
-;;    fact fact 3
-;;   evalto 6")
+  (EvalML3 "|- let rec fact = fun n ->
+   if n < 2 then 1 else n * fact (n - 1) in
+   fact 3
+  evalto 6")
+  (EvalML3 "|- let rec fib = fun n -> if n < 3 then 1 else fib (n - 1) + fib (n - 2) in
+   fib 5
+  evalto 5")
+  (EvalML3 "|- let rec sum = fun f -> fun n ->
+     if n < 1 then 0 else f n + sum f (n - 1) in 
+   sum (fun x -> x * x) 2
+  evalto 5")
+  (EvalML3 "|- let fact = fun self -> fun n ->
+     if n < 2 then 1 else n * self self (n - 1) in
+   fact fact 3
+  evalto 6")
+
+  ;; NamelessML3 and EvalNamelessML3
+  (NamelessML3     "x, y |- if x then y + 1 else y - 1 ==> if #1 then #0 + 1 else #0 - 1")
+  (EvalNamelessML3 "true, 4 |- if #1 then #0 + 1 else #0 - 1 evalto 5")
+  (NamelessML3     "|- let x = 3 * 3 in let y = 4 * x in x + y ==> let . = 3 * 3 in let . = 4 * #0 in #1 + #0")
+  (EvalNamelessML3 "|- let . = 3 * 3 in let . = 4 * #0 in #1 + #0 evalto 45")
+  (NamelessML3     "x |- let x = x * 2 in x + x ==> let . = #0 * 2 in #0 + #0")
+  (EvalNamelessML3 "3 |- let . = #0 * 2 in #0 + #0 evalto 12")
+  (NamelessML3     "|- let x = let y = 3 - 2 in y * y in let y = 4 in x + y ==> let . = let . = 3 - 2 in #0 * #0 in let . = 4 in #1 + #0")
+  (EvalNamelessML3 "|- let . = let . = 3 - 2 in #0 * #0 in let . = 4 in #1 + #0 evalto 5")
+  (NamelessML3     "|- let y = 2 in fun x -> x + y ==> let . = 2 in fun . -> #0 + #1")
+  (EvalNamelessML3 "|- let . = 2 in fun . -> #0 + #1 evalto (2)[fun . -> #0 + #1]")
+  (NamelessML3     "|- let sm = fun f -> f 3 + f 4 in sm (fun x -> x * x) ==> let . = fun . -> #0 3 + #0 4 in #0 (fun . -> #0 * #0)")
+  (EvalNamelessML3 "|- let . = fun . -> #0 3 + #0 4 in #0 (fun . -> #0 * #0) evalto 25")
+  (NamelessML3     "|- let a = 3 in let f = fun y -> y * a in let a = 5 in f 4 ==> let . = 3 in let . = fun . -> #0 * #1 in let . = 5 in #1 4")
+  (EvalNamelessML3 "|- let . = 3 in let . = fun . -> #0 * #1 in let . = 5 in #1 4 evalto 12")
+  (NamelessML3 "|- let rec fact = fun n ->
+     if n < 2 then 1 else n * fact (n - 1) in
+     fact 3
+==>
+|- let rec . = fun . -> 
+     if #0 < 2 then 1 else #0 * #1 (#0 - 1) in #0 3")
+  (EvalNamelessML3 "|- let rec . = fun . -> 
+     if #0 < 2 then 1 else #0 * #1 (#0 - 1) in #0 3
+   evalto 6")
 
 ;;   ;; EvalML4
 ;;   (EvalML4 "|- (1 + 2) :: (3 + 4) :: [] evalto 3 :: 7 :: []")

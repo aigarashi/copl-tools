@@ -208,7 +208,7 @@ span.rname { font-variant: small-caps; }
 (define EvalML1Err:MultTerm EvalML1:MultTerm)
 (define EvalML1Err:LtTerm EvalML1:LtTerm)
 
-(define (EvalML1Err:ErrorTerm) "\\mbox{ \\textbf{error} }")
+(define (EvalML1Err:ErrorTerm) "\\mbox{error}")
 
 (define EvalML1Err:EvalTo EvalML1:EvalTo)
 (define EvalML1Err:AppBOp EvalML1:AppBOp)
