@@ -61,6 +61,7 @@ let tbl = Hashtbl.create 1024
 
 toplevel: 
     MacroDefs Derivation { $2 }
+  | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
@@ -70,8 +71,8 @@ Derivation:
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY RName LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
-  | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
-  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
+  | Judgment error { errAt 2 "Syntax error: 'by' expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -119,22 +120,27 @@ partialj :
   | Env VDASH Exp error { errAt 4 "Syntax error: 'evalto' expected" }
   | Env VDASH Exp EVALTO error { errAt 5 "Syntax error: '?' expected" }
   | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt PLUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt PLUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MULT SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MULT SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
     /* empty */ { Empty } 
   | Env2 LCID EQ Val { Bind($1, Var $2, $4) }
+  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
+  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
 
 Env2:
     /* empty */ { Empty } 
   | Env2 LCID EQ Val COMMA { Bind($1, Var $2, $4) }
+  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
+  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
+  | Env2 LCID EQ Val error { errAt 5 "Syntax error: ',' expected" }
   
 Exp:
   | LongExp { $1 }
@@ -211,6 +217,11 @@ MacroDef:
   | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
   | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
 
+  | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
+  | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
+  | DEF MVENV EQ error { errAt 4 "Syntax error: environment expected" }
+  | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
+
 Val: MVVALUE { 
   try
     match Hashtbl.find tbl $1 with 
@@ -228,6 +239,14 @@ AExp: MVEXP {
   }
 
 Env: MVENV {
+  try 
+    match Hashtbl.find tbl $1 with
+      Env e -> e
+    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
+
+Env2: MVENV COMMA {
   try 
     match Hashtbl.find tbl $1 with
       Env e -> e

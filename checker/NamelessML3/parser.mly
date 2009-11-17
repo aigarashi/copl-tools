@@ -62,6 +62,7 @@ let tbl = Hashtbl.create 1024
 
 toplevel: 
     MacroDefs Derivation { $2 }
+  | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
@@ -100,10 +101,12 @@ partialj :
 Env:
     /* empty */ { Empty } 
   | Env2 LCID { Bind($1, Var $2) }
+  | Env2 LCID error { errAt 3 "Syntax error: \'|-\' expected" }
 
 Env2:
     /* empty */ { Empty } 
   | Env2 LCID COMMA { Bind($1, Var $2) }
+  | Env2 LCID error { errAt 3 "Syntax error: comma expected" }
   
 Exp:
   | LongExp { $1 }
@@ -212,6 +215,11 @@ MacroDef:
   | DEF MVDBEXP EQ DExp SEMI { Hashtbl.add tbl $2 (DBExp $4) }
   | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
 
+  | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
+  | DEF MVDBEXP EQ error { errAt 4 "Syntax error: nameless expression expected" }
+  | DEF MVENV EQ error { errAt 4 "Syntax error: environment expected" }
+  | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
+
 AExp: MVEXP {
   try 
     match Hashtbl.find tbl $1 with
@@ -229,6 +237,14 @@ DAExp: MVDBEXP {
   }
 
 Env: MVENV {
+  try 
+    match Hashtbl.find tbl $1 with
+      Env e -> e
+    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
+
+Env2: MVENV COMMA {
   try 
     match Hashtbl.find tbl $1 with
       Env e -> e

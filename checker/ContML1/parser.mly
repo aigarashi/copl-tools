@@ -54,19 +54,24 @@ let tbl = Hashtbl.create 1024
 
 toplevel: 
     MacroDefs Derivation { $2 }
+  | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
 
 Derivation: 
-    Judgment BY ID LBRACE RBRACE
+    Judgment BY RName LBRACE RBRACE
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
-  | Judgment BY ID LBRACE Derivs
+  | Judgment BY RName LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
-  | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
-  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
-  | Judgment BY ID error { errAt 4 "Syntax error: opening brace expected" }
-  | Judgment BY ID LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
+  | Judgment error { errAt 2 "Syntax error: 'by' expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
+  | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
+  | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
+
+RName : 
+    ID { $1 }
+  | LCID { $1 }
 
 Derivs:
   | Derivation RBRACE { [ $1 ] }
@@ -88,7 +93,7 @@ Judgment:
   | SInt IS LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
   | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
 
-  | Exp error { errAt 2 "Syntax error: \'evalto\' expected" }
+  | Exp error { errAt 2 "Syntax error: 'evalto' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: value expected" }
   | Exp GTGT error { errAt 3 "Syntax error: continuation expected" }
   | Exp GTGT Cont error { errAt 4 "Syntax error: 'evalto' expected" }
@@ -99,13 +104,13 @@ Judgment:
   | Val DRARROW Cont EVALTO error { errAt 5 "Syntax error: value expected" }
 
   | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt PLUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt PLUS SInt IS error { errAt 5 "Syntax error: natural number expected" }
   | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MULT SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MULT SInt IS error { errAt 5 "Syntax error: natural number expected" }
   | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: natural number expected" }
 
 partialj :
@@ -118,19 +123,19 @@ partialj :
 /*  | SInt IS LESS THAN SInt { In_AppBOp(Lt, Value_of_int $1, Value_of_int $5) }
   | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6) }
 */
-  | Exp error { errAt 2 "Syntax error: \'evalto\' expected" }
+  | Exp error { errAt 2 "Syntax error: 'evalto' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: '?' expected" }
   | Exp GTGT error { errAt 3 "Syntax error: continuation expected" }
   | Exp GTGT Cont error { errAt 4 "Syntax error: 'evalto' expected" }
   | Exp GTGT Cont EVALTO error { errAt 5 "Syntax error: '?' expected" }
   | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt PLUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt PLUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MULT SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MULT SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Exp:
@@ -211,6 +216,11 @@ MacroDef:
   | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
   | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
   | DEF MVCONT EQ Cont SEMI { Hashtbl.add tbl $2 (Cont $4) }
+
+  | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
+  | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
+  | DEF MVCONT EQ error { errAt 4 "Syntax error: continuation expected"  }
+  | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
 Val: MVVALUE { 
   try

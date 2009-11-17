@@ -62,6 +62,7 @@ let tbl = Hashtbl.create 1024
 
 toplevel: 
     MacroDefs Derivation { $2 }
+  | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
@@ -136,7 +137,9 @@ Env:
 Env2:
     /* empty */ { [] }
   | COMMA Val Env2 { $2 :: $3 }
-  
+  | error { errAt 1 "Syntax error: comma expected" }
+  | COMMA error { errAt 2 "Syntax error: value expected" }
+
 DExp:
   | LongDExp { $1 }
   | DExp1 { $1 }
@@ -211,6 +214,12 @@ MacroDef:
   | DEF MVEXP EQ DExp SEMI { Hashtbl.add tbl $2 (DExp $4) }
   | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
   | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
+
+  | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
+  | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
+  | DEF MVENV EQ error { errAt 4 "Syntax error: environment expected" }
+  | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
+
 
 Val: MVVALUE { 
   try
