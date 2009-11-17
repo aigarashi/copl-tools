@@ -8,6 +8,14 @@ let errBtw i j s =
 
 let errAt i s =
   MySupport.Error.errAt (Parsing.rhs_start_pos i) s
+
+(******** experimental feature for macro defitinions *********)
+(* The following definition could be automatically generated from .gm *)
+type sobj = Exp of Core.exp
+	  | Value of Core.value
+	  | Env of Core.env
+
+let tbl = Hashtbl.create 1024
 %}
 
 %token EOF
@@ -41,6 +49,10 @@ let errAt i s =
 
 /******** experimental feature for macro defitinions *********/
 %token DEF EQ
+%token <string> MVEXP
+%token <string> MVVALUE
+%token <string> MVENV
+
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
 %type <Core.judgment> judgment
