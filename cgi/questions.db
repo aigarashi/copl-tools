@@ -97,15 +97,18 @@
   ;; NamelessML3 and EvalNamelessML3
   (NamelessML3     "x, y |- if x then y + 1 else y - 1 ==> if #1 then #0 + 1 else #0 - 1")
   (EvalNamelessML3 "true, 4 |- if #1 then #0 + 1 else #0 - 1 evalto 5")
-  (NamelessML3     "|- let x = 3 * 3 in let y = 4 * x in x + y ==> let . = 3 * 3 in let . = 4 * #0 in #1 + #0")
+  (NamelessML3     "|- let x = 3 * 3 in let y = 4 * x in x + y
+==> let . = 3 * 3 in let . = 4 * #0 in #1 + #0")
   (EvalNamelessML3 "|- let . = 3 * 3 in let . = 4 * #0 in #1 + #0 evalto 45")
   (NamelessML3     "x |- let x = x * 2 in x + x ==> let . = #0 * 2 in #0 + #0")
   (EvalNamelessML3 "3 |- let . = #0 * 2 in #0 + #0 evalto 12")
-  (NamelessML3     "|- let x = let y = 3 - 2 in y * y in let y = 4 in x + y ==> let . = let . = 3 - 2 in #0 * #0 in let . = 4 in #1 + #0")
+  (NamelessML3     "|- let x = let y = 3 - 2 in y * y in let y = 4 in x + y
+==> let . = let . = 3 - 2 in #0 * #0 in let . = 4 in #1 + #0")
   (EvalNamelessML3 "|- let . = let . = 3 - 2 in #0 * #0 in let . = 4 in #1 + #0 evalto 5")
   (NamelessML3     "|- let y = 2 in fun x -> x + y ==> let . = 2 in fun . -> #0 + #1")
   (EvalNamelessML3 "|- let . = 2 in fun . -> #0 + #1 evalto (2)[fun . -> #0 + #1]")
-  (NamelessML3     "|- let sm = fun f -> f 3 + f 4 in sm (fun x -> x * x) ==> let . = fun . -> #0 3 + #0 4 in #0 (fun . -> #0 * #0)")
+  (NamelessML3     "|- let sm = fun f -> f 3 + f 4 in sm (fun x -> x * x)
+==> let . = fun . -> #0 3 + #0 4 in #0 (fun . -> #0 * #0)")
   (EvalNamelessML3 "|- let . = fun . -> #0 3 + #0 4 in #0 (fun . -> #0 * #0) evalto 25")
   (NamelessML3     "|- let a = 3 in let f = fun y -> y * a in let a = 5 in f 4 ==> let . = 3 in let . = fun . -> #0 * #1 in let . = 5 in #1 4")
   (EvalNamelessML3 "|- let . = 3 in let . = fun . -> #0 * #1 in let . = 5 in #1 4 evalto 12")
