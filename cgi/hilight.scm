@@ -21,7 +21,8 @@
 		(insert-tag (- line 1) char tag (cdr str-list))))))
 
 (define (emphasize s lc1 lc2)
-   (let ((lines (string-split s #[\n\r])))
+   (let ((lines (string-split s ;#[\n\r]
+                                "\n")))
      (string-join
       (insert-tag 
        (car lc1) (cadr lc1) "<span class=\"error\">"

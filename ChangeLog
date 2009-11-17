@@ -1,4 +1,12 @@
+2009-11-18  Atsushi Igarashi  <igarashi@cornet>
+
+	* cgi/hilight.scm (emphasize): line splitting shouldn't ignore empty lines.
+	Now, it is assumed that newline code is always "\n" but I'm not sure it is
+	always the case.
+
 2009-11-17  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/lexer.mll: bug fix in regexp to match metavariable names.
 
 	* checker/NamelessML3/macroVars.ml: now allows one to give a name
 	to de Bruijn expressions.
