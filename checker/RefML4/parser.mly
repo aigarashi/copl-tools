@@ -52,6 +52,7 @@ let errAt i s =
 
 toplevel: 
     Derivation { $1 }
+  | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
@@ -137,18 +138,28 @@ partialj :
 Env:
     /* empty */ { Empty } 
   | Env2 LCID EQ Val { Bind($1, Var $2, $4) }
+  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
+  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
 
 Env2:
     /* empty */ { Empty } 
   | Env2 LCID EQ Val COMMA { Bind($1, Var $2, $4) }
+  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
+  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
+  | Env2 LCID EQ Val error { errAt 5 "Syntax error: ',' expected" }
 
 Store:
     /* empty */ { EmptyS }
   | Store2 AT LCID EQ Val { Block($1, Loc $3, $5) }
+  | Store2 AT LCID error { errAt 4 "Syntax error: '=' expected" }
+  | Store2 AT LCID EQ error { errAt 5 "Syntax error: value expected" }
 
 Store2:
     /* empty */ { EmptyS } 
   | Store2 AT LCID EQ Val COMMA { Block($1, Loc $3, $5) }
+  | Store2 LCID error { errAt 4 "Syntax error: '=' expected" }
+  | Store2 LCID EQ error { errAt 5 "Syntax error: value expected" }
+  | Store2 LCID EQ Val error { errAt 6 "Syntax error: ',' expected" }
 
 Exp:
   | LongExp { $1 }
@@ -223,3 +234,50 @@ Val:
   | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
       { Rec($2, Var $6, Var $9, $11) }
 
+/******** experimental feature for macro defintions *********/
+
+MacroDefs: 
+    /* empty */ { () }
+  | MacroDef MacroDefs { () }
+
+MacroDef:
+  | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
+  | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
+  | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
+
+  | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
+  | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
+  | DEF MVENV EQ error { errAt 4 "Syntax error: environment expected" }
+  | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
+
+Val: MVVALUE { 
+  try
+    match Hashtbl.find tbl $1 with 
+      Value v -> v
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+}
+
+AExp: MVEXP {
+  try 
+    match Hashtbl.find tbl $1 with
+      Exp e -> e
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
+
+Env: MVENV {
+  try 
+    match Hashtbl.find tbl $1 with
+      Env e -> e
+    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
+
+Env2: MVENV COMMA {
+  try 
+    match Hashtbl.find tbl $1 with
+      Env e -> e
+    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
+  }
