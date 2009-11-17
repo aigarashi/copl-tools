@@ -46,7 +46,8 @@ Derivation:
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY ID LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
-  | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
+  | Judgment error { errAt 2 "Syntax error: \'by\' expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
   | Judgment BY ID error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY ID LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -60,6 +61,7 @@ Judgment:
   | Nat PLUS Nat IS Nat { PlusIs($1, $3, $5) }
   | Nat MULT Nat IS Nat { MultIs($1, $3, $5) }
 
+  | Nat error { errAt 2 "Syntax error: 'plus' or 'times' expected" }
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
   | Nat PLUS Nat error { errAt 4 "Syntax error: \'is\' expected" }
   | Nat PLUS Nat IS error { errAt 5 "Syntax error: natural number expected" }
@@ -71,6 +73,7 @@ partialj:
   | Nat PLUS Nat IS QM { In_PlusIs($1, $3) }
   | Nat MULT Nat IS QM { In_MultIs($1, $3) }
 
+  | Nat error { errAt 2 "Syntax error: 'plus' or 'times' expected" }
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
   | Nat PLUS Nat error { errAt 4 "Syntax error: \'is\' expected" }
   | Nat PLUS Nat IS error { errAt 5 "Syntax error: '?' expected" }
@@ -82,6 +85,9 @@ Nat:
     Z { Z }
   | S LPAREN Nat RPAREN { S $3 }
   | S LPAREN Nat error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
+  | S LPAREN error { errAt 3 "Syntax error: natural number expected after S(" }
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
+  | LCID { errAt 1 "Syntax error" }
+  | INTL { errAt 1 "Syntax error" }
 
 

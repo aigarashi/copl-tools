@@ -124,6 +124,11 @@ rule main = parse
     }
 
 | eof { eof }
+| _ { 
+      let c = String.escaped (Lexing.lexeme lexbuf) in
+      let pos = lexbuf.lex_curr_p in
+      MySupport.Error.errAt pos ("Illegal character " ^ c ^ " found.")
+  }
 
 and comment n = parse
   "(*" { comment (n+1) lexbuf }

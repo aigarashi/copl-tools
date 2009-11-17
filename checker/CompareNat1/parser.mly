@@ -45,6 +45,7 @@ Derivation:
   | Judgment BY ID LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
   | Judgment BY ID error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY ID LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -74,5 +75,6 @@ Nat:
     Z { Z }
   | S LPAREN Nat RPAREN { S $3 }
   | S LPAREN Nat error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
+  | S LPAREN error { errAt 3 "Syntax error: natural number expected after S(" }
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
 

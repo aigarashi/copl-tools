@@ -45,6 +45,7 @@ Derivation:
   | Judgment BY ID LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
   | Judgment BY ID error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY ID LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -61,6 +62,7 @@ Judgment:
   | Nat PLUS Nat IS Nat { PlusIs($1, $3, $5) }
   | Nat MULT Nat IS Nat { MultIs($1, $3, $5) }
 
+  | Exp error { errAt 2 "Syntax error" } 
   | Exp REDUCETO error { errAt 3 "Syntax error: expression expected" }
   | Exp MREDUCETO error { errAt 3 "Syntax error: expression expected" }
   | Exp DREDUCETO error { errAt 3 "Syntax error: expression expected" }
@@ -78,9 +80,12 @@ partialj:
   | Nat PLUS Nat IS QM { In_PlusIs($1, $3) }
   | Nat MULT Nat IS QM { In_MultIs($1, $3) }
 
+  | Exp error { errAt 2 "Syntax error" } 
   | Exp REDUCETO error { errAt 3 "Syntax error: expression expected" }
   | Exp MREDUCETO error { errAt 3 "Syntax error: expression expected" }
   | Exp DREDUCETO error { errAt 3 "Syntax error: '?' expected" }
+  | Nat error { errAt 2 "Syntax error" }   
+       /* shift/reduce conflict with partialj: Exp error */
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
   | Nat PLUS Nat error { errAt 4 "Syntax error: \'is\' expected" }
   | Nat PLUS Nat IS error { errAt 5 "Syntax error: '?' expected" }
@@ -92,20 +97,24 @@ partialj:
 Exp:
     Exp CROSS MExp { P($1, $3) }
   | MExp { $1 }
+  | Exp CROSS error { errAt 3 "Syntax error: expression expected" }
 
 MExp:
     MExp AST AExp { M($1, $3) }
   | AExp { $1 }
+  | MExp AST error { errAt 3 "Syntax error: expression expected" }
 
 AExp:
     Nat { Exp_of_Nat $1 }
   | LPAREN Exp RPAREN { $2 }
+  | LPAREN error { errAt 1 "Syntax error: expression expected" }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
 Nat:
     Z { Z }
   | S LPAREN Nat RPAREN { S $3 }
   | S LPAREN Nat error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
+  | S LPAREN error { errAt 3 "Syntax error: natural number expected after S(" }
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
 
 
