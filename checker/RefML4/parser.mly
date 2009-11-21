@@ -75,7 +75,7 @@ Derivation:
   | Judgment BY RName LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
-  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -138,13 +138,13 @@ partialj :
   | Store SLASH Env VDASH Exp error { errAt 6 "Syntax error: 'evalto' expected" }
   | Store SLASH Env VDASH Exp EVALTO error { errAt 7 "Syntax error: '?' expected" }
   | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt PLUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt PLUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MULT SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MULT SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Env:

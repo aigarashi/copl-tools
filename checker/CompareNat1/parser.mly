@@ -45,7 +45,7 @@ Derivation:
   | Judgment BY ID LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
-  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY ID error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY ID LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -58,17 +58,17 @@ Derivs:
 Judgment: 
     Nat IS LESS THAN Nat { Lt($1, $5) }
 
-  | Nat error { errAt 2 "Syntax error: \'is\' expected" }
-  | Nat IS error { errAt 3 "Syntax error: \'less\' expected" }
-  | Nat LESS error { errAt 4 "Syntax error: \'than\' expected" }
+  | Nat error { errAt 2 "Syntax error: 'is' expected" }
+  | Nat IS error { errAt 3 "Syntax error: 'less' expected" }
+  | Nat LESS error { errAt 4 "Syntax error: 'than' expected" }
   | Nat IS LESS THAN error { errAt 5 "Syntax error: natural number expected" }
 
 partialj:
     Nat IS LESS THAN Nat { In_Lt($1, $5) }
 
-  | Nat error { errAt 2 "Syntax error: \'is\' expected" }
-  | Nat IS error { errAt 3 "Syntax error: \'less\' expected" }
-  | Nat LESS error { errAt 4 "Syntax error: \'than\' expected" }
+  | Nat error { errAt 2 "Syntax error: 'is' expected" }
+  | Nat IS error { errAt 3 "Syntax error: 'less' expected" }
+  | Nat LESS error { errAt 4 "Syntax error: 'than' expected" }
   | Nat IS LESS THAN error { errAt 5 "Syntax error: natural number expected" }
 
 Nat:

@@ -46,8 +46,8 @@ Derivation:
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY ID LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
-  | Judgment error { errAt 2 "Syntax error: \'by\' expected after a judgment" }
-  | Judgment BY error { errAt 3 "Syntax error: rule name expected after \'by\'" }
+  | Judgment error { errAt 2 "Syntax error: 'by' expected after a judgment" }
+  | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY ID error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY ID LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
@@ -63,10 +63,10 @@ Judgment:
 
   | Nat error { errAt 2 "Syntax error: 'plus' or 'times' expected" }
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | Nat PLUS Nat error { errAt 4 "Syntax error: \'is\' expected" }
+  | Nat PLUS Nat error { errAt 4 "Syntax error: 'is' expected" }
   | Nat PLUS Nat IS error { errAt 5 "Syntax error: natural number expected" }
   | Nat MULT error { errAt 3 "Syntax error: natural number expected" }
-  | Nat MULT Nat error { errAt 4 "Syntax error: \'is\' expected" }
+  | Nat MULT Nat error { errAt 4 "Syntax error: 'is' expected" }
   | Nat MULT Nat IS error { errAt 5 "Syntax error: natural number expected" }
 
 partialj:
@@ -75,10 +75,10 @@ partialj:
 
   | Nat error { errAt 2 "Syntax error: 'plus' or 'times' expected" }
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | Nat PLUS Nat error { errAt 4 "Syntax error: \'is\' expected" }
+  | Nat PLUS Nat error { errAt 4 "Syntax error: 'is' expected" }
   | Nat PLUS Nat IS error { errAt 5 "Syntax error: '?' expected" }
   | Nat MULT error { errAt 3 "Syntax error: natural number expected" }
-  | Nat MULT Nat error { errAt 4 "Syntax error: \'is\' expected" }
+  | Nat MULT Nat error { errAt 4 "Syntax error: 'is' expected" }
   | Nat MULT Nat IS error { errAt 5 "Syntax error: '?' expected" }
 
 Nat:

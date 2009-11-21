@@ -91,16 +91,16 @@ Judgment:
   | SInt IS LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
   | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
 
-  | Exp error { errAt 2 "Syntax error: \'evalto\' expected" }
+  | Exp error { errAt 2 "Syntax error: 'evalto' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: value expected" }
   | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt PLUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt PLUS SInt IS error { errAt 5 "Syntax error: natural number expected" }
   | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MULT SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MULT SInt IS error { errAt 5 "Syntax error: natural number expected" }
   | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: natural number expected" }
 
 partialj :
@@ -111,16 +111,16 @@ partialj :
 /*  | SInt IS LESS THAN SInt { In_AppBOp(Lt, Value_of_int $1, Value_of_int $5) }
   | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6) }
 */
-  | Exp error { errAt 2 "Syntax error: \'evalto\' expected" }
+  | Exp error { errAt 2 "Syntax error: 'evalto' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: '?' expected" }
   | SInt PLUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt PLUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt PLUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt PLUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MULT error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MULT SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MULT SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MULT SInt IS error { errAt 5 "Syntax error: '?' expected" }
   | SInt MINUS error { errAt 3 "Syntax error: natural number expected" }
-  | SInt MINUS SInt error { errAt 4 "Syntax error: \'is\' expected" }
+  | SInt MINUS SInt error { errAt 4 "Syntax error: 'is' expected" }
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 
