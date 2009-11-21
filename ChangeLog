@@ -1,3 +1,7 @@
+2009-11-21  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/lexer.mll (find_mv): bug in the regular expression.
+
 2009-11-18  Atsushi Igarashi  <igarashi@cornet>
 
 	* cgi/hilight.scm (emphasize): line splitting shouldn't ignore empty lines.
