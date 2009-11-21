@@ -1,6 +1,7 @@
 2009-11-21  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/lexer.mll (find_mv): bug in the regular expression.
+	* checker/lexer.mll: better error message for illegal characters.
 
 2009-11-18  Atsushi Igarashi  <igarashi@cornet>
 

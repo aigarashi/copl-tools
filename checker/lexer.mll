@@ -127,7 +127,8 @@ rule main = parse
 | _ { 
       let c = String.escaped (Lexing.lexeme lexbuf) in
       let pos = lexbuf.lex_curr_p in
-      MySupport.Error.errAt pos ("Illegal character " ^ c ^ " found.")
+      let pos' = {pos with pos_cnum = pos.pos_cnum - 1} in
+      MySupport.Error.errBtw pos' pos ("Illegal character " ^ c ^ " found.")
   }
 
 and comment n = parse
