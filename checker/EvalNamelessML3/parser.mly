@@ -147,11 +147,37 @@ DExp:
   | DExp2 BinOp2 LongDExp { BinOpD($2, $1, $3) } 
   | DExp3 BinOp3 LongDExp { BinOpD($2, $1, $3) } 
 
+  | DExp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
+  | DExp2 BinOp2 error { errAt 3 "Syntax error: expression expected" }
+  | DExp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
+
 LongDExp: 
   | IF DExp THEN DExp ELSE DExp { IfD($2, $4, $6) }
   | LET DOT EQ DExp IN DExp { LetD($4, $6) }
   | LET REC DOT EQ FUN DOT RARROW DExp IN DExp { LetRecD($8, $10) }
   | FUN DOT RARROW DExp { AbsD $4 }
+
+  | IF error { errAt 2 "Syntax error: expression expected" }
+  | IF DExp error { errAt 3 "Syntax error: 'then' expected" }
+  | IF DExp THEN error { errAt 4 "Syntax error: expression expected" }
+  | IF DExp THEN DExp error { errAt 5 "Syntax error: 'else' expected" }
+  | IF DExp THEN DExp ELSE error { errAt 6 "Syntax error: expression expected" }
+  | LET error { errAt 2 "Syntax error: variable name or 'rec' expected" }
+  | LET DOT error { errAt 3 "Syntax error: '=' expected" }
+  | LET DOT EQ error { errAt 4 "Syntax error: expression expected" }
+  | LET DOT EQ DExp error { errAt 5 "Syntax error: 'in' expected" }
+  | LET DOT EQ DExp IN error { errAt 6 "Syntax error: expression expected" }
+  | LET REC error { errAt 3 "Syntax error: variable name expected" }
+  | LET REC DOT error { errAt 4 "Syntax error: '=' expected" }
+  | LET REC DOT EQ error { errAt 5 "Syntax error: 'fun' expected" }
+  | LET REC DOT EQ FUN error { errAt 6 "Syntax error: variable name expected" }
+  | LET REC DOT EQ FUN DOT { errAt 7 "Syntax error: '->' expected" }
+  | LET REC DOT EQ FUN DOT RARROW error { errAt 8 "Syntax error: expression expected" }
+  | LET REC DOT EQ FUN DOT RARROW DExp error { errAt 9 "Syntax error: 'in' expected" }
+  | LET REC DOT EQ FUN DOT RARROW DExp IN error { errAt 10 "Syntax error: expression expected" }
+  | FUN error { errAt 2 "Syntax error: variable name expected" }
+  | FUN DOT error { errAt 3 "Syntax error: '->' expected" }
+  | FUN DOT RARROW error { errAt 4 "Syntax error: expression expected" }
 
 DExp1:
   | DExp1 BinOp1 DExp2 { BinOpD($2, $1, $3) }
@@ -190,6 +216,8 @@ DAExp:
   | FALSE { DBExp_of_bool false }
   | HASH INTL { Index $2 }
   | LPAREN DExp RPAREN { $2 }
+
+  | LPAREN error { errAt 2 "Syntax error: expression expected" }
   | LPAREN DExp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
 SInt: /* signed int */
@@ -203,6 +231,20 @@ Val:
   | LPAREN Env RPAREN LBRACKET FUN DOT RARROW DExp RBRACKET { Fun($2, $8) }
   | LPAREN Env RPAREN LBRACKET REC DOT EQ FUN DOT RARROW DExp RBRACKET 
       { Rec($2, $11) }
+
+  | LPAREN Env RPAREN error { errAt 4 "Syntax error: '[' expected" }
+  | LPAREN Env RPAREN LBRACKET error { errAt 5 "Syntax error: 'fun' or 'rec' expected" }
+  | LPAREN Env RPAREN LBRACKET FUN error { errAt 6 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET FUN DOT error { errAt 7 "Syntax error: '->' expected" }
+  | LPAREN Env RPAREN LBRACKET FUN DOT RARROW error { errAt 8 "Syntax error: expression expected" }
+  | LPAREN Env RPAREN LBRACKET FUN DOT RARROW DExp error { errBtw 4 9 "Syntax error: unmatched brackets" }
+
+  | LPAREN Env RPAREN LBRACKET REC error { errAt 6 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET REC DOT error { errAt 7 "Syntax error: '=' expected" }
+  | LPAREN Env RPAREN LBRACKET REC DOT FUN error { errAt 8 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET REC DOT FUN DOT error { errAt 9 "Syntax error: '->' expected" }
+  | LPAREN Env RPAREN LBRACKET REC DOT FUN DOT RARROW error { errAt 10 "Syntax error: expression expected" }
+  | LPAREN Env RPAREN LBRACKET REC DOT FUN DOT RARROW DExp error { errBtw 4 11 "Syntax error: unmatched brackets" }
 
 /******** experimental feature for macro defintions *********/
 

@@ -1,5 +1,7 @@
 2009-11-21  Atsushi Igarashi  <igarashi@cornet>
 
+	* checker/*/parser.mly: Better error messages.
+
 	* checker/EvalNatExp/parser.mly, checker/ReduceNatExp/parser.mly:
 	Better error messages.
 

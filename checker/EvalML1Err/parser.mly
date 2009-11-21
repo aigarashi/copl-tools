@@ -131,8 +131,18 @@ Exp:
   | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
   | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
 
+  | Exp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
+  | Exp2 BinOp2 error { errAt 3 "Syntax error: expression expected" }
+  | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
+
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
+
+  | IF error { errAt 2 "Syntax error: expression expected" }
+  | IF Exp error { errAt 3 "Syntax error: 'then' expected" }
+  | IF Exp THEN error { errAt 4 "Syntax error: expression expected" }
+  | IF Exp THEN Exp error { errAt 5 "Syntax error: 'else' expected" }
+  | IF Exp THEN Exp ELSE error { errAt 6 "Syntax error: expression expected" }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
@@ -161,6 +171,8 @@ AExp:
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
   | LPAREN Exp RPAREN { $2 }
+
+  | LPAREN error { errAt 2 "Syntax error: expression expected" }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
 SInt: /* signed int */
