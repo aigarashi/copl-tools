@@ -7,7 +7,7 @@ let errBtw i j s =
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
-  MySupport.Error.errAt (Parsing.rhs_start_pos i) s
+  MySupport.Error.errBtw (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos i) s
 
 (******** experimental feature for macro defitinions *********)
 (* The following definition could be automatically generated from .gm *)
