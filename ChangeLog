@@ -1,5 +1,8 @@
 2009-11-21  Atsushi Igarashi  <igarashi@cornet>
 
+	* checker/EvalNatExp/parser.mly, checker/ReduceNatExp/parser.mly:
+	Better error messages.
+
 	* checker/lexer.mll (find_mv): bug in the regular expression.
 	* checker/lexer.mll: better error message for illegal characters.
 
