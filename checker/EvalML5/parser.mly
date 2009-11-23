@@ -155,19 +155,18 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | Env2 LCID EQ Val { Bind($1, Var $2, $4) }
-/* error handling */
-  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
-  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
+  | LCID EQ Val Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
+  | LCID error { errAt 2 "Syntax error: '=' expected" }
+  | LCID EQ error { errAt 3 "Syntax error: value expected" }
 
 Env2:
-    /* empty */ { Empty } 
-  | Env2 LCID EQ Val COMMA { Bind($1, Var $2, $4) }
-/* error handling */
-  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
-  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
-  | Env2 LCID EQ Val error { errAt 5 "Syntax error: ',' expected" }
-
+    /* empty */ { [] }
+  | COMMA LCID EQ Val Env2 { ($2, $4) :: $5 }
+  | error { errAt 1 "Syntax error: comma expected" }
+  | COMMA error { errAt 2 "Syntax error: variable expected" }
+  | COMMA LCID error { errAt 3 "Syntax error: '=' expected" }
+  | COMMA LCID EQ error { errAt 4 "Syntax error: value expected" }
+  
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
@@ -372,14 +371,6 @@ AExp: MVEXP {
   }
 
 Env: MVENV {
-  try 
-    match Hashtbl.find tbl $1 with
-      Env e -> e
-    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
-  with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
-  }
-
-Env2: MVENV COMMA {
   try 
     match Hashtbl.find tbl $1 with
       Env e -> e

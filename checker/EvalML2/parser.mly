@@ -68,7 +68,7 @@ Derivation:
   | Judgment error { errAt 2 "Syntax error: 'by' expected after a judgment" }
   | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
-  | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
+  | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: sequence of derivations expected" }
 
 RName : 
     ID { $1 }
@@ -125,16 +125,17 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | Env2 LCID EQ Val { Bind($1, Var $2, $4) }
-  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
-  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
+  | LCID EQ Val Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
+  | LCID error { errAt 2 "Syntax error: '=' expected" }
+  | LCID EQ error { errAt 3 "Syntax error: value expected" }
 
 Env2:
-    /* empty */ { Empty } 
-  | Env2 LCID EQ Val COMMA { Bind($1, Var $2, $4) }
-  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
-  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
-  | Env2 LCID EQ Val error { errAt 5 "Syntax error: ',' expected" }
+    /* empty */ { [] }
+  | COMMA LCID EQ Val Env2 { ($2, $4) :: $5 }
+  | error { errAt 1 "Syntax error: comma expected" }
+  | COMMA error { errAt 2 "Syntax error: variable expected" }
+  | COMMA LCID error { errAt 3 "Syntax error: '=' expected" }
+  | COMMA LCID EQ error { errAt 4 "Syntax error: value expected" }
   
 Exp:
   | LongExp { $1 }
@@ -243,6 +244,7 @@ Env: MVENV {
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
+/*
 Env2: MVENV COMMA {
   try 
     match Hashtbl.find tbl $1 with
@@ -250,3 +252,4 @@ Env2: MVENV COMMA {
     | _ -> errAt 1 "Cannot happen! Env: MVENV" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
+*/

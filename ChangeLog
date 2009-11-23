@@ -1,4 +1,11 @@
+2009-11-23  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/*/parser.mly: better error handling.
+
 2009-11-21  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/*/parser.mly (errAt): now specifies the ending position
+	of the error token as well as the starting position.
 
 	* checker/*/parser.mly: Better error messages.
 
