@@ -122,41 +122,41 @@
      if #0 < 2 then 1 else #0 * #1 (#0 - 1) in #0 3
    evalto 6")
 
-;;   ;; EvalML4
-;;   (EvalML4 "|- (1 + 2) :: (3 + 4) :: [] evalto 3 :: 7 :: []")
-;;   (EvalML4 "|- let f = fun x -> match x with [] -> 0 | a :: b -> a in
-;;    f (4::[]) + f [] + f (1 :: 2 :: 3 :: [])
-;;   evalto 5")
-;;   (EvalML4 "|- let rec f = fun x -> if x < 1 then [] else x :: f (x - 1) in
-;;    f 3 evalto 3 :: 2 :: 1 :: []")
-;;   (EvalML4 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
-;;    length (1 :: 2 :: 3 :: []) evalto 3")
-;;   (EvalML4 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
-;;    length ((1 :: 2 :: []) :: (3 :: 4 :: 5 :: []) :: []) evalto 2")
-;;   (EvalML4 "|- let rec append = fun l1 -> fun l2 -> 
-;;      match l1 with [] -> l2 | x :: y -> x :: append y l2 in
-;;    append (1 :: 2 :: []) (3 :: 4 :: 5 :: []) evalto 1 :: 2 :: 3 :: 4 :: 5 :: []")
-;;   (EvalML4 "|- let rec apply = fun l -> fun x ->
-;;      match l with [] -> x | f :: l -> f (apply l x) in
-;;    apply ((fun x -> x * x) :: (fun y -> y + 3) :: []) 4 
-;;   evalto 49")
-;;   (EvalML4 "|- let rec apply = fun l -> fun x ->
-;;      match l with [] -> x | f :: l -> apply l (f x) in
-;;    apply ((fun x -> x * x) :: (fun y -> y + 3) :: []) 4 
-;;   evalto 19")
+  ;; EvalML4
+  (EvalML4 "|- (1 + 2) :: (3 + 4) :: [] evalto 3 :: 7 :: []")
+  (EvalML4 "|- let f = fun x -> match x with [] -> 0 | a :: b -> a in
+    f (4::[]) + f [] + f (1 :: 2 :: 3 :: [])
+   evalto 5")
+  (EvalML4 "|- let rec f = fun x -> if x < 1 then [] else x :: f (x - 1) in
+    f 3 evalto 3 :: 2 :: 1 :: []")
+  (EvalML4 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
+    length (1 :: 2 :: 3 :: []) evalto 3")
+  (EvalML4 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
+    length ((1 :: 2 :: []) :: (3 :: 4 :: 5 :: []) :: []) evalto 2")
+  (EvalML4 "|- let rec append = fun l1 -> fun l2 -> 
+      match l1 with [] -> l2 | x :: y -> x :: append y l2 in
+    append (1 :: 2 :: []) (3 :: 4 :: 5 :: []) evalto 1 :: 2 :: 3 :: 4 :: 5 :: []")
+  (EvalML4 "|- let rec apply = fun l -> fun x ->
+      match l with [] -> x | f :: l -> f (apply l x) in
+    apply ((fun x -> x * x) :: (fun y -> y + 3) :: []) 4 
+   evalto 49")
+  (EvalML4 "|- let rec apply = fun l -> fun x ->
+      match l with [] -> x | f :: l -> apply l (f x) in
+    apply ((fun x -> x * x) :: (fun y -> y + 3) :: []) 4 
+   evalto 19")
 
-;;   ;; EvalML5
-;;   (EvalML5 "|- let rec max = fun l -> match l with 
-;;        x :: [] -> x 
-;;      | x :: y :: z -> if x < y then max (y :: z) else max (x :: z) in
-;;    max (9 :: 2 :: 3 :: [])
-;;   evalto 9")
-;;   (EvalML5 "|- let rec heads = fun l -> match l with
-;;        [] -> []
-;;      | [] :: l' -> heads l'
-;;      | (x :: _) :: l' -> x :: heads l' in
-;;    heads ((1 :: 2 :: []) :: [] :: (3 :: []) :: [])
-;;   evalto 1 :: 3 :: []")
+  ;; EvalML5
+  (EvalML5 "|- let rec max = fun l -> match l with 
+       x :: [] -> x 
+     | x :: y :: z -> if x < y then max (y :: z) else max (x :: z) in
+   max (9 :: 2 :: 3 :: [])
+  evalto 9")
+  (EvalML5 "|- let rec heads = fun l -> match l with
+       [] -> []
+     | [] :: l' -> heads l'
+     | (x :: _) :: l' -> x :: heads l' in
+   heads ((1 :: 2 :: []) :: [] :: (3 :: []) :: [])
+  evalto 1 :: 3 :: []")
 
 ;;   ;; TypingML5
 ;;   (TypingML5 "|- 3 + 5 : int")
