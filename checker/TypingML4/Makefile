@@ -1,6 +1,6 @@
-PROGNAME = TypingML5
-MODULEPATH = TypingML5
-PACKED=typingML5
+PROGNAME = TypingML4
+MODULEPATH = TypingML4
+PACKED=typingML4
 
 -include ../common/Makefile.game
 

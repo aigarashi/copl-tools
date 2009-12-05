@@ -1,10 +1,9 @@
 (*
   ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
   ML2: ML1 + let (´Ä¶­)
-  ML3: ML2 + fun (´Ø¿ôÃê¾Ý¡¦Å¬ÍÑ)
-  ML4: ML3 + let rec (ºÆµ¢´Ø¿ôÄêµÁ)
-  ML5: ML4 + list + match
-  ML5full: ML5 + error handling
+  ML3: ML2 + fun (´Ø¿ôÃê¾Ý¡¦Å¬ÍÑ) + let rec (ºÆµ¢´Ø¿ôÄêµÁ)
+  ML4: ML3 + list + match
+  ML4Err: ML4 + error handling
 *)
 
 [Syntax]
@@ -104,6 +103,7 @@ E-PlusErr1:	EvalTo(env, BinOp(Plus, e1, e2), Error) :-
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
 E-PlusErr2:	EvalTo(env, BinOp(Plus, e1, e2), Error) :-
+		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
@@ -113,6 +113,7 @@ E-MinusErr1:	EvalTo(env, BinOp(Minus, e1, e2), Error) :-
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
 E-MinusErr2:	EvalTo(env, BinOp(Minus, e1, e2), Error) :-
+		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
@@ -122,6 +123,7 @@ E-MultErr1:	EvalTo(env, BinOp(Mult, e1, e2), Error) :-
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
 E-MultErr2:	EvalTo(env, BinOp(Mult, e1, e2), Error) :-
+		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
@@ -131,6 +133,7 @@ E-LtErr1:	EvalTo(env, BinOp(Lt, e1, e2), Error) :-
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
 E-LtErr2:	EvalTo(env, BinOp(Lt, e1, e2), Error) :-
+		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \not \in \mathbf{int}%;
@@ -147,14 +150,18 @@ E-AppErr1: EvalTo(env, App(e1, e2), Error) :-
          EvalTo(env, e1, r), `match r with Res_of_Value (Fun(_,_,_) | Rec(_,_,_,_)) -> false | _ -> true` %$r \mbox{ is not a closure}%;
 
 E-AppErr2: EvalTo(env, App(e1, e2), Error) :-
-         EvalTo(env, e2, Error);
-
+	   EvalTo(env, e1, Fun(env2, x, e0)),
+	   EvalTo(env, e2, Error);
 E-AppErr3: EvalTo(env, App(e1, e2), Error) :-
+	   EvalTo(env, e1, Rec(env2, x, y, e0)),
+	   EvalTo(env, e2, Error);
+
+E-AppErr4: EvalTo(env, App(e1, e2), Error) :-
          EvalTo(env, e1, Fun(env2, x, e0)),
          EvalTo(env, e2, v2),
          EvalTo(Bind(env2, x, v2), e0, Error);
 
-E-AppErr4: EvalTo(env, App(e1, e2), Error) :-
+E-AppErr5: EvalTo(env, App(e1, e2), Error) :-
          EvalTo(env, e1, Rec(env2, x, y, e0)),
          EvalTo(env, e2, v2),
          EvalTo(Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, Error);
@@ -163,11 +170,11 @@ E-LetRecErr: EvalTo(env, LetRec(x, y, e1, e2), Error) :-
                 EvalTo(Bind(env,x,Rec(env,x,y,e1)), e2, Error);
 
 E-ConsErr1: EvalTo(env,Cons(e1,e2),Error) :- EvalTo(env,e1,Error);
-E-ConsErr2: EvalTo(env,Cons(e1,e2),Error) :- EvalTo(env,e2,Error);
+E-ConsErr2: EvalTo(env,Cons(e1,e2),Error) :- EvalTo(env,e1,v1), EvalTo(env,e2,Error);
 
 E-MatchErr1: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,r),
 	     `match $r with Res_of_Value (NilV | ConsV(_,_)) -> false | _ -> true`
-             % $r \mbox{ is neither \MLvfullNilVTerm{} nor \(\MLvfullConsVTerm{v_1}{v_2}\)} %;
+             % $r \mbox{ is neither \EvalMLivErrNilVTerm{} nor \(\EvalMLivErrConsVTerm{\EvalMLivmv{v}{_1}}{\EvalMLivmv{v}{_2}}\)} %;
 
 E-MatchErr2: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,NilV), EvalTo(env,e2,Error);
 E-MatchErr3: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- 

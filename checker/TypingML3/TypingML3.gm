@@ -1,9 +1,8 @@
 (*
   ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
   ML2: ML1 + let (環境)
-  ML3: ML2 + fun (関数抽象・適用)
-  ML4: ML3 + let rec (再帰関数定義)
-  TypingML4: typing for ML4
+  ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
+  TypingML3: typing for ML3
 *)
 
 [Syntax]
@@ -47,7 +46,7 @@ T-Plus: Typing(env, BinOp(Plus, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Minus: Typing(env, BinOp(Minus, e1, e2), TyInt) :- 
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
-T-Mult: Typing(env, BinOp(Mult, e1, e2), TyInt) :- 
+T-Times: Typing(env, BinOp(Mult, e1, e2), TyInt) :- 
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
@@ -60,7 +59,7 @@ T-Var:  Typing(env, x, t) :- ` $t = lookup $env $x` %$env($x) = $t%;
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
 		Typing(env, e1, t1), Typing(Bind(env,x,t1), e2, t2);
 
-T-Abs:  Typing(env,Abs(x,e), TyFun(t1,t2)) :- Typing(Bind(env,x,t1), e, t2);
+T-Fun:  Typing(env,Abs(x,e), TyFun(t1,t2)) :- Typing(Bind(env,x,t1), e, t2);
 T-App:  Typing(env,App(e1,e2), t2) :- 
                 Typing(env, e1, TyFun(t1,t2)), Typing(env, e2, t1);
 T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-

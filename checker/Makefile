@@ -13,7 +13,8 @@ GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
 	EvalML1Err \
 	ContML1 ContML4 RefML4 \
 	NamelessML3 EvalNamelessML3 \
-	TypingML2 TypingML4 TypingML5 PolyML4 PolyML5
+	TypingML2 TypingML3 TypingML4 \
+	PolyML4 PolyML5
 
 INCLUDES=$(foreach game,$(GAMES),-I $(game)) # -I $(GMCDIR)
 
@@ -39,8 +40,8 @@ OBJS=mySupport.cmx derivation.cmx lexer.cmx \
 		NamelessML3/namelessML3.cmx \
 		EvalNamelessML3/evalNamelessML3.cmx \
 		TypingML2/typingML2.cmx \
+		TypingML3/typingML3.cmx \
 		TypingML4/typingML4.cmx \
-		TypingML5/typingML5.cmx \
 		PolyML4/polyML4.cmx \
 		PolyML5/polyML5.cmx \
 		main.cmx
@@ -84,8 +85,8 @@ clean:
 	$(MAKE) -C NamelessML3 clean
 	$(MAKE) -C EvalNamelessML3 clean
 	$(MAKE) -C TypingML2 clean
+	$(MAKE) -C TypingML3 clean
 	$(MAKE) -C TypingML4 clean
-	$(MAKE) -C TypingML5 clean
 	$(MAKE) -C PolyML4 clean	
 	$(MAKE) -C PolyML5 clean	
 	rm -f $(PROGNAME)
@@ -113,8 +114,8 @@ main.cmx: Nat/nat.cmx \
 	NamelessML3/namelessML3.cmx \
 	EvalNamelessML3/evalNamelessML3.cmx \
 	TypingML2/typingML2.cmx \
+	TypingML3/typingML3.cmx \
 	TypingML4/typingML4.cmx \
-	TypingML5/typingML5.cmx \
 	PolyML4/polyML4.cmx \
 	PolyML5/polyML5.cmx
 

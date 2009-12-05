@@ -40,7 +40,7 @@ T-Plus: Typing(env, BinOp(Plus, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Minus: Typing(env, BinOp(Minus, e1, e2), TyInt) :- 
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
-T-Mult: Typing(env, BinOp(Mult, e1, e2), TyInt) :- 
+T-Times: Typing(env, BinOp(Mult, e1, e2), TyInt) :- 
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
