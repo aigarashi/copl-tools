@@ -279,10 +279,10 @@ DAExp: MVDEXP {
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
-Env: MVENV {
+Env: MVENV Env2 {
   try 
     match Hashtbl.find tbl $1 with
-      Env e -> e
+      Env e -> List.fold_left (fun env v -> Bind(env, v)) e $2
     | _ -> errAt 1 "Cannot happen! Env: MVENV" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

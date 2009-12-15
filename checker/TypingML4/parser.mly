@@ -105,7 +105,7 @@ Env:
     /* empty */ { Empty } 
   | LCID COLON Type Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
   | LCID error { errAt 2 "Syntax error: ':' expected" }
-  | LCID COLON error { errAt 3 "Syntax error: value expected" }
+  | LCID COLON error { errAt 3 "Syntax error: type expected" }
 
 Env2:
     /* empty */ { [] } 
@@ -113,7 +113,7 @@ Env2:
   | error { errAt 1 "Syntax error: comma expected" }
   | COMMA error { errAt 2 "Syntax error: variable expected" }
   | COMMA LCID error { errAt 3 "Syntax error: ':' expected" }
-  | COMMA LCID COLON error { errAt 4 "Syntax error: value expected" }
+  | COMMA LCID COLON error { errAt 4 "Syntax error: type expected" }
 
   
 Exp:
@@ -248,7 +248,7 @@ MacroDef:
   | DEF MVTENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
 
   | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
-  | DEF MVTYPE EQ error { errAt 4 "Syntax error: value expected" }
+  | DEF MVTYPE EQ error { errAt 4 "Syntax error: type expected" }
   | DEF MVTENV EQ error { errAt 4 "Syntax error: environment expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
@@ -268,10 +268,10 @@ AExp: MVEXP {
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
-Env: MVTENV {
+Env: MVTENV Env2 {
   try 
     match Hashtbl.find tbl $1 with
-      Env e -> e
+      Env e -> List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) e $2
     | _ -> errAt 1 "Cannot happen! Env: MVTENV" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

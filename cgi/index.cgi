@@ -56,15 +56,16 @@
 
 (define (display-sandbox msg)
   (list
+   (html:h2 "すなば")
    (html:form 
     :name "sandbox" :action "process.cgi" :method "post"
     (html:p msg)
     (html:p "導出システム名を選んでください: "
 	    (html:select :name "game"
-			 (map (lambda (g) (html:option :value g g)) *gamelist*))
-	    (html:input :type "submit" :value "送信"))
+			 (map (lambda (g) (html:option :value g g)) *gamelist*)))
     (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off"
 		   "ここに導出を書いてください")
+    (html:input :type "submit" :value "送信")
     (html:input :type "hidden" :name "no" :value 0))
   (html:script :type "text/javascript" "<!--
   document.sandbox.derivation.select();
