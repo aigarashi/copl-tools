@@ -1,5 +1,7 @@
 2009-12-15  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
+	* cgi/hilight.scm (emphasize): Bug fix.
+
 	* checker/TypingML4: Misc updates, including better error
 	handling, and macro definitions.
 
