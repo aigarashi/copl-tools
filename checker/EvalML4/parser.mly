@@ -40,11 +40,9 @@ let tbl = Hashtbl.create 1024
 
 /* ML3 */
 %token FUN RARROW
-
-/* ML4 */
 %token REC
 
-/* ML5 */
+/* ML4 */
 %token MATCH WITH BAR COLCOL
 
 /******** experimental feature for macro defitinions *********/

@@ -47,7 +47,7 @@ let tbl = Hashtbl.create 1024
 
 /******** experimental feature for macro defitinions *********/
 %token DEF EQ
-%token <string> MVEXP
+%token <string> MVDEXP
 %token <string> MVVALUE
 %token <string> MVENV
 
@@ -253,11 +253,11 @@ MacroDefs:
   | MacroDef MacroDefs { () }
 
 MacroDef:
-  | DEF MVEXP EQ DExp SEMI { Hashtbl.add tbl $2 (DExp $4) }
+  | DEF MVDEXP EQ DExp SEMI { Hashtbl.add tbl $2 (DExp $4) }
   | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
   | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
 
-  | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
+  | DEF MVDEXP EQ error { errAt 4 "Syntax error: expression expected" }
   | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
   | DEF MVENV EQ error { errAt 4 "Syntax error: environment expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
@@ -271,11 +271,11 @@ Val: MVVALUE {
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
-DAExp: MVEXP {
+DAExp: MVDEXP {
   try 
     match Hashtbl.find tbl $1 with
       DExp e -> e
-    | _ -> errAt 1 "Cannot happen! DAExp: MVEXP" 
+    | _ -> errAt 1 "Cannot happen! DAExp: MVDEXP" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
