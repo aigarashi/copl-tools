@@ -137,7 +137,7 @@ rule lex = parse
     lex lexbuf
 }
 | "->" {
-   (match !mode with VERB | CHARS -> pr "\\(\\rightarrow{}\\)" | _  -> pr "->");
+   (match !mode with VERB | CHARS -> pr "\\(\\rightarrow\\)" | _  -> pr "->");
    lex lexbuf
 } 
 | "\\{" {

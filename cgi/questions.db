@@ -230,48 +230,48 @@
      match l with [] -> [] | x :: y -> f x :: map f y in
      map (fun x -> x < 3) (4 :: 5 :: 1 :: []) : bool list")
 
-;;    ;; PolyML5 (let-polymorphism): 
-;;    (PolyML5 "|- fun x -> x : 'a -> 'a")
-;;    (PolyML5 "f: 'a.'a->'a |- f 3 : int")
-;;    (PolyML5 "f: 'a.'a->'a |- f (fun x -> x + 3) : int -> int")
-;;    (PolyML5 "|- let id = fun x -> x in id id : bool -> bool")
-;;    (PolyML5 "f: 'a 'b.'a->'b->'a |- f 3 true + f 2 4 : int")
-;;    (PolyML5 "|- let k = fun x -> fun y -> x in (k 3 true) :: (k (1::[]) 3) : int list")
+   ;; PolyML4 (let-polymorphism): 
+   (PolyML4 "|- fun x -> x : 'a -> 'a")
+   (PolyML4 "f: 'a.'a->'a |- f 3 : int")
+   (PolyML4 "f: 'a.'a->'a |- f (fun x -> x + 3) : int -> int")
+   (PolyML4 "|- let id = fun x -> x in id id : bool -> bool")
+   (PolyML4 "f: 'a 'b.'a->'b->'a |- f 3 true + f 2 4 : int")
+   (PolyML4 "|- let k = fun x -> fun y -> x in (k 3 true) :: (k (1::[]) 3) : int list")
 
-;;    (PolyML5 "|- let compose = fun f -> fun g -> fun x -> f (g x) in
-;;    let f = fun x -> if x then 3 else 4 in
-;;    let g = fun x -> x < 4 in
-;;    compose f (compose g f) true : int")
+   (PolyML4 "|- let compose = fun f -> fun g -> fun x -> f (g x) in
+   let f = fun x -> if x then 3 else 4 in
+   let g = fun x -> x < 4 in
+   compose f (compose g f) true : int")
 
-;;    (PolyML5 "|- let twice = fun f -> fun x -> f (f x) in
-;;    twice (fun x -> x + 4) 5 : int")
-;;    (PolyML5 "|- let twice = fun f -> fun x -> f (f x) in
-;;    twice twice (fun x -> x + 4) 5 : int")
+   (PolyML4 "|- let twice = fun f -> fun x -> f (f x) in
+   twice (fun x -> x + 4) 5 : int")
+   (PolyML4 "|- let twice = fun f -> fun x -> f (f x) in
+   twice twice (fun x -> x + 4) 5 : int")
 
-;;    (PolyML5 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
-;;    let k = fun x -> fun y -> x in
-;;    s k k : 'a -> 'a")
+   (PolyML4 "|- let s = fun f -> fun g -> fun x -> f x (g x) in
+   let k = fun x -> fun y -> x in
+   s k k : 'a -> 'a")
 
-;;    (PolyML5 "|- let x = [] in let y = 3 :: x in true :: x : bool list")
-;;    (PolyML5 "|- let l = (fun x -> x) :: [] in
-;;    let l1 = (fun y -> y + 1) :: l in
-;;    (fun z -> if z then false else true) :: l : (bool -> bool) list")
-;;    (PolyML5 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
-;;    length (3 :: 2 :: []) + length ((1 :: []) :: []) : int")
+   (PolyML4 "|- let x = [] in let y = 3 :: x in true :: x : bool list")
+   (PolyML4 "|- let l = (fun x -> x) :: [] in
+   let l1 = (fun y -> y + 1) :: l in
+   (fun z -> if z then false else true) :: l : (bool -> bool) list")
+   (PolyML4 "|- let rec length = fun l -> match l with [] -> 0 | x :: y -> 1 + length y in
+   length (3 :: 2 :: []) + length ((1 :: []) :: []) : int")
 
-;;    (PolyML5 "|- let rec map = fun f -> fun l ->
-;;      match l with [] -> [] | x :: y -> f x :: map f y in
-;;    map (fun x -> x < 3) (map (fun x -> x * 2) (4 :: 5 :: 1 :: [])) : bool list")
-;;    (PolyML5 "|- let rec map = fun f -> fun l ->
-;;      match l with [] -> [] | x :: y -> f x :: map f y in
-;;    let f = map (fun x -> x) in
-;;    let a = f (3 :: []) in f (true :: []) : bool list")
+   (PolyML4 "|- let rec map = fun f -> fun l ->
+     match l with [] -> [] | x :: y -> f x :: map f y in
+   map (fun x -> x < 3) (map (fun x -> x * 2) (4 :: 5 :: 1 :: [])) : bool list")
+   (PolyML4 "|- let rec map = fun f -> fun l ->
+     match l with [] -> [] | x :: y -> f x :: map f y in
+   let f = map (fun x -> x) in
+   let a = f (3 :: []) in f (true :: []) : bool list")
 
-;;    (PolyML5 "|- let f = fun x -> 
-;;              let g = fun y -> x :: [] in 
-;;              if true then g 3 else g false in
-;;    match f 2 with [] -> f true | x :: y -> [] : bool list")
-;;    (PolyML5 "|- let f = fun x -> 
-;;              let g = fun y -> y x :: [] in g (fun z -> 4) in
-;;    match f true with [] -> 3 :: [] | x :: y -> f x : int list")
+   (PolyML4 "|- let f = fun x -> 
+             let g = fun y -> x :: [] in 
+             if true then g 3 else g false in
+   match f 2 with [] -> f true | x :: y -> [] : bool list")
+   (PolyML4 "|- let f = fun x -> 
+             let g = fun y -> y x :: [] in g (fun z -> 4) in
+   match f true with [] -> 3 :: [] | x :: y -> f x : int list")
 )
