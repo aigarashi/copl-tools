@@ -1,10 +1,9 @@
 (*
   ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
   ML2: ML1 + let (環境)
-  ML3: ML2 + fun (関数抽象・適用)
-  ML4: ML3 + let rec (再帰関数定義)
-  TypingML4: typing for ML4
-  PolyML4: polymorphic typing for ML4
+  ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
+  TypingML3: typing for ML3
+  PolyML3: polymorphic typing for ML3
 *)
 
 [Syntax]
