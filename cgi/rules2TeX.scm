@@ -637,78 +637,78 @@ span.rname { font-variant: small-caps; }
 
 (define TypingML4:Typing TypingML3:Typing)
 
-;; PolyML3
+;; PolyTypingML3
 
-(define PolyML3:TyBoolTerm TypingML3:TyBoolTerm)
-(define PolyML3:TyIntTerm TypingML3:TyIntTerm)
-(define PolyML3:TyFunTerm TypingML3:TyFunTerm)
+(define PolyTypingML3:TyBoolTerm TypingML3:TyBoolTerm)
+(define PolyTypingML3:TyIntTerm TypingML3:TyIntTerm)
+(define PolyTypingML3:TyFunTerm TypingML3:TyFunTerm)
 
-(define (PolyML3:TyFVarTerm a) `("'" ,a))
-(define (PolyML3:TyBVarTerm i) "")
+(define (PolyTypingML3:TyFVarTerm a) `("'" ,a))
+(define (PolyTypingML3:TyBVarTerm i) "")
 
-; (define (PolyML3:TyFVar a))
-; (define (PolyML3:TyBVar a))
-; (define (PolyML3:TySchemeTerm i t))
+; (define (PolyTypingML3:TyFVar a))
+; (define (PolyTypingML3:TyBVar a))
+; (define (PolyTypingML3:TySchemeTerm i t))
 
-(define (PolyML3:mv base . suffix)
+(define (PolyTypingML3:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
 					       ("t" "\\tau")
 					       ("s" "\\sigma"))))
 
-(define (PolyML3:TySchemeTerm i t) 
-  `(,(PolyML3:TyFVarTerm (PolyML3:mv "a" "1"))
+(define (PolyTypingML3:TySchemeTerm i t) 
+  `(,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" "1"))
     "\\cdots"
-    ,(PolyML3:TyFVarTerm (PolyML3:mv "a" "n"))
+    ,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" "n"))
     "." ,t))
     
-(define PolyML3:EmptyTerm TypingML3:EmptyTerm)
-(define PolyML3:BindTerm TypingML3:BindTerm)
+(define PolyTypingML3:EmptyTerm TypingML3:EmptyTerm)
+(define PolyTypingML3:BindTerm TypingML3:BindTerm)
 
-(define PolyML3:BinOpTerm TypingML3:BinOpTerm)
-(define PolyML3:IfTerm TypingML3:IfTerm)
-(define PolyML3:LetTerm TypingML3:LetTerm)
-(define PolyML3:AbsTerm TypingML3:AbsTerm)
-(define PolyML3:AppTerm TypingML3:AppTerm)
-(define PolyML3:LetRecTerm TypingML3:LetRecTerm)
+(define PolyTypingML3:BinOpTerm TypingML3:BinOpTerm)
+(define PolyTypingML3:IfTerm TypingML3:IfTerm)
+(define PolyTypingML3:LetTerm TypingML3:LetTerm)
+(define PolyTypingML3:AbsTerm TypingML3:AbsTerm)
+(define PolyTypingML3:AppTerm TypingML3:AppTerm)
+(define PolyTypingML3:LetRecTerm TypingML3:LetRecTerm)
 
-(define PolyML3:PlusTerm TypingML3:PlusTerm)
-(define PolyML3:MinusTerm TypingML3:MinusTerm)
-(define PolyML3:MultTerm TypingML3:MultTerm)
-(define PolyML3:LtTerm TypingML3:LtTerm)
+(define PolyTypingML3:PlusTerm TypingML3:PlusTerm)
+(define PolyTypingML3:MinusTerm TypingML3:MinusTerm)
+(define PolyTypingML3:MultTerm TypingML3:MultTerm)
+(define PolyTypingML3:LtTerm TypingML3:LtTerm)
 
-(define PolyML3:Typing TypingML3:Typing)
+(define PolyTypingML3:Typing TypingML3:Typing)
 
-;; PolyML4 Should be renamed to PolyTypingML4
+;; PolyTypingML4
 
-(define PolyML4:TyBoolTerm TypingML4:TyBoolTerm)
-(define PolyML4:TyIntTerm TypingML4:TyIntTerm)
-(define PolyML4:TyFunTerm TypingML4:TyFunTerm)
-(define PolyML4:TyListTerm TypingML4:TyListTerm)
+(define PolyTypingML4:TyBoolTerm TypingML4:TyBoolTerm)
+(define PolyTypingML4:TyIntTerm TypingML4:TyIntTerm)
+(define PolyTypingML4:TyFunTerm TypingML4:TyFunTerm)
+(define PolyTypingML4:TyListTerm TypingML4:TyListTerm)
 
-(define PolyML4:TyFVarTerm PolyML4:TyFVarTerm)
-(define PolyML4:TyBVarTerm PolyML4:TyBVarTerm)
-(define PolyML4:TySchemeTerm PolyML4:TySchemeTerm)
+(define PolyTypingML4:TyFVarTerm PolyTypingML3:TyFVarTerm)
+(define PolyTypingML4:TyBVarTerm PolyTypingML3:TyBVarTerm)
+(define PolyTypingML4:TySchemeTerm PolyTypingML3:TySchemeTerm)
 
-(define PolyML4:mv PolyML4:mv)
+(define PolyTypingML4:mv PolyTypingML3:mv)
 
-(define PolyML4:EmptyTerm TypingML4:EmptyTerm)
+(define PolyTypingML4:EmptyTerm TypingML4:EmptyTerm)
 
-(define PolyML4:BindTerm TypingML4:BindTerm)
+(define PolyTypingML4:BindTerm TypingML4:BindTerm)
 
-(define PolyML4:BinOpTerm TypingML4:BinOpTerm)
-(define PolyML4:IfTerm TypingML4:IfTerm)
-(define PolyML4:LetTerm TypingML4:LetTerm)
+(define PolyTypingML4:BinOpTerm TypingML4:BinOpTerm)
+(define PolyTypingML4:IfTerm TypingML4:IfTerm)
+(define PolyTypingML4:LetTerm TypingML4:LetTerm)
 
-(define PolyML4:AbsTerm TypingML4:AbsTerm)
-(define PolyML4:AppTerm TypingML4:AppTerm)
-(define PolyML4:LetRecTerm TypingML4:LetRecTerm)
-(define PolyML4:NilTerm TypingML4:NilTerm)
-(define PolyML4:ConsTerm TypingML4:ConsTerm)
-(define PolyML4:MatchTerm TypingML4:MatchTerm)
+(define PolyTypingML4:AbsTerm TypingML4:AbsTerm)
+(define PolyTypingML4:AppTerm TypingML4:AppTerm)
+(define PolyTypingML4:LetRecTerm TypingML4:LetRecTerm)
+(define PolyTypingML4:NilTerm TypingML4:NilTerm)
+(define PolyTypingML4:ConsTerm TypingML4:ConsTerm)
+(define PolyTypingML4:MatchTerm TypingML4:MatchTerm)
 
-(define PolyML4:PlusTerm TypingML4:PlusTerm)
-(define PolyML4:MinusTerm TypingML4:MinusTerm)
-(define PolyML4:MultTerm TypingML4:MultTerm)
-(define PolyML4:LtTerm TypingML4:LtTerm)
+(define PolyTypingML4:PlusTerm TypingML4:PlusTerm)
+(define PolyTypingML4:MinusTerm TypingML4:MinusTerm)
+(define PolyTypingML4:MultTerm TypingML4:MultTerm)
+(define PolyTypingML4:LtTerm TypingML4:LtTerm)
 
-(define PolyML4:Typing TypingML4:Typing)
+(define PolyTypingML4:Typing TypingML4:Typing)

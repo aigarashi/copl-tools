@@ -1,6 +1,6 @@
-PROGNAME = PolyML3
-MODULEPATH = PolyML3
-PACKED=polyML3
+PROGNAME = PolyTypingML3
+MODULEPATH = PolyTypingML3
+PACKED=polyTypingML3
 
 -include ../common/Makefile.game
 

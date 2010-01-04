@@ -225,6 +225,7 @@ AExp:
 Type:
     Type2 { $1 }
   | Type2 RARROW Type { TyFun($1, $3) }
+  | Type2 RARROW error { errAt 3 "Syntax error: type expected after ->" }
 
 Type2:
   | AType { $1 }

@@ -1,6 +1,6 @@
-PROGNAME = PolyML4
-MODULEPATH = PolyML4
-PACKED=polyML4
+PROGNAME = PolyTypingML4
+MODULEPATH = PolyTypingML4
+PACKED=polyTypingML4
 
 -include ../common/Makefile.game
 
