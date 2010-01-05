@@ -1,6 +1,6 @@
-PROGNAME = ContML1
-MODULEPATH = ContML1
-PACKED=contML1
+PROGNAME = EvalContML1
+MODULEPATH = EvalContML1
+PACKED=evalContML1
 
 -include ../common/Makefile.game
 

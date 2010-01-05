@@ -11,7 +11,7 @@ OCAMLLEX=ocamllex
 GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
 	EvalML1 EvalML2 EvalML3 EvalML4 EvalML5  \
 	EvalML1Err \
-	ContML1 ContML4 RefML4 \
+	EvalContML1 EvalContML4 RefML4 \
 	NamelessML3 EvalNamelessML3 \
 	TypingML2 TypingML3 TypingML4 \
 	PolyTypingML3 PolyTypingML4
@@ -34,8 +34,8 @@ OBJS=mySupport.cmx derivation.cmx lexer.cmx \
 		EvalML4/evalML4.cmx \
 		EvalML5/evalML5.cmx \
 		EvalML1Err/evalML1Err.cmx \
-		ContML1/contML1.cmx \
-		ContML4/contML4.cmx \
+		EvalContML1/evalContML1.cmx \
+		EvalContML4/evalContML4.cmx \
 		RefML4/refML4.cmx \
 		NamelessML3/namelessML3.cmx \
 		EvalNamelessML3/evalNamelessML3.cmx \
@@ -79,8 +79,8 @@ clean:
 	$(MAKE) -C EvalML4 clean
 	$(MAKE) -C EvalML5 clean
 	$(MAKE) -C EvalML1Err clean
-	$(MAKE) -C ContML1 clean
-	$(MAKE) -C ContML4 clean
+	$(MAKE) -C EvalContML1 clean
+	$(MAKE) -C EvalContML4 clean
 	$(MAKE) -C RefML4 clean
 	$(MAKE) -C NamelessML3 clean
 	$(MAKE) -C EvalNamelessML3 clean
@@ -108,8 +108,8 @@ main.cmx: Nat/nat.cmx \
 	EvalML4/evalML4.cmx \
 	EvalML5/evalML5.cmx \
 	EvalML1Err/evalML1Err.cmx \
-	ContML1/contML1.cmx \
-	ContML4/contML4.cmx \
+	EvalContML1/evalContML1.cmx \
+	EvalContML4/evalContML4.cmx \
 	RefML4/refML4.cmx \
 	NamelessML3/namelessML3.cmx \
 	EvalNamelessML3/evalNamelessML3.cmx \
