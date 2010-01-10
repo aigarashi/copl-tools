@@ -68,22 +68,22 @@ E-LetRec: EvalTo(env, k, LetRec(x,y,e1,e2), v) :-
 E-LetCc: EvalTo(env, k, LetCc(x, e), v) :-
             EvalTo(Bind(env,x,ContF(k)), k, e, v);
 
-K-Ret: AppK(RetK, v, v) :- ;
-K-EvalR: AppK(EvalRK(env,e,op,k), v1, v2) :- EvalTo(env, AppOpK(v1,op,k), e, v2);
-K-Plus: AppK(AppOpK(i1,Plus,k), i2, v) :- AppBOp(Plus, i1, i2, i3), AppK(k, i3, v);
-K-Minus: AppK(AppOpK(i1,Minus,k), i2, v) :- AppBOp(Minus, i1, i2, i3), AppK(k, i3, v);
-K-Mult: AppK(AppOpK(i1,Mult,k), i2, v) :- AppBOp(Mult, i1, i2, i3), AppK(k, i3, v);
-K-Lt: AppK(AppOpK(i1,Lt,k), i2, v) :- AppBOp(Lt, i1, i2, b3), AppK(k, b3, v);
+C-Ret: AppK(RetK, v, v) :- ;
+C-EvalR: AppK(EvalRK(env,e,op,k), v1, v2) :- EvalTo(env, AppOpK(v1,op,k), e, v2);
+C-Plus: AppK(AppOpK(i1,Plus,k), i2, v) :- AppBOp(Plus, i1, i2, i3), AppK(k, i3, v);
+C-Minus: AppK(AppOpK(i1,Minus,k), i2, v) :- AppBOp(Minus, i1, i2, i3), AppK(k, i3, v);
+C-Mult: AppK(AppOpK(i1,Mult,k), i2, v) :- AppBOp(Mult, i1, i2, i3), AppK(k, i3, v);
+C-Lt: AppK(AppOpK(i1,Lt,k), i2, v) :- AppBOp(Lt, i1, i2, b3), AppK(k, b3, v);
 
-K-IfT: AppK(BranchK(env,e1,e2,k), true, v) :- EvalTo(env, k, e1, v);
-K-IfF: AppK(BranchK(env,e1,e2,k), false, v) :- EvalTo(env, k, e2, v);
+C-IfT: AppK(BranchK(env,e1,e2,k), true, v) :- EvalTo(env, k, e1, v);
+C-IfF: AppK(BranchK(env,e1,e2,k), false, v) :- EvalTo(env, k, e2, v);
 
-K-LetBody: AppK(LetBodyK(env,x,e,k), v1, v2) :- EvalTo(Bind(env, x, v1), k, e, v2);
-K-EvalArg: AppK(EvalArgK(env, e, k), v1, v) :- EvalTo(env, AppFunK(v1, k), e, v);
+C-LetBody: AppK(LetBodyK(env,x,e,k), v1, v2) :- EvalTo(Bind(env, x, v1), k, e, v2);
+C-EvalArg: AppK(EvalArgK(env, e, k), v1, v) :- EvalTo(env, AppFunK(v1, k), e, v);
 
-K-EvalFun: AppK(AppFunK(Fun(env, x, e), k), v1, v2) :- EvalTo(Bind(env,x,v1), k, e, v2);
-K-EvalFunR: AppK(AppFunK(Rec(env, x, y, e), k), v1, v2) :- EvalTo(Bind(Bind(env, x, Rec(env,x,y,e)), y, v1), k, e, v2);
-K-EvalFunC: AppK(AppFunK(ContF(k1), k2), v1, v2) :- AppK(k1, v1, v2);
+C-EvalFun: AppK(AppFunK(Fun(env, x, e), k), v1, v2) :- EvalTo(Bind(env,x,v1), k, e, v2);
+C-EvalFunR: AppK(AppFunK(Rec(env, x, y, e), k), v1, v2) :- EvalTo(Bind(Bind(env, x, Rec(env,x,y,e)), y, v1), k, e, v2);
+C-EvalFunC: AppK(AppFunK(ContF(k1), k2), v1, v2) :- AppK(k1, v1, v2);
 
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
