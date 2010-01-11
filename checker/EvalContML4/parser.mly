@@ -41,10 +41,10 @@ let tbl = Hashtbl.create 1024
 
 /* ML3 */
 %token FUN RARROW
-
-/* ML4 */
 %token REC
 
+/* ML4 */
+%token MATCH WITH BAR COLCOL
 /* ContML4 */
 %token GTGT DRARROW LETCC UNDERSCORE
 
@@ -171,41 +171,95 @@ Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
   | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
-  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
+  | Exp3 COLCOL LongExp { Cons($1, $3) }  /* left op. of :: is Exp3 (not Exp2) */
   | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
+  | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) } 
+
+  | Exp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
+  | Exp3 COLCOL error { errAt 3 "Syntax error: expression expected" }
+  | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
+  | Exp4 BinOp4 error { errAt 3 "Syntax error: expression expected" }
 
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
   | FUN LCID RARROW Exp { Abs(Var $2, $4) }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID COLCOL LCID RARROW Exp
+      { if $9 = $11 
+	then errBtw 9 11 "These variables shouldn't be the same"
+	else Match($2, $7, Var $9, Var $11, $13) }
   | LETCC LCID IN Exp { LetCc(Var $2, $4) }
+
+  | IF error { errAt 2 "Syntax error: expression expected" }
+  | IF Exp error { errAt 3 "Syntax error: 'then' expected" }
+  | IF Exp THEN error { errAt 4 "Syntax error: expression expected" }
+  | IF Exp THEN Exp error { errAt 5 "Syntax error: 'else' expected" }
+  | IF Exp THEN Exp ELSE error { errAt 6 "Syntax error: expression expected" }
+  | LET error { errAt 2 "Syntax error: variable name or 'rec' expected" }
+  | LET LCID error { errAt 3 "Syntax error: '=' expected" }
+  | LET LCID EQ error { errAt 4 "Syntax error: expression expected" }
+  | LET LCID EQ Exp error { errAt 5 "Syntax error: 'in' expected" }
+  | LET LCID EQ Exp IN error { errAt 6 "Syntax error: expression expected" }
+  | LET REC error { errAt 3 "Syntax error: variable name expected" }
+  | LET REC LCID error { errAt 4 "Syntax error: '=' expected" }
+  | LET REC LCID EQ error { errAt 5 "Syntax error: 'fun' expected" }
+  | LET REC LCID EQ FUN error { errAt 6 "Syntax error: variable name expected" }
+  | LET REC LCID EQ FUN LCID { errAt 7 "Syntax error: '->' expected" }
+  | LET REC LCID EQ FUN LCID RARROW error { errAt 8 "Syntax error: expression expected" }
+  | LET REC LCID EQ FUN LCID RARROW Exp error { errAt 9 "Syntax error: 'in' expected" }
+  | LET REC LCID EQ FUN LCID RARROW Exp IN error { errAt 10 "Syntax error: expression expected" }
+  | FUN error { errAt 2 "Syntax error: variable name expected" }
+  | FUN LCID error { errAt 3 "Syntax error: '->' expected" }
+  | FUN LCID RARROW error { errAt 4 "Syntax error: expression expected" }
+  | MATCH error { errAt 2 "Syntax error: expression expected" }
+  | MATCH Exp error { errAt 3 "Syntax error: 'with' expected" }
+  | MATCH Exp WITH error { errAt 4 "Syntax error: '[]' expected" }
+  | MATCH Exp WITH LBRACKET error { errAt 5 "Syntax error: ']' expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET error { errAt 6 "Syntax error: '->' expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW error { errAt 7 "Syntax error: expression expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp error { errAt 8 "Syntax error: '|' expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR error { errAt 9 "Syntax error: variable expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID error { errAt 10 "Syntax error: '::' expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID COLCOL error
+      { errAt 11 "Syntax error: variable expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID COLCOL LCID error
+      { errAt 12 "Syntax error: '->' expected" }
+  | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID COLCOL LCID RARROW error
+      { errAt 13 "Syntax error: expression expected" }
+  | LETCC error { errAt 2 "Syntax error: variable name expected" }
+  | LETCC LCID error { errAt 3 "Syntax error: 'in' expected" }
+  | LETCC LCID IN error { errAt 4 "Syntax error: expression expected" }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
   | Exp2 { $1 }
 
 Exp2:
-  | Exp2 BinOp2 Exp3 { BinOp($2, $1, $3) }
+  | Exp3 COLCOL Exp2 { Cons($1, $3) }
   | Exp3 { $1 }
 
 Exp3:
     Exp3 BinOp3 Exp4 { BinOp($2, $1, $3) }
   | Exp4 { $1 }
 
-Exp4:  /* function application: 
+Exp4:
+    Exp4 BinOp4 Exp5 { BinOp($2, $1, $3) }
+  | Exp5 { $1 }
+
+Exp5:  /* function application: 
           argument is an atomic expression without unary minus */
-    Exp4 AExp { App($1, $2) }
+    Exp5 AExp { App($1, $2) }
   | MinExp { $1 }
 
 BinOp1:
     LT { Lt }
 
-BinOp2:
+BinOp3:
     CROSS { Plus }
   | HYPHEN { Minus }
 
-BinOp3:
+BinOp4:
     AST { Mult }
 
 MinExp: 
@@ -218,22 +272,50 @@ AExp:
   | FALSE { Exp_of_bool false }
   | LCID { Exp_of_Var (Var $1) }
   | LPAREN Exp RPAREN { $2 }
+  | LBRACKET RBRACKET { Nil }
+
+  | LPAREN error { errAt 2 "Syntax error: expression expected" }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
+  | LBRACKET error { errAt 2 "Syntax error: ']' expected" }
 
 SInt: /* signed int */
     INTL { $1 }
   | HYPHEN INTL { - $2 }
 
 Val:
+    AVal { $1 }
+  | AVal COLCOL Val { ConsV($1, $3) }
+
+  | AVal COLCOL error { errAt 3 "Syntax error: value expected" }
+
+AVal:
     SInt { Value_of_int $1 }
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
+  | LBRACKET RBRACKET { NilV }
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
   | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
       { Rec($2, Var $6, Var $9, $11) }
+  | LPAREN Val RPAREN { $2 }
   | LBRACKET Cont RBRACKET { ContF $2 }
 
-BinOp: BinOp1 {$1} | BinOp2 {$1} | BinOp3 {$1} 
+  | LBRACKET error { errAt 2 "Syntax error: ']' expected" }
+  | LPAREN Env RPAREN error { errAt 4 "Syntax error: '[' expected" }
+  | LPAREN Env RPAREN LBRACKET error { errAt 5 "Syntax error: 'fun' or 'rec' expected" }
+  | LPAREN Env RPAREN LBRACKET FUN error { errAt 6 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET FUN LCID error { errAt 7 "Syntax error: '->' expected" }
+  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW error { errAt 8 "Syntax error: expression expected" }
+  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp error { errBtw 4 9 "Syntax error: unmatched brackets" }
+
+  | LPAREN Env RPAREN LBRACKET REC error { errAt 6 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID error { errAt 7 "Syntax error: '=' expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN error { errAt 8 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID error { errAt 9 "Syntax error: '->' expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID RARROW error { errAt 10 "Syntax error: expression expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID RARROW Exp error { errBtw 4 11 "Syntax error: unmatched brackets" }
+  | LPAREN Val error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
+
+BinOp: BinOp1 {$1} | BinOp3 {$1} | BinOp4 {$1} 
 
 Hole:  UNDERSCORE { RetK }
 
@@ -243,9 +325,9 @@ Cont:
   | Hole { RetK }
   | LBRACE Env VDASH Hole BinOp1 Exp2 RBRACE OptCont 
      { EvalRK($2, $6, $5, $8) }
-  | LBRACE Env VDASH Hole BinOp2 Exp3 RBRACE OptCont 
+  | LBRACE Env VDASH Hole BinOp3 Exp4 RBRACE OptCont 
      { EvalRK($2, $6, $5, $8) }
-  | LBRACE Env VDASH Hole BinOp3 Exp4 RBRACE OptCont
+  | LBRACE Env VDASH Hole BinOp4 Exp5 RBRACE OptCont
      { EvalRK($2, $6, $5, $8) }
   | LBRACE Env VDASH Hole BinOp LongExp RBRACE OptCont 
      { EvalRK($2, $6, $5, $8) }
@@ -256,16 +338,23 @@ Cont:
      { LetBodyK($2, Var $5, $9, $11) }
   | LBRACE Env VDASH Hole AExp RBRACE OptCont { EvalArgK($2, $5, $7) }
   | LBRACE Val Hole RBRACE OptCont { AppFunK($2, $5) }
+  | LBRACE Env VDASH Hole COLCOL Exp2 RBRACE OptCont { EvalConsRK($2, $6, $8) }
+  | LBRACE AVal COLCOL Hole RBRACE OptCont { ConsK($2, $6) }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET RARROW Exp
+                                 BAR LCID COLCOL LCID RARROW Exp RBRACE OptCont
+      { if $12 = $14
+	then errBtw 12 14 "These variables shouldn't be the same"
+	else MatchK($2, $10, Var $12, Var $14, $16, $18) }
 
   | LBRACE error { errAt 2 "Syntax error: '_' or value or environment expected" }
   | LBRACE Env VDASH error { errAt 4 "Syntax error: '_', 'if', or 'let' expected" }
   | LBRACE Env VDASH Hole error { errAt 5 "Syntax error: '+', '-', '*', '<', or expression expected" }
   | LBRACE Env VDASH Hole BinOp1 error { errAt 6 "Syntax error: expression expected" }
   | LBRACE Env VDASH Hole BinOp1 Exp2 error { errAt 7 "Syntax error: '}' expected" }
-  | LBRACE Env VDASH Hole BinOp2 error { errAt 6 "Syntax error: expression expected" }
-  | LBRACE Env VDASH Hole BinOp2 Exp3 error { errAt 7 "Syntax error: '}' expected" }
   | LBRACE Env VDASH Hole BinOp3 error { errAt 6 "Syntax error: expression expected" }
   | LBRACE Env VDASH Hole BinOp3 Exp4 error { errAt 7 "Syntax error: '}' expected" }
+  | LBRACE Env VDASH Hole BinOp4 error { errAt 6 "Syntax error: expression expected" }
+  | LBRACE Env VDASH Hole BinOp4 Exp5 error { errAt 7 "Syntax error: '}' expected" }
   | LBRACE Env VDASH Hole BinOp LongExp error { errAt 7 "Syntax error: '}' expected" }
   | LBRACE Val error { errAt 3 "Syntax error: '+', '-', '*', or '<' expected" }
   | LBRACE Val BinOp error { errAt 4 "Syntax error: '_' expected" }
@@ -294,7 +383,38 @@ Cont:
      { errAt 10 "Syntax error: '}' expected" }
   | LBRACE Env VDASH Hole AExp error { errAt 6 "Syntax error: '}' expected" }
   | LBRACE Val Hole error { errAt 4 "Syntax error: '}' expected" }
-
+  | LBRACE Env VDASH Hole COLCOL error
+      { errAt 6 "Syntax error: expression expected" }
+  | LBRACE Env VDASH Hole COLCOL Exp2 error
+      { errAt 7 "Syntax error: '}' expected" }
+  | LBRACE AVal COLCOL Hole error { errAt 5 "Syntax error: '}' expected" }
+  | LBRACE Env VDASH MATCH error { errAt 5 "Syntax error: '_' expected" }
+  | LBRACE Env VDASH MATCH Hole error
+      { errAt 6 "Syntax error: 'with' expected" }
+  | LBRACE Env VDASH MATCH Hole WITH error
+      { errAt 7 "Syntax error: '[]' expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET error
+      { errAt 8 "Syntax error: '[]' expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET error
+      { errAt 9 "Syntax error: '->' expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp error
+      { errAt 10 "Syntax error: '|' expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp BAR error
+      { errAt 11 "Syntax error: variable name expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp BAR LCID error
+      { errAt 12 "Syntax error: '::' name expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+                                BAR LCID COLCOL error
+      { errAt 13 "Syntax error: variable name expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+                                BAR LCID COLCOL LCID error
+      { errAt 14 "Syntax error: '->' expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+                                BAR LCID COLCOL LCID RARROW error
+      { errAt 15 "Syntax error: expression expected" }
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+                                BAR LCID COLCOL LCID RARROW Exp error
+      { errAt 16 "Syntax error: '}' expected" }
 
 /******** experimental feature for macro defintions *********/
 

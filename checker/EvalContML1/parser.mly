@@ -192,6 +192,7 @@ Hole:  UNDERSCORE { RetK }
 
 OptCont: GTGT Cont { $2 }
   | /* empty */ { RetK }
+  | GTGT error { errAt 2 "Syntax error: continuation expected" }
 Cont:
   | Hole { RetK }
   | LBRACE Hole BinOp1 Exp2 RBRACE OptCont 
@@ -205,6 +206,26 @@ Cont:
   | LBRACE Val BinOp Hole RBRACE OptCont { AppOpK($2, $3, $6) }
   | LBRACE IF Hole THEN Exp ELSE Exp RBRACE OptCont
      { BranchK($5, $7, $9) }
+
+  | LBRACE error { errAt 2 "Syntax error: '_' or value or 'if' expected" }
+  | LBRACE Hole error { errAt 3 "Syntax error: '+', '-', '*', or '<' expected" }
+  | LBRACE Hole BinOp1 error { errAt 4 "Syntax error: expression expected" }
+  | LBRACE Hole BinOp1 Exp2 error { errAt 5 "Syntax error: '}' expected" }
+  | LBRACE Hole BinOp2 error { errAt 4 "Syntax error: expression expected" }
+  | LBRACE Hole BinOp2 Exp3 error { errAt 5 "Syntax error: '}' expected" }
+  | LBRACE Hole BinOp3 error { errAt 4 "Syntax error: expression expected" }
+  | LBRACE Hole BinOp3 AExp error { errAt 5 "Syntax error: '}' expected" }
+  | LBRACE Hole BinOp LongExp error { errAt 5 "Syntax error: '}' expected" }
+  | LBRACE Val error { errAt 3 "Syntax error: '+', '-', '*', or '<' expected" }
+  | LBRACE Val BinOp error { errAt 4 "Syntax error: '_' expected" }
+  | LBRACE Val BinOp Hole error { errAt 5 "Syntax error: '}' expected" }
+  | LBRACE IF error { errAt 3 "Syntax error: '_' expected" }
+  | LBRACE IF Hole error { errAt 4 "Syntax error: 'then' expected" }
+  | LBRACE IF Hole THEN error { errAt 5 "Syntax error: expression expected" }
+  | LBRACE IF Hole THEN Exp error { errAt 6 "Syntax error: 'else' expected" }
+  | LBRACE IF Hole THEN Exp ELSE error { errAt 7 "Syntax error: expression expected" }
+  | LBRACE IF Hole THEN Exp ELSE Exp error { errAt 8 "Syntax error: '}' expected" }
+
 
 /******** experimental feature for macro defintions *********/
 

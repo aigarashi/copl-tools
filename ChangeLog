@@ -1,3 +1,8 @@
+2010-01-11  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/EvalContML{1,3}/parser.mly: better error handling.
+	* checker/EvalContML4: New game, which is CPS-based ML4.
+
 2009-12-15  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/index.cgi (display-sandbox): layout change.
