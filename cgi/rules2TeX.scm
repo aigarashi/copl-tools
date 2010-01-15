@@ -103,7 +103,10 @@ span.rname { font-variant: small-caps; }
       (rule-style)
       (header-LaTeXMathML))
      (html:body
+      (html:h1 (cadr args))
+      (html:h2 "Syntax:")
       (format-bnf bnfdefs)
+      (html:h2 "Derivation Rules:")
       rules))))
   0)
 
@@ -214,31 +217,6 @@ span.rname { font-variant: small-caps; }
 (define EvalML1Err:AppBOp EvalML1:AppBOp)
 
 
-;; ContML1
-(define ContML1:mv EvalML1:mv)
-
-(define ContML1:BinOpTerm EvalML1:BinOpTerm)
-(define ContML1:IfTerm EvalML1:IfTerm)
-
-(define (ContML1:RetKTerm) '("\\mbox{_}"))
-(define (ContML1:EvalRKTerm e op k)
-  `("\\{" ,@(EvalML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
-(define (ContML1:AppOpKTerm v op k)
-  `("\\{" ,@(EvalML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
-(define (ContML1:BranchKTerm e1 e2 k)
-  `("\\{" "\\mbox{if _ then }" ,e1 "\\mbox{ else }" ,e2 "\\} \\gg" ,k))
-
-(define ContML1:PlusTerm EvalML1:PlusTerm)
-(define ContML1:MinusTerm EvalML1:MinusTerm)
-(define ContML1:MultTerm EvalML1:MultTerm)
-(define ContML1:LtTerm EvalML1:LtTerm)
-
-(define (ContML1:EvalTo k e v)
-  `(,e " \\gg " ,k "\\Downarrow" ,v))
-(define ContML1:AppBOp EvalML1:AppBOp)
-(define (ContML1:AppK k v1 v2)
-  `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
-
 ;; EvalML2
 (define (EvalML2:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}"))))
@@ -300,50 +278,6 @@ span.rname { font-variant: small-caps; }
 
 (define EvalML3:AppBOp EvalML2:AppBOp)
 
-
-;; EvalContML3
-(define EvalContML3:mv EvalML3:mv)
-
-(define EvalContML3:FunTerm EvalML3:FunTerm)
-(define EvalContML3:RecTerm EvalML3:RecTerm)
-(define (EvalContML3:ContFTerm k)
-  `("[" ,k "]"))
-
-(define EvalContML3:EmptyTerm EvalML3:EmptyTerm)
-(define EvalContML3:BindTerm EvalML3:BindTerm)
-(define EvalContML3:BinOpTerm EvalML3:BinOpTerm)
-(define EvalContML3:IfTerm EvalML3:IfTerm)
-(define EvalContML3:LetTerm EvalML3:LetTerm)
-(define EvalContML3:AbsTerm EvalML3:AbsTerm)
-(define EvalContML3:AppTerm EvalML3:AppTerm)
-(define EvalContML3:LetRecTerm EvalML3:LetRecTerm)
-(define (EvalContML3:LetCcTerm x e)
-  `("\\mbox{letcc }" ,x "\\mbox{ in }" ,e))
-
-(define (EvalContML3:RetKTerm) '("\\mbox{_}"))
-(define (EvalContML3:EvalRKTerm env e op k)
-  `("\\{" ,env "\\vdash " ,@(EvalML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
-(define (EvalContML3:AppOpKTerm v op k)
-  `("\\{" ,@(EvalML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
-(define (EvalContML3:BranchKTerm env e1 e2 k)
-  `("\\{" ,env "\\vdash \\mbox{if _ then }" ,e1 "\\mbox{ else }" ,e2 "\\} \\gg" ,k))
-(define (EvalContML3:LetBodyKTerm env x e k)
-  `("\\{" ,env "\\vdash \\mbox{let }" ,x "= \\mbox{_} \\mbox{ in } " ,e "\\} \\gg k"))
-(define (EvalContML3:EvalArgKTerm env e k)
-  `("\\{" ,env "\\vdash \\mbox{_}\\, " ,e "\\} \\gg" ,k))
-(define (EvalContML3:AppFunKTerm v k)
-  `("\\{" ,v "\\,\\mbox{_}\\} \\gg " ,k))
-
-(define EvalContML3:PlusTerm EvalML3:PlusTerm)
-(define EvalContML3:MinusTerm EvalML3:MinusTerm)
-(define EvalContML3:MultTerm EvalML3:MultTerm)
-(define EvalContML3:LtTerm EvalML3:LtTerm)
-
-(define (EvalContML3:EvalTo env k e v)
-  `(,env "\\vdash" ,e " \\gg " ,k "\\Downarrow" ,v))
-(define EvalContML3:AppBOp EvalML3:AppBOp)
-(define (EvalContML3:AppK k v1 v2)
-  `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
 
 ;; EvalRefML3
 (define EvalRefML3:mv EvalML3:mv)
@@ -712,3 +646,124 @@ span.rname { font-variant: small-caps; }
 (define PolyTypingML4:LtTerm TypingML4:LtTerm)
 
 (define PolyTypingML4:Typing TypingML4:Typing)
+
+;; EvalContML1
+
+(define EvalContML1:mv EvalML1:mv)
+(define EvalContML1:BinOpTerm EvalML1:BinOpTerm)
+(define EvalContML1:IfTerm EvalML1:IfTerm)
+(define EvalContML1:PlusTerm EvalML1:PlusTerm)
+(define EvalContML1:MinusTerm EvalML1:MinusTerm)
+(define EvalContML1:MultTerm EvalML1:MultTerm)
+(define EvalContML1:LtTerm EvalML1:LtTerm)
+
+(define Hole "\\mbox{_}")
+(define (EvalContML1:RetKTerm) Hole)
+(define (EvalContML1:EvalRKTerm e op k)
+ `("\\{" ,(EvalContML1:BinOpTerm op Hole e) "\\} \\gg" ,k))
+(define (EvalContML1:AppOpKTerm v op k)
+ `("\\{" ,(EvalContML1:BinOpTerm op v Hole) "\\} \\gg" ,k))
+(define (EvalContML1:BranchKTerm e1 e2 k)
+ `("\\{" ,(EvalContML1:IfTerm Hole e1 e2) "\\} \\gg" ,k))
+
+(define (EvalContML1:EvalTo k e v)
+  `(,e "\\gg" k "\\Downarrow" v))
+
+(define EvalContML1:AppBOp EvalML1:AppBOp)
+(define (EvalContML1:AppK k v1 v2)
+  `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
+
+;; EvalContML3
+(define EvalContML3:mv EvalML3:mv)
+
+(define EvalContML3:FunTerm EvalML3:FunTerm)
+(define EvalContML3:RecTerm EvalML3:RecTerm)
+(define (EvalContML3:ContFTerm k)
+  `("[" ,k "]"))
+
+(define EvalContML3:EmptyTerm EvalML3:EmptyTerm)
+(define EvalContML3:BindTerm EvalML3:BindTerm)
+(define EvalContML3:BinOpTerm EvalML3:BinOpTerm)
+(define EvalContML3:IfTerm EvalML3:IfTerm)
+(define EvalContML3:LetTerm EvalML3:LetTerm)
+(define EvalContML3:AbsTerm EvalML3:AbsTerm)
+(define EvalContML3:AppTerm EvalML3:AppTerm)
+(define EvalContML3:LetRecTerm EvalML3:LetRecTerm)
+(define (EvalContML3:LetCcTerm x e)
+  `("\\mbox{letcc }" ,x "\\mbox{ in }" ,e))
+
+(define (EvalContML3:RetKTerm) '("\\mbox{_}"))
+(define (EvalContML3:EvalRKTerm env e op k)
+  `("\\{" ,env "\\vdash " ,@(EvalML1:BinOpTerm op "\\mbox{_}" e) "\\} \\gg " ,k))
+(define (EvalContML3:AppOpKTerm v op k)
+  `("\\{" ,@(EvalML1:BinOpTerm op v "\\mbox{_}") "\\} \\gg " ,k))
+(define (EvalContML3:BranchKTerm env e1 e2 k)
+  `("\\{" ,env "\\vdash \\mbox{if _ then }" ,e1 "\\mbox{ else }" ,e2 "\\} \\gg" ,k))
+(define (EvalContML3:LetBodyKTerm env x e k)
+  `("\\{" ,env "\\vdash \\mbox{let }" ,x "= \\mbox{_} \\mbox{ in } " ,e "\\} \\gg k"))
+(define (EvalContML3:EvalArgKTerm env e k)
+  `("\\{" ,env "\\vdash \\mbox{_}\\, " ,e "\\} \\gg" ,k))
+(define (EvalContML3:AppFunKTerm v k)
+  `("\\{" ,v "\\,\\mbox{_}\\} \\gg " ,k))
+
+(define EvalContML3:PlusTerm EvalML3:PlusTerm)
+(define EvalContML3:MinusTerm EvalML3:MinusTerm)
+(define EvalContML3:MultTerm EvalML3:MultTerm)
+(define EvalContML3:LtTerm EvalML3:LtTerm)
+
+(define (EvalContML3:EvalTo env k e v)
+  `(,env "\\vdash" ,e " \\gg " ,k "\\Downarrow" ,v))
+(define EvalContML3:AppBOp EvalML3:AppBOp)
+(define (EvalContML3:AppK k v1 v2)
+  `(,v1 "\\Rightarrow" ,k "\\Downarrow" ,v2))
+
+
+;; EvalContML4
+(define EvalContML4:mv EvalML4:mv)
+
+(define EvalContML4:FunTerm EvalML4:FunTerm)
+(define EvalContML4:RecTerm EvalML4:RecTerm)
+(define EvalContML4:NilVTerm EvalML4:NilVTerm)
+(define EvalContML4:ConsVTerm EvalML4:ConsVTerm)
+(define EvalContML4:ContFTerm EvalContML3:ContFTerm)
+
+(define EvalContML4:EmptyTerm EvalContML3:EmptyTerm)
+(define EvalContML4:BindTerm EvalContML3:BindTerm)
+
+(define EvalContML4:BinOpTerm EvalML4:BinOpTerm)
+(define EvalContML4:IfTerm EvalML4:IfTerm)
+(define EvalContML4:LetTerm EvalML4:LetTerm)
+(define EvalContML4:AbsTerm EvalML4:AbsTerm)
+(define EvalContML4:AppTerm EvalML4:AppTerm)
+(define EvalContML4:LetRecTerm EvalML4:LetRecTerm)
+(define EvalContML4:NilTerm EvalML4:NilTerm)
+(define EvalContML4:ConsTerm EvalML4:ConsTerm)
+(define EvalContML4:MatchTerm EvalML4:MatchTerm)
+
+(define EvalContML4:LetCcTerm EvalContML3:LetCcTerm)
+
+(define EvalContML4:PlusTerm EvalML4:PlusTerm)
+(define EvalContML4:MinusTerm EvalML4:MinusTerm)
+(define EvalContML4:MultTerm EvalML4:MultTerm)
+(define EvalContML4:LtTerm EvalML4:LtTerm)
+
+(define EvalContML4:RetKTerm EvalContML3:RetKTerm)
+(define EvalContML4:EvalRKTerm EvalContML3:EvalRKTerm)
+(define EvalContML4:AppOpKTerm EvalContML3:AppOpKTerm)
+(define EvalContML4:BranchKTerm EvalContML3:BranchKTerm)
+(define EvalContML4:LetBodyKTerm EvalContML3:LetBodyKTerm)
+(define EvalContML4:EvalArgKTerm EvalContML3:EvalArgKTerm)
+(define EvalContML4:AppFunKTerm EvalContML3:AppFunKTerm)
+(define (EvalContML4:EvalConsRKTerm env e k)
+  `("\\{" ,env "\\vdash" ,(EvalContML4:ConsTerm Hole e) "\\} \\gg" ,k)
+)
+(define (EvalContML4:ConsKTerm v k)
+  `("\\{" ,(EvalContML4:ConsVTerm v Hole) "\\} \\gg" ,k)
+)
+(define (EvalContML4:MatchKTerm env e1 x y e2 k)
+  `("\\{" ,env "\\vdash" ,(EvalContML4:MatchTerm Hole e1 x y e2) "\\} \\gg" ,k)
+)
+
+(define EvalContML4:EvalTo EvalContML3:EvalTo)
+(define EvalContML4:AppBOp EvalContML3:AppBOp)
+(define EvalContML4:AppK EvalContML3:AppK)

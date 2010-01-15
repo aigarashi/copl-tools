@@ -274,4 +274,12 @@
    (PolyTypingML4 "|- let f = fun x -> 
              let g = fun y -> y x :: [] in g (fun z -> 4) in
    match f true with [] -> 3 :: [] | x :: y -> f x : int list")
+
+   ;; EvalContML1
+   (EvalContML1 "3 >> _ evalto 3")
+   (EvalContML1 "5 >> {3 + _} evalto 8")
+   (EvalContML1 "3 + 5 evalto 8")
+   (EvalContML1 "(4 + 5) * (1 - 10) evalto -81")
+   (EvalContML1 "if 4 < 5 then 2 + 3 else 8 * 8 evalto 5")
+   (EvalContML1 "3 + (if -3 < -2 * 8 then 8 else 2) + 4 evalto 9")
 )
