@@ -1,3 +1,9 @@
+2010-01-25  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/EvalML1/pp.ml: a bug in computing precedence for a
+	binary exp with a long expression as its left op.  Other systems
+	should be fixed similarly.
+
 2010-01-11  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/EvalContML{1,3}/parser.mly: better error handling.
