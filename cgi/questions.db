@@ -282,4 +282,35 @@
    (EvalContML1 "(4 + 5) * (1 - 10) evalto -81")
    (EvalContML1 "if 4 < 5 then 2 + 3 else 8 * 8 evalto 5")
    (EvalContML1 "3 + (if -3 < -2 * 8 then 8 else 2) + 4 evalto 9")
+
+   ;; EvalContML4
+   (EvalContML4 "|- let x = 1 + 2 in x * 4 evalto 12")
+   (EvalContML4 "|- let add1 = fun x -> x + 1 -> add1 3 evalto 4")
+   (EvalContML4 "|- let rec fact = fun n ->
+   if n < 2 then 1 else n * fact (n - 1) in
+   fact 3
+  evalto 6")
+   (EvalContML4 "k = [{3 + _} >> _ ] |- 1 + k 2 evalto 5")
+   (EvalContML4 "|- 3 + (letcc k in 1 + k 2) evalto 5")
+   (EvalContML4 "|- let rec fact = fun n ->
+   if n < 2 then 1 else n * fact (n - 1) in
+   3 + (letcc k in 1 + k 2 + fact 100) evalto 5")
+   (EvalContML4 "|- let sm = fun f -> f 3 + f 4 in letcc k in sm k evalto 3")
+   (EvalContML4 "|- let f = fun x -> fun k1 -> fun k2 ->
+     if x < 0 then k1 x else k2 x in
+   1 + (letcc k1 in 2 + letcc k2 in f (-2) k1 k2) evalto -1")
+   (EvalContML4 "|- let f = fun x -> fun k1 -> fun k2 ->
+     if x < 0 then k1 x else k2 x in
+   1 + (letcc k1 in 2 + letcc k2 in f 2 k1 k2) evalto 5")
+   (EvalContML4 "|- let rec findneg = fun l -> match l with 
+       [] -> false 
+     | x :: l -> if x < 0 then true else findneg l
+   in findneg (1 :: 2 :: -3 :: 4 :: []) evalto true")
+   (EvalContML4 "|- let findneg = fun l ->
+     letcc k in 
+       let rec aux = fun l -> match l with 
+         [] -> false 
+       | x :: l -> if x < 0 then k true else aux l
+     in aux l
+   in findneg (1 :: 2 :: -3 :: 4 :: []) evalto true")
 )
