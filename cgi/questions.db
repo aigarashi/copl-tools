@@ -285,7 +285,7 @@
 
    ;; EvalContML4
    (EvalContML4 "|- let x = 1 + 2 in x * 4 evalto 12")
-   (EvalContML4 "|- let add1 = fun x -> x + 1 -> add1 3 evalto 4")
+   (EvalContML4 "|- let add1 = fun x -> x + 1 in add1 3 evalto 4")
    (EvalContML4 "|- let rec fact = fun n ->
    if n < 2 then 1 else n * fact (n - 1) in
    fact 3
