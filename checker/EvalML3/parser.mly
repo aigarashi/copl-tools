@@ -40,8 +40,6 @@ let tbl = Hashtbl.create 1024
 
 /* ML3 */
 %token FUN RARROW
-
-/* ML4 */
 %token REC
 
 /******** experimental feature for macro defitinions *********/

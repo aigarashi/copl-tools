@@ -1,9 +1,8 @@
 (*
   ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
   ML2: ML1 + let (環境)
-  ML3: ML2 + fun (関数抽象・適用)
-  ML4: ML3 + let rec (再帰関数定義)
-  RefML4: ML4 + references (参照)
+  ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
+  RefML3: ML3 + references (参照)
     (unit value がないので := は右辺の値を返す)
 *)
 
@@ -50,50 +49,50 @@ AppBOp(op, v, v; v);
 
 E-Int: 	EvalTo(s, env, i, i, s) :- ;
 E-Bool: EvalTo(s, env, b, b, s) :- ;
-E-IfT: 	EvalTo(s, env, If(e1, e2, e3), v, s2) :- 
-		EvalTo(s, env, e1, true, s1), EvalTo(s1, env, e2, v, s2);
-E-IfF: 	EvalTo(s, env, If(e1, e2, e3), v, s2) :- 
-		EvalTo(s, env, e1, false, s1), EvalTo(s1, env, e3, v, s2);
-E-Plus: EvalTo(s, env, BinOp(Plus, e1, e2), i3, s2) :- 
-		EvalTo(s, env, e1, i1, s1), EvalTo(s1, env, e2, i2, s2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(s, env, BinOp(Minus, e1, e2), i3, s2) :- 
-		EvalTo(s, env, e1, i1, s1), EvalTo(s1, env, e2, i2, s2), AppBOp(Minus, i1, i2, i3);
-E-Mult: EvalTo(s, env, BinOp(Mult, e1, e2), i3, s1) :- 
-		EvalTo(s, env, e1, i1, s1), EvalTo(s1, env, e2, i2, s2), AppBOp(Mult, i1, i2, i3);
-E-Lt: 	EvalTo(s, env, BinOp(Lt, e1, e2), b3, s2) :-
-		EvalTo(s, env, e1, i1, s1), EvalTo(s1, env, e2, i2, s2), AppBOp(Lt, i1, i2, b3);
+E-IfT: 	EvalTo(s1, env, If(e1, e2, e3), v, s3) :- 
+		EvalTo(s1, env, e1, true, s2), EvalTo(s2, env, e2, v, s3);
+E-IfF: 	EvalTo(s1, env, If(e1, e2, e3), v, s3) :- 
+		EvalTo(s1, env, e1, false, s2), EvalTo(s2, env, e3, v, s3);
+E-Plus: EvalTo(s1, env, BinOp(Plus, e1, e2), i3, s3) :- 
+		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Plus, i1, i2, i3);
+E-Minus: EvalTo(s1, env, BinOp(Minus, e1, e2), i3, s3) :- 
+		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Minus, i1, i2, i3);
+E-Mult: EvalTo(s1, env, BinOp(Mult, e1, e2), i3, s2) :- 
+		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Mult, i1, i2, i3);
+E-Lt: 	EvalTo(s1, env, BinOp(Lt, e1, e2), b3, s3) :-
+		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Lt, i1, i2, b3);
 
 E-Var:  EvalTo(s, env, x, v, s) :- ` $v = lookup $s $env $x` %$env($x) = $v%;
 
-E-Let:  EvalTo(s, env, Let(x, e1, e2), v, s2) :-
-		EvalTo(s, env, e1, v1, s1), EvalTo(s1, Bind(env,x,v1), e2, v, s2);
+E-Let:  EvalTo(s1, env, Let(x, e1, e2), v, s3) :-
+		EvalTo(s1, env, e1, v1, s2), EvalTo(s2, Bind(env,x,v1), e2, v, s3);
 E-Fun: EvalTo(s, env, Abs(x, e), Fun(env, x, e), s) :- ;
-E-App: EvalTo(s, env, App(e1, e2), v, s3) :-
-         EvalTo(s, env, e1, Fun(env2, x, e0), s1),
-         EvalTo(s1, env, e2, v2, s2),
-         EvalTo(s2, Bind(env2, x, v2), e0, v, s3);
+E-App: EvalTo(s1, env, App(e1, e2), v, s4) :-
+         EvalTo(s1, env, e1, Fun(env2, x, e0), s2),
+         EvalTo(s2, env, e2, v2, s3),
+         EvalTo(s3, Bind(env2, x, v2), e0, v, s4);
 
-E-LetRec: EvalTo(s, env, LetRec(x, y, e1, e2), v, s1) :-
-                EvalTo(s, Bind(env,x,Rec(env,x,y,e1)), e2, v, s1);
-E-AppRec: EvalTo(s, env,App(e1, e2), v, s3) :-
-         EvalTo(s, env, e1, Rec(env2, x, y, e0), s1),
-         EvalTo(s1, env, e2, v2, s2),
-         EvalTo(s2, Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v, s3);
+E-LetRec: EvalTo(s1, env, LetRec(x, y, e1, e2), v, s2) :-
+                EvalTo(s1, Bind(env,x,Rec(env,x,y,e1)), e2, v, s2);
+E-AppRec: EvalTo(s1, env,App(e1, e2), v, s4) :-
+         EvalTo(s1, env, e1, Rec(env2, x, y, e0), s2),
+         EvalTo(s2, env, e2, v2, s3),
+         EvalTo(s3, Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v, s4);
 
 E-Loc: EvalTo(s, env, l, l, s) :- ;
 
-E-Ref: EvalTo(s, env, NewRef(e), l, Block(s1, l, v)) :-
-         EvalTo(s, env, e, v, s1),
-         `newlocp $s1 $l`  `$l = newloc ()` %$l \notin dom($s1)%;
+E-Ref: EvalTo(s1, env, NewRef(e), l, Block(s2, l, v)) :-
+         EvalTo(s1, env, e, v, s2),
+         `newlocp $s2 $l`  `$l = newloc ()` %$l \notin dom($s2)%;
 
-E-Deref: EvalTo(s, env, Deref(e), v, s1) :-
-           EvalTo(s, env, e, l, s1),
-           `$v = lookup_store $s1 $env $l` %$s1($l) = $v%;
-E-Assign: EvalTo(s, env, Assign(e1, e2), v, s3) :-
-            EvalTo(s, env, e1, l, s1),
-            EvalTo(s1, env, e2, v, s2),
-            `$s3 = update_store $s2 $env $l $v (Assign($e1,$e2))`
-            %$s3 = $s2[$l = $v]%;
+E-Deref: EvalTo(s1, env, Deref(e), v, s2) :-
+           EvalTo(s1, env, e, l, s2),
+           `$v = lookup_store $s2 $env $l` %$s2($l) = $v%;
+E-Assign: EvalTo(s1, env, Assign(e1, e2), v, s4) :-
+            EvalTo(s1, env, e1, l, s2),
+            EvalTo(s2, env, e2, v, s3),
+            `$s4 = update_store $s3 $env $l $v (Assign($e1,$e2))`
+            %$s4 = $s3[$l = $v]%;
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;

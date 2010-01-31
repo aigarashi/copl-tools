@@ -307,10 +307,52 @@
      | x :: l -> if x < 0 then true else findneg l
    in findneg (1 :: 2 :: -3 :: 4 :: []) evalto true")
    (EvalContML4 "|- let findneg = fun l ->
-     letcc k in 
+     letcc k in
        let rec aux = fun l -> match l with 
          [] -> false 
        | x :: l -> if x < 0 then k true else aux l
      in aux l
    in findneg (1 :: 2 :: -3 :: 4 :: []) evalto true")
+
+   ;; EvalRefML3
+   (EvalRefML3 "@l = 2 / |- !(@l) + 3 evalto 5 / @l = 2")
+   (EvalRefML3 "@l = 2 / x = @l |- x := !x + 1 evalto 3 / @l = 3")
+   (EvalRefML3 "|- let r = ref true in !r evalto true / @l = true")
+   (EvalRefML3 "|- let incr = fun x -> x := !x + 1 in
+   let x = ref 0 in
+   let z = incr x in
+   !x evalto 1 / @l = 1")
+   (EvalRefML3 "|- let c =
+     let x = ref 0 in
+     fun y -> if y then x := !x + 1 else !x in
+   let y = c true in
+   let y = c true in
+   c false evalto 2 / @l = 2")
+   (EvalRefML3 "|- let c =
+     let x = ref 0 in
+     fun y -> if y then x := !x + 1 else !x in
+   let y = c true in
+   c false + (let y = c true in c false) evalto 3 / @l = 2")
+   (EvalRefML3 "|- let newc = fun x ->
+     let x = ref x in
+     fun y -> if y then x := !x + 1 else !x in
+   let c1 = newc 5 in
+   let c2 = newc 4 in
+   let y = c1 true in
+   let y = c2 true in
+   c1 false evalto 6 / @l1 = 6, @l2 = 5")
+   (EvalRefML3 "|- let f = fun r1 -> fun r2 -> let z = r2 := 3 in !r1 in
+   let r = ref 0 in f r r
+  evalto 3 / @l = 3")
+   (EvalRefML3 "|- let x = ref 2 in let y = ref 3 in
+   let refx = ref x in let refy = ref y in
+   let z = !refx := !(!refy) in !x
+  evalto 3 / @l1 = 3, @l2 = 3, @l3 = @l1, @l4 = @l2")
+   (EvalRefML3 "|- let rec do = fun f -> fun i ->
+     if i < 1 then 0
+     else let x = f i in do f (i - 1) in 
+   let x = ref 0 in 
+   let sum = fun i -> x := !x + i in
+   let y = do sum 3 in !x 
+  evalto 6 / @l = 6")
 )

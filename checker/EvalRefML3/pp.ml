@@ -92,7 +92,7 @@ let rec print_exp ppf e =
 	      (with_paren_L print_exp e) e1
 	      (with_paren_R print_exp e) e2
 	| Deref e0 ->
-	    pr ppf "!%a" (with_paren_L print_exp e) e0
+	    pr ppf "! %a" (with_paren_L print_exp e) e0
 
 let rec print_env ppf = function
     Empty -> ()

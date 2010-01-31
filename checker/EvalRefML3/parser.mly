@@ -14,6 +14,7 @@ let errAt i s =
 type sobj = Exp of Core.exp
 	  | Value of Core.value
 	  | Env of Core.env
+	  | Store of Core.store
 
 let tbl = Hashtbl.create 1024
 %}
@@ -40,11 +41,9 @@ let tbl = Hashtbl.create 1024
 
 /* ML3 */
 %token FUN RARROW
-
-/* ML4 */
 %token REC
 
-/* RefML4 */
+/* RefML3 */
 %token BANG COLONEQ REF AT SLASH
 
 /******** experimental feature for macro defitinions *********/
@@ -52,6 +51,7 @@ let tbl = Hashtbl.create 1024
 %token <string> MVEXP
 %token <string> MVVALUE
 %token <string> MVENV
+%token <string> MVSTORE
 
 %start toplevel partialj judgment
 %type <Core.judgment Derivation.t> toplevel
@@ -63,7 +63,7 @@ let tbl = Hashtbl.create 1024
 %%
 
 toplevel: 
-    Derivation { $1 }
+    MacroDefs Derivation { $2 }
   | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
   | EOF { raise End_of_file }
 
@@ -74,7 +74,7 @@ Derivation:
     { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY RName LBRACE Derivs
     { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
-  | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
+  | Judgment error { errAt 2 "Syntax error: 'by' or a comma expected" } 
   | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
   | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
@@ -149,29 +149,33 @@ partialj :
 
 Env:
     /* empty */ { Empty } 
-  | Env2 LCID EQ Val { Bind($1, Var $2, $4) }
-  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
-  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
+  | LCID EQ Val Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
+  | LCID error { errAt 2 "Syntax error: '=' expected" }
+  | LCID EQ error { errAt 3 "Syntax error: value expected" }
 
 Env2:
-    /* empty */ { Empty } 
-  | Env2 LCID EQ Val COMMA { Bind($1, Var $2, $4) }
-  | Env2 LCID error { errAt 3 "Syntax error: '=' expected" }
-  | Env2 LCID EQ error { errAt 4 "Syntax error: value expected" }
-  | Env2 LCID EQ Val error { errAt 5 "Syntax error: ',' expected" }
+    /* empty */ { [] }
+  | COMMA LCID EQ Val Env2 { ($2, $4) :: $5 }
+  | error { errAt 1 "Syntax error: comma expected" }
+  | COMMA error { errAt 2 "Syntax error: variable expected" }
+  | COMMA LCID error { errAt 3 "Syntax error: '=' expected" }
+  | COMMA LCID EQ error { errAt 4 "Syntax error: value expected" }
 
 Store:
-    /* empty */ { EmptyS }
-  | Store2 AT LCID EQ Val { Block($1, Loc $3, $5) }
-  | Store2 AT LCID error { errAt 4 "Syntax error: '=' expected" }
-  | Store2 AT LCID EQ error { errAt 5 "Syntax error: value expected" }
+    /* empty  { EmptyS } */
+  | AT LCID EQ Val Store2 { List.fold_left (fun store (id, v) -> Block(store, Loc id, v)) EmptyS (($2,$4)::$5) }
+  | AT error { errAt 2 "Syntax error: location name expected" }
+  | AT LCID error { errAt 3 "Syntax error: '=' expected" }
+  | AT LCID EQ error { errAt 4 "Syntax error: value expected" }
 
 Store2:
-    /* empty */ { EmptyS } 
-  | Store2 AT LCID EQ Val COMMA { Block($1, Loc $3, $5) }
-  | Store2 LCID error { errAt 4 "Syntax error: '=' expected" }
-  | Store2 LCID EQ error { errAt 5 "Syntax error: value expected" }
-  | Store2 LCID EQ Val error { errAt 6 "Syntax error: ',' expected" }
+    /* empty */ { [] } 
+  | COMMA AT LCID EQ Val Store2 { ($3, $5) :: $6 }
+/*  | error { errAt 1 "Syntax error: comma expected" }  */
+  | COMMA error { errAt 2 "Syntax error: '@' expected" }
+  | COMMA AT error { errAt 3 "Syntax error: location name expected" }
+  | COMMA AT LCID error { errAt 4 "Syntax error: '=' expected" }
+  | COMMA AT LCID EQ error { errAt 5 "Syntax error: value expected" }
 
 Exp:
   | LongExp { $1 }
@@ -181,11 +185,38 @@ Exp:
   | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
   | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) } 
 
+  | Exp2 COLONEQ error { errAt 3 "Syntax error: expression expected" }
+  | Exp2 BinOp2 error { errAt 3 "Syntax error: expression expected" }
+  | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
+  | Exp4 BinOp4 error { errAt 3 "Syntax error: expression expected" }
+
 LongExp: 
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
   | FUN LCID RARROW Exp { Abs(Var $2, $4) }
+
+  | IF error { errAt 2 "Syntax error: expression expected" }
+  | IF Exp error { errAt 3 "Syntax error: 'then' expected" }
+  | IF Exp THEN error { errAt 4 "Syntax error: expression expected" }
+  | IF Exp THEN Exp error { errAt 5 "Syntax error: 'else' expected" }
+  | IF Exp THEN Exp ELSE error { errAt 6 "Syntax error: expression expected" }
+  | LET error { errAt 2 "Syntax error: variable name or 'rec' expected" }
+  | LET LCID error { errAt 3 "Syntax error: '=' expected" }
+  | LET LCID EQ error { errAt 4 "Syntax error: expression expected" }
+  | LET LCID EQ Exp error { errAt 5 "Syntax error: 'in' expected" }
+  | LET LCID EQ Exp IN error { errAt 6 "Syntax error: expression expected" }
+  | LET REC error { errAt 3 "Syntax error: variable name expected" }
+  | LET REC LCID error { errAt 4 "Syntax error: '=' expected" }
+  | LET REC LCID EQ error { errAt 5 "Syntax error: 'fun' expected" }
+  | LET REC LCID EQ FUN error { errAt 6 "Syntax error: variable name expected" }
+  | LET REC LCID EQ FUN LCID { errAt 7 "Syntax error: '->' expected" }
+  | LET REC LCID EQ FUN LCID RARROW error { errAt 8 "Syntax error: expression expected" }
+  | LET REC LCID EQ FUN LCID RARROW Exp error { errAt 9 "Syntax error: 'in' expected" }
+  | LET REC LCID EQ FUN LCID RARROW Exp IN error { errAt 10 "Syntax error: expression expected" }
+  | FUN error { errAt 2 "Syntax error: variable name expected" }
+  | FUN LCID error { errAt 3 "Syntax error: '->' expected" }
+  | FUN LCID RARROW error { errAt 4 "Syntax error: expression expected" }
 
 Exp1:
   | Exp2 COLONEQ Exp1 { Assign($1, $3) }
@@ -231,6 +262,8 @@ AExp:
   | AT LCID { Exp_of_Loc (Loc $2) }
   | BANG AExp { Deref($2) }
   | LPAREN Exp RPAREN { $2 }
+
+  | LPAREN error { errAt 2 "Syntax error: expression expected" }
   | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
 SInt: /* signed int */
@@ -245,6 +278,21 @@ Val:
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
   | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
       { Rec($2, Var $6, Var $9, $11) }
+
+  | LPAREN Env RPAREN error { errAt 4 "Syntax error: '[' expected" }
+  | LPAREN Env RPAREN LBRACKET error { errAt 5 "Syntax error: 'fun' or 'rec' expected" }
+  | LPAREN Env RPAREN LBRACKET FUN error { errAt 6 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET FUN LCID error { errAt 7 "Syntax error: '->' expected" }
+  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW error { errAt 8 "Syntax error: expression expected" }
+  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp error { errBtw 4 9 "Syntax error: unmatched brackets" }
+
+  | LPAREN Env RPAREN LBRACKET REC error { errAt 6 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID error { errAt 7 "Syntax error: '=' expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN error { errAt 8 "Syntax error: variable expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID error { errAt 9 "Syntax error: '->' expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID RARROW error { errAt 10 "Syntax error: expression expected" }
+  | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID RARROW Exp error { errBtw 4 11 "Syntax error: unmatched brackets" }
+
 
 /******** experimental feature for macro defintions *********/
 
@@ -278,18 +326,18 @@ AExp: MVEXP {
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
-Env: MVENV {
+Env: MVENV Env2 {
   try 
     match Hashtbl.find tbl $1 with
-      Env e -> e
+      Env e -> List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) e $2
     | _ -> errAt 1 "Cannot happen! Env: MVENV" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
-Env2: MVENV COMMA {
+Store: MVSTORE Store2 {
   try 
     match Hashtbl.find tbl $1 with
-      Env e -> e
-    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+      Store s -> List.fold_left (fun store (id, v) -> Block(store, Loc id, v)) s $2
+    | _ -> errAt 1 "Cannot happen! Store: MVSTORE" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

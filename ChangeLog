@@ -1,3 +1,7 @@
+2010-01-31  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/EvalRefML3: New game.  ML3 + references.
+
 2010-01-25  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/EvalML1/pp.ml: a bug in computing precedence for a

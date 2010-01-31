@@ -40,11 +40,9 @@ let v = [
   (* ML3 expressions *)
   ("->", RARROW);
   ("fun", FUN);
-
-  (* ML4 expressions *)
   ("rec", REC);
 
-  (* RefML4 *)
+  (* RefML3 *)
   ("!", BANG);
   (":=", COLONEQ);
   ("ref", REF);

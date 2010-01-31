@@ -278,7 +278,6 @@ span.rname { font-variant: small-caps; }
 
 (define EvalML3:AppBOp EvalML2:AppBOp)
 
-
 ;; EvalRefML3
 (define EvalRefML3:mv EvalML3:mv)
 
@@ -290,10 +289,10 @@ span.rname { font-variant: small-caps; }
 
 (define (EvalRefML3:EmptySTerm) "\\cdot")
 
-(define (EvalRefML3:BlockTerm env x v)
-  (if (equal? env "\\cdot")
+(define (EvalRefML3:BlockTerm store x v)
+  (if (equal? store "\\cdot")
       `(,x "=" ,v)
-      `(,env ", " ,x "=" ,v)))
+      `(,store ", " ,x "=" ,v)))
 
 (define EvalRefML3:BinOpTerm EvalML3:BinOpTerm)
 (define EvalRefML3:IfTerm EvalML3:IfTerm)
@@ -302,7 +301,7 @@ span.rname { font-variant: small-caps; }
 (define EvalRefML3:AppTerm EvalML3:AppTerm)
 (define EvalRefML3:LetRecTerm EvalML3:LetRecTerm)
 (define (EvalRefML3:NewRefTerm e)
-  `("ref " ,e))
+  `("\\mbox{ref }" ,e))
 (define (EvalRefML3:DerefTerm e)
   `("!" ,e))
 (define (EvalRefML3:AssignTerm e1 e2)
