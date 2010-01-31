@@ -1,6 +1,6 @@
-PROGNAME = RefML4
-MODULEPATH = RefML4
-PACKED=refML4
+PROGNAME = EvalRefML3
+MODULEPATH = EvalRefML3
+PACKED=evalRefML3
 
 -include ../common/Makefile.game
 
