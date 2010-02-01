@@ -328,11 +328,6 @@
    let y = c true in
    let y = c true in
    c false evalto 2 / @l = 2")
-   (EvalRefML3 "|- let c =
-     let x = ref 0 in
-     fun y -> if y then x := !x + 1 else !x in
-   let y = c true in
-   c false + (let y = c true in c false) evalto 3 / @l = 2")
    (EvalRefML3 "|- let newc = fun x ->
      let x = ref x in
      fun y -> if y then x := !x + 1 else !x in
@@ -348,6 +343,11 @@
    let refx = ref x in let refy = ref y in
    let z = !refx := !(!refy) in !x
   evalto 3 / @l1 = 3, @l2 = 3, @l3 = @l1, @l4 = @l2")
+   (EvalRefML3 "|- let f = ref (fun x -> x) in
+   let fact = fun n -> if n < 1 then 1 else n * !f (n - 1) in
+   let z = f := fact in
+   fact 3 
+  evalto 6 / @l1 = (f = @l1)[fun n -> if n < 1 then 1 else n * !f (n - 1)]")
    (EvalRefML3 "|- let rec do = fun f -> fun i ->
      if i < 1 then 0
      else let x = f i in do f (i - 1) in 

@@ -279,7 +279,9 @@ span.rname { font-variant: small-caps; }
 (define EvalML3:AppBOp EvalML2:AppBOp)
 
 ;; EvalRefML3
-(define EvalRefML3:mv EvalML3:mv)
+(define (EvalRefML3:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) 
+      '(("env" "\\mathcal{E}") ("s" "S"))))
 
 (define EvalRefML3:FunTerm EvalML3:FunTerm)
 (define EvalRefML3:RecTerm EvalML3:RecTerm)
