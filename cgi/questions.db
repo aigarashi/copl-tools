@@ -315,7 +315,7 @@
    in findneg (1 :: 2 :: -3 :: 4 :: []) evalto true")
 
    ;; EvalRefML3
-   (EvalRefML3 "@l = 2 / |- !(@l) + 3 evalto 5 / @l = 2")
+   (EvalRefML3 "@l = 2 / x = @l |- !x + 3 evalto 5 / @l = 2")
    (EvalRefML3 "@l = 2 / x = @l |- x := !x + 1 evalto 3 / @l = 3")
    (EvalRefML3 "|- let r = ref true in !r evalto true / @l = true")
    (EvalRefML3 "|- let incr = fun x -> x := !x + 1 in

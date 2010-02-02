@@ -93,6 +93,8 @@ SLASHStore :
     /* empty */ { EmptyS }
   | SLASH Store { $2 }
 
+  | SLASH error { errAt 2 "Syntax error: store expected" }
+
 Judgment: 
     Store SLASH Env VDASH Exp EVALTO Val SLASHStore { EvalTo($1, $3, $5, $7, $8) }
   | Env VDASH Exp EVALTO Val SLASHStore { EvalTo(EmptyS, $1, $3, $5, $6) }
@@ -274,7 +276,8 @@ Val:
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
   | AT LCID { Value_of_Loc (Loc $2) }
-  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
+  | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET
+      { Fun($2, Var $6, $8) }
   | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
       { Rec($2, Var $6, Var $9, $11) }
 
