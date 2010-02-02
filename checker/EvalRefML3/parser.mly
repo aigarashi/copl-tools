@@ -303,10 +303,12 @@ MacroDef:
   | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
   | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
   | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
+  | DEF MVSTORE EQ Store SEMI { Hashtbl.add tbl $2 (Store $4) }
 
   | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
   | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
   | DEF MVENV EQ error { errAt 4 "Syntax error: environment expected" }
+  | DEF MVSTORE EQ error { errAt 4 "Syntax error: store expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
 Val: MVVALUE { 
