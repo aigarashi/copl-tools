@@ -56,7 +56,6 @@ let rec print_exp ppf e =
 	| Exp_of_bool true -> pr ppf "true"
 	| Exp_of_bool false -> pr ppf "false"
 	| Exp_of_Var (Var id) -> pp_print_string ppf id
-	| Exp_of_Loc (Loc id) -> pr ppf "@@%s" id
 	| BinOp(p, e1, e2) -> 
 	    let op = 
 	      match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in

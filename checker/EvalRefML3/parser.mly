@@ -259,7 +259,6 @@ AExp:
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
   | LCID { Exp_of_Var (Var $1) }
-  | AT LCID { Exp_of_Loc (Loc $2) }
   | BANG AExp { Deref($2) }
   | LPAREN Exp RPAREN { $2 }
 

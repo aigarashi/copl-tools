@@ -1,6 +1,6 @@
 2010-02-02  IGARASHI Atsushi  <igarashi@moon.kuis.kyoto-u.ac.jp>
 
-	* checker/EvalRefML3/EvalRefML3.gm: E-Loc is not needed.
+	* checker/EvalRefML3/{EvalRefML3.gm,parser.mly,pp.ml}: E-Loc is not needed.
 
 2010-01-31  Atsushi Igarashi  <igarashi@cornet>
 

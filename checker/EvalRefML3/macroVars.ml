@@ -5,4 +5,5 @@ let v = [
     ("v", fun s -> MVVALUE s);
     ("env", fun s -> MVENV s);
     ("s", fun s -> MVSTORE s);
+    ("S", fun s -> MVSTORE s);
   ]
