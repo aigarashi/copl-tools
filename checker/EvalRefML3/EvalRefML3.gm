@@ -27,7 +27,6 @@ s in Store ::= EmptyS
 e in Exp ::= i
           | b
           | x
-          | l
           | BinOp(op, e, e)
           | If(e, e, e)
           | Let(x, e, e)
@@ -78,8 +77,6 @@ E-AppRec: EvalTo(s1, env,App(e1, e2), v, s4) :-
          EvalTo(s1, env, e1, Rec(env2, x, y, e0), s2),
          EvalTo(s2, env, e2, v2, s3),
          EvalTo(s3, Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v, s4);
-
-E-Loc: EvalTo(s, env, l, l, s) :- ;
 
 E-Ref: EvalTo(s1, env, NewRef(e), l, Block(s2, l, v)) :-
          EvalTo(s1, env, e, v, s2),
