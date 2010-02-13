@@ -66,7 +66,7 @@ let tbl = Hashtbl.create 1024
 
 toplevel: 
     MacroDefs Derivation { $2 }
-  | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
+  | error { errAt 1 "Syntax error, perhaps at the beginning of the input" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
@@ -215,7 +215,6 @@ AExp:
   | FALSE { Exp_of_bool false }
   | LCID { Exp_of_Var (Var $1) }
   | LPAREN Exp RPAREN { $2 }
-  | LPAREN Exp error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
   | LBRACKET RBRACKET { Nil }
 
   | LPAREN error { errAt 2 "Syntax error: expression expected" }

@@ -35,6 +35,7 @@ let errAt i s =
 
 toplevel: 
     Derivation { $1 }
+  | error { errAt 1 "Syntax error, perhaps at the beginning of the input"}
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }
@@ -60,10 +61,10 @@ Judgment:
   | Nat PLUS Nat IS Nat { PlusIs($1, $3, $5) }
   | Nat MULT Nat IS Nat { MultIs($1, $3, $5) }
 
-  | Exp error { errAt 2 "Syntax error" } 
+  | Exp error { errAt 2 "Syntax error: '*', '+', or 'evalto' expected" } 
   | Exp EVALTO error { errAt 3 "Syntax error: natural number expected" }
-  | Nat error { errAt 2 "Syntax error" }   
-       /* shift/reduce conflict with Judgment: Exp error */
+  | Nat error { errAt 2 "Syntax error: 'plus', 'times', '+', '*', or 'evalto' expected" }   
+       /* intentional shift/reduce conflict with Judgment: Exp error */
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
   | Nat PLUS Nat error { errAt 4 "Syntax error: 'is' expected" }
   | Nat PLUS Nat IS error { errAt 5 "Syntax error: natural number expected" }
@@ -76,11 +77,11 @@ partialj:
   | Nat PLUS Nat IS QM { In_PlusIs($1, $3) }
   | Nat MULT Nat IS QM { In_MultIs($1, $3) }
 
-  | Exp error { errAt 2 "Syntax error" } 
+  | Exp error { errAt 2 "Syntax error: '+', '*', or 'evalto' expected" } 
   | Exp EVALTO error { errAt 3 "Syntax error: '?' expected" }
 
-  | Nat error { errAt 2 "Syntax error" }   
-       /* shift/reduce conflict with partialj: Exp error */
+  | Nat error { errAt 2 "Syntax error: 'plus', 'times', '+', '*', or 'evalto' expected" }   
+       /* intentional shift/reduce conflict with partialj: Exp error */
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
   | Nat PLUS Nat error { errAt 4 "Syntax error: 'is' expected" }
   | Nat PLUS Nat IS error { errAt 5 "Syntax error: '?' expected" }

@@ -35,6 +35,7 @@ let errAt i s =
 
 toplevel: 
     Derivation { $1 }
+  | error { errAt 1 "Syntax error, perhaps at the beginning of the input" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }

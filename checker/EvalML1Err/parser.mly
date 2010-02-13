@@ -53,7 +53,7 @@ let tbl = Hashtbl.create 1024
 /* common part start */
 toplevel: 
     MacroDefs Derivation { $2 }
-  | MacroDefs error { errAt 2 "Syntax error: derivation expected" }
+  | error { errAt 1 "Syntax error, perhaps at the beginning of input" }
   | EOF { raise End_of_file }
 
 judgment: Judgment { $1 }

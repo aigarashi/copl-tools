@@ -1,4 +1,15 @@
+2010-02-14  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/main.ml: New option "-debug" to generate debug output
+	from the parser.
+
 2010-02-13  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/*/parser.mly: Better handling of errors at the beginning
+	of the input.
+
+	* checker/{TypingML4, PolyTypingML4}/parser.mly: Deleted duplicate
+	rules.
 
 	* gmc/emit.ml (emit_exp_of_premises): Changed how to deal with
 	side conditions.  When a let binding is to be emitted, the optional

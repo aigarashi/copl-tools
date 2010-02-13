@@ -21,6 +21,7 @@ let spec = [
     ("-TeX", Arg.Set texp, "Output in TeX");
     ("-game", Arg.Set_string gname, "Specify the name of a game");
     ("-prove", Arg.Set_string jdg, "Proving mode; followed by the judgment to prove");
+    ("-debug", Arg.Unit (fun () -> ignore (Parsing.set_trace true)), "Set the debugging flag of the parser");
   ]
 
 let games = [
