@@ -266,7 +266,7 @@ struct
 	    pf ppf "@[| _ -> errAt _p_ \"The form of the %a premise is wrong: %s\"@]@]" emit_ordinal i rn;
 	  end;
 	  pf ppf ")@]"
-      | Qexp (s, _, _) :: rest ->
+      | Qexp (s, _, s') :: rest ->
 	  let b = Buffer.create (String.length s + 10) in
 	  let freshvarp = ref false in
 	  let subst s = 
@@ -283,11 +283,18 @@ struct
 			    s ^ " doesn't appear in preceding premises")
 		*)
 	  in
-	    add_substitute b subst s;
+	    Buffer.add_substitute b subst s;
 	    if !freshvarp then
-	      pf ppf "@[let @[%s@]@ in@ %a@]" 
-		(Buffer.contents b)
-		(emit_exp_of_premises (i+1) rn tbl env) rest
+	      begin
+		(match s' with
+		     None -> ()
+		   | Some s -> 
+		       Buffer.clear b;
+		       Buffer.add_substitute b subst s);
+		pf ppf "@[let @[%s@]@ in@ %a@]" 
+		  (Buffer.contents b)
+		  (emit_exp_of_premises (i+1) rn tbl env) rest
+	      end
 	    else
 	      pf ppf 
 		"@[if @[%s@]@ then %a@ else errAt _p_ \"Wrong rule application: %s\"@]" 

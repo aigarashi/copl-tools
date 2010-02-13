@@ -61,7 +61,10 @@ E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
 *)
-E-Var:  EvalTo(env, x, v) :- ` $v = lookup $env $x` %$env($x) = $v%;
+E-Var:  EvalTo(env, x, v) :- 
+          `try $v = lookup $env $x with LookupFailure -> false`
+          `$v = lookup $env $x`
+          %$env($x) = $v%;
 
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
 		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);
@@ -181,14 +184,11 @@ E-MatchErr3: EvalTo(env,Match(e1,e2,x,y,e3),Error) :-
 	     EvalTo(env,e1,ConsV(v1,v2)), EvalTo(Bind(Bind(env,x,v1), y,v2), e3, Error);
 
 
-
-
-
-
-
 [ML]
+
+exception LookupFailure
 
 let rec lookup env x =
     match env with 
-      Empty -> raise (NoApplicableRule (In_EvalTo (env, Exp_of_string x)))
+      Empty -> raise LookupFailure
     | Bind(env, x', v') -> if x = x' then v' else lookup env x

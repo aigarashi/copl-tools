@@ -1,3 +1,11 @@
+2010-02-13  Atsushi Igarashi  <igarashi@cornet>
+
+	* gmc/emit.ml (emit_exp_of_premises): Changed how to deal with
+	side conditions.  When a let binding is to be emitted, the optional
+	string (specified by the second backquoted string in .gm) is used.
+
+	* checker/*/*.gm: Variable lookup failures are dealt with better.
+
 2010-02-02  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/EvalRefML3/parser.mly: bug fix.

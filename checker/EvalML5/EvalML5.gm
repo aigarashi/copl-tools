@@ -95,7 +95,10 @@ E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
 *)
-E-Var:  EvalTo(env, x, v) :- ` $v = lookup $env $x` %$env($x) = $v%;
+E-Var:  EvalTo(env, x, v) :- 
+          `try $v = lookup $env $x with LookupFailure -> false`
+          `$v = lookup $env $x`
+          %$env($x) = $v%;
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
 		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);
 E-Fun: EvalTo(env, Abs(x, e), Fun(env, x, e)) :- ;
@@ -126,6 +129,8 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
 
+exception LookupFailure
+
 let rec in_dom x = function
      Empty -> false
    | Bind(env, y, _) -> x = y || in_dom x env
@@ -142,5 +147,5 @@ let rec uplus env1 env2 =  (* note that environments are snoc lists *)
 
 let rec lookup env x =
     match env with 
-      Empty -> raise (NoApplicableRule (In_EvalTo (env, Exp_of_Var x)))
+      Empty -> raise LookupFailure
     | Bind(env, x', v') -> if x = x' then v' else lookup env x

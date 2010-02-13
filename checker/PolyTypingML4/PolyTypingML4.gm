@@ -62,7 +62,8 @@ T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 T-Var1:  Typing(Bind(env,x,s), x, t) :- `inst $s $t` %$s \succeq $t%;
 T-Var2:  Typing(Bind(env,y,s), x, t) :- `$y <> $x` %$y \neq $x%, Typing(env, x, t);
 *)
-T-Var:  Typing(env, x, t) :- ` $s = lookup $env $x` %$env($x) = $s%,
+T-Var:  Typing(env, x, t) :- `try $s = lookup $env $x with LookupFailure -> false` 
+		             `$s = lookup $env $x` %$env($x) = $s%,
 		       	     `inst $s $t` %$s \succeq $t%;
 
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
@@ -90,6 +91,8 @@ T-Match: Typing(env, Match(e1,e2,x,y,e3), t) :-
 		 Typing(Bind(Bind(env, x, t'), y, TyList(t')), e3, t);
 
 [ML]
+
+exception LookupFailure
 
 (* free variables in a type (scheme) *)
 let rec fv_ty_aux ty res =
@@ -158,5 +161,5 @@ let closure env ty tysc =
 
 let rec lookup env x =
     match env with 
-      Empty -> raise (NoApplicableRule (In_Typing (env, Exp_of_Var x)))
+      Empty -> raise LookupFailure
     | Bind(env, x', t) -> if x = x' then t else lookup env x
