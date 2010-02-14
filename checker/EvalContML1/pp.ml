@@ -11,14 +11,18 @@ let with_paren lt ppf_e e_up ppf e =
   if e < e_up then pr ppf "(%a)" ppf_e e else pr ppf "%a" ppf_e e
 
 (* precedence for expressions *)
+let rec is_last_longexp = function
+    BinOp(_,_,e) -> is_last_longexp e
+  | If(_,_,_) -> true
+  | _ -> false
+
 (* if e is the left operand of e_up, do you need parentheses for e? *)
 let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
     BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _) 
-  | If(_, _, _),                      BinOp(Mult, _, _)
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _) 
-  | If(_, _, _),                      BinOp((Plus | Minus), _, _)
-  | If(_, _, _),                      BinOp(Lt, _, _)
+      -> true
+  | e,                                BinOp(_,_,_) when is_last_longexp e
       -> true
   | _ -> false
 

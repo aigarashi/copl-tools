@@ -13,20 +13,19 @@ let with_paren lt ppf_e e_up ppf e =
   if e < e_up then pr ppf "(%a)" ppf_e e else pr ppf "%a" ppf_e e
 
 (* precedence for expressions *)
+let rec is_last_longexp = function
+    BinOp(_,_,e) -> is_last_longexp e
+  | If(_,_,_) | Let(_,_,_) | Abs(_,_) | LetRec(_,_,_,_) -> true
+  | _ -> false
+
 (* if e is the left operand of e_up, do you need parentheses for e? *)
 let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
     BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _) 
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _) 
-  | If(_, _, _),                      BinOp(_, _, _)
-  | Let(_, _, _),                     BinOp(_, _, _)
-  | Abs(_, _),                        BinOp(_, _, _)
-  | LetRec(_, _, _, _),               BinOp(_, _, _)
   | BinOp(_, _, _),                   App(_, _)
-  | If(_, _, _),                      App(_, _)
-  | Let(_, _, _),                     App(_, _)
-  | Abs(_, _),                        App(_, _)
-  | LetRec(_, _, _, _),               App(_, _)
+      -> true
+  | e,                                (BinOp(_, _, _) | App(_, _)) when is_last_longexp e
       -> true
   | Exp_of_int i,                     App(_, _) when is_negative i -> true
   | _ -> false
@@ -92,22 +91,21 @@ and print_env' ppf = function
   | Bind(env', Var x) -> pr ppf "%a%s,@ " print_env' env' x
 
 (* precedence for nameless expressions *)
+let rec is_last_longexp = function
+    BinOpD(_,_,e) -> is_last_longexp e
+  | IfD(_,_,_) | LetD(_,_) | AbsD _ | LetRecD(_,_) -> true
+  | _ -> false
+
 (* if e is the left operand of e_up, do you need parentheses for e? *)
 let (<<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
     BinOpD((Plus | Minus | Lt), _, _), BinOpD(Mult, _, _) 
   | BinOpD(Lt, _, _),                  BinOpD((Plus | Minus), _, _) 
-  | IfD(_, _, _),                      BinOpD(_, _, _)
-  | LetD(_, _),                        BinOpD(_, _, _)
-  | AbsD _,                            BinOpD(_, _, _)
-  | LetRecD(_, _),                     BinOpD(_, _, _)
   | BinOpD(_, _, _),                   AppD(_, _)
-  | IfD(_, _, _),                      AppD(_, _)
-  | LetD(_, _),                        AppD(_, _)
-  | AbsD  _,                           AppD(_, _)
-  | LetRecD(_, _),                     AppD(_, _)
       -> true
-  | DBExp_of_int i,                      AppD(_, _) when is_negative i -> true
+  | e,                                 (BinOpD(_, _, _) | AppD(_, _)) when is_last_longexp e
+      -> true
+  | DBExp_of_int i,                    AppD(_, _) when is_negative i -> true
   | _ -> false
 
 (* if e is the right operand of e_up, do you need parentheses for e? *)

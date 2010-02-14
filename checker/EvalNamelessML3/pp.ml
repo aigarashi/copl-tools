@@ -13,22 +13,21 @@ let with_paren lt ppf_e e_up ppf e =
   if e < e_up then pr ppf "(%a)" ppf_e e else pr ppf "%a" ppf_e e
 
 (* precedence for expressions *)
+let rec is_last_longexp = function
+    BinOpD(_,_,e) -> is_last_longexp e
+  | IfD(_,_,_) | LetD(_,_) | AbsD _ | LetRecD(_,_) -> true
+  | _ -> false
+
 (* if e is the left operand of e_up, do you need parentheses for e? *)
 let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
     BinOpD((Plus | Minus | Lt), _, _), BinOpD(Mult, _, _) 
   | BinOpD(Lt, _, _),                  BinOpD((Plus | Minus), _, _) 
-  | IfD(_, _, _),                      BinOpD(_, _, _)
-  | LetD(_, _),                        BinOpD(_, _, _)
-  | AbsD _,                            BinOpD(_, _, _)
-  | LetRecD(_, _),                     BinOpD(_, _, _)
   | BinOpD(_, _, _),                   AppD(_, _)
-  | IfD(_, _, _),                      AppD(_, _)
-  | LetD(_, _),                        AppD(_, _)
-  | AbsD  _,                           AppD(_, _)
-  | LetRecD(_, _),                     AppD(_, _)
       -> true
-  | DBExp_of_int i,                      AppD(_, _) when is_negative i -> true
+  | e,                                 (BinOpD(_, _, _) | AppD(_,_)) when is_last_longexp e
+      -> true
+  | DBExp_of_int i,                    AppD(_, _) when is_negative i -> true
   | _ -> false
 
 (* if e is the right operand of e_up, do you need parentheses for e? *)

@@ -1,4 +1,10 @@
+2010-02-15  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/*/pp.ml: Bug fix (see 2010-01-25).
+
 2010-02-14  Atsushi Igarashi  <igarashi@cornet>
+
+	* checker/EvalRefML4: New game: ML4 + references.
 
 	* checker/main.ml: New option "-debug" to generate debug output
 	from the parser.

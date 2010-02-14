@@ -46,6 +46,11 @@ let rec tex_pat ppf p =
 	    (with_paren_R tex_pat p) p2
 
 (* precedence for expressions *)
+let rec is_last_longexp = function
+    BinOp(_,_,e) | Cons(_,e) -> is_last_longexp e
+  | If(_,_,_) | Let(_,_,_) | Abs(_,_) | LetRec(_,_,_,_) | Match(_,_) -> true
+  | _ -> false
+
 (* if e is the left operand of e_up, do you need parentheses for e? *)
 let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus, minus, lt, and cons
@@ -55,25 +60,12 @@ let (<) e e_up = match e, e_up with
   | Cons(_,_),                        BinOp(Mult, _, _)
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _)
   | Cons(_, _),                       BinOp((Plus | Minus), _, _)
-  | If(_, _, _),                      BinOp(_, _, _)
-  | Let(_, _, _),                     BinOp(_, _, _)
-  | Abs(_, _),                        BinOp(_, _, _)
-  | LetRec(_, _, _, _),               BinOp(_, _, _)
-  | Match(_, _),                      BinOp(_, _, _)
   | BinOp(_, _, _),                   App(_, _)
-  | If(_, _, _),                      App(_, _)
-  | Let(_, _, _),                     App(_, _)
-  | Abs(_, _),                        App(_, _)
-  | LetRec(_, _, _, _),               App(_, _)
-  | Match(_, _),                      App(_, _)
   | Cons(_, _),                       App(_, _)
   | BinOp(Lt, _, _),                  Cons(_,_)
-  | If(_, _, _),                      Cons(_, _)
-  | Let(_, _, _),                     Cons(_, _)
-  | Abs(_, _),                        Cons(_, _)
-  | LetRec(_, _, _, _),               Cons(_, _)
   | Cons(_,_),                        Cons(_, _)
-  | Match(_, _),                      Cons(_, _)
+      -> true
+  | e,                                (BinOp(_,_,_) | App(_, _) | Cons(_,_)) when is_last_longexp e
       -> true
   | Exp_of_int i,                     App(_, _) when is_negative i -> true
   | _ -> false

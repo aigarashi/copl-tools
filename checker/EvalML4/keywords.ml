@@ -40,11 +40,9 @@ let v = [
   (* ML3 expressions *)
   ("->", RARROW);
   ("fun", FUN);
-
-  (* ML4 expressions *)
   ("rec", REC);
 
-  (* ML5 expressions *)
+  (* ML4 expressions *)
   ("match", MATCH);
   ("with", WITH);
   ("|", BAR);
