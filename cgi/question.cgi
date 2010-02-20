@@ -9,21 +9,13 @@
 
 (load "./site-local.scm")
 (load "./global.scm")
+(load "./questions.scm")
 
 (define *style* "
   span.test {
     background-color : #ffcccc;
   }
 ")
-
-(define (get-q n)  ;; the number is 1-origin
-  (call-with-input-file	*question-db*
-    (lambda (in)
-      (let ((qdb (read in))
-	    (n (- n 1)))
-	(if (< n (vector-length qdb)) 
-	    (vector-ref qdb n)
-	    #f)))))
 
 (define (display-q n)
   (let ((q (get-q n)))
@@ -35,7 +27,7 @@
 		  (list
 		   (html:input :type "hidden" :name "game" :value game)
 		   (html:input :type "hidden" :name "no" :value n)
-		   (html:input :type "hidden" :name "problem" :value goal)
+		   ;#(html:input :type "hidden" :name "problem" :value goal)
 		   (html:input :type "submit" :value label))))
 	       (rulesurl (html:a 
 			  :href (string-concatenate (list "games/" 

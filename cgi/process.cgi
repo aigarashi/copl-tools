@@ -9,6 +9,7 @@
 (load "./global.scm")
 (load "./userdb.scm")
 (load "./hilight.scm")
+(load "./questions.scm")
 
 (define (make-cmd game fullp)
     (if fullp 
@@ -84,9 +85,9 @@
    (let* ((game (cgi-get-parameter "game" params))
 	  (fullp (cgi-get-parameter "full" params))
 	  (deriv (cgi-get-parameter "derivation" params))
-	  (problem (cgi-get-parameter "problem" params))
 	  (uname (cgi-get-parameter "loginas" params))
-	  (no (string->number (or (cgi-get-parameter "no" params) "0"))))
+	  (no (string->number (or (cgi-get-parameter "no" params) "0")))
+	  (problem (get-q no)))
      (if (and game deriv (or (zero? no) uname))
 	 (let* ((result (invoke-checker game fullp deriv problem))
 		(html-msg (display-result result deriv no uname game)))

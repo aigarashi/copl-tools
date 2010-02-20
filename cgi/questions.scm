@@ -1,4 +1,12 @@
 ;-*-Scheme-*-
+
+(define (get-q n)  ;; the number is 1-origin
+  ;; returns #f if n-th problem doesn't exist
+      (let ((n (- n 1)))
+	(and (< -1 n (vector-length qdb))  ; range check
+	     (vector-ref qdb n))))
+
+(define qdb
 #(;; Nat
 					
   ; learn how to do addition
@@ -355,4 +363,4 @@
    let sum = fun i -> x := !x + i in
    let y = do sum 3 in !x 
   evalto 6 / @l = 6")
-)
+))

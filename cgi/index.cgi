@@ -10,6 +10,7 @@
 (load "./site-local.scm")
 (load "./global.scm")
 (load "./userdb.scm")
+(load "./questions.scm")
 
 (define-constant thisurl "index.cgi")
 
@@ -66,7 +67,7 @@
     (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off"
 		   "ここに導出を書いてください")
     (html:input :type "submit" :value "送信")
-    (html:input :type "hidden" :name "no" :value 0))
+    (html:input :type "hidden" :name "no" :value "0"))
   (html:script :type "text/javascript" "<!--
   document.sandbox.derivation.select();
 //-->")))
@@ -140,7 +141,7 @@
 		   (construct-cookie-string 
 		    `(("loginas" ,name 
 		       :domain ,*domainname*
-		       :path "/~igarashi/dc/"
+		       :path ,*system-url-local*
 		       :expires ,(- (sys-time) 1) 
 		       :max-age 0))))
        (html-doctype)
@@ -174,7 +175,7 @@
 		   (construct-cookie-string 
 		    `(("loginas" ,lname 
 		       :domain ,*domainname*
-		       :path "/~igarashi/dc/"
+		       :path ,*system-url-local*
 		       :expires ,(+ (sys-time) 86400) 
 		       :max-age 86400))))
        (html-doctype)
