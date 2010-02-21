@@ -7,9 +7,7 @@
 (use text.html-lite)
 (use srfi-13)
 
-(load "./site-local.scm")
-(load "./global.scm")
-(load "./questions.scm")
+(load "./sidebar.scm")
 
 (define *style* "
   span.test {
@@ -33,7 +31,8 @@
 			  :href (string-concatenate (list "games/" 
 							  (symbol->string game) ".html")) 
 			  game)))
-	  (list
+	  (html:div
+	   :id "main"
 	   (html:h1 "第" n "問")
 	   (html:p "導出システム " rulesurl " で判断 " #;(html:br)
 		   #;"&nbsp; &nbsp;" (html:pre goal) #;(html:br)
@@ -52,7 +51,8 @@
 
 (cgi-main
   (lambda (params)
-    (let ((q (cgi-get-parameter "no" params)))
+    (let ((q (cgi-get-parameter "no" params))
+	  (name (cgi-get-parameter "loginas" params)))
       (list
        (cgi-header)
        (html-doctype)
@@ -61,8 +61,10 @@
 	 (html:meta 
 	  :http-equiv "content-type" 
 	  :content "text/html; charset=utf-8")
-	 (html:style :type "text/css" *style*))
+	 (html:style :type "text/css" *style*)
+	 (html:link :href "./global.css" :rel "stylesheet" :type "text/css"))
 	(html:body
+	 (display-sidebar name)
 	 (if q (display-q (string->number q))
 	     (html:p "Error: the question number has to be specified"))))))))
 

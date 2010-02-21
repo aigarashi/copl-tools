@@ -20,7 +20,7 @@
   (let* ((cmd (append
 	       (list #`",|*system-dir*|checker" "-check" deriv "-game" game)
 	       (if fullp '("-full") '())
-	       (if problem (list "-against" problem) '())
+	       (if problem (list "-against" (cadr problem)) '())
 	       (list :output :pipe :error :pipe)))
 	 ;; An old syntax is used to specify the command line
 	 ;; If a newer gauche is run on the system, 
@@ -53,9 +53,7 @@
 		(write-log uname (format "Q #~d solved!" no) :header #t))
 	(write-log uname "--")
 	(list 
-	 (html:p (if (zero? no) "正しい導出です．" "正解です．"))
-	 (html:hr)
-	 (html:a :href "index.cgi" "もっと問題を解く")))
+	 (html:h1 (if (zero? no) "正しい導出です．" "正解です．"))))
       ;; 不正解 orz
       (begin
 	(unless (zero? no)
@@ -66,21 +64,22 @@
 		   :header #t)
 	(write-log uname "--")
 	(list
-	 (html:p "残念...")
+	 (html:h1 "残念...")
 	 (html:pre (html-escape-string (caddr result))) 
-	 (html:pre (let ((lc (parse-errmsg (caddr result))))
+	 (html:pre :id "userinput"
+		   (let ((lc (parse-errmsg (caddr result))))
 		     (if lc
 			 (emphasize deriv (car lc) (cdr lc))
 			 deriv)))
-	 (html:hr)
-	 (html:table
-	  (map (lambda (s) (html:tr (html:td s)))
-	       (list
-		(html:a :href "" :onclick "history.back(); return false"
-			"今の問題にもどる")
-		(html:a :href "index.cgi" "あきらめて別の問題を解く"))))))))
+	 (if (zero? no)
+	     '()
+	     (list
+	      (html:hr)
+	      (html:a :href "" :onclick "history.back(); return false"
+		      "今の問題にもどる")))
+		#;(html:a :href "index.cgi" "あきらめて別の問題を解く")))))
 
-(cgi-main
+#;(cgi-main
  (lambda (params)
    (let* ((game (cgi-get-parameter "game" params))
 	  (fullp (cgi-get-parameter "full" params))
@@ -103,14 +102,15 @@
 	      (html:meta 
 	       :http-equiv "content-type" 
 	       :content "text/html; charset=utf-8")
-	      (html:style :type "text/css" *style*))
+	      (html:link :href "./global.css" :rel "stylesheet" 
+			 :type "text/css"))
 	     (html:body
 	      html-msg
 	      (if *debug*
 		  (list
 		   (html:h1 "Debug information:")
 		   (html:h2 "Input:")
-		   (html:pre (html-escape-string params))
+		   (html:pre (html-escape-string (list params (cdr problem))))
 		   (html:h2 "Output:")
 		   (html:pre (html-escape-string result)))
 		  '())

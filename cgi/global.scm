@@ -10,18 +10,4 @@
 (define *news*
   (string-append *system-dir* "news.html"))
 
-(define-constant *style* "
-  span.error {
-    background-color : #ffcccc;
-  }
-  .qlist {
-    border-collapse: collapse;
-    border: 1px #1c79C6 solid;
-  }  
-  .qlist td {
-    border: 1px #1c79C6 solid;
-    width: 20px;
-    text-align: center;
-  }
-")
 

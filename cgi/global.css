@@ -1,0 +1,162 @@
+body {
+    background-color: #ffff99;
+    margin: 0px;
+    padding: 0px;
+}
+body#login-screen {
+    background-color: #ffffff;
+}
+#contents {
+    position: relative;
+    width: 1140px;
+    margin: 0 auto;
+}
+#header {
+}
+#main {
+    margin-left: 250px;
+/*    margin-right: 20px;
+    margin-top: 0px;
+    margin-bottom: 0px; */
+    background-color: #ffffff;
+    padding-left: 5px;
+    color: #000000;
+    width: 850px;
+}
+#side {
+    width:245px;
+    position: absolute;
+    left:0px;
+    top:0px;
+    color: #ffffff;
+    background-color: #000000;
+    padding-left: 5px;
+}
+#commandlist a {
+    text-decoration: none;
+    color: #ffffff;
+}
+span.error {
+    background-color : #ffcccc;
+}
+
+#login {
+    width: 600px;
+    height: 250px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: -200px;
+    background-color: #ffffcc;
+    border: 6px double #ffff00;
+}
+#login h1 {
+    text-align: center;
+    color: #663300;
+}
+#login form {
+    width: 300px;
+    margin-left: 150px;
+    margin-right:150px;
+}
+#login .label {
+    display:block;
+    width:5em;
+    float:left;
+    clear:left;
+}
+.warn {
+    color: #ff0000;
+    font-size: 80%
+}
+/* question list */
+.qlist {
+}
+ul.qlist {
+    font-size: 90%;
+    position: relative;
+    list-style: none;
+    padding-left: 5px;
+    color: #ffffff;
+}
+.qlist li.off {
+    position: relative;
+    width:200px;
+    height:18px;
+    overflow:hidden;
+    border:1px solid #ffffff;
+    padding: 2px;
+    color: #ffff00;
+}
+.qlist li.finished {
+    position: relative;
+    width:200px;
+    height:18px;
+    overflow:hidden;
+    border:1px solid #ffffff;
+    padding: 2px;
+    color: #999999;
+    background-color: #333333;
+}
+.qlist li.on {
+    width:200px;
+    height:18px;
+    overflow:hidden;
+    border:1px solid #ffffff;
+    padding: 2px;
+    background-color:#0000cc;
+    color: #ffff00;
+}
+ul.qlist > li.on {
+    overflow:visible;
+}
+ul.questions{
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    left: 202px;
+    top: -25px;
+    width: 34px;
+    border:1px solid #ffffff;
+    border-bottom:0px solid #ffffff;
+    background-color:#000000;
+    list-style:none;
+}
+.solved {
+    background-color: #333333;
+}
+.solved a {
+    color: #999999;
+}
+.unsolved {
+    background-color:#000000;
+}
+.unsolved a {
+    color: #ffff00;
+}
+.questions li {
+}
+.questions a {
+    padding:2px;
+    display:block;
+    width:30px;
+    border-bottom:1px solid #ffffff;
+    text-decoration:none;
+}
+.questions a:hover{
+    background-color:#0000cc;
+    color: #ffff00;
+}
+
+#question {
+    margin: 20px;
+    padding: 5px;
+    border: 1px solid #6699ff;
+}
+
+#userinput {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #6699ff;
+}
