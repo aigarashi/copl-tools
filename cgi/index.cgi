@@ -47,7 +47,7 @@
 (define (display-login-page msg)
   (html:div 
    :id "login"
-   (html:h1 "「ソフトウェア基礎論」演習システム(PPL2010版)")
+   (html:h1 "「ソフトウェア基礎論」演習システム")
    (html:form 
     :action thisurl :method "post"
     (html:fieldset
@@ -73,9 +73,11 @@
      (html:p how-many-q " 問中 " (length solved) " 問正解 ")
      (html:p "問題を下の表から選択してください")
      (display-qlist solved)
-     (html:h2 "コマンド")
+     (html:h2 "その他")
      (html:p :id "commandlist"
 	     (html:a :href "index.cgi" "おすなば")
+	     " | "
+	     (html:a :href "rulebook.pdf" "推論規則集(pdf)")
 	     " | "
 	     (html:a :href (command-url "stats") "統計")
 	     " | "

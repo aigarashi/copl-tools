@@ -1,5 +1,7 @@
 2010-03-07  Atsushi Igarashi  <igarashi@cornet>
 
+	* cgi/index.cgi (display-sidebar): add a link to rulebook.pdf.
+
 	* cgi/rules2TeX.scm (EvalContML1:EvalTo): Bug fix.
 
 2010-02-15  Atsushi Igarashi  <igarashi@cornet>
