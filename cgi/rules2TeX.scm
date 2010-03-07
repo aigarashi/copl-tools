@@ -668,7 +668,7 @@ span.rname { font-variant: small-caps; }
  `("\\{" ,(EvalContML1:IfTerm Hole e1 e2) "\\} \\gg" ,k))
 
 (define (EvalContML1:EvalTo k e v)
-  `(,e "\\gg" k "\\Downarrow" v))
+  `(,e "\\gg" ,k "\\Downarrow" ,v))
 
 (define EvalContML1:AppBOp EvalML1:AppBOp)
 (define (EvalContML1:AppK k v1 v2)
