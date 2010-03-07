@@ -17,12 +17,13 @@
 	    (qdb (read in)))
 	(aux n qdb)))))
 
-(define (how-many-q)  ;; query how many questions are installed
-  (define (aux l)
-    (if (null? l) 0
-	(+ (vector-length (cadar l)) (aux (cdr l)))))
+(define how-many-q  ;; query how many questions are installed
   (call-with-input-file *question-db*
-    (lambda (in) (aux (read in)))))
+    (lambda (in) 
+      (define (aux l)
+	(if (null? l) 0
+	    (+ (vector-length (cadar l)) (aux (cdr l)))))
+      (aux (read in)))))
 
 (define (display-qlist solved)  
   ;; solved is a sorted list of numbers of solved questions

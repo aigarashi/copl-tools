@@ -13,6 +13,7 @@
 (load "./userdb.scm")
 (load "./questions.scm")
 (load "./process.cgi")
+(load "./statistics.scm")
 
 (define-constant thisurl "index.cgi")
 
@@ -65,17 +66,20 @@
   (file->string *news* :if-does-not-exist #f))
 
 (define (display-sidebar name)
-  (let* ((solved (cdr (lookupdb name 'solved)))
-	 (no-q (how-many-q)))
+  (let* ((solved (cdr (lookupdb name 'solved))))
     (html:div
      :id "side"
      (html:h2 name "さんの成績")
-     (html:p no-q " 問中 " (length solved) " 問正解 ")
+     (html:p how-many-q " 問中 " (length solved) " 問正解 ")
+     (html:p "問題を下の表から選択してください")
      (display-qlist solved)
+     (html:h2 "コマンド")
      (html:p :id "commandlist"
 	     (html:a :href "index.cgi" "おすなば")
 	     " | "
-	     (html:a :href "?command=logout" "ログアウト"))
+	     (html:a :href (command-url "stats") "統計")
+	     " | "
+	     (html:a :href (command-url "logout") "ログアウト"))
      )))
 
 (define (display-q n)
@@ -99,7 +103,7 @@
 		(list (html:a :href #`"?qno=,(- n 1)" "<< 前の問題へ")
 		      " ")
 		"")
-	    (if (< n (how-many-q))
+	    (if (< n how-many-q)
 		(html:a :href #`"?qno=,(+ n 1)" "次の問題へ >>")
 		""))
 	   (html:h1 "第" n "問")
@@ -172,7 +176,7 @@
 		   (html:pre (html-escape-string result)))
 		  '())
 	      (cond
-	       [(and (zero? (car result)) (< 0 no (how-many-q)))
+	       [(and (zero? (car result)) (< 0 no how-many-q))
 		(display-q (+ no 1))]
 	       [(zero? no) (display-sandbox)]
 	       [else '()])
@@ -208,7 +212,8 @@
     (cond 
      [(and (eq? command 'logout) name) ;; trying to logout
       (list ;; deleting cookie
-       (cgi-header :cookies
+       (cgi-header :content-type "text/html; charset=utf-8"
+		   :cookies
 		   (construct-cookie-string 
 		    `(("loginas" ,name 
 		       :domain ,*domainname*
@@ -223,6 +228,19 @@
 	 (html:p "ログアウトしました．"))))]
      [(and (eq? command 'answer) name)  ;; trying to answer a question
       (check-and-show params)]
+     [(and (eq? command 'stats) name)  ;; show a statistics page
+      (list
+       (cgi-header)
+       (html-doctype)
+       (html:html
+	header
+	(html:body
+	 (html:div
+	  :id "contents"
+	  (html:div :id "main"
+		    (html:h1 "統計コーナー")
+		    (display-statistics name))
+	  (display-sidebar name)))))]
      [name  ;; he/she has already logged in
       (list
        (cgi-header)
@@ -264,10 +282,6 @@
 	(html:body
 	 (html:div 
 	  :id "contents"
-	  (html:div 
-	   :id "header"
-	   (html:p
-	    (html:a :href "?command=logout" "ログアウト")))
 	  (display-news)
 	  (html:div
 	   :id "main"

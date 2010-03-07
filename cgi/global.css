@@ -160,3 +160,51 @@ ul.questions{
     padding: 5px;
     border: 1px solid #6699ff;
 }
+
+/* statistics */
+#ranking {
+   color: #000000;
+   margin-left: 20px;
+}
+#ranking .you {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+#ranking .even {
+    background-color: #c9efff;
+    color: #000000;
+}
+#ranking .odd {
+    background-color: #edf9ff;
+    color: #000000;
+}
+#ranking .num {
+    text-align: right;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+#ranking .name {
+    text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+#ranking .rank {
+    text-align: right;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+#graph {
+    border: 3px solid #000000;
+    margin-left: 20px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+#graph td {
+    padding: 5px;
+    border: 1px solid #000000;
+}
+#graph .section {
+    background-color: #008800;
+    color: #ffffff;
+}
