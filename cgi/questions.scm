@@ -42,7 +42,7 @@
 	       (end (+ q-no q-section))
 	       (section-solved
 		(length (filter (lambda (n)
-				  (<= q-no n end)) solved)))
+				  (<= q-no n (- end 1))) solved)))
 	       (finished? (= section-solved q-section)))
 	  (cons (html:li
 		 :class (if finished? "finished" "off")
