@@ -1,0 +1,56 @@
+open Parser
+
+let v = [
+  (* common keywords and symbols *)
+  ("by", BY);
+  (";", SEMI);
+  ("?", QM);
+
+  (* game-specific keywords *)
+  ("evalto", EVALTO);
+  
+  ("minus", MINUS);
+  ("times", MULT);
+  ("plus", PLUS);
+  ("is", IS);
+  ("less", LESS);
+  ("than", THAN);
+  ("not", NOT);
+
+  (* ML1 expressions *)
+  ("true", TRUE);
+  ("false", FALSE);
+  ("if", IF);
+  ("then", THEN);
+  ("else", ELSE);
+  
+  ("*", AST);
+  ("+", CROSS);
+  ("-", HYPHEN);
+  ("<", LT);
+
+  (* ML2 judgments and expressions *)
+  ("|-", VDASH);
+  (",", COMMA);
+
+  ("let", LET);
+  ("in", IN);
+  ("=", EQ);
+
+  (* ML3 expressions *)
+  ("->", RARROW);
+  ("fun", FUN);
+  ("rec", REC);
+
+  (* ML4 expressions *)
+  ("match", MATCH);
+  ("with", WITH);
+  ("|", BAR);
+  ("::", COLCOL);
+
+  (* ML5 expressions *)
+  ("_", UNDERBAR);
+  ("matches", MATCHES);
+  ("doesn't", DOESNT);
+  ("when", WHEN);
+] 
