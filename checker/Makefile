@@ -9,7 +9,7 @@ OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
 
 GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
-	EvalML1 EvalML2 EvalML3 EvalML4 EvalML5  \
+	EvalML1 EvalML2 EvalML3 EvalML4 EvalML5 EvalML6 \
 	EvalML1Err \
 	EvalContML1 EvalContML3 EvalContML4 \
 	EvalRefML3 EvalRefML4 \
@@ -34,6 +34,7 @@ OBJS=mySupport.cmx derivation.cmx lexer.cmx \
 		EvalML3/evalML3.cmx \
 		EvalML4/evalML4.cmx \
 		EvalML5/evalML5.cmx \
+		EvalML6/evalML6.cmx \
 		EvalML1Err/evalML1Err.cmx \
 		EvalContML1/evalContML1.cmx \
 		EvalContML3/evalContML3.cmx \
@@ -81,6 +82,7 @@ clean:
 	$(MAKE) -C EvalML3 clean
 	$(MAKE) -C EvalML4 clean
 	$(MAKE) -C EvalML5 clean
+	$(MAKE) -C EvalML6 clean
 	$(MAKE) -C EvalML1Err clean
 	$(MAKE) -C EvalContML1 clean
 	$(MAKE) -C EvalContML3 clean
@@ -112,6 +114,7 @@ main.cmx: Nat/nat.cmx \
 	EvalML3/evalML3.cmx \
 	EvalML4/evalML4.cmx \
 	EvalML5/evalML5.cmx \
+	EvalML6/evalML6.cmx \
 	EvalML1Err/evalML1Err.cmx \
 	EvalContML1/evalContML1.cmx \
 	EvalContML3/evalContML3.cmx \

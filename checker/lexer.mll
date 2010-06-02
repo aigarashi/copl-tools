@@ -23,6 +23,7 @@ module Make(X :
       val intl : int -> token
       val id : string -> token
       val lcid : string -> token
+      val ucid : string -> token
     end
 
     module K : sig val v : (string * P.token) list end
@@ -87,7 +88,15 @@ rule main = parse
       with
       _ -> lcid name
      }
-(* alphabetical names *)
+(* Uppercase names added for EvalML6 *)
+| ['A'-'Z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
+    { let name = Lexing.lexeme lexbuf in
+      try 
+        Hashtbl.find tbl name
+      with
+      _ -> ucid name
+     }
+(* other alphabetical names, including rule names, which can contain hyphens *)
 | ['A'-'Z' 'a'-'z' '_']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
 | ['A'-'Z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
     { let name = Lexing.lexeme lexbuf in
