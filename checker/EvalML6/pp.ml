@@ -13,7 +13,7 @@ let with_paren lt ppf_e e_up ppf e =
   if e < e_up then pr ppf "(%a)" ppf_e e else pr ppf "%a" ppf_e e
 
 let (>) p_up p = match p_up, p with
-    CnstrP1(_,_), CnstrP2(_,_,_) -> true
+    CnstrPi(_,_), CnstrPii(_,_,_) -> true
   | _ -> false
 
 let rec print_pat ppf p = 
@@ -21,10 +21,10 @@ let rec print_pat ppf p =
   match p with
       Pat_of_Var (Var x) -> pr ppf "%s" x
     | WildP -> pr ppf "_"
-    | CnstrP0(Cnstr c) -> pr ppf "%s" c
-    | CnstrP1(Cnstr c, p0) -> 
+    | CnstrP(Cnstr c) -> pr ppf "%s" c
+    | CnstrPi(Cnstr c, p0) -> 
 	pr ppf "%s %a" c (with_paren_R print_pat p) p0
-    | CnstrP2(Cnstr c, p1, p2) -> 
+    | CnstrPii(Cnstr c, p1, p2) -> 
 	pr ppf "%s(%a,%a)" c
 	  print_pat p1 
 	  print_pat p2
@@ -33,9 +33,9 @@ let rec tex_pat ppf p =
   match p with
       Pat_of_Var (Var x) -> pr ppf "%s" x
     | WildP -> pr ppf "\\%sWildPTerm" g
-    | CnstrP0(Cnstr c) -> pr ppf "\\%sCnstrP0Term{%s}" g c
-    | CnstrP1(Cnstr c, p) -> pr ppf "\\%sCnstrP1Term{%s}{%a}" g c tex_pat p
-    | CnstrP2(Cnstr c, p1, p2) -> 
+    | CnstrP(Cnstr c) -> pr ppf "\\%sCnstrP0Term{%s}" g c
+    | CnstrPi(Cnstr c, p) -> pr ppf "\\%sCnstrP1Term{%s}{%a}" g c tex_pat p
+    | CnstrPii(Cnstr c, p1, p2) -> 
 	pr ppf "\\%sCnstrP2Term{%s}{%a}{%a}" g c
 	  tex_pat p1  tex_pat p2
 
@@ -72,23 +72,23 @@ let (>) e_up e = match e_up, e with
   | App(_, _),                   Let(_, _, _)
   | App(_, _),                   Abs(_, _)
   | App(_, _),                   LetRec(_, _, _, _)
-  | App(_, _),                   Cnstr1(_, _)
-  | App(_, _),                   Cnstr2(_, _, _)
+  | App(_, _),                   CnstrEi(_, _)
+  | App(_, _),                   CnstrEii(_, _, _)
   | App(_, _),                   Match(_, _)
   | BinOp(Mult, _, _),           BinOp(_, _, _)
   | BinOp((Plus | Minus), _, _), BinOp((Plus | Minus | Lt), _, _)
-  | Cnstr1(_, _),                BinOp(_, _, _)
-  | Cnstr1(_, _),                If(_, _, _)
-  | Cnstr1(_, _),                Let(_, _, _)
-  | Cnstr1(_, _),                Abs(_, _)
-  | Cnstr1(_, _),                App(_,_)
-  | Cnstr1(_, _),                LetRec(_, _, _, _)
-  | Cnstr1(_, _),                Cnstr1(_, _)
-  | Cnstr1(_, _),                Cnstr2(_, _, _)
-  | Cnstr1(_, _),                Match(_, _)
+  | CnstrEi(_, _),                BinOp(_, _, _)
+  | CnstrEi(_, _),                If(_, _, _)
+  | CnstrEi(_, _),                Let(_, _, _)
+  | CnstrEi(_, _),                Abs(_, _)
+  | CnstrEi(_, _),                App(_,_)
+  | CnstrEi(_, _),                LetRec(_, _, _, _)
+  | CnstrEi(_, _),                CnstrEi(_, _)
+  | CnstrEi(_, _),                CnstrEii(_, _, _)
+  | CnstrEi(_, _),                Match(_, _)
       -> true
   | App(_, _),                   Exp_of_int i when is_negative i -> true
-  | Cnstr1(_, _),                Exp_of_int i when is_negative i -> true
+  | CnstrEi(_, _),                Exp_of_int i when is_negative i -> true
   | _ -> false
  
 let rec print_exp ppf e = 
@@ -126,10 +126,10 @@ let rec print_exp ppf e =
 	  pr ppf "let rec %s = fun %s -> %a in %a" x y
 	    print_exp e1
 	    print_exp e2
-      | Cnstr0(Cnstr c) -> pr ppf "%s" c
-      | Cnstr1(Cnstr c, e0) -> pr ppf "%s %a" c 
+      | CnstrE(Cnstr c) -> pr ppf "%s" c
+      | CnstrEi(Cnstr c, e0) -> pr ppf "%s %a" c 
 	  (with_paren_R print_exp e) e0
-      | Cnstr2(Cnstr c, e1, e2) ->
+      | CnstrEii(Cnstr c, e1, e2) ->
 	  pr ppf "%s(%a, %a)" c print_exp e1 print_exp e2
       | Match(e, c) ->
 	  pr ppf "match %a with %a"
@@ -181,10 +181,10 @@ let rec tex_exp ppf e =
       | LetRec(Var x, Var y, e1, e2) ->
 	  pr ppf "\\%sLetRecTerm{%s}{%s}{%a}{%a}" g 
 	    x y tex_exp e1 tex_exp e2
-      | Cnstr0(Cnstr c) -> pr ppf "\\%sCnstr0Term{%s}" g c
-      | Cnstr1(Cnstr c, e) -> pr ppf "\\%sCnstr1Term{%s}{%a}" g c tex_exp e
-      | Cnstr2(Cnstr c, e1, e2) -> 
-	  pr ppf "\\%sCnstr2Term{%s}{%a}{%a}" g c tex_exp e1 tex_exp e2
+      | CnstrE(Cnstr c) -> pr ppf "\\%sCnstrETerm{%s}" g c
+      | CnstrEi(Cnstr c, e) -> pr ppf "\\%sCnstrE1Term{%s}{%a}" g c tex_exp e
+      | CnstrEii(Cnstr c, e1, e2) -> 
+	  pr ppf "\\%sCnstrE2Term{%s}{%a}{%a}" g c tex_exp e1 tex_exp e2
       | Match(e, c) ->
 	  pr ppf "\\%sMatchTerm{%a}{%a}" g
 	    tex_exp e
@@ -203,12 +203,12 @@ and tex_clause ppf = function
 
 (* if v is the right operand of v_up, do you need parentheses for v? *)
 let (>) v_up v = match v_up, v with
-    CnstrV1(_, _), CnstrV1(_, _)
-  | CnstrV1(_, _), CnstrV2(_, _, _)
-  | CnstrV1(_, _), Fun(_, _, _)
-  | CnstrV1(_, _), Rec(_, _, _, _)
+    CnstrVi(_, _), CnstrVi(_, _)
+  | CnstrVi(_, _), CnstrVii(_, _, _)
+  | CnstrVi(_, _), Fun(_, _, _)
+  | CnstrVi(_, _), Rec(_, _, _, _)
       -> true
-  | CnstrV1(_,_), Value_of_int i when is_negative i -> true
+  | CnstrVi(_,_), Value_of_int i when is_negative i -> true
   | _ -> false
 
 let rec print_env ppf = function
@@ -226,10 +226,10 @@ and print_val ppf v =
       | Value_of_bool false -> pr ppf "false"
       | Fun(env, Var x, e) -> pr ppf "(%a)[fun %s -> %a]" print_env env x print_exp e
       | Rec(env, Var x, Var y, e) -> pr ppf "(%a)[rec %s = fun %s -> %a]" print_env env x y print_exp e
-      | CnstrV0(Cnstr c) -> pr ppf "%s" c
-      | CnstrV1(Cnstr c, v0) -> pr ppf "%s %a" c 
+      | CnstrV(Cnstr c) -> pr ppf "%s" c
+      | CnstrVi(Cnstr c, v0) -> pr ppf "%s %a" c 
 	  (with_paren_R print_val v) v0
-      | CnstrV2(Cnstr c, v1, v2) -> 
+      | CnstrVii(Cnstr c, v1, v2) -> 
 	  pr ppf "%s(%a,%a)" c print_val v1 print_val v2
 
 let rec tex_env ppf = function
@@ -248,9 +248,9 @@ and tex_val ppf v =
       | Fun(env, Var x, e) -> pr ppf "\\%sFunTerm{%a}{%s}{%a}" g tex_env env x tex_exp e
       | Rec(env, Var x, Var y, e) -> pr ppf "\\%sRecTerm{%a}{%s}{%s}{%a}" g 
 	  tex_env env x y tex_exp e
-      | CnstrV0(Cnstr c) -> pr ppf "\\%sCnstrV0Term{%s}" g c
-      | CnstrV1(Cnstr c, v) -> pr ppf "\\%sCnstrV1Term{%s}{%a}" g c tex_val v
-      | CnstrV2(Cnstr c, v1, v2) -> 
+      | CnstrV(Cnstr c) -> pr ppf "\\%sCnstrV0Term{%s}" g c
+      | CnstrVi(Cnstr c, v) -> pr ppf "\\%sCnstrV1Term{%s}{%a}" g c tex_val v
+      | CnstrVii(Cnstr c, v1, v2) -> 
 	  pr ppf "\\%sCnstrV2Term{%s}{%a}{%a}" g c tex_val v1 tex_val v2
 
 let print_judgment ppf = function

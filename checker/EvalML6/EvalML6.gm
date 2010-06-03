@@ -18,12 +18,12 @@ c in Cnstr
 x,y in Var
 
 v in Value ::= i | b | Fun(env, x, e) | Rec(env, x, y, e) 
-            |  CnstrV0(c) | CnstrV1(c, v) | CnstrV2(c, v, v)
+            |  CnstrV(c) | CnstrVi(c, v) | CnstrVii(c, v, v)
 
 env in Env ::= Empty
             |  Bind(env,x,v)
 
-p in Pat ::= x | WildP | CnstrP0(c) | CnstrP1(c,p) | CnstrP2(c, p, p)
+p in Pat ::= x | WildP | CnstrP(c) | CnstrPi(c,p) | CnstrPii(c, p, p)
 
 res in Res ::= env | Fail (* result of matching *)
 
@@ -38,9 +38,9 @@ e in Exp ::= i
           | Abs(x, e)
           | App(e, e)
           | LetRec(x, y, e, e)  (* let rec x y = e in e *)
-	  | Cnstr0(c)
-	  | Cnstr1(c,e)
-          | Cnstr2(c,e,e)
+	  | CnstrE(c)
+	  | CnstrEi(c,e)
+          | CnstrEii(c,e,e)
 	  | Match(e,cl)     (* match e with p1 -> e1 | ... | pn -> en *)
 
 op in Prim ::= Plus | Minus | Mult | Lt
@@ -56,32 +56,32 @@ AppBOp(op, v, v; v);
 
 (* pattern matching *)
 M-Var:  Matches(v, x, Bind(Empty,x,v)) :- ;
-M-Cnstr0:  Matches(CnstrV0(c), CnstrP0(c), Empty) :- ;
-M-Cnstr1:  Matches(CnstrV1(c, v), CnstrP1(c, p), env) :- Matches(v, p, env);
-M-Cons: Matches(CnstrV2(c, v1, v2), CnstrP2(c, p1, p2), env) :-
+M-Cnstr0:  Matches(CnstrV(c), CnstrP(c), Empty) :- ;
+M-Cnstr1:  Matches(CnstrVi(c, v), CnstrPi(c, p), env) :- Matches(v, p, env);
+M-Cons: Matches(CnstrVii(c, v1, v2), CnstrPii(c, p1, p2), env) :-
            Matches(v1, p1, env1), Matches(v2, p2, env2),
-            (*`disjoint $env1 $env2` %dom($env1)\cap dom($env2) = \emptyset%,*)
+            (* `disjoint $env1 $env2` %dom($env1)\cap dom($env2) = \emptyset%,*)
             `$env = uplus $env1 $env2` %$env = $env1 \uplus $env2%;
 M-Wild: Matches(v, WildP, Empty) :- ;
 
-NM-Cnstr00H: Matches(CnstrV0(c1), CnstrP0(c2), Fail) :-
-                 `$c1 <> $c2` %$c1 \neq c2%;
-NM-Cnstr01: Matches(CnstrV0(c1), CnstrP1(c2,p), Fail) :- ;
-NM-Cnstr02: Matches(CnstrV0(c1), CnstrP2(c2,p1,p2), Fail) :- ;
+NM-Cnstr00H: Matches(CnstrV(c1), CnstrP(c2), Fail) :-
+                 `$c1 <> $c2` %$c1 \neq $c2%;
+NM-Cnstr01: Matches(CnstrV(c1), CnstrPi(c2,p), Fail) :- ;
+NM-Cnstr02: Matches(CnstrV(c1), CnstrPii(c2,p1,p2), Fail) :- ;
 
-NM-Cnstr10: Matches(CnstrV1(c1,v1), CnstrP0(c2), Fail) :- ;
-NM-Cnstr11H: Matches(CnstrV1(c1,v), CnstrP1(c2,p), Fail) :- 
-                 `$c1 <> $c2` %$c1 \neq c2%;
-NM-Cnstr11A: Matches(CnstrV1(c1,v), CnstrP1(c2,p), Fail) :- Matches(v, p, Fail);
-NM-Cnstr12: Matches(CnstrV1(c1,v1), CnstrP2(c2,p1,p2), Fail) :- ;
+NM-Cnstr10: Matches(CnstrVi(c1,v1), CnstrP(c2), Fail) :- ;
+NM-Cnstr11H: Matches(CnstrVi(c1,v), CnstrPi(c2,p), Fail) :- 
+                 `$c1 <> $c2` %$c1 \neq $c2%;
+NM-Cnstr11A: Matches(CnstrVi(c1,v), CnstrPi(c2,p), Fail) :- Matches(v, p, Fail);
+NM-Cnstr12: Matches(CnstrVi(c1,v1), CnstrPii(c2,p1,p2), Fail) :- ;
 
-NM-Cnstr20: Matches(CnstrV2(c1,v1,v2), CnstrP0(c2), Fail) :- ;
-NM-Cnstr21: Matches(CnstrV2(c1,v1,v2), CnstrP1(c2,p1), Fail) :- ;
-NM-Cnstr22H: Matches(CnstrV2(c1,v1,v2), CnstrP2(c2,p1,p2), Fail) :- 
-                 `$c1 <> $c2` %$c1 \neq c2%;
-NM-Cnstr22L: Matches(CnstrV2(c1,v1,v2), CnstrP2(c2,p1,p2), Fail) :- 
+NM-Cnstr20: Matches(CnstrVii(c1,v1,v2), CnstrP(c2), Fail) :- ;
+NM-Cnstr21: Matches(CnstrVii(c1,v1,v2), CnstrPi(c2,p1), Fail) :- ;
+NM-Cnstr22H: Matches(CnstrVii(c1,v1,v2), CnstrPii(c2,p1,p2), Fail) :- 
+                 `$c1 <> $c2` %$c1 \neq $c2%;
+NM-Cnstr22L: Matches(CnstrVii(c1,v1,v2), CnstrPii(c2,p1,p2), Fail) :- 
                  Matches(v1, p1, Fail);
-NM-Cnstr22R: Matches(CnstrV2(c1,v1,v2), CnstrP2(c2,p1,p2), Fail) :- 
+NM-Cnstr22R: Matches(CnstrVii(c1,v1,v2), CnstrPii(c2,p1,p2), Fail) :- 
                  Matches(v2, p2, Fail);
 
 
@@ -117,9 +117,9 @@ E-AppRec: EvalTo(env,App(e1, e2), v) :-
          EvalTo(env, e1, Rec(env2, x, y, e0)),
          EvalTo(env, e2, v2),
          EvalTo(Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v);
-E-Cnstr0: EvalTo(env,Cnstr0(c),CnstrV0(c)) :- ;
-E-Cnstr1: EvalTo(env,Cnstr1(c,e),CnstrV1(c,v)) :- EvalTo(env,e,v);
-E-Cnstr2: EvalTo(env,Cnstr2(c,e1,e2),CnstrV2(c,v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
+E-Cnstr0: EvalTo(env,CnstrE(c),CnstrV(c)) :- ;
+E-Cnstr1: EvalTo(env,CnstrEi(c,e),CnstrVi(c,v)) :- EvalTo(env,e,v);
+E-Cnstr2: EvalTo(env,CnstrEii(c,e1,e2),CnstrVii(c,v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
 E-MatchM: EvalTo(env,Match(e0,AddC(p,e,cl)),v') :- 
 	    EvalTo(env,e0,v), Matches(v,p,env1), 
               `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
@@ -136,6 +136,7 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 exception LookupFailure
 
+(*
 let rec in_dom x = function
      Empty -> false
    | Bind(env, y, _) -> x = y || in_dom x env
@@ -144,8 +145,10 @@ let rec disjoint env1 env2 =
   match env1 with
      Empty -> true
    | Bind(env1, x, _) -> not (in_dom x env2) && disjoint env1 env2
+*)
 
-let rec uplus env1 env2 =  (* note that environments are snoc lists *)
+let rec uplus env1 env2 = 
+    (* disjointness of the two domains is guaranteed by parsing *)
   match env2 with
      Empty -> env1
    | Bind(env2, x, v) -> Bind(uplus env1 env2, x, v)

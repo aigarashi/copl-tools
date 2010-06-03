@@ -54,7 +54,7 @@ rule main = parse
       let name = Lexing.lexeme lexbuf in
 	Parser.SYMID (String.sub name 1 (String.length name - 2))
     }
-| '`' ([^ '`' '\n']* as s) '`' {
+| '`' ([^ '`' ]* as s) '`' {
         Parser.MLexp s
     }
 | '%' ([^ '%' '\n']* as s) '%' {

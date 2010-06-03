@@ -409,6 +409,67 @@ span.rname { font-variant: small-caps; }
 	(else
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
 
+;; EvalML6
+(define EvalML6:mv EvalML5:mv)
+
+(define EvalML6:FunTerm EvalML5:FunTerm)
+(define EvalML6:RecTerm EvalML5:RecTerm)
+(define (EvalML6:CnstrVTerm c) c)
+(define (EvalML6:CnstrViTerm c v)
+  `(,c "\\;" ,v))
+(define (EvalML6:CnstrViiTerm c v1 v2)
+  `(,c "\\mbox{(}" ,v1 "\\mbox{,}" ,v2 "\\mbox{)}"))
+
+(define EvalML6:EmptyTerm EvalML5:EmptyTerm)
+(define EvalML6:BindTerm EvalML5:BindTerm)
+
+(define (EvalML6:WildPTerm) "\\mbox{_}") ;; not legal TeX but works for LaTeXMathML
+(define (EvalML6:CnstrPTerm c) c)
+(define (EvalML6:CnstrPiTerm c p)
+  `(,c "\\;" ,p ))
+(define (EvalML6:CnstrPiiTerm c p1 p2)
+  `(,c "\\mbox{(}" ,p1 "\\mbox{,}" ,p2 "\\mbox{)}"))
+
+(define (EvalML6:FailTerm) 'fail)
+
+(define (EvalML6:EmptyCTerm) 'emptyclause)
+(define (EvalML6:AddCTerm p e c)
+  (if (eq? c 'emptyclause)
+      `(,p "\\rightarrow" ,e)
+      `(,p "\\rightarrow" ,e "\\mid" ,c)))
+
+(define EvalML6:BinOpTerm EvalML5:BinOpTerm)
+(define EvalML6:IfTerm EvalML5:IfTerm)
+(define EvalML6:LetTerm EvalML5:LetTerm)
+(define EvalML6:AbsTerm EvalML5:AbsTerm)
+(define EvalML6:AppTerm EvalML5:AppTerm)
+(define EvalML6:LetRecTerm EvalML5:LetRecTerm)
+(define (EvalML6:CnstrETerm c) c)
+(define (EvalML6:CnstrEiTerm c e)
+  `(,c "\\;" ,e ))
+(define (EvalML6:CnstrEiiTerm c e1 e2)
+  `(,c "\\mbox{(}" ,e1 "\\mbox{,}" ,e2 "\\mbox{)}"))
+
+(define (EvalML6:MatchTerm e c)
+  `("\\mbox{match }" ,e "\\mbox{ with } " ,c))
+
+(define EvalML6:PlusTerm EvalML5:PlusTerm)
+(define EvalML6:MinusTerm EvalML5:MinusTerm)
+(define EvalML6:MultTerm EvalML5:MultTerm)
+(define EvalML6:LtTerm EvalML5:LtTerm)
+
+(define EvalML6:EvalTo EvalML5:EvalTo)
+
+(define EvalML6:AppBOp EvalML5:AppBOp)
+
+(define (EvalML6:Matches v p res)
+  (cond ((eq? res 'fail)
+	 `(,v "\\mbox{ doesn't match }" ,p))
+	((equal? res "\\cdot")
+	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }()"))
+	(else
+	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
+
 ;; EvalNamelessML3
 (define EvalNamelessML3:mv EvalML3:mv)
 

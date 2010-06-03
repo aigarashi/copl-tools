@@ -1,4 +1,13 @@
+2010-06-03  igarashi  <igarashi@djembe>
+
+	* checker/Makefile: some tidying up.
+	* checker/TypingML6: New game for typing datatypes.
+	* gmc/lexer.mll: allows MLexps (in ``) to include '\n'.
+
 2010-06-02  igarashi  <igarashi@djembe>
+
+	* checker/EvalML6/{EvalML6.gm, parser.mly, pp.ml}:
+	The name of some constructors changed.
 
 	* checker/*/parser.mly, checker/lexer.mll, checker/common/link.ml: 
 	New token UCID for upper case identifiers.

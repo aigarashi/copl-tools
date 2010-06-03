@@ -25,9 +25,9 @@ exception Not_linear
 
 let rec fpv = function 
     Pat_of_Var (Var s) -> S.singleton s
-  | CnstrP0 _ -> S.empty
-  | CnstrP1(_,p) -> fpv p
-  | CnstrP2(_, p1, p2) -> 
+  | CnstrP _ -> S.empty
+  | CnstrPi(_,p) -> fpv p
+  | CnstrPii(_, p1, p2) -> 
       let fpv1 = fpv p1 and fpv2 = fpv p2 in
 	if S.is_empty (S.inter fpv1 fpv2) then S.union fpv1 fpv2
 	else raise Not_linear
@@ -240,7 +240,7 @@ Exp4:  /* function application:
           argument is an atomic expression without unary minus */
     Exp4 AExp { 
       match $1 with
-	  Cnstr0 c -> Cnstr1(c, $2)
+	  CnstrE c -> CnstrEi(c, $2)
 	| _ -> App($1, $2) 
     }  
   | MinExp { $1 }
@@ -265,9 +265,9 @@ AExp:
   | TRUE { Exp_of_bool true }
   | FALSE { Exp_of_bool false }
   | LCID { Exp_of_Var (Var $1) }
-  | UCID { Cnstr0 (Cnstr $1) }
-  | UCID LPAREN Exp RPAREN { Cnstr1(Cnstr $1, $3) }
-  | UCID LPAREN Exp COMMA Exp RPAREN { Cnstr2(Cnstr $1, $3, $5) }
+  | UCID { CnstrE (Cnstr $1) }
+  | UCID LPAREN Exp RPAREN { CnstrEi(Cnstr $1, $3) }
+  | UCID LPAREN Exp COMMA Exp RPAREN { CnstrEii(Cnstr $1, $3, $5) }
   | LPAREN Exp RPAREN { $2 }
 
   | UCID LPAREN error { errAt 3 "Syntax error: expression expected" }
@@ -285,7 +285,7 @@ AVal:
     SInt { Value_of_int $1 }
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
-  | UCID { CnstrV0(Cnstr $1) }
+  | UCID { CnstrV(Cnstr $1) }
 
 Val:
     SInt { Value_of_int $1 }
@@ -294,9 +294,9 @@ Val:
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
   | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
       { Rec($2, Var $6, Var $9, $11) }
-  | UCID { CnstrV0(Cnstr $1) }
-  | UCID AVal { CnstrV1(Cnstr $1, $2) }
-  | UCID LPAREN Val COMMA Val RPAREN { CnstrV2(Cnstr $1, $3, $5) }
+  | UCID { CnstrV(Cnstr $1) }
+  | UCID AVal { CnstrVi(Cnstr $1, $2) }
+  | UCID LPAREN Val COMMA Val RPAREN { CnstrVii(Cnstr $1, $3, $5) }
 
   | LPAREN Env RPAREN error { errAt 4 "Syntax error: '[' expected" }
   | LPAREN Env RPAREN LBRACKET error { errAt 5 "Syntax error: 'fun' or 'rec' expected" }
@@ -333,14 +333,14 @@ Clauses:
 APat:
     LCID { Pat_of_Var (Var $1) }
   | UNDERBAR { WildP }
-  | UCID { CnstrP0(Cnstr $1) }
+  | UCID { CnstrP(Cnstr $1) }
 
 Pat:
     LCID { Pat_of_Var (Var $1) }
   | UNDERBAR { WildP }
-  | UCID { CnstrP0(Cnstr $1) }
-  | UCID APat { CnstrP1(Cnstr $1, $2) }
-  | UCID LPAREN Pat COMMA Pat RPAREN { CnstrP2(Cnstr $1, $3, $5) }
+  | UCID { CnstrP(Cnstr $1) }
+  | UCID APat { CnstrPi(Cnstr $1, $2) }
+  | UCID LPAREN Pat COMMA Pat RPAREN { CnstrPii(Cnstr $1, $3, $5) }
 
 /*
   | LBRACKET error { errAt 2 "Syntax error: ']' expected" }
