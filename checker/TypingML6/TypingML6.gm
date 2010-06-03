@@ -1,0 +1,182 @@
+(*
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML2: ML1 + let (環境)
+  ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
+  TypingML3: typing for ML3
+  ML6: ML3 + 0-2 ary constructors + match
+  TypingML6: typing for ML6
+*)
+
+[Syntax]
+
+i in int
+
+b in bool
+
+c in Cnstr
+
+tn in TyName
+
+x,y in Var
+
+t in Types ::= TyBool | TyInt | TyFun(t,t) | tn
+
+ct in CTypes ::= CnstrT(tn) | CnstrTi(t,tn) | CnstrTii(t,t,tn)
+
+p in Pat ::= x | WildP | CnstrP(c) | CnstrPi(c,p) | CnstrPii(c, p, p)
+
+sg in Sg ::= EmptyS
+            |  BindS(sg,c,ct)
+
+env in Env ::= Empty
+            |  Bind(env,x,t)
+
+cl in Clauses ::= EmptyC | AddC(p,e,cl) (* stands for p -> e | cl *)
+
+e in Exp ::= i
+          | b
+          | x
+          | BinOp(op, e, e)
+          | If(e, e, e)
+          | Let(x, e, e)
+          | Abs(x, e)
+          | App(e, e)
+          | LetRec(x, y, e, e)  (* let rec x y = e in e *)
+	  | CnstrE(c)
+	  | CnstrEi(c,e)
+          | CnstrEii(c,e,e)
+	  | Match(e,cl)     (* match e with p1 -> e1 | ... | pn -> en *)
+
+op in Prim ::= Plus | Minus | Mult | Lt
+
+[Judgments]
+
+PatTyping(sg, t, p, env);   (* type t matches p and bounds variables in env *)
+Typing(sg, env, e; t);
+
+[Rules]
+
+TP-Var: PatTyping(sg, t, x, Bind(Empty,x, t)) :- ;
+TP-Cnstr0: PatTyping(sg, tn, CnstrP(c), Empty) :- 
+           `try match lookup_sg $sg $c with
+                    CnstrT tn' -> tn' = $tn 
+                  | _ -> false
+            with LookupFailure -> false`
+            %$sg($x) = $tn% ;
+TP-Cnstr1: PatTyping(sg, tn, CnstrPi(c, p), env) :-
+             PatTyping(sg, t, p, env),
+             `try match lookup_sg $sg $c with
+  	             CnstrTi(t',tn') -> tn' = $tn && t' = $t
+                   | _ -> false
+              with LookupFailure -> false`
+             %$sg($x) = \\TypingMLviCnstrTiTerm{$t0}{$tn}% ;
+
+TP-Cnstr2: PatTyping(sg, tn, CnstrPii(c, p1, p2), env) :-
+             PatTyping(sg, t1, p1, env1),
+             PatTyping(sg, t2, p2, env2),
+             `try match lookup_sg $sg $c with
+  	             CnstrTii(t1',t2',tn') -> tn' = $tn && t1' = $t1 && t2' = $t2
+                   | _ -> false
+              with LookupFailure -> false`
+               %$sg($c) = \TypingMLviCnstrTiiTerm{$t1}{$t2}{$tn}%,
+             `$env = uplus $env1 $env2` 
+               %$env = $env1 \uplus $env2%;
+
+TP-Wild: PatTyping(sg, t, WildP, Empty) :- ;
+
+
+T-Int: 	Typing(sg, env, i, TyInt) :- ;
+T-Bool: Typing(sg, env, b, TyBool) :- ;
+T-If: 	Typing(sg, env, If(e1, e2, e3), t) :- 
+		Typing(sg, env, e1, TyBool), Typing(sg, env, e2, t), Typing(sg, env, e3, t);
+T-Plus: Typing(sg, env, BinOp(Plus, e1, e2), TyInt) :- 
+		Typing(sg, env, e1, TyInt), Typing(sg, env, e2, TyInt);
+T-Minus: Typing(sg, env, BinOp(Minus, e1, e2), TyInt) :- 
+		Typing(sg, env, e1, TyInt), Typing(sg, env, e2, TyInt);
+T-Times: Typing(sg, env, BinOp(Mult, e1, e2), TyInt) :- 
+		Typing(sg, env, e1, TyInt), Typing(sg, env, e2, TyInt);
+T-Lt: 	Typing(sg, env, BinOp(Lt, e1, e2), TyBool) :-
+		Typing(sg, env, e1, TyInt), Typing(sg, env, e2, TyInt);
+(*
+T-Var1:  Typing(Bind(sg, env,x,t), x, t) :- ;
+T-Var2:  Typing(Bind(sg, env,y,t1), x, t2) :- `$y <> $x` %$y \neq $x%, Typing(sg, env, x, t2);
+*)
+T-Var:  Typing(sg, env, x, t) :- `try $t = lookup $env $x with LookupFailure -> false`
+                             `$t = lookup $env $x` %$env($x) = $t%;
+T-Let:  Typing(sg, env, Let(x, e1, e2), t2) :-
+		Typing(sg, env, e1, t1), Typing(sg, Bind(env,x,t1), e2, t2);
+
+T-Fun:  Typing(sg, env,Abs(x,e), TyFun(t1,t2)) :- Typing(sg, Bind(env,x,t1), e, t2);
+T-App:  Typing(sg, env,App(e1,e2), t2) :- 
+                Typing(sg, env, e1, TyFun(t1,t2)), Typing(sg, env, e2, t1);
+T-LetRec: Typing(sg, env, LetRec(x, y, e1, e2), t) :-
+	        Typing(sg, Bind(Bind(env, x, TyFun(t1, t2)), 
+                                      y, t1), 
+                        e1, t2), 
+                Typing(sg, Bind(env,x,TyFun(t1,t2)), e2, t);
+T-Cnstr0: Typing(sg, env, CnstrE(c), tn) :-
+	   `try match lookup_sg $sg $c with 
+                    CnstrT(tn) -> tn = $tn
+                  | _ -> false
+            with LookupFailure -> false`
+           %$sg($c) = $tn%;
+
+T-Cnstr1: Typing(sg, env, CnstrEi(c,e0), tn) :-
+            Typing(sg, env, e0, t0),
+	   `try match lookup_sg $sg $c with 
+                    CnstrTi(t,tn) -> tn = $tn && t = $t0
+                  | _ -> false
+            with LookupFailure -> false`
+           %$sg($c) = \\TypingMLviCnstrTiTerm{$t0}{$tn}%;
+
+T-Cnstr2: Typing(sg, env, CnstrEii(c,e1,e2), tn) :-
+            Typing(sg, env, e1, t1),
+            Typing(sg, env, e2, t2),
+	   `try match lookup_sg $sg $c with 
+                    CnstrTii(t1',t2',tn) -> tn = $tn && t1' = $t1 && t2' = $t2
+                  | _ -> false
+            with LookupFailure -> false`
+           %$sg($c) = \TypingMLviCnstrTiiTerm{$t1}{$t2}{$tn}%;
+            
+T-MatchLastCl: Typing(sg,env,Match(e0,AddC(p,e,EmptyC)),t) :- 
+                 Typing(sg,env,e0,t0),
+                 PatTyping(sg,t0,p,env0),
+                 `$env1 = uplus $env $env0` %$env1 = $env \uplus $env0%,
+                 Typing(sg,env1,e,t);
+
+T-MatchMoreCl: Typing(sg,env,Match(e0,AddC(p,e,cl)),t) :- 
+                 Typing(sg,env,e0,t0),
+                 PatTyping(sg,t1,p,env1),
+                 `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
+                 Typing(sg,env2,e,t),
+                 Typing(sg,env,Match(e0,cl),t);
+
+
+
+[ML]
+
+exception LookupFailure
+
+let rec lookup env x =
+    match env with 
+      Empty -> raise LookupFailure
+    | Bind(env, x', t) -> if x = x' then t else lookup env x
+
+let rec lookup_sg sg x =
+    match sg with 
+      EmptyS -> raise LookupFailure
+    | BindS(sg', x', t) -> if x = x' then t else lookup_sg sg' x
+
+let rec in_dom x = function
+     Empty -> false
+   | Bind(env, y, _) -> x = y || in_dom x env
+
+let rec disjoint env1 env2 =
+  match env1 with
+     Empty -> true
+   | Bind(env1, x, _) -> not (in_dom x env2) && disjoint env1 env2
+
+let rec uplus env1 env2 =  (* note that environments are snoc lists *)
+  match env2 with
+     Empty -> env1
+   | Bind(env2, x, v) -> Bind(uplus env1 env2, x, v)
