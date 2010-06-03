@@ -1,7 +1,7 @@
 open Format
 open Core
 
-let g = "MLv"
+let g = "TypingMLvi"
 
 let pr = fprintf
 
@@ -232,16 +232,16 @@ let print_judgment ppf = function
     Typing(sg, env, e, t) -> 
       pr ppf "@[@[%a@]@ |- @[%a@]@ : %a@]" print_env env print_exp e print_type t
   | PatTyping(sg, t, p, env) ->
-      pr ppf "@[@[%a@]@ may match @[%a@] when @[(%a)@]@]" print_type t print_pat p print_env env
+      pr ppf "@[@[%a@]@ matches @[%a@] when @[(%a)@]@]" print_type t print_pat p print_env env
 
 let print_pjudgment ppf = function
     In_Typing (sg, env, e) ->
       pr ppf "@[%a@]@ |- %a : ?" print_env env print_exp e 
   | In_PatTyping(sg, t, p, env) ->
-      pr ppf "@[@[%a@]@ may match @[%a@] when @[(%a)@]@]" print_type t print_pat p print_env env
+      pr ppf "@[@[%a@]@ matches @[%a@] when @[(%a)@]@]" print_type t print_pat p print_env env
 
 let tex_judgment ppf = function
     Typing (sg, env, e, t) -> 
-      pr ppf "\\Typing{%a}{%a}{%a}" print_env env print_exp e print_type t
+      pr ppf "\\%sTyping{%a}{%a}{%a}" g print_env env print_exp e print_type t
   | PatTyping(sg, t, p, env) ->
-      pr ppf "\\PatTyping{%a}{%a}{%a}" print_type t print_pat p print_env env 
+      pr ppf "\\%sPatTyping{%a}{%a}{%a}" g print_type t print_pat p print_env env 

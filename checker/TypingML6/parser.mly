@@ -70,6 +70,7 @@ let rec fpv = function
 /* TypingML6 */
 %token UNDERBAR
 %token TYPE OF
+%token MATCHES WHEN
 
 /******** experimental feature for macro defitinions *********/
 %token DEF EQ
@@ -116,11 +117,16 @@ Derivs:
 
 Judgment: 
     Sig SEMI Env VDASH Exp COLON Type { Typing($1 EmptyS, $3, $5, $7) }
+  | Env VDASH Exp COLON Type { Typing(EmptyS, $1, $3, $5) }
+  | Sig SEMI Type MATCHES Pat WHEN LPAREN Env RPAREN { PatTyping($1 EmptyS, $3, $5, $8) }
+
   | Sig SEMI Env VDASH Exp error { errAt 6 "Syntax error: colon expected" }
   | Sig SEMI Env VDASH Exp COLON error { errAt 7 "Syntax error: type expression expected" }
-  | Env VDASH Exp COLON Type { Typing(EmptyS, $1, $3, $5) }
   | Env VDASH Exp error { errAt 4 "Syntax error: colon expected" }
   | Env VDASH Exp COLON error { errAt 5 "Syntax error: type expression expected" }
+  | Sig SEMI Type MATCHES error { errAt 7 "Syntax error: pattern expected" }
+  | Sig SEMI Type MATCHES Pat WHEN error { errAt 7 "Syntax error: '(' expected" }
+
 
 partialj :
     Sig SEMI Env VDASH Exp COLON QM { In_Typing($1 EmptyS, $3, $5) }

@@ -1,5 +1,7 @@
 2010-06-03  igarashi  <igarashi@djembe>
 
+	* cgi/rules2TeX.scm: Formatting functions for TypingML6.
+
 	* checker/Makefile: some tidying up.
 	* checker/TypingML6: New game for typing datatypes.
 	* gmc/lexer.mll: allows MLexps (in ``) to include '\n'.

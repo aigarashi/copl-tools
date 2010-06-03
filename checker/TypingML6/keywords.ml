@@ -52,4 +52,6 @@ let v = [
   (* TypingML6 *)
   ("type", TYPE);
   ("of", OF);
+  ("matches", MATCHES);
+  ("when", WHEN);
 ] 

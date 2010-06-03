@@ -69,7 +69,7 @@ TP-Cnstr1: PatTyping(sg, tn, CnstrPi(c, p), env) :-
   	             CnstrTi(t',tn') -> tn' = $tn && t' = $t
                    | _ -> false
               with LookupFailure -> false`
-             %$sg($x) = \\TypingMLviCnstrTiTerm{$t0}{$tn}% ;
+             %$sg($x) = $t0 \rightarrow $tn% ;
 
 TP-Cnstr2: PatTyping(sg, tn, CnstrPii(c, p1, p2), env) :-
              PatTyping(sg, t1, p1, env1),
@@ -78,11 +78,11 @@ TP-Cnstr2: PatTyping(sg, tn, CnstrPii(c, p1, p2), env) :-
   	             CnstrTii(t1',t2',tn') -> tn' = $tn && t1' = $t1 && t2' = $t2
                    | _ -> false
               with LookupFailure -> false`
-               %$sg($c) = \TypingMLviCnstrTiiTerm{$t1}{$t2}{$tn}%,
+               %$sg($c) = $t1 \times $t2 \rightarrow $tn%,
              `$env = uplus $env1 $env2` 
                %$env = $env1 \uplus $env2%;
 
-TP-Wild: PatTyping(sg, t, WildP, Empty) :- ;
+TP-Wild: PatTyping(sg, tn, WildP, Empty) :- ;
 
 
 T-Int: 	Typing(sg, env, i, TyInt) :- ;
@@ -127,7 +127,7 @@ T-Cnstr1: Typing(sg, env, CnstrEi(c,e0), tn) :-
                     CnstrTi(t,tn) -> tn = $tn && t = $t0
                   | _ -> false
             with LookupFailure -> false`
-           %$sg($c) = \\TypingMLviCnstrTiTerm{$t0}{$tn}%;
+           %$sg($c) = $t0 \rightarrow $tn%;
 
 T-Cnstr2: Typing(sg, env, CnstrEii(c,e1,e2), tn) :-
             Typing(sg, env, e1, t1),
@@ -136,19 +136,19 @@ T-Cnstr2: Typing(sg, env, CnstrEii(c,e1,e2), tn) :-
                     CnstrTii(t1',t2',tn) -> tn = $tn && t1' = $t1 && t2' = $t2
                   | _ -> false
             with LookupFailure -> false`
-           %$sg($c) = \TypingMLviCnstrTiiTerm{$t1}{$t2}{$tn}%;
+           %$sg($c) = $t1 \times $t2 \rightarrow $tn%;
             
-T-MatchLastCl: Typing(sg,env,Match(e0,AddC(p,e,EmptyC)),t) :- 
+T-MatchLast: Typing(sg,env,Match(e0,AddC(p,e1,EmptyC)),t) :- 
                  Typing(sg,env,e0,t0),
                  PatTyping(sg,t0,p,env0),
                  `$env1 = uplus $env $env0` %$env1 = $env \uplus $env0%,
-                 Typing(sg,env1,e,t);
+                 Typing(sg,env1,e1,t);
 
-T-MatchMoreCl: Typing(sg,env,Match(e0,AddC(p,e,cl)),t) :- 
+T-MatchMore: Typing(sg,env,Match(e0,AddC(p,e1,cl)),t) :- 
                  Typing(sg,env,e0,t0),
-                 PatTyping(sg,t1,p,env1),
-                 `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
-                 Typing(sg,env2,e,t),
+                 PatTyping(sg,t0,p,env0),
+                 `$env1 = uplus $env $env0` %$env1 = $env \uplus $env0%,
+                 Typing(sg,env1,e1,t),
                  Typing(sg,env,Match(e0,cl),t);
 
 

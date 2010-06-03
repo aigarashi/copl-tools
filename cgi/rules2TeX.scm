@@ -633,6 +633,72 @@ span.rname { font-variant: small-caps; }
 
 (define TypingML4:Typing TypingML3:Typing)
 
+;; TypingML6
+(define (TypingML6:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
+					       ("t" "\\tau")
+					       ("sg" "\\Sigma")
+					       ("tn" "t"))))
+
+(define TypingML6:TyVarTerm TypingML4:TyVarTerm)
+(define TypingML6:TyBoolTerm TypingML4:TyBoolTerm)
+(define TypingML6:TyIntTerm TypingML4:TyIntTerm)
+(define TypingML6:TyFunTerm TypingML4:TyFunTerm)
+
+(define (TypingML6:CnstrTTerm tn) tn)
+(define (TypingML6:CnstrTiTerm t tn)
+  `(,t "\\rightarrow" ,tn))
+(define (TypingML6:CnstrTiiTerm t1 t2 tn)
+  `(,t1 "\\times" ,t2 "\\rightarrow" ,tn))
+
+(define TypingML6:EmptyTerm TypingML4:EmptyTerm)
+(define TypingML6:BindTerm TypingML4:BindTerm)
+
+(define TypingML6:EmptySTerm TypingML4:EmptyTerm)
+(define (TypingML6:BindSTerm sig c ct)
+  (if (equal? sig "\\cdot")
+      `(,c ":" ,ct)
+      `(,sig "," ,c ":" ,ct)))
+
+
+(define TypingML6:WildPTerm EvalML6:WildPTerm)
+(define TypingML6:CnstrPTerm EvalML6:CnstrPTerm)
+(define TypingML6:CnstrPiTerm EvalML6:CnstrPiTerm)
+(define TypingML6:CnstrPiiTerm EvalML6:CnstrPiiTerm)
+
+(define TypingML6:EmptyCTerm EvalML6:EmptyCTerm)
+(define TypingML6:AddCTerm EvalML6:AddCTerm)
+
+(define TypingML6:BinOpTerm EvalML6:BinOpTerm)
+(define TypingML6:IfTerm EvalML6:IfTerm)
+(define TypingML6:LetTerm EvalML6:LetTerm)
+(define TypingML6:AbsTerm EvalML6:AbsTerm)
+(define TypingML6:AppTerm EvalML6:AppTerm)
+(define TypingML6:LetRecTerm EvalML6:LetRecTerm)
+(define TypingML6:CnstrETerm EvalML6:CnstrETerm)
+(define TypingML6:CnstrEiTerm EvalML6:CnstrEiTerm)
+(define TypingML6:CnstrEiiTerm EvalML6:CnstrEiiTerm)
+
+(define TypingML6:MatchTerm EvalML6:MatchTerm)
+
+(define TypingML6:PlusTerm EvalML6:PlusTerm)
+(define TypingML6:MinusTerm EvalML6:MinusTerm)
+(define TypingML6:MultTerm EvalML6:MultTerm)
+(define TypingML6:LtTerm EvalML6:LtTerm)
+
+(define TypingML6:EvalTo EvalML6:EvalTo)
+
+(define TypingML6:AppBOp EvalML6:AppBOp)
+
+(define (TypingML6:PatTyping sg t p env)
+  (cond ((equal? env "\\cdot")
+	 `(,t "\\mbox{ matches}_{" ,sg "}\\;" ,p " \\mbox{ when }()"))
+	(else
+	 `(,t "\\mbox{ matches}_{" ,sg "}\\;" ,p " \\mbox{ when }(" ,env ")"))))
+
+(define (TypingML6:Typing sg env e t)
+  `(,env "\\vdash_{" ,sg "}" ,e ":" ,t))
+
 ;; PolyTypingML3
 
 (define PolyTypingML3:TyBoolTerm TypingML3:TyBoolTerm)
@@ -829,3 +895,4 @@ span.rname { font-variant: small-caps; }
 (define EvalContML4:EvalTo EvalContML3:EvalTo)
 (define EvalContML4:AppBOp EvalContML3:AppBOp)
 (define EvalContML4:AppK EvalContML3:AppK)
+
