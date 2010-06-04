@@ -54,4 +54,5 @@ let v = [
   ("of", OF);
   ("matches", MATCHES);
   ("when", WHEN);
+  ("and", AND);
 ] 

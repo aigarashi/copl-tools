@@ -32,6 +32,11 @@ let rec fpv = function
       let fpv1 = fpv p1 and fpv2 = fpv p2 in
 	if S.is_empty (S.inter fpv1 fpv2) then S.union fpv1 fpv2
 	else raise Not_linear
+  | CnstrPiii(_, p1, p2,p3) -> 
+      let fpv1 = fpv p1 and fpv2 = fpv p2 and fpv3 = fpv p3 in
+	if S.is_empty (S.inter fpv1 fpv2) && S.is_empty (S.inter fpv1 fpv3) && S.is_empty (S.inter fpv2 fpv3)
+	then S.union fpv1 (S.union fpv2 fpv3)
+	else raise Not_linear
   | WildP -> S.empty
 %}
 
@@ -69,7 +74,7 @@ let rec fpv = function
 
 /* TypingML6 */
 %token UNDERBAR
-%token TYPE OF
+%token TYPE OF AND
 %token MATCHES WHEN
 
 /******** experimental feature for macro defitinions *********/
@@ -89,17 +94,17 @@ let rec fpv = function
 %%
 
 toplevel: 
-    MacroDefs Derivation { $2 }
+    MacroDefs Sig Derivation { $3 ($2 EmptyS) }
   | error { errAt 1 "Syntax error, perhaps at the beginning of the input" }
   | EOF { raise End_of_file }
 
-judgment: Judgment { $1 }
+judgment: Sig Judgment { $2 ($1 EmptyS) }
 
 Derivation: 
     Judgment BY RName LBRACE RBRACE
-    { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
+    { fun sg -> {conc = $1 sg; by = $3; since = []; pos = rhs_start_pos 3 } }
   | Judgment BY RName LBRACE Derivs
-    { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
+    { fun sg -> {conc = $1 sg; by = $3; since = $5 sg; pos = rhs_start_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
   | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }
@@ -110,23 +115,19 @@ RName :
   | LCID { $1 }
 
 Derivs:
-  | Derivation RBRACE { [ $1 ] }
-  | Derivation SEMI RBRACE { [ $1 ] } 
-  | Derivation SEMI Derivs { $1::$3 }
+  | Derivation RBRACE { fun sg -> [ $1 sg ] }
+  | Derivation SEMI RBRACE { fun sg -> [ $1 sg ] } 
+  | Derivation SEMI Derivs { fun sg -> $1 sg :: $3 sg }
   | Derivation error { errAt 2 "Syntax error: unmatched brace, or semicolon forgotten?" }
 
 Judgment: 
-    Sig SEMI Env VDASH Exp COLON Type { Typing($1 EmptyS, $3, $5, $7) }
-  | Env VDASH Exp COLON Type { Typing(EmptyS, $1, $3, $5) }
-  | Sig SEMI Type MATCHES Pat WHEN LPAREN Env RPAREN { PatTyping($1 EmptyS, $3, $5, $8) }
+    Env VDASH Exp COLON Type { fun sg -> Typing(sg, $1, $3, $5) }
+  | Type MATCHES Pat WHEN LPAREN Env RPAREN { fun sg -> PatTyping(sg, $1, $3, $6) }
 
-  | Sig SEMI Env VDASH Exp error { errAt 6 "Syntax error: colon expected" }
-  | Sig SEMI Env VDASH Exp COLON error { errAt 7 "Syntax error: type expression expected" }
   | Env VDASH Exp error { errAt 4 "Syntax error: colon expected" }
   | Env VDASH Exp COLON error { errAt 5 "Syntax error: type expression expected" }
-  | Sig SEMI Type MATCHES error { errAt 7 "Syntax error: pattern expected" }
-  | Sig SEMI Type MATCHES Pat WHEN error { errAt 7 "Syntax error: '(' expected" }
-
+  | Type MATCHES error { errAt 7 "Syntax error: pattern expected" }
+  | Type MATCHES Pat WHEN error { errAt 7 "Syntax error: '(' expected" }
 
 partialj :
     Sig SEMI Env VDASH Exp COLON QM { In_Typing($1 EmptyS, $3, $5) }
@@ -138,7 +139,7 @@ partialj :
 
 Sig:
     /* empty */ { fun sg -> sg }
-  | TypeDecl Sig { fun sg -> $2 ($1 sg) }
+  | TypeDecl Sig2 { fun sg -> $2 ($1 sg) }
 
 TypeDecl:
     TYPE LCID EQ BarOpt UCID ArgTypesOpt CnstrDeclSeq { 
@@ -148,6 +149,16 @@ TypeDecl:
   | TYPE LCID error { errAt 3 "Syntax error: '=' expected" }
   | TYPE LCID EQ error { errAt 4 "Syntax error: constructor name expected" }
   | TYPE LCID EQ BarOpt UCID error { errAt 6 "Syntax error: type or '|' expected" } 
+
+Sig2:
+    /* empty */ { fun sg -> sg}
+  | AND LCID EQ BarOpt UCID ArgTypesOpt CnstrDeclSeq { 
+      fun sg -> $7 (TyName $2) ($6 (TyName $2) (Cnstr $5) sg)
+    }
+  | AND error { errAt 2 "Syntax error: type name expected" }
+  | AND LCID error { errAt 3 "Syntax error: '=' expected" }
+  | AND LCID EQ error { errAt 4 "Syntax error: constructor name expected" }
+  | AND LCID EQ BarOpt UCID error { errAt 6 "Syntax error: type or '|' expected" } 
 
 BarOpt:
     /* empty */ { () }
@@ -163,9 +174,13 @@ ArgTypesOpt:
   | OF AType AST AType { fun cod cnstr sg ->
         BindS(sg, cnstr, CnstrTii($2, $4, cod))
     }
+  | OF AType AST AType AST AType { fun cod cnstr sg ->
+        BindS(sg, cnstr, CnstrTiii($2, $4, $6, cod))
+    }
 
   | OF error { errAt 2 "Syntax error: type expected" }
   | OF AType AST error { errAt 4 "Syntax error: type expected" }
+  | OF AType AST AType AST error { errAt 6 "Syntax error: type expected" }
 
 CnstrDeclSeq:
     /* empty */ { fun cod sg -> sg }
@@ -290,6 +305,7 @@ AExp:
   | UCID { CnstrE (Cnstr $1) }
   | UCID LPAREN Exp RPAREN { CnstrEi(Cnstr $1, $3) }
   | UCID LPAREN Exp COMMA Exp RPAREN { CnstrEii(Cnstr $1, $3, $5) }
+  | UCID LPAREN Exp COMMA Exp COMMA Exp RPAREN { CnstrEiii(Cnstr $1, $3, $5, $7) }
   | LPAREN Exp RPAREN { $2 }
 
   | UCID LPAREN error { errAt 3 "Syntax error: expression expected" }
@@ -322,6 +338,7 @@ Pat:
   | UCID { CnstrP(Cnstr $1) }
   | UCID APat { CnstrPi(Cnstr $1, $2) }
   | UCID LPAREN Pat COMMA Pat RPAREN { CnstrPii(Cnstr $1, $3, $5) }
+  | UCID LPAREN Pat COMMA Pat COMMA Pat RPAREN { CnstrPiii(Cnstr $1, $3, $5, $7) }
 
 Type:
     AType { $1 }
@@ -345,12 +362,12 @@ MacroDef:
   | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
   | DEF MVTYPE EQ Type SEMI { Hashtbl.add tbl $2 (Type $4) }
   | DEF MVTENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
-  | DEF MVSIG EQ Sig SEMI { Hashtbl.add tbl $2 (Sig $4) } 
+/*  | DEF MVSIG EQ Sig SEMI { Hashtbl.add tbl $2 (Sig $4) }  */
 
   | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
   | DEF MVTYPE EQ error { errAt 4 "Syntax error: type expected" }
   | DEF MVTENV EQ error { errAt 4 "Syntax error: environment expected" }
-  | DEF MVSIG EQ error { errAt 4 "Syntax error: data type definitions expected" }
+/*  | DEF MVSIG EQ error { errAt 4 "Syntax error: data type definitions expected" } */
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
 Type: MVTYPE { 
@@ -376,7 +393,7 @@ Env: MVTENV Env2 {
     | _ -> errAt 1 "Cannot happen! Env: MVTENV" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
-
+/*
 Sig: MVSIG {
   try 
     match Hashtbl.find tbl $1 with
@@ -384,4 +401,4 @@ Sig: MVSIG {
     | _ -> errAt 1 "Cannot happen! Sig: MVSIG" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
-
+*/

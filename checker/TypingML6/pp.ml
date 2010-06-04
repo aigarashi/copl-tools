@@ -14,6 +14,7 @@ let with_paren lt ppf_e e_up ppf e =
 
 let (>) p_up p = match p_up, p with
     CnstrPi(_,_), CnstrPii(_,_,_) -> true
+  | CnstrPi(_,_), CnstrPiii(_,_,_,_) -> true
   | _ -> false
 
 let rec print_pat ppf p = 
@@ -28,16 +29,24 @@ let rec print_pat ppf p =
 	pr ppf "%s(%a,%a)" c
 	  print_pat p1 
 	  print_pat p2
+    | CnstrPiii(Cnstr c, p1, p2, p3) -> 
+	pr ppf "%s(%a,%a,%a)" c
+	  print_pat p1 
+	  print_pat p2
+	  print_pat p3
 
 let rec tex_pat ppf p = 
   match p with
       Pat_of_Var (Var x) -> pr ppf "%s" x
     | WildP -> pr ppf "\\%sWildPTerm" g
-    | CnstrP(Cnstr c) -> pr ppf "\\%sCnstrP0Term{%s}" g c
-    | CnstrPi(Cnstr c, p) -> pr ppf "\\%sCnstrP1Term{%s}{%a}" g c tex_pat p
+    | CnstrP(Cnstr c) -> pr ppf "\\%sCnstrPTerm{%s}" g c
+    | CnstrPi(Cnstr c, p) -> pr ppf "\\%sCnstrPiTerm{%s}{%a}" g c tex_pat p
     | CnstrPii(Cnstr c, p1, p2) -> 
-	pr ppf "\\%sCnstrP2Term{%s}{%a}{%a}" g c
+	pr ppf "\\%sCnstrPiiTerm{%s}{%a}{%a}" g c
 	  tex_pat p1  tex_pat p2
+    | CnstrPiii(Cnstr c, p1, p2, p3) -> 
+	pr ppf "\\%sCnstrPiiiTerm{%s}{%a}{%a}{%a}" g c
+	  tex_pat p1  tex_pat p2  tex_pat p3
 
 (* precedence for expressions *)
 let rec is_last_longexp = function
@@ -74,6 +83,7 @@ let (>) e_up e = match e_up, e with
   | App(_, _),                   LetRec(_, _, _, _)
   | App(_, _),                   CnstrEi(_, _)
   | App(_, _),                   CnstrEii(_, _, _)
+  | App(_, _),                   CnstrEiii(_, _, _, _)
   | App(_, _),                   Match(_, _)
   | BinOp(Mult, _, _),           BinOp(_, _, _)
   | BinOp((Plus | Minus), _, _), BinOp((Plus | Minus | Lt), _, _)
@@ -85,6 +95,7 @@ let (>) e_up e = match e_up, e with
   | CnstrEi(_, _),                LetRec(_, _, _, _)
   | CnstrEi(_, _),                CnstrEi(_, _)
   | CnstrEi(_, _),                CnstrEii(_, _, _)
+  | CnstrEi(_, _),                CnstrEiii(_, _, _, _)
   | CnstrEi(_, _),                Match(_, _)
       -> true
   | App(_, _),                   Exp_of_int i when is_negative i -> true
@@ -131,6 +142,8 @@ let rec print_exp ppf e =
 	  (with_paren_R print_exp e) e0
       | CnstrEii(Cnstr c, e1, e2) ->
 	  pr ppf "%s(%a, %a)" c print_exp e1 print_exp e2
+      | CnstrEiii(Cnstr c, e1, e2, e3) ->
+	  pr ppf "%s(%a, %a, %a)" c print_exp e1 print_exp e2 print_exp e3
       | Match(e, c) ->
 	  pr ppf "match %a with %a"
 	    print_exp e
@@ -182,9 +195,11 @@ let rec tex_exp ppf e =
 	  pr ppf "\\%sLetRecTerm{%s}{%s}{%a}{%a}" g 
 	    x y tex_exp e1 tex_exp e2
       | CnstrE(Cnstr c) -> pr ppf "\\%sCnstrETerm{%s}" g c
-      | CnstrEi(Cnstr c, e) -> pr ppf "\\%sCnstrE1Term{%s}{%a}" g c tex_exp e
+      | CnstrEi(Cnstr c, e) -> pr ppf "\\%sCnstrEiTerm{%s}{%a}" g c tex_exp e
       | CnstrEii(Cnstr c, e1, e2) -> 
-	  pr ppf "\\%sCnstrE2Term{%s}{%a}{%a}" g c tex_exp e1 tex_exp e2
+	  pr ppf "\\%sCnstrEiiTerm{%s}{%a}{%a}" g c tex_exp e1 tex_exp e2
+      | CnstrEiii(Cnstr c, e1, e2, e3) -> 
+	  pr ppf "\\%sCnstrEiiiTerm{%s}{%a}{%a}{%a}" g c tex_exp e1 tex_exp e2  tex_exp e3
       | Match(e, c) ->
 	  pr ppf "\\%sMatchTerm{%a}{%a}" g
 	    tex_exp e

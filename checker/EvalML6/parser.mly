@@ -31,6 +31,11 @@ let rec fpv = function
       let fpv1 = fpv p1 and fpv2 = fpv p2 in
 	if S.is_empty (S.inter fpv1 fpv2) then S.union fpv1 fpv2
 	else raise Not_linear
+  | CnstrPiii(_, p1, p2,p3) -> 
+      let fpv1 = fpv p1 and fpv2 = fpv p2 and fpv3 = fpv p3 in
+	if S.is_empty (S.inter fpv1 fpv2) && S.is_empty (S.inter fpv1 fpv3) && S.is_empty (S.inter fpv2 fpv3)
+	then S.union fpv1 (S.union fpv2 fpv3)
+	else raise Not_linear
   | WildP -> S.empty
 %}
 
@@ -268,6 +273,7 @@ AExp:
   | UCID { CnstrE (Cnstr $1) }
   | UCID LPAREN Exp RPAREN { CnstrEi(Cnstr $1, $3) }
   | UCID LPAREN Exp COMMA Exp RPAREN { CnstrEii(Cnstr $1, $3, $5) }
+  | UCID LPAREN Exp COMMA Exp COMMA Exp RPAREN { CnstrEiii(Cnstr $1, $3, $5, $7) }
   | LPAREN Exp RPAREN { $2 }
 
   | UCID LPAREN error { errAt 3 "Syntax error: expression expected" }
@@ -297,6 +303,7 @@ Val:
   | UCID { CnstrV(Cnstr $1) }
   | UCID AVal { CnstrVi(Cnstr $1, $2) }
   | UCID LPAREN Val COMMA Val RPAREN { CnstrVii(Cnstr $1, $3, $5) }
+  | UCID LPAREN Val COMMA Val COMMA Val RPAREN { CnstrViii(Cnstr $1, $3, $5, $7) }
 
   | LPAREN Env RPAREN error { errAt 4 "Syntax error: '[' expected" }
   | LPAREN Env RPAREN LBRACKET error { errAt 5 "Syntax error: 'fun' or 'rec' expected" }
@@ -313,10 +320,11 @@ Val:
   | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID RARROW Exp error { errBtw 4 11 "Syntax error: unmatched brackets" }
 
   | UCID LPAREN error { errAt 3 "Syntax error: expression expected" }
-  | UCID LPAREN Val error { errBtw 2 4 "Syntax error: unmatched parenthesis or a comma expected" }
-  | UCID LPAREN Val COMMA error { errAt 5 "Syntax error: expression expected" }
-  | UCID LPAREN Val COMMA Val error { errBtw 2 6 "Syntax error: unmatched parenthesis" }
-
+  | UCID LPAREN Val error { errBtw 2 4 "Syntax error: unmatched parenthesis or ',' expected" }
+  | UCID LPAREN Val COMMA error { errAt 5 "Syntax error: a value expected" }
+  | UCID LPAREN Val COMMA Val error { errBtw 2 6 "Syntax error: unmatched parenthesis, or ',' expected" }
+  | UCID LPAREN Val COMMA Val COMMA error { errBtw 2 7 "Syntax error: value expected" }
+  | UCID LPAREN Val COMMA Val COMMA Val error { errBtw 2 8 "Syntax error: unmatched parenthesis" }
 
 Clauses: 
   | Pat RARROW Exp { 
@@ -341,6 +349,7 @@ Pat:
   | UCID { CnstrP(Cnstr $1) }
   | UCID APat { CnstrPi(Cnstr $1, $2) }
   | UCID LPAREN Pat COMMA Pat RPAREN { CnstrPii(Cnstr $1, $3, $5) }
+  | UCID LPAREN Pat COMMA Pat COMMA Pat RPAREN { CnstrPiii(Cnstr $1, $3, $5, $7) }
 
 /*
   | LBRACKET error { errAt 2 "Syntax error: ']' expected" }

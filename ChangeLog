@@ -1,3 +1,15 @@
+2010-06-04  igarashi  <igarashi@djembe>
+
+	* checker/{EvalML6,TypingML6}: Now allows 3-ary constructors.
+
+	* checker/TypingML6/parser.mly: In this game, the input takes the form:
+	   MacroDefs 
+	   TypeDefinitions (signature)
+	   Derivation
+	so that the user doesn't have to write the siganture in judgments.
+	Even invoking a macro-defined signature name is tedious, right?
+	Disabled macro defined TypeDefinition(s).
+
 2010-06-03  igarashi  <igarashi@djembe>
 
 	* cgi/rules2TeX.scm: Formatting functions for TypingML6.

@@ -4,5 +4,5 @@ let v = [
     ("e", fun s -> MVEXP s);
     ("t", fun s -> MVTYPE s);
     ("env", fun s -> MVTENV s);
-    ("sig", fun s -> MVSIG s);
+(*    ("sig", fun s -> MVSIG s);  *)
   ]

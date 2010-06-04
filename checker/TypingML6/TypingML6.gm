@@ -21,9 +21,9 @@ x,y in Var
 
 t in Types ::= TyBool | TyInt | TyFun(t,t) | tn
 
-ct in CTypes ::= CnstrT(tn) | CnstrTi(t,tn) | CnstrTii(t,t,tn)
+ct in CTypes ::= CnstrT(tn) | CnstrTi(t,tn) | CnstrTii(t,t,tn) | CnstrTiii(t,t,t,tn)
 
-p in Pat ::= x | WildP | CnstrP(c) | CnstrPi(c,p) | CnstrPii(c, p, p)
+p in Pat ::= x | WildP | CnstrP(c) | CnstrPi(c,p) | CnstrPii(c, p, p) | CnstrPiii(c, p, p, p)
 
 sg in Sg ::= EmptyS
             |  BindS(sg,c,ct)
@@ -45,6 +45,7 @@ e in Exp ::= i
 	  | CnstrE(c)
 	  | CnstrEi(c,e)
           | CnstrEii(c,e,e)
+          | CnstrEiii(c,e,e,e)
 	  | Match(e,cl)     (* match e with p1 -> e1 | ... | pn -> en *)
 
 op in Prim ::= Plus | Minus | Mult | Lt
@@ -81,6 +82,18 @@ TP-Cnstr2: PatTyping(sg, tn, CnstrPii(c, p1, p2), env) :-
                %$sg($c) = $t1 \times $t2 \rightarrow $tn%,
              `$env = uplus $env1 $env2` 
                %$env = $env1 \uplus $env2%;
+
+TP-Cnstr3: PatTyping(sg, tn, CnstrPiii(c, p1, p2, p3), env) :-
+             PatTyping(sg, t1, p1, env1),
+             PatTyping(sg, t2, p2, env2),
+             PatTyping(sg, t3, p3, env3),
+             `try match lookup_sg $sg $c with
+  	             CnstrTiii(t1',t2',t3',tn') -> tn' = $tn && t1' = $t1 && t2' = $t2 && t3' = $t3
+                   | _ -> false
+              with LookupFailure -> false`
+               %$sg($c) = $t1 \times $t2 \times $t3 \rightarrow $tn%,
+             `$env = uplus $env1 (uplus $env2 $env3)` 
+               %$env = $env1 \uplus $env2 \uplus $env4%;
 
 TP-Wild: PatTyping(sg, tn, WildP, Empty) :- ;
 
@@ -137,6 +150,16 @@ T-Cnstr2: Typing(sg, env, CnstrEii(c,e1,e2), tn) :-
                   | _ -> false
             with LookupFailure -> false`
            %$sg($c) = $t1 \times $t2 \rightarrow $tn%;
+
+T-Cnstr3: Typing(sg, env, CnstrEiii(c,e1,e2,e3), tn) :-
+            Typing(sg, env, e1, t1),
+            Typing(sg, env, e2, t2),
+            Typing(sg, env, e3, t3),
+	   `try match lookup_sg $sg $c with 
+                    CnstrTiii(t1',t2',t3',tn) -> tn = $tn && t1' = $t1 && t2' = $t2 && t3' = $t3
+                  | _ -> false
+            with LookupFailure -> false`
+           %$sg($c) = $t1 \times $t2 \times $t3 \rightarrow $tn%;
             
 T-MatchLast: Typing(sg,env,Match(e0,AddC(p,e1,EmptyC)),t) :- 
                  Typing(sg,env,e0,t0),
