@@ -177,7 +177,7 @@ E-ConsErr2: EvalTo(env,Cons(e1,e2),Error) :- EvalTo(env,e1,v1), EvalTo(env,e2,Er
 
 E-MatchErr1: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,r),
 	     `match $r with Res_of_Value (NilV | ConsV(_,_)) -> false | _ -> true`
-             % $r \mbox{ is neither \EvalMLivErrNilVTerm{} nor \(\EvalMLivErrConsVTerm{\EvalMLivmv{v}{_1}}{\EvalMLivmv{v}{_2}}\)} %;
+             % $r \mbox{ is neither \EvalMLivErrNilVTerm{} nor \(\EvalMLivErrConsVTerm{\EvalMLivMV{v}{_1}}{\EvalMLivMV{v}{_2}}\)} %;
 
 E-MatchErr2: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,NilV), EvalTo(env,e2,Error);
 E-MatchErr3: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- 

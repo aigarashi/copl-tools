@@ -1,3 +1,7 @@
+2010-07-01  igarashi  <igarashi@djembe>
+
+	* gmc/emit.ml: Macro names for metavariables changed to \...MV{}.
+
 2010-06-04  igarashi  <igarashi@djembe>
 
 	* checker/{EvalML6,TypingML6}: Now allows 3-ary constructors.
