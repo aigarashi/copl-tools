@@ -1,3 +1,9 @@
+2010-07-12  igarashi  <igarashi@djembe>
+
+	* gmc/emit.ml: \MV's argument for primes and suffix is now
+	               optional.  Hence, braces are changed to square
+	               brackets.
+
 2010-07-01  igarashi  <igarashi@djembe>
 
 	* gmc/emit.ml: Macro names for metavariables changed to \...MV{}.

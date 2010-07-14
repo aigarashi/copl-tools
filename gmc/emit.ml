@@ -351,8 +351,8 @@ struct
     | Var x -> 
 	let (base, suffix, primes) = Syntax.split_LCID x in
 	  if suffix = "" then
-	    pf ppf "\\%sMV{%s}{%s}" gn base primes
-	  else pf ppf "\\%sMV{%s}{%s_{%s}}" gn base primes suffix
+	    pf ppf "\\%sMV{%s}[%s]" gn base primes
+	  else pf ppf "\\%sMV{%s}[%s_{%s}]" gn base primes suffix
     | App (f, []) -> pf ppf "\\%s%sTerm" gn f
     | App (f, ts) -> pf ppf "\\%s%sTerm@[{%a}@]" gn f (emit_terms gn) ts
   and emit_terms gn ppf = function
@@ -366,8 +366,8 @@ struct
 	(fun s -> 
 	   let (base, suffix, primes) = Syntax.split_LCID s in
 	     if suffix = "" then
-	       "\\" ^ gn ^ "MV{" ^ base ^ "}{" ^ primes ^ "}" 
-	     else "\\" ^ gn ^ "MV{" ^ base ^ "}{" ^ primes ^ "_{" ^ suffix ^ "}}")
+	       "\\" ^ gn ^ "MV{" ^ base ^ "}[" ^ primes ^ "]" 
+	     else "\\" ^ gn ^ "MV{" ^ base ^ "}[" ^ primes ^ "_{" ^ suffix ^ "}]")
 	s;
       pf ppf "(%s)" (Buffer.contents b)
 
