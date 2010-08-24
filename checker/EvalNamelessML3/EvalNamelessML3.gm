@@ -13,10 +13,10 @@ b in bool
 
 n in int
 
-v in Value ::= i | b | Fun(env, d) | Rec(env, d)
+v in DBValue ::= i | b | Fun(env, d) | Rec(env, d)
 
-env in Env ::= Empty
-            |  Bind(env,v)
+env in DBValueList ::= Empty
+                    |  Bind(env,v)
 
 d in DBExp ::= i
           | b

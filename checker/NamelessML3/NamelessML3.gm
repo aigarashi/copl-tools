@@ -15,8 +15,8 @@ x,y in Var
 
 n in int
 
-env in Env ::= Empty
-            |  Bind(env,x)
+env in VarList ::= Empty
+                |  Bind(env,x)
 
 e in Exp ::= i
           | b

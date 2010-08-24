@@ -471,7 +471,9 @@ span.rname { font-variant: small-caps; }
 	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
 
 ;; EvalNamelessML3
-(define EvalNamelessML3:mv EvalML3:mv)
+(define (EvalML2:mv base . suffix)
+  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}")
+					       ("v" "w"))))
 
 (define (EvalNamelessML3:FunTerm env e)
   `("\\mbox{(}" ,env "\\mbox{)[fun }. \\rightarrow" ,e "\\mbox{]}"))
