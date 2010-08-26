@@ -81,7 +81,7 @@ exception LookupFailure
 
 let rec nth env n =
     match env, n with 
-      Bind(_, v), 0 -> v
+      Bind(_, v), 1 -> v
     | Bind(env', _), n -> nth env' (n-1)
     | Empty, _ -> raise LookupFailure
 
