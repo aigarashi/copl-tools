@@ -23,7 +23,7 @@ p in Pat ::= x | NilP | ConsP(p,p) | WildP (* wildcard pattern *)
 
 res in Res ::= env | Fail (* result of matching *)
 
-c in Clauses ::= EmptyC | AddC(p,e,c) (* stands for p -> e | c *)
+c in Clauses ::= SingleC(p,e) | AddC(p,e,c) (* stands for p -> e | c *)
 
 e in Exp ::= i
           | b
@@ -43,7 +43,7 @@ op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
 
-Matches(v, p; res); (* The value v matches p according to assignment env *)
+Matches(v, p; res); (* The pattern p matches v according to assignment env *)
 EvalTo(env, e; v);
 AppBOp(op, v, v; v);
 
@@ -115,7 +115,11 @@ E-AppRec: EvalTo(env,App(e1, e2), v) :-
          EvalTo(Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v);
 E-Nil: EvalTo(env,Nil,NilV) :- ;
 E-Cons: EvalTo(env,Cons(e1,e2),ConsV(v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
-E-MatchM: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
+E-MatchM1: EvalTo(env,Match(e0,SingleC(p,e)),v') :- 
+	    EvalTo(env,e0,v), Matches(v,p,env1), 
+              `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
+            EvalTo(env2,e,v');
+E-MatchM2: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
 	    EvalTo(env,e0,v), Matches(v,p,env1), 
               `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
             EvalTo(env2,e,v');

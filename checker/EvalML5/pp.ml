@@ -140,12 +140,14 @@ let rec print_exp ppf e =
 and print_clause ppf c =
   let rec loop ppf c = 
     match c with 
-	EmptyC -> ()
+      | SingleC(p, e) -> 
+	  pr ppf " | %a -> %a" print_pat p print_exp e
       | AddC(p, e, c') -> 
 	  pr ppf " | %a -> %a%a" print_pat p print_exp e loop c'
   in
     match c with 
-	EmptyC -> ()
+	SingleC(p, e) ->
+	  pr ppf " %a -> %a" print_pat p print_exp e
       | AddC(p, e, c') -> 
 	  pr ppf " %a -> %a%a" print_pat p print_exp e loop c'
 
@@ -193,7 +195,7 @@ let rec tex_exp ppf e =
 	    tex_clause c
 
 and tex_clause ppf = function
-    EmptyC -> pr ppf "\\%sEmptyCTerm" g
+    SingleC(p, e) -> pr ppf "\\%sSingleCTerm{%a}{%a}" g tex_pat p tex_exp e
   | AddC(p, e, c') -> 
       pr ppf "\\%sAddCTerm{%a}{%a}{%a}" g tex_pat p tex_exp e tex_clause c'
 
@@ -253,10 +255,10 @@ and tex_val ppf v =
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "@[@[%a@]@ |- @[%a@] evalto %a@]" print_env env print_exp e print_val v
-  | Matches (v, p, Res_of_Env env) ->
-      pr ppf "@[@[%a@] matches @[%a@] when @[(%a)@]@]" print_val v print_pat p print_env env
-  | Matches (v, p, Fail) ->
-      pr ppf "@[@[%a@] doesn't match @[%a@]@]" print_val v print_pat p
+  | Matches (p, v, Res_of_Env env) ->
+      pr ppf "@[@[%a@] matches @[%a@] when @[(%a)@]@]" print_pat p print_val v print_env env
+  | Matches (p, v, Fail) ->
+      pr ppf "@[@[%a@] doesn't match @[%a@]@]" print_pat p print_val v
   | AppBOp (Lt, v1, v2, Value_of_bool true) ->
       pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
   | AppBOp (Lt, v1, v2, Value_of_bool false) ->
@@ -268,8 +270,8 @@ let print_judgment ppf = function
 let print_pjudgment ppf = function
     In_EvalTo (env, e) ->
       pr ppf "@[%a@]@ |- %a evalto ?" print_env env print_exp e 
-  | In_Matches (v, p) ->
-      pr ppf "@[@[%a@] matches @[%a@] when ?@]" print_val v print_pat p
+  | In_Matches (p, v) ->
+      pr ppf "@[@[%a@] matches @[%a@] when ?@]" print_pat p print_val v
   | In_AppBOp (Lt, v1, v2) ->
       pr ppf "%a is less than %a ?" print_val v1 print_val v2
   | In_AppBOp (p, v1, v2) -> 
@@ -283,8 +285,8 @@ let tex_res ppf = function
 let tex_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "\\%sEvalTo{%a}{%a}{%a}" g tex_env env tex_exp e tex_val v
-  | Matches (v, p, r) ->
-      pr ppf "\\%sMatches{%a}{%a}{%a}" g tex_val v tex_pat p tex_res r
+  | Matches (p, v, r) ->
+      pr ppf "\\%sMatches{%a}{%a}{%a}" g tex_pat p tex_val v tex_res r
   | AppBOp (p, v1, v2, v3) -> 
       let op = "\\" ^ g ^ match p with 
 	  Plus -> "PlusTerm" | Minus -> "MinusTerm"

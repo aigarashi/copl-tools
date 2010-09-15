@@ -31,7 +31,7 @@ sg in Sg ::= EmptyS
 env in Env ::= Empty
             |  Bind(env,x,t)
 
-cl in Clauses ::= EmptyC | AddC(p,e,cl) (* stands for p -> e | cl *)
+cl in Clauses ::= SingleC(p,e) | AddC(p,e,cl) (* stands for p -> e | cl *)
 
 e in Exp ::= i
           | b
@@ -161,7 +161,7 @@ T-Cnstr3: Typing(sg, env, CnstrEiii(c,e1,e2,e3), tn) :-
             with LookupFailure -> false`
            %$sg($c) = $t1 \times $t2 \times $t3 \rightarrow $tn%;
             
-T-MatchLast: Typing(sg,env,Match(e0,AddC(p,e1,EmptyC)),t) :- 
+T-MatchLast: Typing(sg,env,Match(e0,SingleC(p,e1)),t) :- 
                  Typing(sg,env,e0,t0),
                  PatTyping(sg,t0,p,env0),
                  `$env1 = uplus $env $env0` %$env1 = $env \uplus $env0%,

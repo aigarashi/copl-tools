@@ -110,8 +110,8 @@ Derivs:
 
 Judgment: 
     Env VDASH Exp EVALTO Val { EvalTo($1, $3, $5) }
-  | Val MATCHES Pat WHEN LPAREN Env RPAREN { Matches($1, $3, Res_of_Env $6) }
-  | Val DOESNT MATCH Pat { Matches($1, $4, Fail) }
+  | Pat MATCHES Val WHEN LPAREN Env RPAREN { Matches($3, $1, Res_of_Env $6) }
+  | Pat DOESNT MATCH Val { Matches($4, $1, Fail) }
   | SInt PLUS SInt IS SInt { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | SInt MULT SInt IS SInt { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | SInt MINUS SInt IS SInt { AppBOp(Minus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
@@ -135,7 +135,7 @@ Judgment:
 
 partialj :
     Env VDASH Exp EVALTO QM { In_EvalTo($1, $3) }
-  | Val MATCHES Pat WHEN QM { In_Matches($1, $3) }
+  | Pat MATCHES Val WHEN QM { In_Matches($3, $1) }
   | SInt PLUS SInt IS QM { In_AppBOp(Plus, Value_of_int $1, Value_of_int $3) }
   | SInt MULT SInt IS QM { In_AppBOp(Mult, Value_of_int $1, Value_of_int $3) }
   | SInt MINUS SInt IS QM { In_AppBOp(Minus, Value_of_int $1, Value_of_int $3) }
@@ -315,7 +315,7 @@ AVal:
 
 Clauses: 
   | Pat RARROW Exp { 
-	try ignore (fpv $1); AddC($1, $3, EmptyC) with 
+	try ignore (fpv $1); SingleC($1, $3) with 
 	    Not_linear -> errBtw 1 1 "Pattern variables should be disjoint"
       }
   | Pat RARROW NMExp BAR Clauses {
