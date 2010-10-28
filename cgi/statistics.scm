@@ -6,9 +6,6 @@
 (load "./site-local.scm")
 (load "./global.scm")
 
-(define-constant *question-db* ;; database file for questions
-  "/home/igarashi/ppl2010/questions.db")
-
 (load "./userdb.scm")
 
 (use file.util)
@@ -16,9 +13,6 @@
 
 (define *histgram* (make-vector how-many-q 0))
 (define *score-for-q* 40)
-
-(define unames (map car *passwd*))
-(define how-many-users (length unames))
 
 (define (accumulate solved)
   ;; takes a list of solved question numbers and update *histgram*
@@ -61,7 +55,9 @@
   (aux -1 1 0 l))
 
 (define (display-statistics name)
-  (let* ((solved-list (map (lambda (uname) 
+  (let* ((unames (user-list))
+	 (how-many-users (length unames))
+	 (solved-list (map (lambda (uname) 
 			     (cons uname (cdr (lookupdb uname 'solved))))
 			   unames))
 	 (ranked-list (add-rank (sort (map (lambda (x) 
@@ -105,12 +101,3 @@
 
 (define (main args)
   (write (display-statistics)))
-
-  #;(let* ((unames (collect-usernames))
-	 (solved-list (map (lambda (uname) 
-			     (cons uname (cdr (lookupdb uname 'solved))))
-			   unames)))
-    (map (lambda (x) (accumulate (cdr x))) solved-list)
-    (write *histgram*)
-    (write (map (lambda (x) (cons (car x) (length (cdr x)))) solved-list)))
-

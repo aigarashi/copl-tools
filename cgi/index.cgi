@@ -35,38 +35,40 @@
      (map (lambda (p) string-join "=") options)
      "&" 'prefix))))
 
-(define (check-passwd name passwd)
-  (let ((x (or ;; first look up the user's db file
-               ;(and (file-exists? (dbname name)) (lookupdb name 'passwd)) 
-	       ;; or look up the password file
-	       (assoc name *passwd*))))
-    (and (pair? x)
-	 (equal? (sys-crypt passwd (cdr x)) 
-		 (cdr x)))))
-
-(define (display-login-page msg)
-  (html:div 
-   :id "login"
-   (html:h1 "「ソフトウェア基礎論」演習システム")
+(define (display-login-page . options)
+  (let-keywords options ((msg #f)
+			 (uname ""))
+   (html:div 
+    :id "login"
+    (html:h1 "「ソフトウェア基礎論」演習システム")
    (html:form 
     :action thisurl :method "post"
     (html:fieldset
      (html:legend "ログインしてください")
      (html:label :for "username" :class "label" "ユーザ名")
-     (html:input :type "text" :name "name" :id "username")
+     (html:input :type "text" :name "name" :id "username" :value uname)
      (html:label :for "passwd"  :class "label" "パスワード")
      (html:input :type "password" :name "passwd" :id "passwd")
      (html:input :type "hidden" :name "command" :value "login")
-     (if msg
-	 (html:p (html:span :class "warn" msg))
-	 '())
-     (html:input :type "submit" :value "ログイン")))))
+     (html:input :type "submit" :value "ログイン")))
+   (html:form 
+    :action thisurl :method "post"
+    (html:fieldset
+     (html:legend "forgot password?")
+     (html:label :for "username" :class "label" "ユーザ名")
+     (html:input :type "text" :name "name" :id "username")
+     (html:input :type "hidden" :name "command" :value "renew")
+     (html:input :type "submit" :value "renew password")))
+   (if msg
+       (html:p (html:span :class "warn" msg))
+       '()))))
 
 (define (display-news)
   (file->string *news* :if-does-not-exist #f))
 
 (define (display-sidebar name)
   (let* ((solved (cdr (lookupdb name 'solved))))
+    ;; solved should be non #f
     (html:div
      :id "side"
      (html:h2 name "さんの成績")
@@ -76,8 +78,8 @@
      (html:h2 "その他")
      (html:p :id "commandlist"
 	     (html:a :href "index.cgi" "おすなば")
-	     " | "
-	     (html:a :href "rulebook.pdf" "推論規則集(pdf)")
+;	     " | "
+;	     (html:a :href "rulebook.pdf" "推論規則集(pdf)")
 	     " | "
 	     (html:a :href (command-url "stats") "統計")
 	     " | "
@@ -262,11 +264,30 @@
 	       (display-sandbox)))
 	  (display-sidebar name)
 	  ))))]
-     [(and (eq? command 'login) (check-passwd lname lpasswd))
-      ;; if new user, create the db and log files
-      (unless (file-exists? (dbfile lname))
+     [(and (eq? command 'renew))
+      (renew-passwd lname
+		    (cgi-get-metavariable "REMOTE_HOST")
+		    (cgi-get-metavariable "REMOTE_ADDR"))
+      ;; we don't care whether this user really exists or not
+      ;; to discourage someone malicious from renewing passwords repeatedly
+      (list
+       (cgi-header)
+       (html-doctype)
+       (html:html
+	header
+	(html:body
+	 :id "login-screen"
+	 (display-login-page	 
+	  :msg (html:p "Password informaiton has been sent")))))]
+     [(and (eq? command 'login) 
+	   (or (check-passwd lname lpasswd)
+	       (check-passwd-tmp lname lpasswd)))
+      (unless (check-passwd lname lpasswd)
+	      ;; create a db file when first-time login
 	      (call-with-output-file (dbfile lname)
-		(lambda (out) (write *empty-userdb* out))))
+		(lambda (out) 
+		  (let ((userinfo (lookupdb tmp-users lname)))
+		    (write (new-userdb userinfo) out)))))
       (unless (file-exists? (logfile lname))
 	      (call-with-output-file (logfile lname)
 		(lambda (out) )))
@@ -297,15 +318,15 @@
 	header
 	(html:body
 	 :id "login-screen"
-	 (display-login-page	 
 	  (cond
 	   [(eq? command 'login)
-	    (html:p "ユーザ名もしくはパスワードが違います")]
+	    (display-login-page	
+	     :msg (html:p "ユーザ名もしくはパスワードが違います")
+	     :uname lname)]
 	   [(eq? command 'logout) 
-	   (html:p "ログアウトするには，まずログインしてください")]
-	   [else #f]))
-	 ;(display-sandbox "ログインしていなくても遊べます")
-	 )))))))
+	    (display-login-page
+	     :msg (html:p "ログアウトするには，まずログインしてください"))]
+	   [else (display-login-page)]))))))))
 
 (cgi-output-character-encoding "utf-8")
 (cgi-main main :merge-cookies #t)
