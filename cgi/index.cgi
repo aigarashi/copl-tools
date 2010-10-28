@@ -7,6 +7,7 @@
 (use util.list)
 (use file.util)
 (use srfi-13)
+(use util.match)
 
 (load "./site-local.scm")
 (load "./global.scm")
@@ -63,8 +64,48 @@
        (html:p (html:span :class "warn" msg))
        '()))))
 
+(define (format-news newslist)
+  (match newslist
+	 [() ()]
+	 [((date title content) . rest)
+	  (let ((id (string-concatenate (list "news" date))))
+	    (cons
+	     (html:dt (html:div :onclick #`"Toggle(',|id|')"
+				(list "(" date ") " title)))
+	     (cons
+	      (html:div :id id
+			:style "display:none;"
+			(html:dd content))
+	      (format-news rest))))]))
+
+(define-constant JStoggle
+  (html:script 
+   :type "text/javascript"
+   "<!--
+function Toggle(id) {
+　div = document.getElementById(id);
+　switch (div.style.display) {
+　　case \"none\":
+　　　div.style.display=\"block\";
+　　　break;
+　　case \"block\":
+　　　div.style.display=\"none\";
+　　　break;
+　}
+}
+//-->"))
+
 (define (display-news)
-  (file->string *news* :if-does-not-exist #f))
+  (let* ((newslist  (call-with-input-file *news*
+		      (lambda (in) (if (port? in) (read in) #f))
+		      :if-does-not-exist #f))
+	 (formatted-news (format-news newslist)))
+    (if (null? formatted-news)
+	'()
+	(list
+	 (html:h1 "News")
+	 JStoggle
+	 formatted-news))))
 
 (define (display-sidebar name)
   (let* ((solved (cdr (lookupdb name 'solved))))
@@ -256,9 +297,9 @@
 	  :id "contents"
 	 #;(html:div
 	  :id "header")
-	  (display-news)
 	  (html:div
 	   :id "main"
+	   (display-news)
 	   (if qno
 	       (display-q (string->number qno))
 	       (display-sandbox)))

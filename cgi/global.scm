@@ -8,6 +8,4 @@
   (string-append *system-dir* "questions.db"))
 
 (define *news*
-  (string-append *system-dir* "news.html"))
-
-
+  (string-append *system-dir* "news.scm"))

@@ -14,12 +14,13 @@
 (define *histgram* (make-vector how-many-q 0))
 (define *score-for-q* 40)
 
-(define (accumulate solved)
+(define (accumulate! solved)
   ;; takes a list of solved question numbers and update *histgram*
   (map (lambda (i) 
-	 (let* ((i (- i 1)) ;; Question numbers are 1-origin.
-		(old (vector-ref *histgram* i)))
-	   (vector-set! *histgram* i (+ old 1))))
+	 (let* ((i (- i 1)))
+	   ;; Question numbers are 1-origin.
+	   (when (i < how-many-q)
+		 (vector-set! *histgram* i (+ (vector-ref *histgram* i) 1)))))
        solved))
 
 (define (score solved)
@@ -61,7 +62,7 @@
 			     (cons uname (cdr (lookupdb uname 'solved))))
 			   unames))
 	 (ranked-list (add-rank (sort (map (lambda (x) 
-					     (accumulate (cdr x))
+					     (accumulate! (cdr x))
 					     (cons (car x) (length (cdr x))))
 					   solved-list)
 				      (lambda (x y)
