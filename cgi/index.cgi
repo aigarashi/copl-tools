@@ -55,11 +55,11 @@
    (html:form 
     :action thisurl :method "post"
     (html:fieldset
-     (html:legend "forgot password?")
+     (html:legend "パスワードの(再)発行と送付")
      (html:label :for "username" :class "label" "ユーザ名")
      (html:input :type "text" :name "name" :id "username")
      (html:input :type "hidden" :name "command" :value "renew")
-     (html:input :type "submit" :value "renew password")))
+     (html:input :type "submit" :value "新パスワードの送付")))
    (if msg
        (html:p (html:span :class "warn" msg))
        '()))))
@@ -103,7 +103,7 @@ function Toggle(id) {
     (if (null? formatted-news)
 	'()
 	(list
-	 (html:h1 "News")
+	 (html:h1 "おしらせ")
 	 JStoggle
 	 formatted-news))))
 

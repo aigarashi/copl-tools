@@ -33,26 +33,26 @@
        :action thisurl :method "post"
        (html:ol
 	(html:li
-	 (html:label :for "username" :class "label" "User name")
+	 (html:label :for "username" :class "label" "ユーザ名")
 	 (html:input :type "text" :name "name" :size "8"
 		     :id "username" :value uname))
 	(html:li
-	 (html:label :for "fullname" :class "label" "Your full name")
+	 (html:label :for "fullname" :class "label" "氏名")
 	 (html:input :type "text" :name "fname" :size "20"
 		     :id "fullname" :value fname))
 	(html:li
-	 (html:label :for "address" :class "label" "email address")
+	 (html:label :for "address" :class "label" "メイルアドレス")
 	 (html:input :type "text" :name "address" :size "40" 
 		     :id "address" :value address))
 	(html:li
-	 (html:label :for "address2" :class "label""email address (for doublecheck)")
+	 (html:label :for "address2" :class "label""メイルアドレス(確認)")
 	 (html:input :type "text" :name "address2" :size "40"
 		     :id "address2" :value address2)))
        (html:input :type "hidden" :name "command" :value "register")
        (if msg
 	   (html:p (html:span :class "warn" msg))
 	   '())
-       (html:input :type "submit" :value "Register")))))
+       (html:input :type "submit" :value "登録")))))
 
 (define (invalid-name? s)
   (not (#/^[\w]{2,}$/ s)))
@@ -95,17 +95,17 @@
 	     (check-errors
 	      (list
 	       (cons (lambda () (zero? (string-length uname)))
-		     "User name shouldn't be empty")
+		     "ユーザ名が空です!")
 	       (cons (lambda () (user-exists? uname))
-		     "User already exists!")
+		     "そのユーザ名は既に存在します!")
 	       (cons (lambda () (invalid-name? uname)) 
-		     "User name should consist of alphabets, numbers, underscore")
+		     "ユーザ名は英数字とアンダースコアでないといけません")
 	       (cons (lambda () (invalid-address? address))
-		     "Invalid e-mail address")
+		     "不正なメイルアドレスです")
 	       (cons (lambda () (not (string=? address address2)))
-		     "The two email addresses do not match")
+		     "ふたつのメイルアドレスが違っています")
 	       (cons (lambda () (zero? (string-length fname)))
-		     "Your full name shouldn't be empty")))))
+		     "氏名欄が空です")))))
 	(if (null? valid?)  ;; all check passed!
 	    (begin
 	      (create-temporary-account uname fname address)
@@ -115,9 +115,10 @@
 	       (html:html
 		header
 		(html:body
-		 (html:h1 "Registration succeeded!")
-		 (html:p "Please retrieve your password through the "
-			 (html:a :href index "login page"))))))
+		 (html:h1 "登録に成功しました!")
+		 (html:p "パスワードは，"
+			 (html:a :href index "トップページ")
+			 "から取り寄せてください")))))
 	    (list
 	     (cgi-header)
 	     (html-doctype)
@@ -129,7 +130,7 @@
 		 (display-registration-page
 		  :msg
 		  (list
-		   (html:p "Registration failure for the following reason(s):")
+		   (html:p "以下の理由で登録に失敗しました．")
 		   (map (lambda (s) (html:p s)) valid?))
 		  :uname uname :fname fname :address address :address2 address2)]
 		 [else (display-registration-page)]))))))]
