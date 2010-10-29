@@ -14,7 +14,7 @@
 
 (define header 
   (html:head 
-   (html:title "「ソフトウェア基礎論」演習システム Registration page")
+   (html:title "「ソフトウェア基礎論」演習システム ユーザ登録")
    (html:meta 
     :http-equiv "content-type" 
     :content "text/html; charset=utf-8")
@@ -28,7 +28,7 @@
 			 (address2 ""))
      (html:div
       :id "registration"
-      (html:h1 "Registration form")
+      (html:h1 "ユーザ登録フォーム")
       (html:form
        :action thisurl :method "post"
        (html:ol
