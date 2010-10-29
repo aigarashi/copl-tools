@@ -33,7 +33,7 @@
        :action thisurl :method "post"
        (html:ol
 	(html:li
-	 (html:label :for "username" :class "label" "ユーザ名")
+	 (html:label :for "username" :class "label" "ユーザ名(英数字2〜8文字)")
 	 (html:input :type "text" :name "name" :size "8"
 		     :id "username" :value uname))
 	(html:li
