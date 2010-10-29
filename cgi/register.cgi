@@ -55,7 +55,7 @@
        (html:input :type "submit" :value "登録")))))
 
 (define (invalid-name? s)
-  (not (#/^[\w]{2,}$/ s)))
+  (not (#/^[A-Za-z0-9]{2,8}$/ s)))
 
 (define (invalid-address? s)
   ;; see http://blog.livedoor.jp/dankogai/archives/51189905.html
@@ -99,7 +99,7 @@
 	       (cons (lambda () (user-exists? uname))
 		     "そのユーザ名は既に存在します!")
 	       (cons (lambda () (invalid-name? uname)) 
-		     "ユーザ名は英数字とアンダースコアでないといけません")
+		     "ユーザ名は英数字2〜8文字でないといけません")
 	       (cons (lambda () (invalid-address? address))
 		     "不正なメイルアドレスです")
 	       (cons (lambda () (not (string=? address address2)))
