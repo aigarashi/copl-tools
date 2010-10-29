@@ -179,7 +179,7 @@ function Toggle(id) {
 	    (html:select :name "game"
 			 (map (lambda (g) (html:option :value g g)) *gamelist*)))
     (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off"
-		   "ここに導出を書いてください")
+		   "// ここに導出を書いてください")
     (html:input :type "submit" :value "送信")
     (html:input :type "hidden" :name "no" :value "0")
     (html:input :type "hidden" :name "command" :value "answer"))
