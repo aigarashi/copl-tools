@@ -104,6 +104,7 @@ function Toggle(id) {
 	'()
 	(list
 	 (html:h1 "おしらせ")
+	 (html:p "内容の表示・非表示を切り替えるには日付をクリックしてください．")
 	 JStoggle
 	 formatted-news))))
 
