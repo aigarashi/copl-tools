@@ -19,7 +19,7 @@
   (map (lambda (i) 
 	 (let* ((i (- i 1)))
 	   ;; Question numbers are 1-origin.
-	   (when (i < how-many-q)
+	   (when (< i how-many-q)
 		 (vector-set! *histgram* i (+ (vector-ref *histgram* i) 1)))))
        solved))
 

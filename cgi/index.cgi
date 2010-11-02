@@ -300,7 +300,6 @@ function Toggle(id) {
 	  :id "header")
 	  (html:div
 	   :id "main"
-	   (display-news)
 	   (if qno
 	       (display-q (string->number qno))
 	       (display-sandbox)))
@@ -347,9 +346,9 @@ function Toggle(id) {
 	(html:body
 	 (html:div 
 	  :id "contents"
-	  (display-news)
 	  (html:div
 	   :id "main"
+	   (display-news)
 	   (display-sandbox))
 	  (display-sidebar lname)))))]
      (else
