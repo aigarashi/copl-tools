@@ -73,7 +73,7 @@
     (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
 	   (ranked-list (add-rank (sort name-solved-score
 					(lambda (x y)
-					  (> (cddar x) (cddar y)))))))
+					  (> (caddr x) (caddr y)))))))
       (list
        (html:h2 "ランキング")
        (html:table :id "ranking"

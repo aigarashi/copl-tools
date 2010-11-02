@@ -233,6 +233,11 @@ ul.questions{
     background-color: #ffffff;
     color: #000000;
 }
+#ranking .score {
+    text-align: right;
+    padding-left: 3px;
+    padding-right: 3px;
+}
 
 #graph {
     border: 3px solid #000000;
