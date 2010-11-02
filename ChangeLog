@@ -1,3 +1,7 @@
+2010-11-02  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/index.cgi (display-news): Bug fix.
+
 2010-07-12  igarashi  <igarashi@djembe>
 
 	* gmc/emit.ml: \MV's argument for primes and suffix is now

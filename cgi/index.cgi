@@ -98,7 +98,7 @@ function Toggle(id) {
 (define (display-news)
   (let* ((newslist  (call-with-input-file *news*
 		      (lambda (in) (if (port? in) (read in) #f))
-		      :if-does-not-exist #f))
+		      :if-does-not-exist '()))
 	 (formatted-news (format-news newslist)))
     (if (null? formatted-news)
 	'()
