@@ -27,7 +27,7 @@ p in Pat ::= x | WildP | CnstrP(c) | CnstrPi(c,p) | CnstrPii(c, p, p) | CnstrPii
 
 res in Res ::= env | Fail (* result of matching *)
 
-cl in Clauses ::= EmptyC | AddC(p,e,cl) (* stands for p -> e | cl *)
+cl in Clauses ::= SingleC(p,e) | AddC(p,e,cl) (* stands for p -> e | cl *)
 
 e in Exp ::= i
           | b
@@ -141,7 +141,11 @@ E-Cnstr0: EvalTo(env,CnstrE(c),CnstrV(c)) :- ;
 E-Cnstr1: EvalTo(env,CnstrEi(c,e),CnstrVi(c,v)) :- EvalTo(env,e,v);
 E-Cnstr2: EvalTo(env,CnstrEii(c,e1,e2),CnstrVii(c,v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
 E-Cnstr3: EvalTo(env,CnstrEiii(c,e1,e2,e3),CnstrViii(c,v1,v2,v3)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2), EvalTo(env,e3,v3);
-E-MatchM: EvalTo(env,Match(e0,AddC(p,e,cl)),v') :- 
+E-MatchM1: EvalTo(env,Match(e0,SingleC(p,e)),v') :- 
+	    EvalTo(env,e0,v), Matches(v,p,env1), 
+              `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
+            EvalTo(env2,e,v');
+E-MatchM2: EvalTo(env,Match(e0,AddC(p,e,cl)),v') :- 
 	    EvalTo(env,e0,v), Matches(v,p,env1), 
               `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
             EvalTo(env2,e,v');

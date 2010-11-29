@@ -255,9 +255,9 @@ and tex_val ppf v =
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "@[@[%a@]@ |- @[%a@] evalto %a@]" print_env env print_exp e print_val v
-  | Matches (p, v, Res_of_Env env) ->
+  | Matches (v, p, Res_of_Env env) ->
       pr ppf "@[@[%a@] matches @[%a@] when @[(%a)@]@]" print_pat p print_val v print_env env
-  | Matches (p, v, Fail) ->
+  | Matches (v, p, Fail) ->
       pr ppf "@[@[%a@] doesn't match @[%a@]@]" print_pat p print_val v
   | AppBOp (Lt, v1, v2, Value_of_bool true) ->
       pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
@@ -270,7 +270,7 @@ let print_judgment ppf = function
 let print_pjudgment ppf = function
     In_EvalTo (env, e) ->
       pr ppf "@[%a@]@ |- %a evalto ?" print_env env print_exp e 
-  | In_Matches (p, v) ->
+  | In_Matches (v, p) ->
       pr ppf "@[@[%a@] matches @[%a@] when ?@]" print_pat p print_val v
   | In_AppBOp (Lt, v1, v2) ->
       pr ppf "%a is less than %a ?" print_val v1 print_val v2
@@ -285,7 +285,7 @@ let tex_res ppf = function
 let tex_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "\\%sEvalTo{%a}{%a}{%a}" g tex_env env tex_exp e tex_val v
-  | Matches (p, v, r) ->
+  | Matches (v, p, r) ->
       pr ppf "\\%sMatches{%a}{%a}{%a}" g tex_pat p tex_val v tex_res r
   | AppBOp (p, v1, v2, v3) -> 
       let op = "\\" ^ g ^ match p with 

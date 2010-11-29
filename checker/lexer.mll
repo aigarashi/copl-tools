@@ -66,8 +66,8 @@ rule main = parse
   [' ' '\009' '\012' '\r']+     { main lexbuf }
   (* ignore spacing and newline characters *)
   | [' ' '\009' '\012' '\r']* '\n'    { newline lexbuf; main lexbuf }
-  (* ignore # and the following characters until the end of the line *)
-  | '#' [^ '\n'] '\n' { newline lexbuf; main lexbuf } 
+  (* ignore // and the following characters until the end of the line *)
+  | "//" [^ '\n']* '\n' { newline lexbuf; main lexbuf } 
 
 (* special symbols *)
 | "(" { lparen }

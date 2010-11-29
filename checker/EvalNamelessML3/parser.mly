@@ -12,8 +12,8 @@ let errAt i s =
 (******** experimental feature for macro defitinions *********)
 (* The following definition could be automatically generated from .gm *)
 type sobj = DExp of Core.dbexp
-	  | Value of Core.value
-	  | Env of Core.env
+	  | DBValue of Core.dbvalue
+	  | DBValueList of Core.dbvaluelist
 
 let tbl = Hashtbl.create 1024
 %}
@@ -90,14 +90,14 @@ Derivs:
 
 Judgment: 
     Env VDASH DExp EVALTO Val { EvalTo($1, $3, $5) }
-  | SInt PLUS SInt IS SInt { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | SInt MULT SInt IS SInt { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | SInt MINUS SInt IS SInt { AppBOp(Minus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
-  | SInt LESS THAN SInt IS TRUE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool true) }
-  | SInt LESS THAN SInt IS FALSE { AppBOp(Lt, Value_of_int $1, Value_of_int $4, Value_of_bool false) }
+  | SInt PLUS SInt IS SInt { AppBOp(Plus, DBValue_of_int $1, DBValue_of_int $3, DBValue_of_int $5) }
+  | SInt MULT SInt IS SInt { AppBOp(Mult, DBValue_of_int $1, DBValue_of_int $3, DBValue_of_int $5) }
+  | SInt MINUS SInt IS SInt { AppBOp(Minus, DBValue_of_int $1, DBValue_of_int $3, DBValue_of_int $5) }
+  | SInt LESS THAN SInt IS TRUE { AppBOp(Lt, DBValue_of_int $1, DBValue_of_int $4, DBValue_of_bool true) }
+  | SInt LESS THAN SInt IS FALSE { AppBOp(Lt, DBValue_of_int $1, DBValue_of_int $4, DBValue_of_bool false) }
   /* abbreviations for less than */
-  | SInt IS LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $5, Value_of_bool true) }
-  | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6, Value_of_bool false) }
+  | SInt IS LESS THAN SInt { AppBOp(Lt, DBValue_of_int $1, DBValue_of_int $5, DBValue_of_bool true) }
+  | SInt IS NOT LESS THAN SInt { AppBOp(Lt, DBValue_of_int $1, DBValue_of_int $6, DBValue_of_bool false) }
 
   | Env VDASH DExp error { errAt 4 "Syntax error: 'evalto' expected" }
   | Env VDASH DExp EVALTO error { errAt 5 "Syntax error: value expected" }
@@ -113,11 +113,11 @@ Judgment:
 
 partialj :
     Env VDASH DExp EVALTO QM { In_EvalTo($1, $3) }
-  | SInt PLUS SInt IS QM { In_AppBOp(Plus, Value_of_int $1, Value_of_int $3) }
-  | SInt MULT SInt IS QM { In_AppBOp(Mult, Value_of_int $1, Value_of_int $3) }
-  | SInt MINUS SInt IS QM { In_AppBOp(Minus, Value_of_int $1, Value_of_int $3) }
-/*  | SInt IS LESS THAN SInt { In_AppBOp(Lt, Value_of_int $1, Value_of_int $5) }
-  | SInt IS NOT LESS THAN SInt { AppBOp(Lt, Value_of_int $1, Value_of_int $6) }
+  | SInt PLUS SInt IS QM { In_AppBOp(Plus, DBValue_of_int $1, DBValue_of_int $3) }
+  | SInt MULT SInt IS QM { In_AppBOp(Mult, DBValue_of_int $1, DBValue_of_int $3) }
+  | SInt MINUS SInt IS QM { In_AppBOp(Minus, DBValue_of_int $1, DBValue_of_int $3) }
+/*  | SInt IS LESS THAN SInt { In_AppBOp(Lt, DBValue_of_int $1, DBValue_of_int $5) }
+  | SInt IS NOT LESS THAN SInt { AppBOp(Lt, DBValue_of_int $1, DBValue_of_int $6) }
 */
   | Env VDASH DExp error { errAt 4 "Syntax error: 'evalto' expected" }
   | Env VDASH DExp EVALTO error { errAt 5 "Syntax error: '?' expected" }
@@ -226,9 +226,9 @@ SInt: /* signed int */
   | HYPHEN INTL { - $2 }
 
 Val:
-    SInt { Value_of_int $1 }
-  | TRUE { Value_of_bool true }
-  | FALSE { Value_of_bool false }
+    SInt { DBValue_of_int $1 }
+  | TRUE { DBValue_of_bool true }
+  | FALSE { DBValue_of_bool false }
   | LPAREN Env RPAREN LBRACKET FUN DOT RARROW DExp RBRACKET { Fun($2, $8) }
   | LPAREN Env RPAREN LBRACKET REC DOT EQ FUN DOT RARROW DExp RBRACKET 
       { Rec($2, $11) }
@@ -255,8 +255,8 @@ MacroDefs:
 
 MacroDef:
   | DEF MVDEXP EQ DExp SEMI { Hashtbl.add tbl $2 (DExp $4) }
-  | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (Value $4) }
-  | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
+  | DEF MVVALUE EQ Val SEMI { Hashtbl.add tbl $2 (DBValue $4) }
+  | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (DBValueList $4) }
 
   | DEF MVDEXP EQ error { errAt 4 "Syntax error: expression expected" }
   | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
@@ -267,7 +267,7 @@ MacroDef:
 Val: MVVALUE { 
   try
     match Hashtbl.find tbl $1 with 
-      Value v -> v
+      DBValue v -> v
     | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
@@ -283,7 +283,7 @@ DAExp: MVDEXP {
 Env: MVENV Env2 {
   try 
     match Hashtbl.find tbl $1 with
-      Env e -> List.fold_left (fun env v -> Bind(env, v)) e $2
+      DBValueList e -> List.fold_left (fun env v -> Bind(env, v)) e $2
     | _ -> errAt 1 "Cannot happen! Env: MVENV" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

@@ -374,11 +374,10 @@ span.rname { font-variant: small-caps; }
 
 (define (EvalML5:FailTerm) 'fail)
 
-(define (EvalML5:EmptyCTerm) 'emptyclause)
+(define (EvalML5:SingleCTerm p e)
+  `(,p "\\rightarrow" ,e))
 (define (EvalML5:AddCTerm p e c)
-  (if (eq? c 'emptyclause)
-      `(,p "\\rightarrow" ,e)
-      `(,p "\\rightarrow" ,e "\\mid" ,c)))
+  `(,p "\\rightarrow" ,e "\\mid" ,c))
 
 (define EvalML5:BinOpTerm EvalML4:BinOpTerm)
 (define EvalML5:IfTerm EvalML4:IfTerm)
@@ -403,11 +402,11 @@ span.rname { font-variant: small-caps; }
 
 (define (EvalML5:Matches v p res)
   (cond ((eq? res 'fail)
-	 `(,v "\\mbox{ doesn't match }" ,p))
+	 `(,p "\\mbox{ doesn't match }" ,v))
 	((equal? res "\\cdot")
-	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }()"))
+	 `(,p "\\mbox{ matches }" ,v " \\mbox{ when }()"))
 	(else
-	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
+	 `(,p "\\mbox{ matches }" ,v " \\mbox{ when }(" ,res ")"))))
 
 ;; EvalML6
 (define EvalML6:mv EvalML5:mv)
@@ -419,6 +418,8 @@ span.rname { font-variant: small-caps; }
   `(,c "\\;" ,v))
 (define (EvalML6:CnstrViiTerm c v1 v2)
   `(,c "\\mbox{(}" ,v1 "\\mbox{,}" ,v2 "\\mbox{)}"))
+(define (EvalML6:CnstrViiiTerm c v1 v2 v3)
+  `(,c "\\mbox{(}" ,v1 "\\mbox{,}" ,v2  "\\mbox{,}" ,v3 "\\mbox{)}"))
 
 (define EvalML6:EmptyTerm EvalML5:EmptyTerm)
 (define EvalML6:BindTerm EvalML5:BindTerm)
@@ -429,14 +430,13 @@ span.rname { font-variant: small-caps; }
   `(,c "\\;" ,p ))
 (define (EvalML6:CnstrPiiTerm c p1 p2)
   `(,c "\\mbox{(}" ,p1 "\\mbox{,}" ,p2 "\\mbox{)}"))
+(define (EvalML6:CnstrPiiiTerm c p1 p2 p3)
+  `(,c "\\mbox{(}" ,p1 "\\mbox{,}" ,p2 "\\mbox{,}" ,p3 "\\mbox{)}"))
 
 (define (EvalML6:FailTerm) 'fail)
 
-(define (EvalML6:EmptyCTerm) 'emptyclause)
-(define (EvalML6:AddCTerm p e c)
-  (if (eq? c 'emptyclause)
-      `(,p "\\rightarrow" ,e)
-      `(,p "\\rightarrow" ,e "\\mid" ,c)))
+(define EvalML6:SingleCTerm EvalML5:SingleCTerm)
+(define EvalML6:AddCTerm EvalML5:AddCTerm)
 
 (define EvalML6:BinOpTerm EvalML5:BinOpTerm)
 (define EvalML6:IfTerm EvalML5:IfTerm)
@@ -449,6 +449,8 @@ span.rname { font-variant: small-caps; }
   `(,c "\\;" ,e ))
 (define (EvalML6:CnstrEiiTerm c e1 e2)
   `(,c "\\mbox{(}" ,e1 "\\mbox{,}" ,e2 "\\mbox{)}"))
+(define (EvalML6:CnstrEiiiTerm c e1 e2 e3)
+  `(,c "\\mbox{(}" ,e1 "\\mbox{,}" ,e2 "\\mbox{,}" ,e3 "\\mbox{)}"))
 
 (define (EvalML6:MatchTerm e c)
   `("\\mbox{match }" ,e "\\mbox{ with } " ,c))
@@ -464,14 +466,14 @@ span.rname { font-variant: small-caps; }
 
 (define (EvalML6:Matches v p res)
   (cond ((eq? res 'fail)
-	 `(,v "\\mbox{ doesn't match }" ,p))
+	 `(,p "\\mbox{ doesn't match }" ,v))
 	((equal? res "\\cdot")
-	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }()"))
+	 `(,p "\\mbox{ matches }" ,v " \\mbox{ when }()"))
 	(else
-	 `(,v "\\mbox{ matches }" ,p " \\mbox{ when }(" ,res ")"))))
+	 `(,p "\\mbox{ matches }" ,v " \\mbox{ when }(" ,res ")"))))
 
 ;; EvalNamelessML3
-(define (EvalML2:mv base . suffix)
+(define (EvalNamelessML3:mv base . suffix)
   (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}")
 					       ("v" "w"))))
 
@@ -652,6 +654,8 @@ span.rname { font-variant: small-caps; }
   `(,t "\\rightarrow" ,tn))
 (define (TypingML6:CnstrTiiTerm t1 t2 tn)
   `(,t1 "\\times" ,t2 "\\rightarrow" ,tn))
+(define (TypingML6:CnstrTiiiTerm t1 t2 t3 tn)
+  `(,t1 "\\times" ,t2 "\\times" ,t3 "\\rightarrow" ,tn))
 
 (define TypingML6:EmptyTerm TypingML4:EmptyTerm)
 (define TypingML6:BindTerm TypingML4:BindTerm)
@@ -667,9 +671,10 @@ span.rname { font-variant: small-caps; }
 (define TypingML6:CnstrPTerm EvalML6:CnstrPTerm)
 (define TypingML6:CnstrPiTerm EvalML6:CnstrPiTerm)
 (define TypingML6:CnstrPiiTerm EvalML6:CnstrPiiTerm)
+(define TypingML6:CnstrPiiiTerm EvalML6:CnstrPiiiTerm)
 
-(define TypingML6:EmptyCTerm EvalML6:EmptyCTerm)
-(define TypingML6:AddCTerm EvalML6:AddCTerm)
+(define TypingML6:SingleCTerm EvalML5:SingleCTerm)
+(define TypingML6:AddCTerm EvalML5:AddCTerm)
 
 (define TypingML6:BinOpTerm EvalML6:BinOpTerm)
 (define TypingML6:IfTerm EvalML6:IfTerm)
@@ -680,6 +685,7 @@ span.rname { font-variant: small-caps; }
 (define TypingML6:CnstrETerm EvalML6:CnstrETerm)
 (define TypingML6:CnstrEiTerm EvalML6:CnstrEiTerm)
 (define TypingML6:CnstrEiiTerm EvalML6:CnstrEiiTerm)
+(define TypingML6:CnstrEiiiTerm EvalML6:CnstrEiiiTerm)
 
 (define TypingML6:MatchTerm EvalML6:MatchTerm)
 
@@ -694,9 +700,9 @@ span.rname { font-variant: small-caps; }
 
 (define (TypingML6:PatTyping sg t p env)
   (cond ((equal? env "\\cdot")
-	 `(,t "\\mbox{ matches}_{" ,sg "}\\;" ,p " \\mbox{ when }()"))
+	 `(,p "\\mbox{ matches}_{" ,sg "}\\;" ,t " \\mbox{ when }()"))
 	(else
-	 `(,t "\\mbox{ matches}_{" ,sg "}\\;" ,p " \\mbox{ when }(" ,env ")"))))
+	 `(,p "\\mbox{ matches}_{" ,sg "}\\;" ,t " \\mbox{ when }(" ,env ")"))))
 
 (define (TypingML6:Typing sg env e t)
   `(,env "\\vdash_{" ,sg "}" ,e ":" ,t))

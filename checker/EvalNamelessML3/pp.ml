@@ -90,18 +90,18 @@ and print_env' ppf = function
   | Bind(env', v) -> pr ppf "%a%a,@ " print_env' env' print_val v 
 
 and print_val ppf = function
-    Value_of_int i -> pr ppf "%d" i
-  | Value_of_bool true -> pr ppf "true"
-  | Value_of_bool false -> pr ppf "false"
+    DBValue_of_int i -> pr ppf "%d" i
+  | DBValue_of_bool true -> pr ppf "true"
+  | DBValue_of_bool false -> pr ppf "false"
   | Fun(env, e) -> pr ppf "(%a)[fun . -> %a]" print_env env print_dexp e
   | Rec(env, e) -> pr ppf "(%a)[rec . = fun . -> %a]" print_env env print_dexp e
 
 let print_judgment ppf = function
     EvalTo (env, e, v) -> 
       pr ppf "@[@[%a@]@ |- @[%a@] evalto %a@]" print_env env print_dexp e print_val v
-  | AppBOp (Lt, v1, v2, Value_of_bool true) ->
+  | AppBOp (Lt, v1, v2, DBValue_of_bool true) ->
       pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
-  | AppBOp (Lt, v1, v2, Value_of_bool false) ->
+  | AppBOp (Lt, v1, v2, DBValue_of_bool false) ->
       pr ppf "@[%a is not less than %a@]" print_val v1 print_val v2
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
@@ -157,8 +157,8 @@ and tex_env' ppf = function
   | Bind(env', v) -> pr ppf "%a%a,@ " tex_env' env' tex_val v 
 
 and tex_val ppf = function
-    Value_of_int i -> pr ppf "%d" i
-  | Value_of_bool b -> pp_print_string ppf (string_of_bool b)
+    DBValue_of_int i -> pr ppf "%d" i
+  | DBValue_of_bool b -> pp_print_string ppf (string_of_bool b)
   | Fun(env, e) -> pr ppf "\\%sFunTerm{%a}{%a}" g tex_env env tex_dexp e
   | Rec(env, e) -> pr ppf "\\%sRecTerm{%a}{%a}" g 
       tex_env env tex_dexp e

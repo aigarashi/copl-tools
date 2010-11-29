@@ -15,16 +15,16 @@ OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 # OBJS=../mySupport.cmx ../common/derivation.cmx ../common/lexer.cmx \
 #      core.cmx pp.cmx parser.cmx keywords.cmx main.cmx
 
-OBJS=core.cmx pp.cmx parser.cmx keywords.cmx macroVars.cmx link.cmx
+OBJS=core.cmo pp.cmo parser.cmo keywords.cmo macroVars.cmo link.cmo
 
 DEPEND += parser.ml core.ml ../lexer.ml
 
 all: $(DEPEND) $(OBJS)
 	# $(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) $(OBJS)	
-	$(OCAMLOPT) -pack -o $(PACKED).cmx $(OCAMLFLAGS) $(OBJS)
+	$(OCAMLC) -pack -o $(PACKED).cmo $(OCAMLFLAGS) $(OBJS)
 
 # Common rules
-.SUFFIXES: .ml .mli .cmo .cmi .cmx
+.SUFFIXES: .ml .mli .cmo .cmi .cmo
 
 .ml.cmo:
 	$(OCAMLC) $(OCAMLFLAGS) -c $<
@@ -57,6 +57,6 @@ clean:
 
 # Dependencies
 depend:: $(DEPEND)
-	$(OCAMLDEP) -native $(INCLUDES) *.mli *.ml ../derivation.ml ../derivation.mli ../lexer.ml > .depend
+	$(OCAMLDEP) $(INCLUDES) *.mli *.ml ../derivation.ml ../derivation.mli ../lexer.ml > .depend
 
 -include .depend

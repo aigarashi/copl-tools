@@ -13,7 +13,7 @@ let errAt i s =
 (* The following definition could be automatically generated from .gm *)
 type sobj = Exp of Core.exp
           | DBExp of Core.dbexp
-	  | Env of Core.env
+	  | VarList of Core.varlist
 
 let tbl = Hashtbl.create 1024
 %}
@@ -270,7 +270,7 @@ MacroDefs:
 MacroDef:
   | DEF MVEXP EQ Exp SEMI { Hashtbl.add tbl $2 (Exp $4) }
   | DEF MVDBEXP EQ DExp SEMI { Hashtbl.add tbl $2 (DBExp $4) }
-  | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (Env $4) }
+  | DEF MVENV EQ Env SEMI { Hashtbl.add tbl $2 (VarList $4) }
 
   | DEF MVEXP EQ error { errAt 4 "Syntax error: expression expected" }
   | DEF MVDBEXP EQ error { errAt 4 "Syntax error: nameless expression expected" }
@@ -296,7 +296,7 @@ DAExp: MVDBEXP {
 Env: MVENV Env2 {
   try 
     match Hashtbl.find tbl $1 with
-      Env e -> List.fold_left (fun env id -> Bind(env, Var id)) e $2
+      VarList e -> List.fold_left (fun env id -> Bind(env, Var id)) e $2
     | _ -> errAt 1 "Cannot happen! Env: MVENV" 
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
