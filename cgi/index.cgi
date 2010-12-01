@@ -120,6 +120,8 @@ function Toggle(id) {
      (html:h2 "その他")
      (html:p :id "commandlist"
 	     (html:a :href "index.cgi" "おすなば")
+	     " | "
+	     (html:a :href (command-url "news") "おしらせ")
 ;	     " | "
 ;	     (html:a :href "rulebook.pdf" "推論規則集(pdf)")
 	     " | "
@@ -274,6 +276,17 @@ function Toggle(id) {
 	 (html:p "ログアウトしました．"))))]
      [(and (eq? command 'answer) name)  ;; trying to answer a question
       (check-and-show params)]
+     [(and (eq? command 'news) name)
+      (list
+       (cgi-header)
+       (html-doctype)
+       (html:html
+	header
+	(html:body
+	 (html:div
+	  :id "contents"
+	  (html:div :id "main" (display-news))
+	  (display-sidebar name)))))]
      [(and (eq? command 'stats) name)  ;; show a statistics page
       (list
        (cgi-header)
