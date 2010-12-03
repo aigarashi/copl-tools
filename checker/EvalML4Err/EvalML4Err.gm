@@ -142,7 +142,7 @@ E-LtErr2:	EvalTo(env, BinOp(Lt, e1, e2), Error) :-
 		%$r \mbox{ は整数ではない}%;
 
 E-VarErr:  EvalTo(env, x, Error) :- ` try lookup $env $x with _ -> true ` 
-	   	       	  	     %$env($x) は未定義%;
+	   	       	  	     %$x \not \in \dom($env)%;
 
 E-LetErr1:  EvalTo(env, Let(x, e1, e2), Error) :-
 		EvalTo(env, e1, Error);
