@@ -1,3 +1,9 @@
+2010-12-07  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
+
+	* EvalNamelessML3/macroVars.ml: Metavar name change (v -> w)
+
+	* EvalML6/{parser.mly, pp.ml}: Bug fix.
+
 2010-11-02  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/index.cgi (display-news): Bug fix.

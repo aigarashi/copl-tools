@@ -152,12 +152,12 @@ let rec print_exp ppf e =
 and print_clause ppf c =
   let rec loop ppf c = 
     match c with 
-	EmptyC -> ()
+	SingleC(p, e) -> pr ppf " | %a -> %a" print_pat p print_exp e
       | AddC(p, e, c') -> 
 	  pr ppf " | %a -> %a%a" print_pat p print_exp e loop c'
   in
     match c with 
-	EmptyC -> ()
+	SingleC(p, e) -> pr ppf " | %a -> %a" print_pat p print_exp e
       | AddC(p, e, c') -> 
 	  pr ppf "%a -> %a%a" print_pat p print_exp e loop c'
 
@@ -206,7 +206,7 @@ let rec tex_exp ppf e =
 	    tex_clause c
 
 and tex_clause ppf = function
-    EmptyC -> pr ppf "\\%sEmptyCTerm" g
+    SingleC(p, e) -> pr ppf "\\%sSingleCTerm{%a}{%a}" g tex_pat p tex_exp e
   | AddC(p, e, c') -> 
       pr ppf "\\%sAddCTerm{%a}{%a}{%a}" g tex_pat p tex_exp e tex_clause c'
 

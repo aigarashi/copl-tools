@@ -328,7 +328,7 @@ Val:
 
 Clauses: 
   | Pat RARROW Exp { 
-	try ignore (fpv $1); AddC($1, $3, EmptyC) with 
+	try ignore (fpv $1); SingleC($1, $3) with 
 	    Not_linear -> errBtw 1 1 "Pattern variables should be disjoint"
       }
   | Pat RARROW NMExp BAR Clauses {
