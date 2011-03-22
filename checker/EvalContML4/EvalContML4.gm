@@ -86,7 +86,7 @@ C-Ret: AppK(RetK, v, v) :- ;
 C-EvalR: AppK(EvalRK(env,e,op,k), v1, v2) :- EvalTo(env, AppOpK(v1,op,k), e, v2);
 C-Plus: AppK(AppOpK(i1,Plus,k), i2, v) :- AppBOp(Plus, i1, i2, i3), AppK(k, i3, v);
 C-Minus: AppK(AppOpK(i1,Minus,k), i2, v) :- AppBOp(Minus, i1, i2, i3), AppK(k, i3, v);
-C-Mult: AppK(AppOpK(i1,Mult,k), i2, v) :- AppBOp(Mult, i1, i2, i3), AppK(k, i3, v);
+C-Times: AppK(AppOpK(i1,Mult,k), i2, v) :- AppBOp(Mult, i1, i2, i3), AppK(k, i3, v);
 C-Lt: AppK(AppOpK(i1,Lt,k), i2, v) :- AppBOp(Lt, i1, i2, b3), AppK(k, b3, v);
 
 C-IfT: AppK(BranchK(env,e1,e2,k), true, v) :- EvalTo(env, k, e1, v);
@@ -107,7 +107,7 @@ C-MatchCons: AppK(MatchK(env,e1,x,y,e2,k), ConsV(v1, v2), v) :-
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
-B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
+B-Times: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
 B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
