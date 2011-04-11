@@ -117,11 +117,11 @@ E-Nil: EvalTo(env,Nil,NilV) :- ;
 E-Cons: EvalTo(env,Cons(e1,e2),ConsV(v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
 E-MatchM1: EvalTo(env,Match(e0,SingleC(p,e)),v') :- 
 	    EvalTo(env,e0,v), Matches(v,p,env1), 
-              `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
+              `$env2 = uplus $env $env1` %$env2 = $env; $env1%,
             EvalTo(env2,e,v');
 E-MatchM2: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
 	    EvalTo(env,e0,v), Matches(v,p,env1), 
-              `$env2 = uplus $env $env1` %$env2 = $env \uplus $env1%,
+              `$env2 = uplus $env $env1` %$env2 = $env; $env1%,
             EvalTo(env2,e,v');
 E-MatchN: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
 	    EvalTo(env,e0,v), Matches(v,p,Fail), EvalTo(env,Match(e0,c),v');
