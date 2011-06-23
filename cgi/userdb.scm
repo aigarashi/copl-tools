@@ -27,7 +27,7 @@
 
 (define-constant tmp-users
   ;; should not be a valid user name
-  "TMP-USERS")  
+  "@TMP-USERS")  
 
 (define (timestamp-of entry) (cadr entry))
 (define (passwd-of entry) (caddr entry))
@@ -51,10 +51,14 @@
       (log-format msg)))
 
 (define (update-alist key content alist)
+  ; removes the entry named KEY if CONTENT is #f
   (match alist
 	 [() (list (cons key content))]
 	 [((and (key2 . _) p) . rest)
-	  (if (equal? key key2) (cons (cons key content) rest)
+	  (if (equal? key key2) 
+	      (if content
+		  (cons (cons key content) rest)
+		  rest)
 	      (cons p (update-alist key content rest)))]))
 
 ;; code to manually lock a file, adapted from gauche.logger
@@ -101,23 +105,26 @@
     (dynamic-wind
 	(lambda () (lock-file l))
 	(lambda ()
-	  (let* ((dbname (dbfile uname))
-		 (in (open-input-file dbname :if-does-not-exist #f)))
-	    (and in
-		 (let* ((db (read in))
-			(entry (assoc key db))
-			(oldentry (if entry (cdr entry) #f)))
-		   (receive (out tempfile) (sys-mkstemp dbname)
-			    (dynamic-wind
-				(lambda ())
-				(lambda ()
-				  (write (update-alist key (proc oldentry) db)
-					 out)
-				  (sys-rename tempfile dbname)
-				  (sys-chmod dbname (string->number "644" 8)))
-				(lambda ()
-				  (close-output-port out)
-				  (when (port? in) (close-input-port in)))))))))
+	  (let*
+	      ((dbname (dbfile uname))
+	       (in (open-input-file dbname :if-does-not-exist #f)))
+	    (and
+	     in
+	     (let* ((db (read in))
+		    (entry (assoc key db))
+		    (oldentry (if entry (cdr entry) #f)))
+	       (receive 
+		(out tempfile) (sys-mkstemp dbname)
+		(dynamic-wind
+		    (lambda ())
+		    (lambda ()
+		      (write (update-alist key (proc oldentry) db)
+			     out)
+		      (sys-rename tempfile dbname)
+		      (sys-chmod dbname (string->number "644" 8)))
+		    (lambda ()
+		      (close-output-port out)
+		      (when (port? in) (close-input-port in)))))))))
 	(lambda () (unlock-file l)))))
 
 (define (update-solved uname new)
@@ -155,7 +162,7 @@
 		       (integer->char (+ 65 (random-integer 26))))))
 	       (hash (sys-crypt newpasswd salt))
 	       (msg 
-#`"This is a message from the E-learning system for Software Foundation.
+#`"This is a message from the E-learning system for the book \"Concepts of Programming Languages\".
 Below is your account information:
 
     User name: ,|uname|
@@ -163,7 +170,7 @@ Below is your account information:
 
 If you are not sure about this message, please contact 
   igarashi@kuis.kyoto-u.ac.jp")
-	       (title "[Software Foundation] Your account information")
+	       (title "[CoPL E-Learning] Your account information")
 	       (mail-process (run-process `(mail ,address "-s" ,title) 
 				     :input :pipe
 				     :error :pipe))
@@ -219,7 +226,12 @@ If you are not sure about this message, please contact
       (let ((x (lookupdb tmp-users name)))
 	(and x
 	     (not (expired? (timestamp-of x)))))))
-  
+
+;;
+;; Format of temporary DB
+;;   DB = (entry_1 ... entry_n)
+;;   entry_i = (uname when-created passwd-hash email full-name)
+;;
 (define (create-temporary-account uname fname address)
   ;; uname : string should be fresh
   (let* ((process (run-process '(pwgen "-s") :output :pipe))
@@ -232,3 +244,9 @@ If you are not sure about this message, please contact
     (updatedb tmp-users uname
 	      (lambda (old)
 		(list (sys-time) hash address fname)))))
+
+(define (delete-temporary-account uname)
+  ;; deletes the temporary account of UNAME
+  ;; the function to compute the new content always returns #f
+  ;;  whether or not UNAME already exists
+  (updatedb tmp-users uname (lambda (old) #f)))

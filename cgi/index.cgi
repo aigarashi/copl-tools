@@ -20,11 +20,37 @@
 
 (define header 
   (html:head 
-   (html:title "「ソフトウェア基礎論」演習システム")
+   (html:title "プログラミング言語の基礎概念(ライブラリ情報学コア・テキスト24)")
    (html:meta 
     :http-equiv "content-type" 
     :content "text/html; charset=utf-8")
    (html:link :href "./global.css" :rel "stylesheet" :type "text/css")))
+
+(define-constant bookinfo
+  (html:div 
+   :id "bookinfo"
+   (html:div :id "box"
+   (html:h2 "書籍情報")
+   (html:p "(amazon, yahoo, cbook24.com)")
+   (html:table
+    (html:tr
+     (html:td :rowspan "6" (html:img :src "2010-978-4-7819-1256-1.jpg" 
+				     :align "left" :width "100px" 
+				     :alt "cover picture"))
+     (html:td "単行本（ソフトカバー）: ???ページ"))
+    (html:tr
+     (html:td "出版社: サイエンス社"))
+    (html:tr
+     (html:td "発売日:"))
+    (html:tr
+     (html:td "定価:"))
+    (html:tr
+     (html:td "ISBN:"))
+    (html:tr
+     (html:td 
+      (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
+   (html:h2 "補足・正誤表"))
+))
 
 (define (command-url com . options)
   (string-concatenate
@@ -37,32 +63,47 @@
      "&" 'prefix))))
 
 (define (display-login-page . options)
-  (let-keywords options ((msg #f)
-			 (uname ""))
-   (html:div 
-    :id "login"
-    (html:h1 "「ソフトウェア基礎論」演習システム")
-   (html:form 
-    :action thisurl :method "post"
-    (html:fieldset
-     (html:legend "ログインしてください")
-     (html:label :for "username" :class "label" "ユーザ名")
-     (html:input :type "text" :name "name" :id "username" :value uname)
-     (html:label :for "passwd"  :class "label" "パスワード")
-     (html:input :type "password" :name "passwd" :id "passwd")
-     (html:input :type "hidden" :name "command" :value "login")
-     (html:input :type "submit" :value "ログイン")))
-   (html:form 
-    :action thisurl :method "post"
-    (html:fieldset
-     (html:legend "パスワードの(再)発行と送付")
-     (html:label :for "username" :class "label" "ユーザ名")
-     (html:input :type "text" :name "name" :id "username")
-     (html:input :type "hidden" :name "command" :value "renew")
-     (html:input :type "submit" :value "新パスワードの送付")))
-   (if msg
-       (html:p (html:span :class "warn" msg))
-       '()))))
+  (let-keywords 
+   options ((msg #f) (msg2 #f) (uname ""))
+   (html:div
+    (html:h1 "プログラミング言語の基礎概念")
+    (html:h3 "(ライブラリ情報学コア・テキスト24)")
+    bookinfo
+    (html:div 
+     :id "login"
+     (html:h2 "演習システムへのログイン")
+     (html:form 
+      :action thisurl :method "post"
+      (html:fieldset
+       ;(html:legend "ログインしてください")
+       (html:label :for "username" :class "label" "ユーザ名")
+       (html:input :type "text" :name "name" :id "username" :value uname :class "input")
+       (html:label :for "passwd"  :class "label" "パスワード")
+       (html:input :type "password" :name "passwd" :id "passwd" :class "input")
+       (html:input :type "hidden" :name "command" :value "login")
+       (html:input :type "submit" :value "ログイン" :class "button")))
+     (if msg
+	 (html:p (html:span :class "warn" msg))
+	 '())
+     (html:form 
+      :action thisurl :method "post"
+      (html:fieldset
+       (html:legend "パスワードの(再)発行と送付")
+       (html:label :for "username" :class "label" "ユーザ名")
+       (html:input :type "text" :name "name" :id "username" :class "input")
+       (html:input :type "hidden" :name "command" :value "renew")
+       (html:input :type "submit" :value "新パスワードの送付" :class "button")))
+     (if msg2
+	 (html:p (html:span :class "warn" msg2))
+	 '())
+     (html:p
+      (html:a :href "registration.cgi"
+      "新規ユーザ登録"))
+      )
+    #;(html:div
+     :id "footer" 
+     (html:hr)
+     "Copyright 2011 Atsushi Igarashi"))))
 
 (define (format-news newslist)
   (match newslist
@@ -98,8 +139,8 @@ function Toggle(id) {
 (define (display-news)
   (let* ((newslist  (call-with-input-file *news*
 		      (lambda (in) (if (port? in) (read in) #f))
-		      :if-does-not-exist '()))
-	 (formatted-news (format-news newslist)))
+		      :if-does-not-exist #f))
+	 (formatted-news (if newslist (format-news newslist) '())))
     (if (null? formatted-news)
 	'()
 	(list
@@ -142,6 +183,7 @@ function Toggle(id) {
 		   (html:input :type "hidden" :name "no" :value n)
 		   (html:input :type "submit" :value label))))
 	       (rulesurl (html:a 
+			  :target "_blank"
 			  :href (string-concatenate (list "games/" 
 							  (symbol->string game) ".html")) 
 			  game)))
@@ -332,7 +374,7 @@ function Toggle(id) {
 	(html:body
 	 :id "login-screen"
 	 (display-login-page	 
-	  :msg (html:p "Password informaiton has been sent")))))]
+	  :msg2 (html:p "登録されたアドレスに送付しました")))))]
      [(and (eq? command 'login) 
 	   (or (check-passwd lname lpasswd)
 	       (check-passwd-tmp lname lpasswd)))
@@ -341,7 +383,9 @@ function Toggle(id) {
 	      (call-with-output-file (dbfile lname)
 		(lambda (out) 
 		  (let ((userinfo (lookupdb tmp-users lname)))
-		    (write (new-userdb userinfo) out)))))
+		    (write (new-userdb userinfo) out))))
+	      ;; and delete the entry from the temporary DB
+	      (delete-temporary-account lname))
       (unless (file-exists? (logfile lname))
 	      (call-with-output-file (logfile lname)
 		(lambda (out) )))

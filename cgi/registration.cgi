@@ -9,12 +9,21 @@
 (load "./global.scm")
 (load "./userdb.scm")
 
-(define-constant thisurl "register.cgi")
+(define-constant thisurl "registration.cgi")
 (define-constant index "index.cgi")
+
+;; Registration is done in two steps:
+;;  1) Temporary registration
+;;  2) Official registration
+;;
+;; Transition from (1) to (2) is triggered by the first login.
+;;
+;; If information registered at (1) is wrong, the tmp registration can
+;; be canceled right after the tmp registration.
 
 (define header 
   (html:head 
-   (html:title "「ソフトウェア基礎論」演習システム ユーザ登録")
+   (html:title "「プログラミング言語の基礎概念」演習システム ユーザ登録")
    (html:meta 
     :http-equiv "content-type" 
     :content "text/html; charset=utf-8")
@@ -28,12 +37,13 @@
 			 (address2 ""))
      (html:div
       :id "registration"
-      (html:h1 "ユーザ登録フォーム")
+      (html:h1 "「プログラミング言語の基礎概念」")
+      (html:h1 "演習システム ユーザ登録フォーム")
       (html:form
        :action thisurl :method "post"
        (html:ol
 	(html:li
-	 (html:label :for "username" :class "label" "ユーザ名(英数字2〜8文字)")
+	 (html:label :for "username" :class "label" "ユーザ名")
 	 (html:input :type "text" :name "name" :size "8"
 		     :id "username" :value uname))
 	(html:li
@@ -55,7 +65,8 @@
        (html:input :type "submit" :value "登録")))))
 
 (define (invalid-name? s)
-  (not (#/^[A-Za-z0-9]{2,8}$/ s)))
+  ;; 英数字(ピリオド・ハイフン含む) 2-8文字
+  (not (#/^[A-Za-z0-9\.\-]{2,8}$/ s)))
 
 (define (invalid-address? s)
   ;; see http://blog.livedoor.jp/dankogai/archives/51189905.html
@@ -99,26 +110,38 @@
 	       (cons (lambda () (user-exists? uname))
 		     "そのユーザ名は既に存在します!")
 	       (cons (lambda () (invalid-name? uname)) 
-		     "ユーザ名は英数字2〜8文字でないといけません")
+		     "ユーザ名は英数字(ピリオド・ハイフンも含む)2〜8文字でお願いします")
 	       (cons (lambda () (invalid-address? address))
 		     "不正なメイルアドレスです")
 	       (cons (lambda () (not (string=? address address2)))
 		     "ふたつのメイルアドレスが違っています")
 	       (cons (lambda () (zero? (string-length fname)))
 		     "氏名欄が空です")))))
-	(if (null? valid?)  ;; all check passed!
+	(if (null? valid?)
+	    ;; all checks passed!
 	    (begin
 	      (create-temporary-account uname fname address)
+	      (renew-passwd uname
+			    (cgi-get-metavariable "REMOTE_HOST")
+			    (cgi-get-metavariable "REMOTE_ADDR"))
 	      (list
 	       (cgi-header)
 	       (html-doctype)
 	       (html:html
 		header
 		(html:body
-		 (html:h1 "登録に成功しました!")
-		 (html:p "パスワードは，"
+		 (html:h1 "仮登録に成功しました!")
+		 (html:p #`"仮パスワードを,|address|宛てにメールで送りました．
+本登録を行うには"
 			 (html:a :href index "トップページ")
-			 "から取り寄せてください")))))
+			 "からログインしてください．
+もし，アドレスを間違えていた場合には以下のボタンで登録をキャンセルしてください．")
+		 (html:form
+		  :action thisurl :method "post"
+		  (html:input :type "hidden" :name "command" :value "cancel")
+		  (html:input :type "hidden" :name "name" :value uname)
+		  (html:input :type "submit" :value "登録キャンセル"))))))
+	    ;; when one of the checks failed...
 	    (list
 	     (cgi-header)
 	     (html-doctype)
@@ -134,6 +157,22 @@
 		   (map (lambda (s) (html:p s)) valid?))
 		  :uname uname :fname fname :address address :address2 address2)]
 		 [else (display-registration-page)]))))))]
+     [(eq? command 'cancel)
+      ;; should delete only temporary users.
+      ;; Otherwise, anyone can delete any users!
+      (let ((nontmp-uname? (file-exists? (dbfile uname))))
+	(unless nontmp-uname?
+		(delete-temporary-account uname))
+	(list
+	 (cgi-header)
+	 (html-doctype)
+	 (html:html
+	  header
+	  (html:body
+	   (display-registration-page
+	    :msg (if nontmp-uname?
+		     "正式ユーザは削除できません"
+		     #`"仮ユーザ ,|uname| の登録を消去しました．"))))))]
      [else
       (list
        (cgi-header)

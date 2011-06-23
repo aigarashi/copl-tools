@@ -25,6 +25,20 @@
 	    (+ (vector-length (cadar l)) (aux (cdr l)))))
       (aux (read in)))))
 
+(define-constant JStoggle-q
+  (html:script
+   :type "text/javascript"
+   "<!--
+function ToggleQ(c) {
+  switch (c.className) {
+    case 'on';
+      c.className=',|off|';
+      break;
+    default:
+      c.className='on';
+  }
+}//-->"))
+
 (define (display-qlist solved)  
   ;; solved is a sorted list of numbers of solved questions
   (define (inner-loop q-no until)
@@ -44,17 +58,23 @@
 		(length (filter (lambda (n)
 				  (<= q-no n (- end 1))) solved)))
 	       (finished? (= section-solved q-section)))
-	  (cons (html:li
-		 :class (if finished? "finished" "off")
-		 :onmouseover "this.className='on'"
-		 :onmouseout (if finished? 
-				 "this.className='finished'" 
-				 "this.className='off'")
-		 (caar sections)
-		 #`" (,|section-solved|/,q-section)"
-		 (html:ul
-		   :class "questions"
-		   (inner-loop q-no (+ q-no q-section))))
+	  (cons (let ((off (if finished? "finished" "off")))
+		  (html:li
+		   :class off
+		   :onclick 
+		   #`"switch (this.className) {
+   case 'on': this.className=',|off|'; break; 
+   default:   this.className='on';
+}"
+;		 :onmouseover "this.className='on'"
+;		 :onmouseout (if finished? 
+;				 "this.className='finished'" 
+;				 "this.className='off'")
+		   (caar sections)
+		   #`" (,|section-solved|/,q-section)"
+		   (html:ul
+		    :class "questions"
+		    (inner-loop q-no (+ q-no q-section)))))
 		(outer-loop (+ q-no q-section) (cdr sections))))))
 	 
   (call-with-input-file *question-db*
