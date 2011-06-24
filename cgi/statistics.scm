@@ -39,7 +39,7 @@
     (lambda (in) 
       (define (aux qdb i)
 	(if (null? qdb) '()
-	    (let ((howmany (vector-length (cadar qdb))))
+	    (let ((howmany (vector-length (questions-of (car qdb)))))
 	      (cons (list i (caar qdb) howmany)
 		    (aux (cdr qdb) (+ i howmany))))))
       (aux (read in) 1))))
@@ -76,39 +76,44 @@
 					  (> (caddr x) (caddr y)))))))
       (list
        (html:h2 "ランキング")
-       (html:table :id "ranking"
-		   (html:tr
-		    (html:th)
-		    (html:th "ユーザ名")
-		    (html:th "解答数")
-		    (html:th "スコア"))
-		   (map-with-index (match-lambda* 
-				    [(i (rank nm noq score))
-				     (html:tr :class (if (string=? nm name) "you"
-							 (if (even? i) "even" "odd"))
-					      (if (zero? rank)
-						  (html:td :class "rank")
-						  (html:td :class "rank" rank "位"))
-					      (html:td :class "name" nm)
-					      (html:td :class "num" noq "問")
-					      (html:td :class "score" score))])
-				   ranked-list))
+       (html:table
+	:id "ranking"
+	(html:tr
+	 (html:th)
+	 (html:th "ユーザ名")
+	 (html:th "解答数")
+	 (html:th "スコア"))
+	(map-with-index
+	 (match-lambda* 
+	  [(i (rank nm noq score))
+	   (html:tr 
+	    :class (if (string=? nm name) "you"
+		       (if (even? i) "even" "odd"))
+	    (if (zero? rank)
+		(html:td :class "rank")
+		(html:td :class "rank" rank "位"))
+	    (html:td :class "name" nm)
+	    (html:td :class "num" noq "問")
+	    (html:td :class "score" score))])
+	 ranked-list))
        (html:h2 "問題ごとの解答者数")
-       (html:table :id "graph"
-		   (map-with-index (lambda (i n)
-				     (let ((i (+ i 1)))  ;; qno is 1-origin
-				       (html:tr
-					(let ((res (assoc i q-section-list)))
-					  (if res 
-					      (html:td :class "section"
-						       :rowspan (number->string (caddr res))
-						       (cadr res))
-					      ""))
-					(html:td "第" i "問")
-					(html:td (make-string n #\■) 
-						 (make-string (- how-many-users n) #\□) 
-						 "(" n "人)"))))
-				   *histgram*))))))
+       (html:table
+	:id "graph"
+	(map-with-index
+	 (lambda (i n)
+	   (let ((i (+ i 1))) ;; qno is 1-origin
+	     (html:tr
+	      (let ((res (assoc i q-section-list)))
+		(if res 
+		    (html:td :class "section"
+			     :rowspan (number->string (caddr res))
+			     (cadr res))
+		    ""))
+	      (html:td "第" i "問")
+	      (html:td (make-string n #\■) 
+		       (make-string (- how-many-users n) #\□) 
+		       "(" n "人)"))))
+	 *histgram*))))))
 
 (define (main args)
   (write (display-statistics)))

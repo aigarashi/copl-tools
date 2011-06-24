@@ -13,7 +13,7 @@
 (load "./global.scm")
 (load "./userdb.scm")
 (load "./questions.scm")
-(load "./process.cgi")
+(load "./process.scm")
 (load "./statistics.scm")
 
 (define-constant thisurl "index.cgi")
@@ -156,7 +156,7 @@ function Toggle(id) {
      :id "side"
      (html:h2 name "さんの成績")
      (html:p how-many-q " 問中 " (length solved) " 問正解 ")
-     (html:p "問題を下の表から選択してください")
+     (html:p "下の表をクリックして問題を選択してください")
      (display-qlist solved)
      (html:h2 "その他")
      (html:p :id "commandlist"
@@ -171,47 +171,50 @@ function Toggle(id) {
 	     (html:a :href (command-url "logout") "ログアウト"))
      )))
 
-(define (display-q n)
+(define (display-q n uname)
   (let ((q (get-q n)))
-    (if q  ;; if n-th problem exists, q must be a list
-	(let* ((game (car q))
-	       (goal (cadr q))
-	       (commonform 
-		(lambda (label)
-		  (list
-		   (html:input :type "hidden" :name "game" :value game)
-		   (html:input :type "hidden" :name "no" :value n)
-		   (html:input :type "submit" :value label))))
-	       (rulesurl (html:a 
-			  :target "_blank"
-			  :href (string-concatenate (list "games/" 
-							  (symbol->string game) ".html")) 
-			  game)))
-	  (list
-	   (html:p
-	    (if (< 1 n) 
-		(list (html:a :href #`"?qno=,(- n 1)" "<< 前の問題へ")
-		      " ")
-		"")
-	    (if (< n how-many-q)
-		(html:a :href #`"?qno=,(+ n 1)" "次の問題へ >>")
-		""))
-	   (html:h1 "第" n "問")
-	   (html:p "導出システム " rulesurl " で判断 "
-		   (html:pre :id "question" goal)
-		   " を導出せよ．")
-	   (html:h1 "解答欄")
-	   (html:form :enctype "multipart/form-data"
-		      :action "index.cgi" :method "post"
-		      (html:label "解答ファイル:")
-		      (html:input :type "file" :name "derivation")
-		      (html:input :type "hidden" :name "command" :value "answer")
-		      (commonform "ファイルを送信"))
-	   (html:form :action "index.cgi" :method "post"
-	    (html:textarea :name "derivation" :rows "25" :cols "100" :wrap "off" goal)
-	    (html:input :type "hidden" :name "command" :value "answer")
-	    (commonform "フォームの解答を送信"))))
-	;; if n is too large
+    (if q ;; if n-th problem exists, q must be a list
+	;; then check if you are qualified to solve it
+	(if (not (qualified? n (cdr (lookupdb uname 'solved))))
+	    (html:p #`"Q,(number->string n)はまだ解けません．他の問題を解いてから出直してください．")
+	    (let* ((game (car q))
+		   (goal (cadr q))
+		   (commonform 
+		    (lambda (label)
+		      (list
+		       (html:input :type "hidden" :name "game" :value game)
+		       (html:input :type "hidden" :name "no" :value n)
+		       (html:input :type "submit" :value label))))
+		   (rulesurl (html:a 
+			      :target "_blank"
+			      :href (string-concatenate (list "games/" 
+							      (symbol->string game) ".html")) 
+			      game)))
+	      (list
+	       (html:p
+		(if (< 1 n) 
+		    (list (html:a :href #`"?qno=,(- n 1)" "<< 前の問題へ")
+			  " ")
+		    "")
+		(if (< n how-many-q)
+		    (html:a :href #`"?qno=,(+ n 1)" "次の問題へ >>")
+		    ""))
+	       (html:h1 "第" n "問")
+	       (html:p "導出システム " rulesurl " で判断 "
+		       (html:pre :id "question" goal)
+		       " を導出せよ．")
+	       (html:h1 "解答欄")
+	       (html:form :enctype "multipart/form-data"
+			  :action "index.cgi" :method "post"
+			  (html:label "解答ファイル:")
+			  (html:input :type "file" :name "derivation")
+			  (html:input :type "hidden" :name "command" :value "answer")
+			  (commonform "ファイルを送信"))
+	       (html:form :action "index.cgi" :method "post"
+			  (html:textarea :name "derivation" :rows "25" :cols "100" :wrap "off" goal)
+			  (html:input :type "hidden" :name "command" :value "answer")
+			  (commonform "フォームの解答を送信")))))
+	    ;; if n is too large
 	(html:p "そんな問題はありません"))))
 
 (define (display-sandbox)
@@ -267,7 +270,7 @@ function Toggle(id) {
 		  '())
 	      (cond
 	       [(and (zero? (car result)) (< 0 no how-many-q))
-		(display-q (+ no 1))]
+		(display-q (+ no 1) uname)]
 	       [(zero? no) (display-sandbox)]
 	       [else '()])
 	     (display-sidebar uname)))))))
@@ -356,7 +359,7 @@ function Toggle(id) {
 	  (html:div
 	   :id "main"
 	   (if qno
-	       (display-q (string->number qno))
+	       (display-q (string->number qno) name)
 	       (display-sandbox)))
 	  (display-sidebar name)
 	  ))))]

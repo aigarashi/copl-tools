@@ -153,7 +153,8 @@ ul.qlist {
     height:18px;
     overflow:hidden;
     border:1px solid #ffffff;
-    padding: 2px;
+    /***/
+    padding: 2px; 
     color: #ffff00;
 }
 .qlist li.finished {
@@ -163,17 +164,20 @@ ul.qlist {
     overflow:hidden;
     border:1px solid #ffffff;
     padding: 2px;
+    /***/
     color: #999999;
     background-color: #333333;
 }
 .qlist li.on {
+    position: relative;
     width:200px;
     height:18px;
     overflow:hidden;
     border:1px solid #ffffff;
     padding: 2px;
-    background-color:#0000cc;
-    color: #ffff00;
+    /***/
+    background-color:#0000cc !important;
+    color: #ffff00 !important;
 }
 ul.qlist > li.on {
     overflow:visible;
