@@ -73,7 +73,8 @@
     (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
 	   (ranked-list (add-rank (sort name-solved-score
 					(lambda (x y)
-					  (> (caddr x) (caddr y)))))))
+					  (> (caddr x) (caddr y))))))
+	   (solved (cdr (lookupdb name 'solved))))
       (list
        (html:h2 "ランキング")
        (html:table
@@ -82,7 +83,7 @@
 	 (html:th)
 	 (html:th "ユーザ名")
 	 (html:th "解答数")
-	 (html:th "スコア"))
+	 #;(html:th "スコア"))
 	(map-with-index
 	 (match-lambda* 
 	  [(i (rank nm noq score))
@@ -94,7 +95,7 @@
 		(html:td :class "rank" rank "位"))
 	    (html:td :class "name" nm)
 	    (html:td :class "num" noq "問")
-	    (html:td :class "score" score))])
+	    #;(html:td :class "score" score))])
 	 ranked-list))
        (html:h2 "問題ごとの解答者数")
        (html:table
@@ -102,17 +103,20 @@
 	(map-with-index
 	 (lambda (i n)
 	   (let ((i (+ i 1))) ;; qno is 1-origin
-	     (html:tr
-	      (let ((res (assoc i q-section-list)))
-		(if res 
-		    (html:td :class "section"
-			     :rowspan (number->string (caddr res))
-			     (cadr res))
-		    ""))
-	      (html:td "第" i "問")
-	      (html:td (make-string n #\■) 
-		       (make-string (- how-many-users n) #\□) 
-		       "(" n "人)"))))
+	     (if
+	      (qualified? i solved)
+	      (html:tr
+	       (let ((res (assoc i q-section-list)))
+		 (if res 
+		     (html:td :class "section"
+			      :rowspan (number->string (caddr res))
+			      (cadr res))
+		     ""))
+	       (html:td "第" i "問")
+	       (html:td (make-string n #\■) 
+			(make-string (- how-many-users n) #\□) 
+			"(" n "人)"))
+	      '())))
 	 *histgram*))))))
 
 (define (main args)

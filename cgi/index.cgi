@@ -68,6 +68,7 @@
    (html:div
     (html:h1 "プログラミング言語の基礎概念")
     (html:h3 "(ライブラリ情報学コア・テキスト24)")
+    (display-news #t)
     bookinfo
     (html:div 
      :id "login"
@@ -105,19 +106,21 @@
      (html:hr)
      "Copyright 2011 Atsushi Igarashi"))))
 
-(define (format-news newslist)
+(define (format-news newslist public?)
   (match newslist
 	 [() ()]
-	 [((date title content) . rest)
-	  (let ((id (string-concatenate (list "news" date))))
-	    (cons
-	     (html:dt (html:div :onclick #`"Toggle(',|id|')"
-				(list "(" date ") " title)))
-	     (cons
-	      (html:div :id id
-			:style "display:none;"
-			(html:dd content))
-	      (format-news rest))))]))
+	 [((date title p? expire content) . rest)
+	  (if (or p? (not public?))
+	      (let ((id (string-concatenate (list "news" date))))
+		(cons
+		 (html:dt (html:div :onclick #`"Toggle(',|id|')"
+				    (list "(" date ") " title)))
+		 (cons
+		  (html:div :id id
+			    :style "display:none;"
+			    (html:dd content))
+		  (format-news rest public?))))
+	      (format-news rest public?))]))
 
 (define-constant JStoggle
   (html:script 
@@ -136,18 +139,21 @@ function Toggle(id) {
 }
 //-->"))
 
-(define (display-news)
+(define (display-news public?)
   (let* ((newslist  (call-with-input-file *news*
 		      (lambda (in) (if (port? in) (read in) #f))
 		      :if-does-not-exist #f))
-	 (formatted-news (if newslist (format-news newslist) '())))
+	 (formatted-news (if newslist (format-news newslist public?) '())))
     (if (null? formatted-news)
 	'()
 	(list
-	 (html:h1 "おしらせ")
-	 (html:p "内容の表示・非表示を切り替えるには日付をクリックしてください．")
-	 JStoggle
-	 formatted-news))))
+	 (html:div 
+	  :class "newsbox"
+	  (html:h1 "おしらせ")
+	  (html:p "(内容の表示・非表示を切り替えるには日付をクリックしてください．)")
+	  (html:p :class "nofloat")
+	  JStoggle
+	  (html:div :class "news" formatted-news))))))
 
 (define (display-sidebar name)
   (let* ((solved (cdr (lookupdb name 'solved))))
@@ -330,7 +336,7 @@ function Toggle(id) {
 	(html:body
 	 (html:div
 	  :id "contents"
-	  (html:div :id "main" (display-news))
+	  (html:div :id "main" (display-news #f))
 	  (display-sidebar name)))))]
      [(and (eq? command 'stats) name)  ;; show a statistics page
       (list
@@ -408,7 +414,7 @@ function Toggle(id) {
 	  :id "contents"
 	  (html:div
 	   :id "main"
-	   (display-news)
+	   (display-news #f)
 	   (display-sandbox))
 	  (display-sidebar lname)))))]
      (else

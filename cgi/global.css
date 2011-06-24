@@ -69,6 +69,25 @@ span.error {
     text-align: center;
     color: #663300;
 }
+#login-screen .newsbox {
+    font-size: small;
+    border: solid 2px #0000ff;
+    margin-left: 40px;
+    margin-right: 260px;
+    background-color: #dddddd;
+    color: #0000cc;
+}
+#login-screen .newsbox h1 {
+    font-size: large;
+    color: #cc0000;
+    float: left;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.nofloat {
+    clear: left;
+}
 #login form {
     width: 180px;
     font-size: small;
