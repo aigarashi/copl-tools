@@ -17,7 +17,7 @@
 (load "./process.scm")
 (load "./statistics.scm")
 
-(define-constant lastcommit "$Date $")
+(define-constant lastcommit "$Date$")
 
 (define-constant thisurl "index.cgi")
 
