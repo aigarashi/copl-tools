@@ -7,6 +7,7 @@
 (use util.list)
 (use file.util)
 (use srfi-13)
+(use srfi-19)
 (use util.match)
 
 (load "./site-local.scm")
@@ -15,6 +16,8 @@
 (load "./questions.scm")
 (load "./process.scm")
 (load "./statistics.scm")
+
+(define-constant lastcommit "$Date: ")
 
 (define-constant thisurl "index.cgi")
 
@@ -34,7 +37,7 @@
    (html:p "(amazon, yahoo, cbook24.com)")
    (html:table
     (html:tr
-     (html:td :rowspan "6" (html:img :src "2010-978-4-7819-1256-1.jpg" 
+     (html:td :rowspan "6" (html:img :src "../image/nowprinting.jpg" 
 				     :align "left" :width "100px" 
 				     :alt "cover picture"))
      (html:td "単行本（ソフトカバー）: ???ページ"))
@@ -45,11 +48,15 @@
     (html:tr
      (html:td "定価:"))
     (html:tr
-     (html:td "ISBN:"))
+     (html:td "ISBN: 978-4-7819-1250-9"))
     (html:tr
      (html:td 
       (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
-   (html:h2 "補足・正誤表"))
+   (html:h2 "補足・正誤表")
+   (html:p "特になし")
+   (html:hr)
+   (html:p "Updated on ")
+   (html:p "Copyright 2011 Atsushi Igarashi"))
 ))
 
 (define (command-url com . options)

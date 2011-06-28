@@ -9,6 +9,14 @@
 (use srfi-27)  ;; for random-integer
 (use file.util)
 
+;; USER DB format
+;; (entry_1 ... entry_n)
+;;  ENTRY_i = ((solved list-of-solved-problems)
+;;             (passwd hash-of-passwd-string)
+;;             (address email-address)
+;;             (fname full-name-string)
+;;             (group names-of-groups))
+
 (define-constant FILE_LOCK_TIMEOUT 600)
 
 (define (new-userdb userinfo)
@@ -17,7 +25,8 @@
    '(solved)
    (cons 'passwd (passwd-of userinfo))
    (cons 'address (address-of userinfo))
-   (cons 'fname (fullname-of userinfo))))
+   (cons 'fname (fullname-of userinfo))
+   '(group)))
 
 ;; temporary user list management
 ;; format

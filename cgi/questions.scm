@@ -84,6 +84,18 @@ function turnOffOthersAndToggle(elm) {
     turnOffAll(); toggleQ(elm); 
   } else { turnOffAll(); }
 }
+
+function isAnyTurnedOn() {
+  var menuroot = document.getElementById('qlist').lastChild;
+  var children = menuroot.childNodes;
+  for (var i = 0; i < children.length; i++) {
+    if (children[i].hasAttribute('class')
+        && children[i].className.split(' ')[0] == 'on') {
+      return children[i];
+    }
+  }
+  return null;
+}
 //-->"))
 
 ;; answer more than 1/3 questions passed, and proceed to the next stage
@@ -112,13 +124,9 @@ function turnOffOthersAndToggle(elm) {
   ;; solved is a sorted list of numbers of solved questions
   (define (inner-loop q-no until)
     (if (= q-no until) '()
-	(if (memq q-no solved)
-	    (cons (html:li :class "solved"
-			   (html:a :href #`"index.cgi?qno=,q-no" "Q" q-no))
-		  (inner-loop (+ q-no 1) until))
-	    (cons (html:li :class "unsolved"
-			   (html:a :href #`"index.cgi?qno=,q-no" "Q" q-no))
-		  (inner-loop (+ q-no 1) until)))))
+	(cons (html:li :class (if (memq q-no solved) "solved" "unsolved")
+		       (html:a :href #`"index.cgi?qno=,q-no" "Q" q-no))
+	      (inner-loop (+ q-no 1) until))))
   (define (outer-loop q-no sections passed)
     (if (null? sections) '()
 	(let* ((q-section (vector-length (questions-of (car sections))))
@@ -131,9 +139,11 @@ function turnOffOthersAndToggle(elm) {
 		     (finished? (= section-solved q-section)))
 		(cons (html:li
 		       :class (if finished? "off finished" "off default")
-		       :onclick "turnOffOthersAndToggle(this);"
-		       (description-of (car sections))
-		       #`" (,|section-solved|/,q-section)"
+		       (html:span
+			:onclick "turnOffOthersAndToggle(this.parentNode);"
+			:onmouseover "var x = isAnyTurnedOn(); if (x != null && x != this.parentNode) turnOffOthersAndToggle(this.parentNode);"
+			(description-of (car sections))
+			#`" (,|section-solved|/,q-section)")
 		       (html:ul
 			:class "questions"
 			(inner-loop q-no end)))
