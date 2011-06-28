@@ -17,7 +17,7 @@
 (load "./process.scm")
 (load "./statistics.scm")
 
-(define-constant lastcommit "$Date: ")
+(define-constant lastcommit "$Date: $")
 
 (define-constant thisurl "index.cgi")
 
@@ -55,7 +55,7 @@
    (html:h2 "補足・正誤表")
    (html:p "特になし")
    (html:hr)
-   (html:p "Updated on ")
+   (html:p "Updated on " lastcommit)
    (html:p "Copyright 2011 Atsushi Igarashi"))
 ))
 
