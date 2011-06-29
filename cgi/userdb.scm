@@ -15,6 +15,7 @@
 ;;             (passwd hash-of-passwd-string)
 ;;             (address email-address)
 ;;             (fname full-name-string)
+;;             (user-since sys-time)
 ;;             (group names-of-groups))
 
 (define-constant FILE_LOCK_TIMEOUT 600)

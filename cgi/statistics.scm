@@ -83,6 +83,7 @@
 	 (html:th)
 	 (html:th "ユーザ名")
 	 (html:th "解答数")
+	 (html:th "解答期間")
 	 #;(html:th "スコア"))
 	(map-with-index
 	 (match-lambda* 
@@ -95,6 +96,10 @@
 		(html:td :class "rank" rank "位"))
 	    (html:td :class "name" nm)
 	    (html:td :class "num" noq "問")
+	    (html:td :class "num"
+		     (round (/ (- (sys-time) 
+				  (cadr (lookupdb nm 'user-since)))
+			       24 60 60)) "日")
 	    #;(html:td :class "score" score))])
 	 ranked-list))
        (html:h2 "問題ごとの解答者数")

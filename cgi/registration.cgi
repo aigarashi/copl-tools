@@ -62,7 +62,10 @@
        (if msg
 	   (html:p (html:span :class "warn" msg))
 	   '())
-       (html:input :type "submit" :value "登録")))))
+       (html:input :type "submit" :value "登録"))
+      (html:p :class "warn" "このフォームで収集したメイルアドレス・氏名はパスワードの送信，管理者からの連絡以外には用いません．")
+      (html:p :class "warn" "システムの成績統計表示欄ではユーザ名のみが表示されます．")
+      )))
 
 (define (invalid-name? s)
   ;; 英数字(ピリオド・ハイフン含む) 2-8文字
