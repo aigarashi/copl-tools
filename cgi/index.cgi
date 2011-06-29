@@ -116,11 +116,14 @@
      (html:hr)
      "Copyright 2011 Atsushi Igarashi"))))
 
-(define (format-news newslist public?)
+(define (format-news newslist public? passed-sections)
   (match newslist
 	 [() ()]
-	 [((date title p? expire content) . rest)
-	  (if (or p? (not public?))
+	 [((date title p? expire prerequisites content) . rest)
+	  (if (or p?  ;; the news itself should be publicized
+		  (and (not public?)  ;; displaying private news
+		       (prerequisite-satisfied?
+			prerequisites passed-sections)))
 	      (let ((id (string-concatenate (list "news" date))))
 		(cons
 		 (html:dt (html:div :onclick #`"Toggle(',|id|')"
@@ -129,8 +132,8 @@
 		  (html:div :id id
 			    :style "display:none;"
 			    (html:dd content))
-		  (format-news rest public?))))
-	      (format-news rest public?))]))
+		  (format-news rest public? passed-sections))))
+	      (format-news rest public? passed-sections))]))
 
 (define-constant JStoggle
   (html:script 
@@ -149,11 +152,20 @@ function Toggle(id) {
 }
 //-->"))
 
-(define (display-news public?)
+(define (display-news public? . name)
   (let* ((newslist  (call-with-input-file *news*
 		      (lambda (in) (if (port? in) (read in) #f))
 		      :if-does-not-exist #f))
-	 (formatted-news (if newslist (format-news newslist public?) '())))
+	 (solved (if (null? name) '()
+		     (cdr (lookupdb (car name) 'solved))))
+	 (passed-sections
+	  (call-with-input-file *question-db*
+	    (lambda (in)
+	      (let ((sections (read in)))
+		(sections-passed sections solved)))))
+	 (formatted-news (if newslist 
+			     (format-news newslist public? passed-sections)
+			     '())))
     (if (null? formatted-news)
 	'()
 	(list
@@ -348,7 +360,7 @@ function Toggle(id) {
 	(html:body
 	 (html:div
 	  :id "contents"
-	  (html:div :id "main" (display-news #f))
+	  (html:div :id "main" (display-news #f name))
 	  (display-sidebar name)))))]
      [(and (eq? command 'stats) name)  ;; show a statistics page
       (list
@@ -426,7 +438,7 @@ function Toggle(id) {
 	  :id "contents"
 	  (html:div
 	   :id "main"
-	   (display-news #f)
+	   (display-news #f lname)
 	   (display-sandbox))
 	  (display-sidebar lname)))))]
      (else
