@@ -21,7 +21,9 @@
 
 (define-constant thisurl "index.cgi")
 
-(define header 
+(define-constant twenty-four-hours 86400)  ;; in seconds
+
+(define-constant header 
   (html:head 
    (html:title "プログラミング言語の基礎概念(ライブラリ情報学コア・テキスト24)")
    (html:meta 
@@ -54,7 +56,11 @@
       (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
    (html:h2 "補助資料")
    (html:ul 
-    (html:li (html:a :href "guide.pdf" "演習システムの使い方")))
+    (html:li (html:a :href "guide.pdf" "演習システムの使い方"))
+    (html:li (html:a :href "../class/sf/chap11.pdf" "継続(EvalContML1)"))
+    (html:li (html:a :href "../class/sf/chap12.pdf" "第一級継続(EvalContML4)"))
+    (html:li (html:a :href "../class/sf/chap13.pdf" "参照(EvalRefML3)"))
+    )
    (html:h2 "教科書正誤表")
    (html:p "今のところなし")
    (html:hr)
@@ -428,8 +434,8 @@ function Toggle(id) {
 		    `(("loginas" ,lname 
 		       :domain ,*domainname*
 		       :path ,*system-url-local*
-		       :expires ,(+ (sys-time) 86400) 
-		       :max-age 86400))))
+		       :expires ,(+ (sys-time) twenty-four-hours) 
+		       :max-age twenty-four-hours))))
        (html-doctype)
        (html:html
 	header
