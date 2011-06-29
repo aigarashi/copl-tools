@@ -50,7 +50,7 @@
     (html:tr
      (html:td "定価: 1850円"))
     (html:tr
-     (html:td "ISBN: 978-4-7819-1250-9"))
+     (html:td "ISBN: "))
     #;(html:tr
      (html:td 
       (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
@@ -61,8 +61,8 @@
     (html:li (html:a :href "../class/sf/chap12.pdf" "第一級継続(EvalContML4)"))
     (html:li (html:a :href "../class/sf/chap13.pdf" "参照(EvalRefML3)"))
     )
-   (html:h2 "教科書正誤表")
-   (html:p "今のところなし")
+   ;(html:h2 "正誤表")
+   ;(html:p "今のところなし")
    (html:hr)
    (html:p "Updated on " lastcommit)
    (html:p "Copyright 2011 Atsushi Igarashi"))
