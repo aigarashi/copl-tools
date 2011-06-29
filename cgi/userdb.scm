@@ -26,6 +26,7 @@
    (cons 'passwd (passwd-of userinfo))
    (cons 'address (address-of userinfo))
    (cons 'fname (fullname-of userinfo))
+   (cons 'user-since (sys-time))
    '(group)))
 
 ;; temporary user list management
