@@ -17,7 +17,7 @@
 (load "./process.scm")
 (load "./statistics.scm")
 
-(define-constant lastcommit "$Date::                           $")
+(define-constant lastcommit (substring "$Date::                           $" 8 33))
 
 (define-constant thisurl "index.cgi")
 
@@ -44,16 +44,19 @@
     (html:tr
      (html:td "出版社: サイエンス社"))
     (html:tr
-     (html:td "発売日:"))
+     (html:td "発売: 2011年7月"))
     (html:tr
-     (html:td "定価:"))
+     (html:td "定価: 1850円"))
     (html:tr
      (html:td "ISBN: 978-4-7819-1250-9"))
-    (html:tr
+    #;(html:tr
      (html:td 
       (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
-   (html:h2 "補足・正誤表")
-   (html:p "特になし")
+   (html:h2 "補助資料")
+   (html:ul 
+    (html:li (html:a :href "guide.pdf" "演習システムの使い方")))
+   (html:h2 "教科書正誤表")
+   (html:p "今のところなし")
    (html:hr)
    (html:p "Updated on " lastcommit)
    (html:p "Copyright 2011 Atsushi Igarashi"))
@@ -176,8 +179,10 @@ function Toggle(id) {
 	     (html:a :href "index.cgi" "おすなば")
 	     " | "
 	     (html:a :href (command-url "news") "おしらせ")
-;	     " | "
-;	     (html:a :href "rulebook.pdf" "推論規則集(pdf)")
+	     " | "
+	     (html:a :href "guide.pdf" "演習システムガイド(pdf)")
+	     " | "
+	     (html:a :href "rulebook.pdf" "推論規則集(pdf)")
 	     " | "
 	     (html:a :href (command-url "stats") "統計")
 	     " | "
