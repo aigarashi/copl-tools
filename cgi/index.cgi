@@ -178,7 +178,7 @@ function Toggle(id) {
 	 (html:div 
 	  :class "newsbox"
 	  (html:h1 "おしらせ")
-	  (html:p "(内容の表示・非表示を切り替えるには日付をクリックしてください．)")
+	  (html:p "(内容の表示・非表示を切り替えるには日付・タイトル行をクリックしてください．)")
 	  (html:p :class "nofloat")
 	  JStoggle
 	  (html:div :class "news" formatted-news))))))

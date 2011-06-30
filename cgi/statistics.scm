@@ -98,7 +98,7 @@
 	    (html:td :class "num" noq "問")
 	    (html:td :class "num"
 		     (round (/ (- (sys-time) 
-				  (cadr (lookupdb nm 'user-since)))
+				  (cdr (lookupdb nm 'user-since)))
 			       24 60 60)) "日")
 	    #;(html:td :class "score" score))])
 	 ranked-list))
