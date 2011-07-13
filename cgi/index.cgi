@@ -50,7 +50,7 @@
     (html:tr
      (html:td "定価: 1850円"))
     (html:tr
-     (html:td "ISBN: "))
+     (html:td "ISBN: 978-4-7819-1285-1"))
     #;(html:tr
      (html:td 
       (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
