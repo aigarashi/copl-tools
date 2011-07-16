@@ -25,7 +25,8 @@
        solved))
 
 (define (score solved)
-  (round 
+	(length solved)
+  #;(round 
    (fold (lambda (i sum)
 	   (let ((n (vector-ref *histgram* (- i 1))))
 	     ;; n stands for # of people who solved i-th question
