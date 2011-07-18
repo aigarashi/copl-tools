@@ -1,3 +1,7 @@
+2011-07-18  igarashi  <igarashi@djembe>
+
+	* checker/EvalML1Err/EvalML1Err.gm: Rule names fixed.
+
 2010-12-07  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* EvalNamelessML3/macroVars.ml: Metavar name change (v -> w)
