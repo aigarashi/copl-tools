@@ -42,14 +42,14 @@
 	 ,concl "}}$"
 	 ,(html:span :class "rname" "(" name ")")))))))
 
-(define (mv base suffix alist) 
+(define (mv base suffix primes alist) 
   ;; formatting metavariables
   ;; alist is to transform names to special symbols
   (let* ((tmp (assoc base alist))
 	 (base (if tmp (cadr tmp) base)))
     (if suffix
-	#`"\\textcolor{brown}{\\mathbf{,|base|_,suffix}}"
-	#`"\\textcolor{brown}{\\mathbf{,base}}")))
+	#`"\\textcolor{brown}{\\mathbf{,|base|_,|suffix|,|primes|}}"
+	#`"\\textcolor{brown}{\\mathbf{,|base|,|primes|}}")))
 
 ;;;; HTML stuff
 (define (header-LaTeXMathML) ; for loading LaTeXMathML
@@ -100,10 +100,12 @@ span.rname { font-variant: small-caps; }
     (html-doctype)
     (html:html
      (html:head 
+      (html:title (cadr args))
+      (html:meta :http-equiv "content-type" :content "text/html; charset=utf-8")
       (rule-style)
       (header-LaTeXMathML))
      (html:body
-      (html:h1 (cadr args))
+      (html:h1 "Dervation System " (cadr args))
       (html:h2 "Syntax:")
       (format-bnf bnfdefs)
       (html:h2 "Derivation Rules:")
@@ -113,8 +115,9 @@ span.rname { font-variant: small-caps; }
 ;;; game specific functions follow
 
 ;; Game nat
-(define (Nat:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '()))
+(define (Nat:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes '())))
 
 (define (Nat:STerm n)
   `("S(" ,n ")"))
@@ -175,8 +178,9 @@ span.rname { font-variant: small-caps; }
   `(,e1 "\\stackrel{d}{\\longrightarrow}" ,e2))
 
 ;; EvalML1
-(define (EvalML1:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '()))
+(define (EvalML1:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes '())))
 
 (define (EvalML1:BinOpTerm p e1 e2)
   `(,e1 "\\," ,p "\\," ,e2))
@@ -218,8 +222,9 @@ span.rname { font-variant: small-caps; }
 
 
 ;; EvalML2
-(define (EvalML2:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}"))))
+(define (EvalML2:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes '(("env" "\\mathcal{E}")))))
 
 (define (EvalML2:EmptyTerm) "\\cdot")
 
@@ -279,9 +284,9 @@ span.rname { font-variant: small-caps; }
 (define EvalML3:AppBOp EvalML2:AppBOp)
 
 ;; EvalRefML3
-(define (EvalRefML3:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) 
-      '(("env" "\\mathcal{E}") ("s" "S"))))
+(define (EvalRefML3:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes '(("env" "\\mathcal{E}") ("s" "S")))))
 
 (define EvalRefML3:FunTerm EvalML3:FunTerm)
 (define EvalRefML3:RecTerm EvalML3:RecTerm)
@@ -473,9 +478,10 @@ span.rname { font-variant: small-caps; }
 	 `(,p "\\mbox{ matches }" ,v " \\mbox{ when }(" ,res ")"))))
 
 ;; EvalNamelessML3
-(define (EvalNamelessML3:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\mathcal{E}")
-					       ("v" "w"))))
+(define (EvalNamelessML3:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes '(("env" "\\mathcal{E}")
+					   ("v" "w")))))
 
 (define (EvalNamelessML3:FunTerm env e)
   `("\\mbox{(}" ,env "\\mbox{)[fun }. \\rightarrow" ,e "\\mbox{]}"))
@@ -549,9 +555,10 @@ span.rname { font-variant: small-caps; }
 (define (TypingML2:TyBoolTerm) "bool")
 (define (TypingML2:TyIntTerm) "int")
 
-(define (TypingML2:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
-					       ("t" "\\tau"))))
+(define (TypingML2:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes  '(("env" "\\Gamma")
+					    ("t" "\\tau")))))
 
 (define (TypingML2:EmptyTerm) "\\cdot")
 
@@ -580,10 +587,11 @@ span.rname { font-variant: small-caps; }
 (define (TypingML3:TyFunTerm t1 t2)
   `(,t1 "\\rightarrow" ,t2))
 
-(define (TypingML3:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
-					       ("t" "\\tau")
-					       ("a" "\\alpha"))))
+(define (TypingML3:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes '(("env" "\\Gamma")
+					   ("t" "\\tau")
+					   ("a" "\\alpha")))))
 
 (define TypingML3:EmptyTerm TypingML2:EmptyTerm)
 
@@ -638,11 +646,12 @@ span.rname { font-variant: small-caps; }
 (define TypingML4:Typing TypingML3:Typing)
 
 ;; TypingML6
-(define (TypingML6:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
-					       ("t" "\\tau")
-					       ("sg" "\\Sigma")
-					       ("tn" "t"))))
+(define (TypingML6:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		  (mv base suffix primes '(("env" "\\Gamma")
+					   ("t" "\\tau")
+					   ("sg" "\\Sigma")
+					   ("tn" "t")))))
 
 (define TypingML6:TyVarTerm TypingML4:TyVarTerm)
 (define TypingML6:TyBoolTerm TypingML4:TyBoolTerm)
@@ -713,22 +722,23 @@ span.rname { font-variant: small-caps; }
 (define PolyTypingML3:TyIntTerm TypingML3:TyIntTerm)
 (define PolyTypingML3:TyFunTerm TypingML3:TyFunTerm)
 
-(define (PolyTypingML3:TyFVarTerm a) `("'" ,a))
+(define (PolyTypingML3:TyFVarTerm a) a)
 (define (PolyTypingML3:TyBVarTerm i) "")
 
 ; (define (PolyTypingML3:TyFVar a))
 ; (define (PolyTypingML3:TyBVar a))
 ; (define (PolyTypingML3:TySchemeTerm i t))
 
-(define (PolyTypingML3:mv base . suffix)
-  (mv base (and (pair? suffix) (car suffix)) '(("env" "\\Gamma")
-					       ("t" "\\tau")
-					       ("s" "\\sigma"))))
+(define (PolyTypingML3:mv base . args)
+  (let-keywords args ((primes "") (suffix #f))
+		(mv base suffix primes '(("env" "\\Gamma")
+					 ("t" "\\tau")
+					   ("s" "\\sigma")))))
 
 (define (PolyTypingML3:TySchemeTerm i t) 
-  `(,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" "1"))
+  `(,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" :suffix "1"))
     "\\cdots"
-    ,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" "n"))
+    ,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" :suffix "n"))
     "." ,t))
     
 (define PolyTypingML3:EmptyTerm TypingML3:EmptyTerm)

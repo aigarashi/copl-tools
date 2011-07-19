@@ -444,9 +444,11 @@ struct
       Var ("true" | "false" as b) -> pf ppf "\"\\\\mbox{%s}\"" b
     | Var x -> 
 	let (base, suffix, primes) = Syntax.split_LCID x in
-	  if suffix = "" then
-	    pf ppf "(%s:mv \"%s%s\")" gn base primes
-	  else pf ppf "(%s:mv \"%s%s\" \"%s\")" gn base primes suffix
+	  (match suffix, primes with
+	    "", "" -> pf ppf "(%s:mv \"%s\")" gn base
+	  | "", _ -> pf ppf "(%s:mv \"%s\" :primes \"%s\")" gn base primes
+	  | _, "" -> pf ppf "(%s:mv \"%s\" :suffix \"%s\")" gn base suffix
+	  | _, _ ->  pf ppf "(%s:mv \"%s\" :primes \"%s\" :suffix \"%s\")" gn base primes suffix)
     | App (f, ts) -> pf ppf "(%s:%sTerm@[%a@])" gn f (emit_terms gn) ts
   and emit_terms gn ppf = function
       [] -> ()
@@ -458,8 +460,11 @@ struct
       add_substitute b 
 	(fun s -> 
 	   let (base, suffix, primes) = Syntax.split_LCID s in
-	     if suffix = "" then ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\")"
-	     else ",("^ gn ^":mv \\\"" ^ base ^ primes ^ "\\\" \\\"" ^ suffix ^ "\\\")")
+	     (match suffix, primes with
+		 "", "" -> sprintf ",(%s:mv \\\"%s\\\")" gn base
+	       | "", _ -> sprintf ",(%s:mv \\\"%s\\\" :primes \\\"%s\\\")" gn base primes
+	       | _, "" -> sprintf ",(%s:mv \\\"%s\\\" :suffix \\\"%s\\\")" gn base suffix
+	       | _, _ ->  sprintf ",(%s:mv \\\"%s\\\" :primes \\\"%s\\\" :suffix \\\"%s\\\")" gn base primes suffix))
 	(escaped_for_Scheme s);
       pf ppf "#`\"(%s)\"" (Buffer.contents b)
 

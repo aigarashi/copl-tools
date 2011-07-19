@@ -123,7 +123,7 @@ let rec pp_type_aux ids ppf t =
     match t with
 	TyInt -> pp_print_string ppf "int"
       | TyBool -> pp_print_string ppf "bool"
-      | TyFVar (TVar a) -> pr ppf "'%s" a
+      | TyFVar (TVar a) -> pr ppf "%s" a
       | TyBVar i -> pr ppf "'%s" (List.nth ids (i-1))
       | TyFun(t1, t2) -> 
 	  pr ppf "%a -> %a"
@@ -155,11 +155,11 @@ let rec pickfreshnames i seed ids =
 let rec pp_tyvardecls ppf names =
   match names with 
       [] -> ()
-    | name::rest -> pr ppf " '%s%a" name pp_tyvardecls rest
+    | name::rest -> pr ppf " %s%a" name pp_tyvardecls rest
 let pp_tyvardecls ppf names =
   match names with
       [] -> MySupport.Error.err "pp_tyvardecls': empty type vars"
-    | name::rest -> pr ppf "'%s%a" name pp_tyvardecls rest
+    | name::rest -> pr ppf "%s%a" name pp_tyvardecls rest
 
 let pp_typescheme ppf tysc =
   match tysc with
