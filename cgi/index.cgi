@@ -56,6 +56,7 @@
       (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
    (html:h2 "補助資料")
    (html:ul 
+    (html:li (html:a :href "errata.html" "正誤表"))
     (html:li (html:a :href "guide.pdf" "演習システムの使い方"))
     (html:li (html:a :href "../class/sf/chap11.pdf" "継続(EvalContML1)"))
     (html:li (html:a :href "../class/sf/chap12.pdf" "第一級継続(EvalContML4)"))
