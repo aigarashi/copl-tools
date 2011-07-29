@@ -39,16 +39,16 @@
    (html:p "(amazon, yahoo, cbook24.com)")
    (html:table
     (html:tr
-     (html:td :rowspan "6" (html:img :src "../image/nowprinting.jpg" 
+     (html:td :rowspan "6" (html:img :src "../image/CoPL-thumb.jpg" 
 				     :align "left" :width "100px" 
 				     :alt "cover picture"))
-     (html:td "単行本（ソフトカバー）: ???ページ"))
+     (html:td "単行本（ソフトカバー）: 192ページ"))
     (html:tr
      (html:td "出版社: サイエンス社"))
     (html:tr
      (html:td "発売: 2011年7月"))
     (html:tr
-     (html:td "定価: 1850円"))
+     (html:td "定価: 1850円+税"))
     (html:tr
      (html:td "ISBN: 978-4-7819-1285-1"))
     #;(html:tr
@@ -57,7 +57,7 @@
    (html:h2 "補助資料")
    (html:ul 
     (html:li (html:a :href "errata.html" "正誤表"))
-    (html:li (html:a :href "guide.pdf" "演習システムの使い方"))
+    (html:li (html:a :href "guide.pdf" "演習システムガイド"))
     (html:li (html:a :href "../class/sf/chap11.pdf" "継続(EvalContML1)"))
     (html:li (html:a :href "../class/sf/chap12.pdf" "第一級継続(EvalContML4)"))
     (html:li (html:a :href "../class/sf/chap13.pdf" "参照(EvalRefML3)"))
@@ -436,7 +436,7 @@ function Toggle(id) {
 		       :domain ,*domainname*
 		       :path ,*system-url-local*
 		       :expires ,(+ (sys-time) twenty-four-hours) 
-		       :max-age twenty-four-hours))))
+		       :max-age ,twenty-four-hours))))
        (html-doctype)
        (html:html
 	header
