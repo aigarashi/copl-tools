@@ -62,14 +62,14 @@ TP-Cnstr0: PatTyping(sg, tn, CnstrP(c), Empty) :-
            `try match lookup_sg $sg $c with
                     CnstrT tn' -> tn' = $tn 
                   | _ -> false
-            with LookupFailure -> false`
+            with Exit -> false`
             %$sg($x) = $tn% ;
 TP-Cnstr1: PatTyping(sg, tn, CnstrPi(c, p), env) :-
              PatTyping(sg, t, p, env),
              `try match lookup_sg $sg $c with
   	             CnstrTi(t',tn') -> tn' = $tn && t' = $t
                    | _ -> false
-              with LookupFailure -> false`
+              with Exit -> false`
              %$sg($x) = $t0 \rightarrow $tn% ;
 
 TP-Cnstr2: PatTyping(sg, tn, CnstrPii(c, p1, p2), env) :-
@@ -78,7 +78,7 @@ TP-Cnstr2: PatTyping(sg, tn, CnstrPii(c, p1, p2), env) :-
              `try match lookup_sg $sg $c with
   	             CnstrTii(t1',t2',tn') -> tn' = $tn && t1' = $t1 && t2' = $t2
                    | _ -> false
-              with LookupFailure -> false`
+              with Exit -> false`
                %$sg($c) = $t1 \times $t2 \rightarrow $tn%,
              `$env = uplus $env1 $env2` 
                %$env = $env1 \uplus $env2%;
@@ -90,7 +90,7 @@ TP-Cnstr3: PatTyping(sg, tn, CnstrPiii(c, p1, p2, p3), env) :-
              `try match lookup_sg $sg $c with
   	             CnstrTiii(t1',t2',t3',tn') -> tn' = $tn && t1' = $t1 && t2' = $t2 && t3' = $t3
                    | _ -> false
-              with LookupFailure -> false`
+              with Exit -> false`
                %$sg($c) = $t1 \times $t2 \times $t3 \rightarrow $tn%,
              `$env = uplus $env1 (uplus $env2 $env3)` 
                %$env = $env1 \uplus $env2 \uplus $env4%;
@@ -114,7 +114,7 @@ T-Lt: 	Typing(sg, env, BinOp(Lt, e1, e2), TyBool) :-
 T-Var1:  Typing(Bind(sg, env,x,t), x, t) :- ;
 T-Var2:  Typing(Bind(sg, env,y,t1), x, t2) :- `$y <> $x` %$y \neq $x%, Typing(sg, env, x, t2);
 *)
-T-Var:  Typing(sg, env, x, t) :- `try $t = lookup $env $x with LookupFailure -> false`
+T-Var:  Typing(sg, env, x, t) :- `try $t = lookup $env $x with Exit -> false`
                              `$t = lookup $env $x` %$env($x) = $t%;
 T-Let:  Typing(sg, env, Let(x, e1, e2), t2) :-
 		Typing(sg, env, e1, t1), Typing(sg, Bind(env,x,t1), e2, t2);
@@ -131,7 +131,7 @@ T-Cnstr0: Typing(sg, env, CnstrE(c), tn) :-
 	   `try match lookup_sg $sg $c with 
                     CnstrT(tn) -> tn = $tn
                   | _ -> false
-            with LookupFailure -> false`
+            with Exit -> false`
            %$sg($c) = $tn%;
 
 T-Cnstr1: Typing(sg, env, CnstrEi(c,e0), tn) :-
@@ -139,7 +139,7 @@ T-Cnstr1: Typing(sg, env, CnstrEi(c,e0), tn) :-
 	   `try match lookup_sg $sg $c with 
                     CnstrTi(t,tn) -> tn = $tn && t = $t0
                   | _ -> false
-            with LookupFailure -> false`
+            with Exit -> false`
            %$sg($c) = $t0 \rightarrow $tn%;
 
 T-Cnstr2: Typing(sg, env, CnstrEii(c,e1,e2), tn) :-
@@ -148,7 +148,7 @@ T-Cnstr2: Typing(sg, env, CnstrEii(c,e1,e2), tn) :-
 	   `try match lookup_sg $sg $c with 
                     CnstrTii(t1',t2',tn) -> tn = $tn && t1' = $t1 && t2' = $t2
                   | _ -> false
-            with LookupFailure -> false`
+            with Exit -> false`
            %$sg($c) = $t1 \times $t2 \rightarrow $tn%;
 
 T-Cnstr3: Typing(sg, env, CnstrEiii(c,e1,e2,e3), tn) :-
@@ -158,7 +158,7 @@ T-Cnstr3: Typing(sg, env, CnstrEiii(c,e1,e2,e3), tn) :-
 	   `try match lookup_sg $sg $c with 
                     CnstrTiii(t1',t2',t3',tn) -> tn = $tn && t1' = $t1 && t2' = $t2 && t3' = $t3
                   | _ -> false
-            with LookupFailure -> false`
+            with Exit -> false`
            %$sg($c) = $t1 \times $t2 \times $t3 \rightarrow $tn%;
             
 T-MatchLast: Typing(sg,env,Match(e0,SingleC(p,e1)),t) :- 
@@ -178,16 +178,14 @@ T-MatchMore: Typing(sg,env,Match(e0,AddC(p,e1,cl)),t) :-
 
 [ML]
 
-exception LookupFailure
-
 let rec lookup env x =
     match env with 
-      Empty -> raise LookupFailure
+      Empty -> raise Exit
     | Bind(env, x', t) -> if x = x' then t else lookup env x
 
 let rec lookup_sg sg x =
     match sg with 
-      EmptyS -> raise LookupFailure
+      EmptyS -> raise Exit
     | BindS(sg', x', t) -> if x = x' then t else lookup_sg sg' x
 
 let rec in_dom x = function

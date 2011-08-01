@@ -52,7 +52,7 @@ E-Times: EvalTo(env, BinOpD(Mult, d1, d2), i3) :-
 E-Lt: 	EvalTo(env, BinOpD(Lt, d1, d2), b3) :-
 		EvalTo(env, d1, i1), EvalTo(env, d2, i2), AppBOp(Lt, i1, i2, b3);
 E-Var:  EvalTo(env, Index(n), v) :- 
-          `try $v = nth $env $n with LookupFailure -> false`
+          `try $v = nth $env $n with Exit -> false`
           `$v = nth $env $n`
           %$env[$n] = $v%;
 
@@ -77,11 +77,9 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
 
-exception LookupFailure
-
 let rec nth env n =
     match env, n with 
       Bind(_, v), 1 -> v
     | Bind(env', _), n -> nth env' (n-1)
-    | Empty, _ -> raise LookupFailure
+    | Empty, _ -> raise Exit
 

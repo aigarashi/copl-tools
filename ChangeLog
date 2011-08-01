@@ -1,3 +1,8 @@
+2011-08-01  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* gmc/emit.ml: bug fix.  Proper error handling for lookup function failures.
+	* checker/*/*.gm: Replacing LookupFailure with Exit.
+
 2011-07-18  igarashi  <igarashi@djembe>
 
 	* checker/EvalML1Err/EvalML1Err.gm: Rule names fixed.

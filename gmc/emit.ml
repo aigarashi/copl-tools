@@ -291,9 +291,10 @@ struct
 		   | Some s -> 
 		       Buffer.clear b;
 		       Buffer.add_substitute b subst s);
-		pf ppf "@[let @[%s@]@ in@ %a@]" 
+		pf ppf "@[(try @[let @[%s@]@ in@ %a@] with Exit -> errAt _p_ \"Wrong rule application: %s\")@]" 
 		  (Buffer.contents b)
 		  (emit_exp_of_premises (i+1) rn tbl env) rest
+		  rn
 	      end
 	    else
 	      pf ppf 

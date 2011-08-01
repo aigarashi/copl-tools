@@ -62,8 +62,8 @@ E-If: EvalTo(env, k, If(e1, e2, e3), v) :-
 E-BinOp: EvalTo(env, k, BinOp(op, e1, e2), v) :-
 	  EvalTo(env, EvalRK(env,e2,op,k), e1, v);
 E-Var:  EvalTo(env, k, x, v2) :- 
-          `try $v1 = lookup $env $k $x with LookupFailure -> false`
-          ` $v1 = lookup $env $k $x`
+          `try $v1 = lookup $env $k $x with Exit -> false`
+          `$v1 = lookup $env $k $x`
           %$env($x) = $v1%, 
           AppK(k, v1, v2);
 E-Let:  EvalTo(env, k, Let(x, e1, e2), v) :-
@@ -112,9 +112,9 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
 
-exception LookupFailure
+(* exception Fatal *)
 
 let rec lookup env k x =
     match env with 
-      Empty -> raise LookupFailure
+      Empty -> raise Exit
     | Bind(env, x', v') -> if x = x' then v' else lookup env k x

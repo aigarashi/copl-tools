@@ -62,7 +62,7 @@ E-Lt: 	EvalTo(s1, env, BinOp(Lt, e1, e2), b3, s3) :-
 		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Lt, i1, i2, b3);
 
 E-Var:  EvalTo(s, env, x, v, s) :- 
-        `try $v = lookup $s $env $x with LookupFailure -> false`
+        `try $v = lookup $s $env $x with Exit -> false`
         `$v = lookup $s $env $x` 
         %$env($x) = $v%;
 
@@ -87,7 +87,7 @@ E-Ref: EvalTo(s1, env, NewRef(e), l, Block(s2, l, v)) :-
 
 E-Deref: EvalTo(s1, env, Deref(e), v, s2) :-
            EvalTo(s1, env, e, l, s2),
-           `try $v = lookup_store $s2 $env $l with LookupFailure -> false`
+           `try $v = lookup_store $s2 $env $l with Exit -> false`
            `$v = lookup_store $s2 $env $l`
            %$s2($l) = $v%;
 
@@ -104,21 +104,19 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
 
-exception LookupFailure
-
 let rec lookup s env x =
     match env with 
-      Empty -> raise LookupFailure
+      Empty -> raise Exit
     | Bind(env, x', v') -> if x = x' then v' else lookup s env x
 
 let rec lookup_store s env l =
     match s with 
-      EmptyS -> raise LookupFailure
+      EmptyS -> raise Exit
     | Block(s, l', v') -> if l = l' then v' else lookup_store s env l
 
 let rec update_store s env l v e =    
     match s with 
-      EmptyS ->  raise LookupFailure
+      EmptyS ->  raise Exit
     | Block(s, l', v') -> if l = l' then Block(s, l', v)
                           else Block(update_store s env l v e, l', v')
 

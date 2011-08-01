@@ -83,8 +83,6 @@ T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
 
 [ML]
 
-exception LookupFailure
-
 (* free variables in a type (scheme) *)
 let rec fv_ty_aux ty res =
   match ty with
@@ -148,5 +146,5 @@ let closure env ty tysc =
 
 let rec lookup env x =
     match env with 
-      Empty -> raise LookupFailure
+      Empty -> raise Exit
     | Bind(env, x', t) -> if x = x' then t else lookup env x

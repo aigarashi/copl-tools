@@ -43,7 +43,7 @@ AppBOp(op, v, v; v);
 E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
 E-Var:  EvalTo(env, x, v) :- 
-          `try $v = lookup $env $x with LookupFailure -> false` 
+          `try $v = lookup $env $x with Exit -> false` 
           `$v = lookup $env $x` 
           %$env($x) = $v%;
 E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :- 
@@ -90,9 +90,7 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
 
-exception LookupFailure
-
 let rec lookup env x =
     match env with 
-      Empty -> raise LookupFailure
+      Empty -> raise Exit
     | Bind(env, x', v') -> if x = x' then v' else lookup env x

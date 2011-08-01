@@ -120,7 +120,7 @@ E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
 E-Var:  EvalTo(env, x, v) :- 
-          `try $v = lookup $env $x with LookupFailure -> false`
+          `try $v = lookup $env $x with Exit -> false`
           `$v = lookup $env $x`
           %$env($x) = $v%;
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
@@ -159,8 +159,6 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
 
-exception LookupFailure
-
 (*
 let rec in_dom x = function
      Empty -> false
@@ -180,5 +178,5 @@ let rec uplus env1 env2 =
 
 let rec lookup env x =
     match env with 
-      Empty -> raise LookupFailure
+      Empty -> raise Exit
     | Bind(env, x', v') -> if x = x' then v' else lookup env x
