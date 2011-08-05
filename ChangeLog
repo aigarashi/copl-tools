@@ -1,3 +1,7 @@
+2011-08-05  igarashi  <igarashi@djembe>
+
+	* checker/{TypingML4,TypingML6,PolyTypingML4}/parser.mly: Metavariable for types as an atomic type.
+
 2011-08-01  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* gmc/emit.ml: bug fix.  Proper error handling for lookup function failures.

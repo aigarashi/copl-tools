@@ -253,7 +253,7 @@ MacroDef:
   | DEF MVTENV EQ error { errAt 4 "Syntax error: environment expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
-Type: MVTYPE { 
+AType: MVTYPE { 
   try
     match Hashtbl.find tbl $1 with 
       Type v -> v
