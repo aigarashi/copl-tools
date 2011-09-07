@@ -35,9 +35,10 @@ all: $(DEPEND) $(OBJS)
 .ml.cmx:
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -for-pack $(MODULEPATH) -c $<
 
-parser.ml parser.mli: parser.mly	
+parser.ml parser.mli: parser-local.mly ../common/parser-common.mly
 	@rm -f $@
-	$(OCAMLYACC) -v $<
+	cat parser-local.mly ../common/parser-common.mly > parser.mly
+	$(OCAMLYACC) -v parser.mly
 	@chmod -w $@
 
 ../lexer.ml: ../lexer.mll
@@ -53,7 +54,7 @@ core.ml: $(PROGNAME).gm
 # Clean up
 clean:
 	rm -f $(PROGNAME)
-	rm -f *.cm[iox] *.o *~ parser.ml parser.mli parser.output core.ml .depend
+	rm -f *.cm[iox] *.o *~ parser.mly parser.ml parser.mli parser.output core.ml .depend
 
 # Dependencies
 depend:: $(DEPEND)
