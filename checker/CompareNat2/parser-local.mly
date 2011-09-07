@@ -1,1 +1,1 @@
-../CompareNat1/parser.mly
+../CompareNat1/parser-local.mly
