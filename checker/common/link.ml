@@ -35,6 +35,8 @@ module Lexer = Lexer.Make(
 let check_deriv lexbuf ?against fullp texp =
   let d = Parser.toplevel Lexer.main lexbuf in
   let j = Core.check_deriv d in
+    if !Core.failed then exit 2
+    else
     (match fullp, texp with
 	true, true -> 
 	  Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d

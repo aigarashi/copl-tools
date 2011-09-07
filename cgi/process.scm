@@ -32,15 +32,25 @@
     (list (process-exit-status process) result errmsg)))
 
 (define (parse-errmsg s)
-  (let ((m1 (#/line\s([0-9]+),\scharacter\s([0-9]+) -- line\s([0-9]+),\scharacter\s([0-9]+)/ s))
-	(m2 (#/line\s([0-9]+),\scharacter\s([0-9]+)/ s)))
-    (if m1 (cons (list (string->number (m1 1)) (string->number (m1 2)))
-		 (list (string->number (m1 3)) (string->number (m1 4))))
-	(if m2 (cons (list (string->number (m2 1)) (string->number (m2 2)))
-		     '())
-	      #f))))
+  (define lines (string-split s "\n"))
+  (define (aux lines)
+    (if (null? lines) '()
+	(rxmatch-if 
+	 (#/line\s([0-9]+),\scharacter\s([0-9]+) -- line\s([0-9]+),\scharacter\s([0-9]+)/ (car lines))
+	 (#f from-line from-char to-line to-char)
+	 (cons (cons (list (string->number from-line) (string->number from-char))
+		     (list (string->number to-line) (string->number to-char)))
+	       (aux (cdr lines)))
+	 (rxmatch-if
+	  (#/line\s([0-9]+),\scharacter\s([0-9]+)/ (car lines))
+	  (#f at-line at-char)
+	  (cons (cons (list (string->number at-line) (string->number at-char)) '())
+		(aux (cdr lines)))
+	  (aux (cdr lines))))))
+  (aux lines))
 
 (define (display-result result deriv no uname game)
+  ;; result : (int string int string string)
   (if (zero? (car result))  ;; if the process return code is 0
       ;; 正解!
       (begin
@@ -67,10 +77,10 @@
 	 (html:h1 "残念...")
 	 (html:pre (html-escape-string (caddr result))) 
 	 (html:pre :id "userinput"
-		   (let ((lc (parse-errmsg (caddr result))))
-		     (if lc
-			 (emphasize deriv (car lc) (cdr lc))
-			 deriv)))
+		   (let ((locs (parse-errmsg (caddr result))))
+		     (if (null? locs)
+			 deriv
+			 (emphasize deriv locs))))
 	 (if (zero? no)
 	     '()
 	     (list

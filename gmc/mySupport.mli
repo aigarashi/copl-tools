@@ -8,6 +8,8 @@ module Error :
     val errAt : pos -> string -> 'a
     val errBtw : pos -> pos -> string -> 'a
     val warning : string -> unit
+    val warningAt : pos -> string -> unit
+    val warningBtw : pos -> pos -> string -> unit
   end
 module Pervasives :
   sig

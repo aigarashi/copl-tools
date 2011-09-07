@@ -40,10 +40,24 @@ struct
     print_2pos pos1 pos2;
     err s
 
-  let warning s = 
+(*  let warning s = 
     eprintf "\n";
     eprintf "Warning: %s\n" s
+*)
 
+  let warning s =
+    eprintf "\n%s\n" s;
+    flush stderr
+
+  let warningAt pos s =
+    eprintf "\n";
+    print_pos pos;
+    warning s
+
+  let warningBtw pos1 pos2 s =
+    eprintf "\n";
+    print_2pos pos1 pos2;
+    warning s
 end
 
 module Pervasives =

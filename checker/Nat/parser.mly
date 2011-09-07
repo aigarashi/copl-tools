@@ -44,9 +44,9 @@ judgment: Judgment { $1 }
 
 Derivation: 
     Judgment BY ID LBRACE RBRACE
-    { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3 } }
+    { {conc = $1; by = $3; since = []; pos = rhs_start_pos 3, rhs_end_pos 3 } }
   | Judgment BY ID LBRACE Derivs
-    { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3 } }
+    { {conc = $1; by = $3; since = $5; pos = rhs_start_pos 3, rhs_end_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: 'by' expected after a judgment" }
   | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY ID error { errAt 4 "Syntax error: opening brace expected" }

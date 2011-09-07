@@ -20,18 +20,36 @@
 	  (cons (car str-list)
 		(insert-tag (- line 1) char tag (cdr str-list))))))
 
-(define (emphasize s lc1 lc2)
-   (let ((lines (string-split s ;#[\n\r]
-                                "\n")))
-     (string-join
-      (insert-tag 
-       (car lc1) (cadr lc1) "<span class=\"error\">"
-       (if (pair? lc2)
-	   (insert-tag (car lc2) (cadr lc2) "</span>" lines)
-	   (insert-tag (car lc1) #f "</span>" lines)))
-      "\n" 'suffix)))
+(define (sort-locs locs)
+  (sort locs
+	(match-lambda*
+	 ((((line1 char1) . _) ((line2 char2) . _))
+	  (or (< line1 line2)
+	      (and (= line1 line2)
+		   ;; if two locations are on the same line,
+		   ;; a right-most one comes first
+		   (> char1 char2)))))))
 
-(define *sample-str* 
+(define (emphasize s locs)
+  (define lines (string-split s ;#[\n\r]
+                                "\n"))
+  (define sorted-locs (sort-locs locs))
+  (define (aux locs lines)
+    (match 
+     locs
+     [() lines]
+     [(((line1 char1) . loc2) . rest)
+      (aux rest 
+	   (insert-tag 
+	    line1 char1 "<span class=\"error\">"
+	    (match loc2
+		   [() (insert-tag line1 #f "</span>" lines)]
+		   [(line2 char2)
+		    (insert-tag line2 char2 "</span>" lines)])))]))
+  (string-join (aux sorted-locs lines)
+	       "\n" 'suffix))
+
+#;(define *sample-str* 
 "(S(Z) + S(Z)) * S(S(Z)) evalto S(S(S(S(Z)))) by E-Mult { 
   S(Z) + S(Z) evalto S(S(Z)) by E-Plus {
     S(Z) evalto S(Z) by E-Const {};

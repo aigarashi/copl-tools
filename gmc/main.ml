@@ -29,6 +29,11 @@ open MySupport.Error
 open MySupport.Pervasives
 open Derivation
 
+let failed = ref false
+let warning s = warning s; failed := true
+let warningAt p s = warningAt p s; failed := true
+let warningBtw p1 p2 s = warningBtw p1 p2 s; failed := true
+
 ";
   (* Macro variable name list *)
   (*

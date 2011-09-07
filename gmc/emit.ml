@@ -221,7 +221,7 @@ struct
 
     let emit_pat_of_rule ppf rname =
       pf ppf 
-	"@[<2>{@[conc = _conc_;@ by = \"%s\";@ since = _derivs_;@ pos = _p_@]}@]"
+	"@[<2>{@[conc = _conc_;@ by = \"%s\";@ since = _derivs_;@ pos = (_p1_, _p2_)@]}@]"
 	rname
 
     let emit_pat_of_jdg i env ppf jdg = 
@@ -251,7 +251,7 @@ struct
 	[] -> 
 	  begin 
 	    pf ppf "@[if @[%a@]@ then _conc_" emit_eqs' tbl; 
-	    pf ppf "@ else errAt _p_ \"Wrong rule application: %s\"@]" rn
+	    pf ppf "@ else (warningBtw _p1_ _p2_ \"Wrong rule application: %s\"; _conc_)@]" rn
 	  end
       | J prem :: rest ->
 	  pf ppf "@[(";
@@ -263,7 +263,7 @@ struct
 	    merge_tables tbl (emit_pat_of_jdg i env ppf prem) i;
 	    pf ppf " ->@]@ %a@]@ "
 	      (* exp *) (emit_exp_of_premises (i+1) rn tbl env) rest;
-	    pf ppf "@[| _ -> errAt _p_ \"The form of the %a premise is wrong: %s\"@]@]" emit_ordinal i rn;
+	    pf ppf "@[| _ -> (warningBtw _p1_ _p2_ \"The form of the %a premise is wrong: %s\"; _conc_)@]@]" emit_ordinal i rn;
 	  end;
 	  pf ppf ")@]"
       | Qexp (s, _, s') :: rest ->
@@ -291,14 +291,14 @@ struct
 		   | Some s -> 
 		       Buffer.clear b;
 		       Buffer.add_substitute b subst s);
-		pf ppf "@[(try @[let @[%s@]@ in@ %a@] with Exit -> errAt _p_ \"Wrong rule application: %s\")@]" 
+		pf ppf "@[(try @[let @[%s@]@ in@ %a@] with Exit -> (warningBtw _p1_ _p2_ \"Wrong rule application: %s\"; _conc_))@]" 
 		  (Buffer.contents b)
 		  (emit_exp_of_premises (i+1) rn tbl env) rest
 		  rn
 	      end
 	    else
 	      pf ppf 
-		"@[if @[%s@]@ then %a@ else errAt _p_ \"Wrong rule application: %s\"@]" 
+		"@[if @[%s@]@ then %a@ else (warningBtw _p1_ _p2_ \"Wrong rule application: %s\"; _conc_)@]" 
 		(Buffer.contents b)
 		(emit_exp_of_premises (i+1) rn tbl env) rest
 		rn
@@ -318,16 +318,16 @@ struct
 	    pf ppf "@[<2>%a ->@ %a@]@ "
 	      emit_pat_of_derivs r.rprem
 	      (emit_exp_of_premises 1 r.rname tbl env) r.rprem;
-	    pf ppf "@[| _ -> errAt _p_ \"The number of premises is wrong: %s\"@]@]" r.rname;
+	    pf ppf "@[| _ -> (@[ignore (List.map check_deriv _derivs_);@ warningBtw _p1_ _p2_ \"The number of premises is wrong: %s\";@ _conc_@])@]@]" r.rname;
 	  end;
 	  pf ppf ")@]@]@ ";
-	  pf ppf "@[| _ -> errAt _p_ \"The form of conclusion is wrong: %s\"@]@]" r.rname
+	  pf ppf "@[| _ -> (@[ignore (List.map check_deriv _derivs_);@ warningBtw _p1_ _p2_ \"The form of conclusion is wrong: %s\";@ _conc_@])@]@]" r.rname
       end;
       pf ppf ")@]@]"
 
     let emit env ppf rules = 
       let rec loop ppf = function
-	  [] -> pf ppf "@[| {by=_name_; pos=_p_} -> errAt _p_ (\"No such rule: \" ^ _name_)@]"
+	  [] -> pf ppf "@[| @[<4>{conc=_conc_; by=_name_; since = _derivs_; pos = (_p1_, _p2_)} ->@ (ignore (List.map check_deriv _derivs_);@ warningBtw _p1_ _p2_ (\"No such rule: \" ^ _name_);@ _conc_)@]@]"
 	| rule::rest ->
 	    pf ppf "%a@ %a" (emit_clause_of_rule env) rule loop rest
       in
@@ -704,12 +704,12 @@ struct
 		 else (* Actually, this check should be omitted since
 			 the condition has already must have been satisfied *)
 		   pf ppf 
-		     "@[if not (@[%s@]) then err \"Implementation error!\" else@]@ "
+		     "@[if not (@[%s@]) then (err \"Implementation error!\"; exit 2) else@]@ "
 		     (Buffer.contents b)
 	)
 	r.rprem;
       pf ppf "@[let _conc_ = %a in @]@ " (emit_jdg env) r.rconc;
-      pf ppf "@[{@[conc = _conc_;@ by = \"%s\";@ since = _subderivs_;@ pos = dummy@]}@])@]@]" 
+      pf ppf "@[{@[conc = _conc_;@ by = \"%s\";@ since = _subderivs_;@ pos = (dummy, dummy)@]}@])@]@]" 
 	r.rname
     end;
     pf ppf "@]"

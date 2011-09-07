@@ -7,7 +7,7 @@ type 'j t = {
   conc:  'j;
   by:    rulename;
   since: 'j t list;
-  pos:   pos
+  pos:   pos * pos
 }
 
 let rec print_deriv pr_j ppf d =

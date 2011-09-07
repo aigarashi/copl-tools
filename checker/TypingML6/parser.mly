@@ -102,9 +102,9 @@ judgment: Sig Judgment { $2 ($1 EmptyS) }
 
 Derivation: 
     Judgment BY RName LBRACE RBRACE
-    { fun sg -> {conc = $1 sg; by = $3; since = []; pos = rhs_start_pos 3 } }
+    { fun sg -> {conc = $1 sg; by = $3; since = []; pos = rhs_start_pos 3, rhs_end_pos 3 } }
   | Judgment BY RName LBRACE Derivs
-    { fun sg -> {conc = $1 sg; by = $3; since = $5 sg; pos = rhs_start_pos 3 } }
+    { fun sg -> {conc = $1 sg; by = $3; since = $5 sg; pos = rhs_start_pos 3, rhs_end_pos 3 } }
   | Judgment error { errAt 2 "Syntax error: \"by\" expected after a judgment" }
   | Judgment BY error { errAt 3 "Syntax error: rule name expected after 'by'" }
   | Judgment BY RName error { errAt 4 "Syntax error: opening brace expected" }

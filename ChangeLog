@@ -1,10 +1,41 @@
+2011-09-07  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/process.scm (parse-errmsg): Modified to extract muliple
+	error locations.
+
+	* cgi/hilight.scm (sort-locs): New function to sort a sequence of
+	location information.
+	(emphasize): Modified so that multiple highlight locations can be
+	handled.
+
+	* checker/derivation.ml, checker/*/parser.mly: Each derivation
+	step records the start and end locations of its rule name.
+	Parsers are modified accordingly.
+
+	* checker/common/link.ml (check_deriv): A new way of checking
+	whether a derivation check is succeeded.
+
+	* checker/mySupport.ml (warningAt, warningBtw): New functions to
+	issue warings.
+
+	* gmc/emit.ml (emit_clause_of_rule): Errors are now treated as
+	warnings, which don't stop checking, and even when an error is
+	found, subderivations will be checked anyway.  Errors
+	are generated in post-order.
+
+	* gmc/main.ml (emit_game): The header of a generated code has
+	functions to wrap warning-generating functions with a flag
+	manipulation to signal a derivation check has been failed.
+
 2011-08-05  igarashi  <igarashi@djembe>
 
-	* checker/{TypingML4,TypingML6,PolyTypingML4}/parser.mly: Metavariable for types as an atomic type.
+	* checker/{TypingML4,TypingML6,PolyTypingML4}/parser.mly:
+	Metavariable for types as an atomic type.
 
 2011-08-01  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
-	* gmc/emit.ml: bug fix.  Proper error handling for lookup function failures.
+	* gmc/emit.ml: bug fix.  Proper error handling for lookup function
+	failures.
 	* checker/*/*.gm: Replacing LookupFailure with Exit.
 
 2011-07-18  igarashi  <igarashi@djembe>
