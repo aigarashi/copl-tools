@@ -6,7 +6,7 @@
 	(display-statistics): Table format change.
 	(display-statistics): Histgram format change.
 	(display-statistics): Hiyakashi users cannot see statistics and
-	don't show up in the list.
+	they are not counted in the statistics.
 
 	* cgi/process.scm (display-result): When a user solves all the
 	problems, the finished time will be recorded in the 'finished

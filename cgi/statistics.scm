@@ -71,13 +71,13 @@
     (if (zero? (length solved))
 	(html:p "問題を解いたら見られるようになります")
 	(let* ((unames (user-list))
-	       (how-many-users (length unames))
 	       (solved-list (filter-map 
 			     (lambda (uname) 
 			       (let ((solved (cdr (lookupdb uname 'solved))))
 				 (and (positive? (length solved))
 				      (cons uname solved))))
-			     unames)))
+			     unames))
+	       (how-many-users (length solved-list)))
 	  (map (lambda (x) (accumulate! (cdr x))) solved-list)
 	  (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
 		 (ranked-list (add-rank (sort name-solved-score
