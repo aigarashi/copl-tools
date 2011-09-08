@@ -75,8 +75,8 @@
 	       (solved-list (filter-map 
 			     (lambda (uname) 
 			       (let ((solved (cdr (lookupdb uname 'solved))))
-				 (and (positive? (length solved) 
-						 (cons uname solved)))))
+				 (and (positive? (length solved))
+				      (cons uname solved))))
 			     unames)))
 	  (map (lambda (x) (accumulate! (cdr x))) solved-list)
 	  (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
