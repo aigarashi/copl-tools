@@ -86,32 +86,33 @@
 	 (html:th "ユーザ名")
 	 (html:th "解答数")
 	 (html:th "経過日数")
-	 #;(html:th "スコア"))
+	 (html:th "修了日"))
 	(map-with-index
 	 (match-lambda* 
 	  [(i (rank nm noq score))
-	   (html:tr 
-	    :class (if (string=? nm name) "you"
-		       (if (even? i) "even" "odd"))
-	    (if (zero? rank)
-		(html:td :class "rank")
-		(html:td :class "rank" rank "位"))
-	    (html:td :class "name" nm)
-	    (html:td :class "num" noq "問")
-	    (html:td :class "num"
-		     (let ((finished (lookupdb nm 'finished)))
-		       (if finished
-			   ;; if (s)he already finishes the exercises
-			   ;;  print the date finished
-			   (date->string 
-			    (time-utc->date (seconds->time (cdr finished)))
-			    "~1 全問解答")
-			   ;; otherwise, print how many days have passed
-			   (format "~d1 日"
-				   (round (/ (- (sys-time)
-						(cdr (lookupdb nm 'user-since)))
-					     24 60 60))))))
-	    #;(html:td :class "score" score))])
+	   (let ((finished (lookupdb nm 'finished)))
+	     (html:tr 
+	      :class (if (string=? nm name) "you"
+			 (if (even? i) "even" "odd"))
+	      (if (zero? rank)
+		  (html:td :class "rank")
+		  (html:td :class "rank" rank "位"))
+	      (html:td :class "name" nm)
+	      (html:td :class "num" noq "問")
+	      (html:td
+	       :class "num"
+	       (format "~d1 日"
+		       (round (/ (- (if finished 
+					(cdr finished) (sys-time))
+				    (cdr (lookupdb nm 'user-since)))
+				 24 60 60)))
+	      (html:td 
+	       :class "num"
+	       (if finished (date->string 
+			     (time-utc->date (seconds->time (cdr finished)))
+			     "~1")
+		   "")))
+	      #;(html:td :class "score" score)))])
 	 ranked-list))
        (html:h2 "問題ごとの解答者数")
        (html:table
