@@ -104,7 +104,7 @@
 			   ;; if (s)he already finishes the exercises
 			   ;;  print the date finished
 			   (date->string 
-			    (time-utc->date (secords->time (cdr finished)))
+			    (time-utc->date (seconds->time (cdr finished)))
 			    "~1 全問解答")
 			   ;; otherwise, print how many days have passed
 			   (format "~d1 日"
