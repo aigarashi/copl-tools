@@ -74,9 +74,9 @@
 	       (how-many-users (length unames))
 	       (solved-list (filter-map 
 			     (lambda (uname) 
-			       (let ((noq (length (cdr (lookupdb uname 'solved)))))
-				 (and (positive? noq)
-				      (cons uname noq))))
+			       (let ((solved (cdr (lookupdb uname 'solved))))
+				 (and (positive? (length solved) 
+						 (cons uname solved)))))
 			     unames)))
 	  (map (lambda (x) (accumulate! (cdr x))) solved-list)
 	  (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
