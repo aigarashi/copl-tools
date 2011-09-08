@@ -66,78 +66,83 @@
 	(score (cdr entry))))
 
 (define (display-statistics name)
-  (let* ((unames (user-list))
-	 (how-many-users (length unames))
-	 (solved-list (map (lambda (uname) 
-			     (cons uname (cdr (lookupdb uname 'solved))))
-			   unames)))
-    (map (lambda (x) (accumulate! (cdr x))) solved-list)
-    (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
-	   (ranked-list (add-rank (sort name-solved-score
-					(lambda (x y)
-					  (> (caddr x) (caddr y))))))
-	   (solved (cdr (lookupdb name 'solved))))
-      (list
-       (html:h2 "ランキング")
-       (html:table
-	:id "ranking"
-	(html:tr
-	 (html:th)
-	 (html:th "ユーザ名")
-	 (html:th "解答数")
-	 (html:th "経過日数")
-	 (html:th "修了日"))
-	(map-with-index
-	 (match-lambda* 
-	  [(i (rank nm noq score))
-	   (let ((finished (lookupdb nm 'finished)))
-	     (html:tr 
-	      :class (if (string=? nm name) "you"
-			 (if (even? i) "even" "odd"))
-	      (if (zero? rank)
-		  (html:td :class "rank")
-		  (html:td :class "rank" rank "位"))
-	      (html:td :class "name" nm)
-	      (html:td :class "num" noq "問")
-	      (html:td
-	       :class "num"
-	       (format "~d 日"
-		       (round (/ (- (if finished 
-					(cdr finished) (sys-time))
-				    (cdr (lookupdb nm 'user-since)))
-				 24 60 60)))
-	      (html:td 
-	       :class "num"
-	       (if finished (date->string 
-			     (time-utc->date (seconds->time (cdr finished)))
-			     "~1")
-		   "")))
-	      #;(html:td :class "score" score)))])
-	 ranked-list))
-       (html:h2 "問題ごとの解答者数")
-       (html:table
-	:id "graph"
-	(map-with-index
-	 (lambda (i n)
-	   (let ((i (+ i 1))) ;; qno is 1-origin
-	     (if
-	      (qualified? i solved)
+  (let ((solved (cdr (lookupdb name 'solved))))
+    (if (zero? solved)
+	(html:p "問題を解いたら見られるようになります")
+	(let* ((unames (user-list))
+	       (how-many-users (length unames))
+	       (solved-list (filter-map 
+			     (lambda (uname) 
+			       (let ((noq (cdr (lookupdb uname 'solved))))
+				 (and (positeve? noq)
+				      (cons uname noq))))
+			     unames)))
+	  (map (lambda (x) (accumulate! (cdr x))) solved-list)
+	  (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
+		 (ranked-list (add-rank (sort name-solved-score
+					      (lambda (x y)
+						(> (caddr x) (caddr y)))))))
+	    (list
+	     (html:h2 "ランキング")
+	     (html:table
+	      :id "ranking"
 	      (html:tr
-	       (let ((res (assoc i q-section-list)))
-		 (if res 
-		     (html:td :class "section"
-			      :rowspan (number->string (caddr res))
-			      (cadr res))
-		     ""))
-	       (html:td "第" i "問")
-	       (let* ((ratio (/ n how-many-users))
-		      (max-bar-length 20)
-		      (bar-length (round->exact (+ (* ratio max-bar-length) 0.5))))
-		 (html:td (make-string bar-length #\■) 
-			  (make-string (- max-bar-length bar-length) #\□)
-			  (format "(~d %)" (round->exact (* ratio 100))))))
-	      '())))
-	 *histgram*))))))
+	       (html:th)
+	       (html:th "ユーザ名")
+	       (html:th "解答数")
+	       (html:th "経過日数")
+	       (html:th "修了日"))
+	      (map-with-index
+	       (match-lambda* 
+		[(i (rank nm noq score))
+		 (let ((finished (lookupdb nm 'finished)))
+		   (html:tr 
+		    :class (if (string=? nm name) "you"
+			       (if (even? i) "even" "odd"))
+		    (if (zero? rank)
+			(html:td :class "rank")
+			(html:td :class "rank" rank "位"))
+		    (html:td :class "name" nm)
+		    (html:td :class "num" noq "問")
+		    (html:td
+		     :class "num"
+		     (format "~d 日"
+			     (round (/ (- (if finished 
+					      (cdr finished) (sys-time))
+					  (cdr (lookupdb nm 'user-since)))
+				       24 60 60)))
+		     (html:td 
+		      :class "num"
+		      (if finished (date->string 
+				    (time-utc->date (seconds->time (cdr finished)))
+				    "~1")
+			  "")))
+		    #;(html:td :class "score" score)))])
+	       ranked-list))
+	     (html:h2 "問題ごとの解答者数")
+	     (html:table
+	      :id "graph"
+	      (map-with-index
+	       (lambda (i n)
+		 (let ((i (+ i 1))) ;; qno is 1-origin
+		   (if
+		    (qualified? i solved)
+		    (html:tr
+		     (let ((res (assoc i q-section-list)))
+		       (if res 
+			   (html:td :class "section"
+				    :rowspan (number->string (caddr res))
+				    (cadr res))
+			   ""))
+		     (html:td "第" i "問")
+		     (let* ((ratio (/ n how-many-users))
+			    (max-bar-length 20)
+			    (bar-length (round->exact (+ (* ratio max-bar-length) 0.5))))
+		       (html:td (make-string bar-length #\■) 
+				(make-string (- max-bar-length bar-length) #\□)
+				(format "(~d %)" (round->exact (* ratio 100))))))
+		    '())))
+	       *histgram*))))))))
 
 (define (main args)
   (write (display-statistics)))
