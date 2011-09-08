@@ -107,7 +107,7 @@
 			    (time-utc->date (secords->time (cdr finished)))
 			    "~1 全問解答")
 			   ;; otherwise, print how many days have passed
-			   (format "~d 日"
+			   (format "~d1 日"
 				   (round (/ (- (sys-time)
 						(cdr (lookupdb nm 'user-since)))
 					     24 60 60))))))
