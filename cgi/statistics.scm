@@ -11,6 +11,7 @@
 
 (use file.util)
 (use srfi-13)
+(use srfi-19)
 
 (define *histgram* (make-vector how-many-q 0))
 (define *score-for-q* 50)
