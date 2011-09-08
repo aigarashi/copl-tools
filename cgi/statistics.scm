@@ -69,7 +69,7 @@
 (define (display-statistics name)
   (let* ((solved (cdr (lookupdb name 'solved))))
     (if (zero? (length solved))
-	(html:p "問題を解いたら見られるようになります")
+	(html:p "問題を1問解いたら見られるようになります．")
 	(let* ((unames (user-list))
 	       (solved-list (filter-map 
 			     (lambda (uname) 
