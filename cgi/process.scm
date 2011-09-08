@@ -72,7 +72,7 @@
 	  (cond
 	   [(zero? no) "正しい導出です．"]
 	   [(and (not (lookupdb uname 'finished)) ;; not yet finished
-		(= (length (lookupdb uname 'solved)) 
+		(= (length (cdr (lookupdb uname 'solved)))
 		   how-many-q))
 	    ;; when the last problem is solved...
 	    (write-log uname (format "All the problems have been solved!") :header #t)
