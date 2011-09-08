@@ -67,15 +67,15 @@
 	(score (cdr entry))))
 
 (define (display-statistics name)
-  (let ((solved (cdr (lookupdb name 'solved))))
+  (let* ((solved (cdr (lookupdb name 'solved))))
     (if (zero? (length solved))
 	(html:p "問題を解いたら見られるようになります")
 	(let* ((unames (user-list))
 	       (how-many-users (length unames))
 	       (solved-list (filter-map 
 			     (lambda (uname) 
-			       (let ((noq (cdr (lookupdb uname 'solved))))
-				 (and (positeve? noq)
+			       (let ((noq (length (cdr (lookupdb uname 'solved)))))
+				 (and (positive? noq)
 				      (cons uname noq))))
 			     unames)))
 	  (map (lambda (x) (accumulate! (cdr x))) solved-list)
