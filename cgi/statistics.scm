@@ -67,7 +67,7 @@
 
 (define (display-statistics name)
   (let ((solved (cdr (lookupdb name 'solved))))
-    (if (zero? solved)
+    (if (zero? (length solved))
 	(html:p "問題を解いたら見られるようになります")
 	(let* ((unames (user-list))
 	       (how-many-users (length unames))
