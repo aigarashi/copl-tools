@@ -135,7 +135,7 @@
 		      (bar-length (round->exact (+ (* ratio max-bar-length) 0.5))))
 		 (html:td (make-string bar-length #\■) 
 			  (make-string (- max-bar-length bar-length) #\□)
-			  (format "(~d %)" ratio))))
+			  (format "(~d %)" (round->exact (* ratio 100))))))
 	      '())))
 	 *histgram*))))))
 
