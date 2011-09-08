@@ -111,8 +111,8 @@ Derivation:
   | Judgment BY RName LBRACE error { errBtw 4 5 "Syntax error: unmatched brace" }
 
 RName : 
-    ID { $1 }
-  | LCID { $1 }
+    ID { Some $1 }
+  | LCID { Some $1 }
 
 Derivs:
   | Derivation RBRACE { fun sg -> [ $1 sg ] }

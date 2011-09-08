@@ -55,6 +55,11 @@
       ;; 正解!
       (begin
 	;; recording the result
+	;;
+	;; Strictly speaking update-solved and update of 'finished may
+	;; have to be executed in a transaction, but the solved
+	;; problem list is monotonically increasing, so access between
+	;; two accesses won't do any harm, I guess.
 	(write-log uname 
 		   (format "check succeeded in game ~a" game) :header #t)
 	(unless (zero? no)  
@@ -63,7 +68,17 @@
 		(write-log uname (format "Q #~d solved!" no) :header #t))
 	(write-log uname "--")
 	(list 
-	 (html:h1 (if (zero? no) "正しい導出です．" "正解です．"))))
+	 (html:h1 
+	  (cond
+	   [(zero? no) "正しい導出です．"]
+	   [(and (not (lookupdb uname 'finished)) ;; not yet finished
+		(= (length (lookupdb uname 'solved)) 
+		   how-many-q))
+	    ;; when the last problem is solved...
+	    (write-log uname (format "All the problems have been solved!") :header #t)
+	    (updatedb uname 'finished (lambda (s) (sys-time)))
+	    (format "正解です．おめでとうございます！これで ~d 問全て解答完了です．" how-many-q)]
+	   [else "正解です．"]))))
       ;; 不正解 orz
       (begin
 	(unless (zero? no)

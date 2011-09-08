@@ -1,3 +1,9 @@
+2011-09-08  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/process.scm (display-result): When a user solves all the
+	problems, the finished time will be recorded in the 'finished
+	field.  Statistics should look at this field.
+
 2011-09-07  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/process.scm (parse-errmsg): Modified to extract muliple

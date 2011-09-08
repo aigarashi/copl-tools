@@ -221,7 +221,7 @@ struct
 
     let emit_pat_of_rule ppf rname =
       pf ppf 
-	"@[<2>{@[conc = _conc_;@ by = \"%s\";@ since = _derivs_;@ pos = (_p1_, _p2_)@]}@]"
+	"@[<2>{@[conc = _conc_;@ by = Some \"%s\";@ since = _derivs_;@ pos = (_p1_, _p2_)@]}@]"
 	rname
 
     let emit_pat_of_jdg i env ppf jdg = 
@@ -327,7 +327,7 @@ struct
 
     let emit env ppf rules = 
       let rec loop ppf = function
-	  [] -> pf ppf "@[| @[<4>{conc=_conc_; by=_name_; since = _derivs_; pos = (_p1_, _p2_)} ->@ (ignore (List.map check_deriv _derivs_);@ warningBtw _p1_ _p2_ (\"No such rule: \" ^ _name_);@ _conc_)@]@]"
+	  [] -> pf ppf "@[| @[<4>{conc=_conc_; by=Some _name_; since = _derivs_; pos = (_p1_, _p2_)} ->@ (ignore (List.map check_deriv _derivs_);@ warningBtw _p1_ _p2_ (\"No such rule: \" ^ _name_);@ _conc_)@]@ | @[<4>{conc=_conc_; by=None; pos = (_p1_, _p2_)} ->@ (warningBtw _p1_ _p2_ \"Incomplete derivation\";@ _conc_)@]@]"
 	| rule::rest ->
 	    pf ppf "%a@ %a" (emit_clause_of_rule env) rule loop rest
       in
@@ -709,7 +709,7 @@ struct
 	)
 	r.rprem;
       pf ppf "@[let _conc_ = %a in @]@ " (emit_jdg env) r.rconc;
-      pf ppf "@[{@[conc = _conc_;@ by = \"%s\";@ since = _subderivs_;@ pos = (dummy, dummy)@]}@])@]@]" 
+      pf ppf "@[{@[conc = _conc_;@ by = Some \"%s\";@ since = _subderivs_;@ pos = (dummy, dummy)@]}@])@]@]" 
 	r.rname
     end;
     pf ppf "@]"
