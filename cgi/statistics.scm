@@ -101,7 +101,7 @@
 	      (html:td :class "num" noq "問")
 	      (html:td
 	       :class "num"
-	       (format "~d1 日"
+	       (format "~d 日"
 		       (round (/ (- (if finished 
 					(cdr finished) (sys-time))
 				    (cdr (lookupdb nm 'user-since)))
