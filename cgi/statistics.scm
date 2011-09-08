@@ -10,6 +10,7 @@
 (load "./userdb.scm")
 
 (use file.util)
+(use srfi-1)
 (use srfi-13)
 (use srfi-19)
 
