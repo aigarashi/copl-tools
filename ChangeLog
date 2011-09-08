@@ -1,5 +1,8 @@
 2011-09-08  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
+	* cgi/statistics.scm (display-statistics): It looks up 'finished
+	field to print when (s)he finished (or how many days passed).
+
 	* cgi/process.scm (display-result): When a user solves all the
 	problems, the finished time will be recorded in the 'finished
 	field.  Statistics should look at this field.

@@ -84,7 +84,7 @@
 	 (html:th)
 	 (html:th "ユーザ名")
 	 (html:th "解答数")
-	 (html:th "解答期間")
+	 (html:th "")
 	 #;(html:th "スコア"))
 	(map-with-index
 	 (match-lambda* 
@@ -98,9 +98,17 @@
 	    (html:td :class "name" nm)
 	    (html:td :class "num" noq "問")
 	    (html:td :class "num"
-		     (round (/ (- (sys-time) 
-				  (cdr (lookupdb nm 'user-since)))
-			       24 60 60)) "日")
+		     (let ((finished (lookupdb nm 'finished)))
+		       (if finished
+			   ;; if (s)he already finishes the exercises
+			   ;;  print the date finished
+			   (date->string 
+			    (time-utc->date (secords->time (cdr finished)))
+			    "~1 全問解答")
+			   ;; otherwise, print how many days have passed
+			   (round (/ (- (sys-time)
+					(cdr (lookupdb nm 'user-since)))
+				     24 60 60)) "日経過")))
 	    #;(html:td :class "score" score))])
 	 ranked-list))
        (html:h2 "問題ごとの解答者数")
