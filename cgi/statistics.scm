@@ -138,7 +138,7 @@
 		     (html:td "第" i "問")
 		     (let* ((ratio (/ n how-many-users))
 			    (max-bar-length 20)
-			    (bar-length (round->exact (+ (* ratio max-bar-length) 0.5))))
+			    (bar-length (floor->exact (+ (* ratio max-bar-length) 0.5))))
 		       (html:td (make-string bar-length #\■) 
 				(make-string (- max-bar-length bar-length) #\□)
 				(format "(~d %)" (round->exact (* ratio 100))))))
