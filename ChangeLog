@@ -3,7 +3,8 @@
 	* cgi/statistics.scm (display-statistics): It looks up 'finished
 	field to print when (s)he finished (or how many days passed).
 	Use srfi-19.
-	(display-statistics): Table format changed.
+	(display-statistics): Table format change.
+	(display-statistics): Histgram format change.
 
 	* cgi/process.scm (display-result): When a user solves all the
 	problems, the finished time will be recorded in the 'finished
