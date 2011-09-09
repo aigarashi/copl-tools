@@ -67,6 +67,42 @@
 	(score (cdr entry))))
 
 (define (display-statistics name)
+  (define (generate-ranking ranked-list)
+    (html:table
+     :id "ranking"
+     (html:tr
+      (html:th)
+      (html:th "ユーザ名")
+      (html:th "解答数")
+      (html:th "経過日数")
+      (html:th "修了日"))
+     (map-with-index
+      (match-lambda* 
+       [(i (rank nm noq score))
+	(let ((finished (lookupdb nm 'finished)))
+	  (html:tr 
+	   :class (if (string=? nm name) "you"
+		      (if (even? i) "even" "odd"))
+	   (if (zero? rank)
+	       (html:td :class "rank")
+	       (html:td :class "rank" rank "位"))
+	   (html:td :class "name" nm)
+	   (html:td :class "num" noq "問")
+	   (html:td
+	    :class "num"
+	    (format "~d 日"
+		    (round (/ (- (if finished 
+				     (cdr finished) (sys-time))
+				 (cdr (lookupdb nm 'user-since)))
+			      24 60 60)))
+	    (html:td 
+	     :class "num"
+	     (if finished (date->string 
+			   (time-utc->date (seconds->time (cdr finished)))
+			   "~1")
+		 "")))
+	   #;(html:td :class "score" score)))])
+      ranked-list)))
   (let* ((solved (cdr (lookupdb name 'solved))))
     (if (zero? (length solved))
 	(html:p "問題を1問解いたら見られるようになります．")
@@ -80,46 +116,22 @@
 	       (how-many-users (length solved-list)))
 	  (map (lambda (x) (accumulate! (cdr x))) solved-list)
 	  (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
-		 (ranked-list (add-rank (sort name-solved-score
-					      (lambda (x y)
-						(> (caddr x) (caddr y)))))))
+		 (sorted-list (sort name-solved-score
+				    (lambda (x y) (> (caddr x) (caddr y)))))
+		 (ranked-list (add-rank sorted-list)))
 	    (list
 	     (html:h2 "ランキング")
-	     (html:table
-	      :id "ranking"
-	      (html:tr
-	       (html:th)
-	       (html:th "ユーザ名")
-	       (html:th "解答数")
-	       (html:th "経過日数")
-	       (html:th "修了日"))
-	      (map-with-index
-	       (match-lambda* 
-		[(i (rank nm noq score))
-		 (let ((finished (lookupdb nm 'finished)))
-		   (html:tr 
-		    :class (if (string=? nm name) "you"
-			       (if (even? i) "even" "odd"))
-		    (if (zero? rank)
-			(html:td :class "rank")
-			(html:td :class "rank" rank "位"))
-		    (html:td :class "name" nm)
-		    (html:td :class "num" noq "問")
-		    (html:td
-		     :class "num"
-		     (format "~d 日"
-			     (round (/ (- (if finished 
-					      (cdr finished) (sys-time))
-					  (cdr (lookupdb nm 'user-since)))
-				       24 60 60)))
-		     (html:td 
-		      :class "num"
-		      (if finished (date->string 
-				    (time-utc->date (seconds->time (cdr finished)))
-				    "~1")
-			  "")))
-		    #;(html:td :class "score" score)))])
-	       ranked-list))
+	     (generate-ranking ranked-list)
+	     ;; if NAME belongs to a group, then generate another table
+	     #;(let ((group (cdr (lookupdb name 'group))))
+	       (if (null? group) '()
+		   (generate-ranking
+		    (add-rank
+		     (filter 
+		      (lambda (entry)
+			(eq? (cdr (lookupdb (car entry) 'group)) group))
+		      (sorted-list))))))
+	     ;;
 	     (html:h2 "問題ごとの解答者数")
 	     (html:table
 	      :id "graph"
