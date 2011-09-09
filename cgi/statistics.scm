@@ -120,19 +120,23 @@
 				    (lambda (x y) (> (caddr x) (caddr y)))))
 		 (ranked-list (add-rank sorted-list)))
 	    (list
-	     (html:h2 "ランキング")
-	     (generate-ranking ranked-list)
 	     ;; if NAME belongs to a group, then generate another table
-	     #;(let ((group (cdr (lookupdb name 'group))))
-	       (if (null? group) '()
-		   (generate-ranking
-		    (add-rank
+	     (let ((group (cdr (lookupdb name 'group))))
+	       (if (null? group) (html:h2 "ランキング")
+		   (list
+		    (html:h2 "グループ内ランキング")
+		    (generate-ranking
+		     (add-rank
 		     (filter 
 		      (lambda (entry)
 			(eq? (cdr (lookupdb (car entry) 'group)) group))
-		      (sorted-list))))))
+		      sorted-list))
+		     )
+		    (html:h2 "全体ランキング"))))
 	     ;;
-	     (html:h2 "問題ごとの解答者数")
+	     (generate-ranking ranked-list)
+	     ;;
+	     (html:h2 "問題ごとの解答率")
 	     (html:table
 	      :id "graph"
 	      (map-with-index
