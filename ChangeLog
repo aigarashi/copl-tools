@@ -1,3 +1,13 @@
+2011-09-14  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* cgi/hilight.scm (emphasize): An error output comes with line
+	numbers.
+
+	* cgi/index.cgi (not-expired?): New function.  It takes a date
+	string and returns whether this date has (not) passed.
+	(format-news): Added expiration check.
+	(bookinfo): Fixed dangling links.
+
 2011-09-09  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/statistics.scm (display-statistics): Group-wise statistics.
