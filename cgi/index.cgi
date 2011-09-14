@@ -6,6 +6,7 @@
 (use rfc.cookie)
 (use util.list)
 (use file.util)
+(use srfi-1)
 (use srfi-13)
 (use srfi-19)
 (use util.match)
@@ -58,9 +59,9 @@
    (html:ul 
     (html:li (html:a :href "errata.html" "正誤表"))
     (html:li (html:a :href "guide.pdf" "演習システムガイド"))
-    (html:li (html:a :href "../class/sf/chap11.pdf" "継続(EvalContML1)"))
-    (html:li (html:a :href "../class/sf/chap12.pdf" "第一級継続(EvalContML4)"))
-    (html:li (html:a :href "../class/sf/chap13.pdf" "参照(EvalRefML3)"))
+    (html:li (html:a :href "chap11.pdf" "継続(EvalContML1)"))
+    (html:li (html:a :href "chap12.pdf" "第一級継続(EvalContML4)"))
+    (html:li (html:a :href "chap13.pdf" "参照(EvalRefML3)"))
     )
    ;(html:h2 "正誤表")
    ;(html:p "今のところなし")
@@ -123,12 +124,20 @@
      (html:hr)
      "Copyright 2011 Atsushi Igarashi"))))
 
+(define (not-expired? date)  ;; date must be 'never or "YYYY/MM/DD"
+  (or (eq? 'never date)
+      (let ((expiration-date 
+	     (date->time-utc (string->date date "~Y/~m/~d")))
+	    (today (current-time)))
+	(time<=? today expiration-date))))
+
 (define (format-news newslist public? passed-sections)
   (match newslist
 	 [() ()]
 	 [((date title p? expire prerequisites content) . rest)
 	  (if (or p?  ;; the news itself should be publicized
 		  (and (not public?)  ;; displaying private news
+		       (not-expired? expire)
 		       (prerequisite-satisfied?
 			prerequisites passed-sections)))
 	      (let ((id (string-concatenate (list "news" date))))
@@ -160,9 +169,9 @@ function Toggle(id) {
 //-->"))
 
 (define (display-news public? . name)
-  (let* ((newslist  (call-with-input-file *news*
-		      (lambda (in) (if (port? in) (read in) #f))
-		      :if-does-not-exist #f))
+  (let* ((newslist (call-with-input-file *news*
+			 (lambda (in) (if (port? in) (read in) #f))
+			 :if-does-not-exist '()))
 	 (solved (if (null? name) '()
 		     (cdr (lookupdb (car name) 'solved))))
 	 (passed-sections
@@ -170,9 +179,7 @@ function Toggle(id) {
 	    (lambda (in)
 	      (let ((sections (read in)))
 		(sections-passed sections solved)))))
-	 (formatted-news (if newslist 
-			     (format-news newslist public? passed-sections)
-			     '())))
+	 (formatted-news (format-news newslist public? passed-sections)))
     (if (null? formatted-news)
 	'()
 	(list

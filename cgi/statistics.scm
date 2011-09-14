@@ -115,9 +115,10 @@
 			     unames))
 	       (how-many-users (length solved-list)))
 	  (map (lambda (x) (accumulate! (cdr x))) solved-list)
-	  (let* ((name-solved-score (map (lambda (x) (add-score x)) solved-list))
-		 (sorted-list (sort name-solved-score
-				    (lambda (x y) (> (caddr x) (caddr y)))))
+	  (let* ((name-solved-score
+		  (map (lambda (x) (add-score x)) solved-list))
+		 (sorted-list
+		  (sort name-solved-score (lambda (x y) (> (caddr x) (caddr y)))))
 		 (ranked-list (add-rank sorted-list)))
 	    (list
 	     ;; if NAME belongs to a group, then generate another table
