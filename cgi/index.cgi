@@ -204,8 +204,10 @@ function ToggleOldnews() {
 	  (html:h1 "おしらせ")
 	  (html:p "(内容の表示・非表示を切り替えるには日付・タイトル行をクリックしてください．)")
 	  (html:p :class "nofloat")
-	  (html:input :type "button" :onclick "ToggleOldnews()"
-		      :value "古いおしらせの表示・非表示の切替")
+	  (if (not public?)
+	      (html:input :type "button" :onclick "ToggleOldnews()"
+			  :value "古いおしらせの表示・非表示の切替")
+	      '())
 	  JStoggle
 	  (html:div
 	   :class "news" :id "newslist" 

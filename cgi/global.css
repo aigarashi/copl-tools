@@ -246,14 +246,15 @@ ul.questions{
 }
 
 #userinput {
-    margin: 5px;
-    padding: 5px;
+    margin: 5px; 
+/*    padding: 5px; */
     border: 1px solid #6699ff;
     border-spacing: 1em 0em;
 }
 
 .lineno {
     text-align: right;
+    background-color:#dddddd;
 }
 #userinput td {
     vertical-align: top;
