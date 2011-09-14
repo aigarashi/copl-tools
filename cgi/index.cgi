@@ -124,31 +124,31 @@
      (html:hr)
      "Copyright 2011 Atsushi Igarashi"))))
 
-(define (not-expired? date)  ;; date must be 'never or "YYYY/MM/DD"
-  (or (eq? 'never date)
-      (let ((expiration-date
-	     (date->time-utc (string->date date "~Y/~m/~d")))
-	    (today (current-time)))
-	(time<=? today expiration-date))))
+(define (expired? date)  ;; date must be 'never or "YYYY/MM/DD"
+  (and (string? date)
+       (let ((expiration-date
+	      (date->time-utc (string->date date "~Y/~m/~d")))
+	     (today (current-time)))
+	 (time>? today expiration-date))))
 
 (define (format-news newslist public? passed-sections)
   (match newslist
 	 [() ()]
 	 [((date title p? expire prerequisites content) . rest)
-	  (if (and (not-expired? expire) ;; it must not be expired
-		   (or p?  ;; the news itself should be publicized
-		       (and (not public?)  ;; displaying private news
-			    (prerequisite-satisfied?
-			     prerequisites passed-sections))))
+	  (if (or p?  ;; the news itself should be publicized
+		  (and (not public?)  ;; displaying private news
+		       (prerequisite-satisfied?
+			prerequisites passed-sections)))
 	      (let ((id (string-concatenate (list "news" date))))
 		(cons
-		 (html:dt (html:div :onclick #`"Toggle(',|id|')"
-				    (list "(" date ") " title)))
-		 (cons
-		  (html:div :id id
-			    :style "display:none;"
-			    (html:dd content))
-		  (format-news rest public? passed-sections))))
+		 (let* ((dt (html:dt (html:div :onclick #`"Toggle(',|id|')"
+					       (list "(" date ") " title))))
+			(dd (html:div :id id :style "display:none;"
+				      (html:dd content))))
+		   (if (expired? expire)
+		       (html:div :class "oldnews" :style "display:none;" dt dd)
+		       (list dt dd)))
+		 (format-news rest public? passed-sections)))
 	      (format-news rest public? passed-sections))]))
 
 (define-constant JStoggle
@@ -156,7 +156,7 @@
    :type "text/javascript"
    "<!--
 function Toggle(id) {
-　div = document.getElementById(id);
+　var div = document.getElementById(id);
 　switch (div.style.display) {
 　　case \"none\":
 　　　div.style.display=\"block\";
@@ -165,6 +165,20 @@ function Toggle(id) {
 　　　div.style.display=\"none\";
 　　　break;
 　}
+}
+function ToggleOldnews() {
+  var children = document.getElementById(\"newslist\").firstChild.childNodes;
+  var n = children.length;
+  for(i = 0; i < n; i++)
+    if (children[i].getAttribute(\"class\") == \"oldnews\")
+    　switch (children[i].style.display) {
+    　　case \"none\":
+    　　　children[i].style.display=\"block\";
+    　　　break;
+  　　case \"block\":
+        children[i].style.display=\"none\";
+        break;
+     }
 }
 //-->"))
 
@@ -190,8 +204,12 @@ function Toggle(id) {
 	  (html:h1 "おしらせ")
 	  (html:p "(内容の表示・非表示を切り替えるには日付・タイトル行をクリックしてください．)")
 	  (html:p :class "nofloat")
+	  (html:input :type "button" :onclick "ToggleOldnews()"
+		      :value "古いおしらせの表示・非表示の切替")
 	  JStoggle
-	  (html:div :class "news" formatted-news))))))
+	  (html:div
+	   :class "news" :id "newslist" 
+	   (html:dl formatted-news)))))))
 
 (define (display-sidebar name)
   (let* ((solved (cdr (lookupdb name 'solved))))
