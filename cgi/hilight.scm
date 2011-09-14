@@ -32,6 +32,12 @@
 		   ;; a right-most one comes first
 		   (> char1 char2)))))))
 
+(define (generate-linenums n)
+  (define (aux i)
+    (if (> i n) '()
+	(cons i (cons "\n" (aux (+ i 1))))))
+  (aux 1))
+
 (define (emphasize lines locs)
   (define sorted-locs (sort-locs locs))
   (define (aux locs lines)

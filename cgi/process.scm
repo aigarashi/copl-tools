@@ -92,12 +92,13 @@
 	 (html:h1 "残念...")
 	 (html:pre (html-escape-string (caddr result))) 
 	 (html:table :id "userinput"
-		     (let ((locs (parse-errmsg (caddr result)))
-			   (lines (string-split deriv "\n")))
-		           (hilighted-text (emphasize lines '())))
+		     (let* ((locs (parse-errmsg (caddr result)))
+			    (lines (string-split deriv "\n"))
+			    (hilighted-text (emphasize lines locs)))
 		     (html:tr
-		      (html:td (html:pre "1\n2\n3"))
-		      (html:td (html:pre (cdr hilighted-text)))))
+		      (html:td :class "lineno"
+			       (html:pre (generate-linenums (car hilighted-text))))
+		      (html:td (html:pre (cdr hilighted-text))))))
 	 (if (zero? no)
 	     '()
 	     (list
