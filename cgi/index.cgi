@@ -126,7 +126,7 @@
 
 (define (not-expired? date)  ;; date must be 'never or "YYYY/MM/DD"
   (or (eq? 'never date)
-      (let ((expiration-date 
+      (let ((expiration-date
 	     (date->time-utc (string->date date "~Y/~m/~d")))
 	    (today (current-time)))
 	(time<=? today expiration-date))))
@@ -135,11 +135,11 @@
   (match newslist
 	 [() ()]
 	 [((date title p? expire prerequisites content) . rest)
-	  (if (or p?  ;; the news itself should be publicized
-		  (and (not public?)  ;; displaying private news
-		       (not-expired? expire)
-		       (prerequisite-satisfied?
-			prerequisites passed-sections)))
+	  (if (and (not-expired? expire) ;; it must not be expired
+		   (or p?  ;; the news itself should be publicized
+		       (and (not public?)  ;; displaying private news
+			    (prerequisite-satisfied?
+			     prerequisites passed-sections))))
 	      (let ((id (string-concatenate (list "news" date))))
 		(cons
 		 (html:dt (html:div :onclick #`"Toggle(',|id|')"
@@ -171,7 +171,7 @@ function Toggle(id) {
 (define (display-news public? . name)
   (let* ((newslist (call-with-input-file *news*
 			 (lambda (in) (if (port? in) (read in) #f))
-			 :if-does-not-exist '()))
+			 :if-does-not-exist #f))
 	 (solved (if (null? name) '()
 		     (cdr (lookupdb (car name) 'solved))))
 	 (passed-sections
@@ -179,7 +179,9 @@ function Toggle(id) {
 	    (lambda (in)
 	      (let ((sections (read in)))
 		(sections-passed sections solved)))))
-	 (formatted-news (format-news newslist public? passed-sections)))
+	 (formatted-news (if newslist
+			     (format-news newslist public? passed-sections)
+			     '())))
     (if (null? formatted-news)
 	'()
 	(list
