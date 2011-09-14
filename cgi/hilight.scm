@@ -53,15 +53,8 @@
 					    (insert-tag i #f "</span>" lines)))))
 		    (aux2 line1 lines)
 		    ])))]))
-  (cdr 
-   (map-with-index
-    (lambda (i s)
-      (html:td
-       (html:tr :class "lineno" i)
-       (html:tr (html:pre s))))
-    (cons "" (aux sorted-locs lines))))
-  #;(string-join (aux sorted-locs lines)
-	       "\n" 'suffix))
+  (cons (length lines) 
+	(string-join (aux sorted-locs lines) "\n" 'suffix)))
 
 #;(define *sample-str* 
 "(S(Z) + S(Z)) * S(S(Z)) evalto S(S(S(S(Z)))) by E-Mult { 

@@ -94,7 +94,10 @@
 	 (html:table :id "userinput"
 		     (let ((locs (parse-errmsg (caddr result)))
 			   (lines (string-split deriv "\n")))
-		       (emphasize lines '())))
+		           (hilighted-text (emphasize lines '())))
+		     (html:tr
+		      (html:td (html:pre "1\n2\n3"))
+		      (html:td (html:pre (cdr hilighted-text)))))
 	 (if (zero? no)
 	     '()
 	     (list
