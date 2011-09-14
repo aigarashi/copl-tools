@@ -251,6 +251,10 @@ ul.questions{
     border: 1px solid #6699ff;
 }
 
+#userinput #lineno {
+    text-align: right;
+}
+
 /* statistics */
 #ranking {
    color: #000000;

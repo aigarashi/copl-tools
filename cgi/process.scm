@@ -72,8 +72,8 @@
 	  (cond
 	   [(zero? no) "正しい導出です．"]
 	   [(and (not (lookupdb uname 'finished)) ;; not yet finished
-		(= (length (cdr (lookupdb uname 'solved)))
-		   how-many-q))
+		 (= (length (cdr (lookupdb uname 'solved)))
+		    how-many-q))
 	    ;; when the last problem is solved...
 	    (write-log uname (format "All the problems have been solved!") :header #t)
 	    (updatedb uname 'finished (lambda (s) (sys-time)))
@@ -91,11 +91,10 @@
 	(list
 	 (html:h1 "残念...")
 	 (html:pre (html-escape-string (caddr result))) 
-	 (html:pre :id "userinput"
-		   (let ((locs (parse-errmsg (caddr result))))
-		     (if (null? locs)
-			 deriv
-			 (emphasize deriv locs))))
+	 (html:table :id "userinput"
+		     (let ((locs (parse-errmsg (caddr result)))
+			   (lines (string-split deriv "\n")))
+		       (emphasize lines '())))
 	 (if (zero? no)
 	     '()
 	     (list

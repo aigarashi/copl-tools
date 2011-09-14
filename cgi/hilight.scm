@@ -2,6 +2,8 @@
 
 (use text.html-lite)
 (use srfi-13)
+(use gauche.sequence)
+(use util.match)
 
 (define (insert-tag-at n tag str)
   (if (number? n)
@@ -30,9 +32,7 @@
 		   ;; a right-most one comes first
 		   (> char1 char2)))))))
 
-(define (emphasize s locs)
-  (define lines (string-split s ;#[\n\r]
-                                "\n"))
+(define (emphasize lines locs)
   (define sorted-locs (sort-locs locs))
   (define (aux locs lines)
     (match 
@@ -45,8 +45,22 @@
 	    (match loc2
 		   [() (insert-tag line1 #f "</span>" lines)]
 		   [(line2 char2)
-		    (insert-tag line2 char2 "</span>" lines)])))]))
-  (string-join (aux sorted-locs lines)
+		    (define (aux2 i lines)
+		      (if (= i line2) 
+			  (insert-tag line2 char2 "</span>" lines)
+			  (insert-tag (+ i 1) 0 "<span class=\"error\">"
+				      (aux2 (+ i 1)
+					    (insert-tag i #f "</span>" lines)))))
+		    (aux2 line1 lines)
+		    ])))]))
+  (cdr 
+   (map-with-index
+    (lambda (i s)
+      (html:td
+       (html:tr :class "lineno" i)
+       (html:tr (html:pre s))))
+    (cons "" (aux sorted-locs lines))))
+  #;(string-join (aux sorted-locs lines)
 	       "\n" 'suffix))
 
 #;(define *sample-str* 
