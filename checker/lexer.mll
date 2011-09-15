@@ -16,6 +16,9 @@ module Make(X :
       val rbrace : token
       val lbracket : token
       val rbracket : token
+      val semi : token
+      val by : token
+      val qm : token
       val eq : token
       val def : token
       val eof : token
@@ -76,6 +79,9 @@ rule main = parse
 | "}" { rbrace }
 | "[" { lbracket }
 | "]" { rbracket }
+| "?" { qm }
+| ";" { semi }
+| "by" { by }
 | "=" { eq }
 | "def" { def }
 | "(*" { comment 1 lexbuf }
@@ -114,7 +120,7 @@ rule main = parse
 
 | "-d->"
 | ['!' '"' '#' '$' '%' '&' '*' '+' '-' '.' '/' ':' '<' '=' '>' '+' 
-   '@' '^' '`' '~' '|' '?' ';']+ | "\'" | "," {
+   '@' '^' '`' '~' '|']+ | "\'" | "," {
     let sym = Lexing.lexeme lexbuf in
       try Hashtbl.find tbl sym with _ -> id sym
     }

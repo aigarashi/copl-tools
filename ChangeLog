@@ -1,3 +1,11 @@
+2011-09-15  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
+
+	* tools/checker/*/keywords.ml: Removed common symbols.
+	* tools/checker/.../link.ml: Replaced with a symbolic link to the shared version.
+	* tools/checker/lexer.mll: Added common symbols.
+	* tools/checker/common/parser-common.mly: New file (which should
+	have been added earlier).
+
 2011-09-14  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/hilight.scm (emphasize): An error output comes with line

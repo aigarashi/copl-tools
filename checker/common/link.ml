@@ -25,6 +25,7 @@ module Lexer = Lexer.Make(
 	and eq = EQ
         and def = DEF
 	and qm = QM
+        and by = BY
       end 
 
       module K = Keywords
