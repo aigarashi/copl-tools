@@ -35,7 +35,7 @@
 (define (generate-linenums n)
   (define (aux i)
     (if (> i n) '()
-	(cons i (cons "\n" (aux (+ i 1))))))
+	(cons (format "~d\n" i) (aux (+ i 1)))))
   (aux 1))
 
 (define (emphasize lines locs)

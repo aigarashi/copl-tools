@@ -247,19 +247,26 @@ ul.questions{
 
 #userinput {
     margin: 5px; 
-/*    padding: 5px; */
     border: 1px solid #6699ff;
-    border-spacing: 1em 0em;
+    border-spacing: 0em;
 }
 
 .lineno {
     text-align: right;
     background-color:#dddddd;
+    padding-left: 1ex;
+    padding-right: 1ex;
+}
+.code {
+    padding-left: 1em;
+    padding-right: 1em;
 }
 #userinput td {
     vertical-align: top;
 }
-
+#userinput pre {
+    margin: 0pt;
+}
 /* statistics */
 #ranking {
    color: #000000;

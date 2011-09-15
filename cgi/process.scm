@@ -98,7 +98,7 @@
 		     (html:tr
 		      (html:td :class "lineno"
 			       (html:pre (generate-linenums (car hilighted-text))))
-		      (html:td (html:pre (cdr hilighted-text))))))
+		      (html:td :class "code" (html:pre (cdr hilighted-text))))))
 	 (if (zero? no)
 	     '()
 	     (list
