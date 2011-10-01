@@ -37,7 +37,13 @@
    :id "bookinfo"
    (html:div :id "box"
    (html:h2 "書籍情報")
-   (html:p "(amazon, yahoo, cbook24.com)")
+   (html:p "("
+	   (html:a :href "http://www.saiensu.co.jp/?page=book_details&ISBN=ISBN978-4-7819-1285-1" "サイエンス社")
+	   ","
+	   (html:a :href "http://www.amazon.co.jp/dp/4781912850/" "amazon.co.jp")
+	   ","
+	   (html:a :href "http://books.rakuten.co.jp/rb/item/11285225/" "楽天books")
+	   )
    (html:table
     (html:tr
      (html:td :rowspan "6" (html:img :src "../image/CoPL-thumb.jpg" 
