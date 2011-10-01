@@ -43,7 +43,7 @@
 	   (html:a :href "http://www.amazon.co.jp/dp/4781912850/" "amazon.co.jp")
 	   ","
 	   (html:a :href "http://books.rakuten.co.jp/rb/item/11285225/" "楽天books")
-	   )
+	   ")")
    (html:table
     (html:tr
      (html:td :rowspan "6" (html:img :src "../image/CoPL-thumb.jpg" 
