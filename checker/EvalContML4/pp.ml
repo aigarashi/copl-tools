@@ -16,7 +16,7 @@ let with_paren lt ppf_e e_up ppf e =
 let rec is_last_longexp = function
     BinOp(_,_,e) | Cons(_,e) -> is_last_longexp e
   | If(_,_,_) | Let(_,_,_) | Abs(_,_) | LetRec(_,_,_,_) 
-  | Match(_,_,_,_,_) | Shift(_,_) -> true
+  | Match(_,_,_,_,_) | LetCc(_,_) -> true
   | _ -> false
 
 (* if e is the left operand of e_up, do you need parentheses for e? *)
@@ -53,7 +53,7 @@ let (>) e_up e = match e_up, e with
   | App(_, _),                   LetRec(_, _, _, _)
   | App(_, _),                   Match(_, _, _, _, _)
   | App(_, _),                   Cons(_, _)
-  | App(_, _),                   Shift(_, _)
+  | App(_, _),                   LetCc(_, _)
   | BinOp(Mult, _, _),           (BinOp(_, _, _) | Cons(_, _))
   | BinOp((Plus | Minus), _, _), (BinOp((Plus | Minus | Lt), _, _) | Cons(_, _))
   | Cons(_, _),                  BinOp(Lt, _, _)
@@ -108,9 +108,8 @@ let rec print_exp =
 	      x
 	      y
 	      print_exp e3
-	| Reset(e) -> pr ppf "{ %a }" print_exp e
-	| Shift(Var x, e) ->
-	    pr ppf "shift %s in %a" x print_exp e
+	| LetCc(Var x, e) ->
+	    pr ppf "letcc %s in %a" x print_exp e
 
 let rec tex_exp ppf e = 
     let with_paren_L = with_paren (<)
@@ -157,9 +156,8 @@ let rec tex_exp ppf e =
 	      x
 	      y
 	      tex_exp e3
-        | Reset(e) -> pr ppf "\\%sResetTerm{%a}" g tex_exp e
-	| Shift(Var x, e) ->
-	    pr ppf "\\%sShiftTerm{%s}{%a}" g 
+	| LetCc(Var x, e) ->
+	    pr ppf "\\%sLetCcTerm{%s}{%a}" g 
 	      x tex_exp e
 
 (* precedence for values *)
@@ -254,21 +252,12 @@ and print_optcont ppf = function
     RetK -> ()
   | k -> pr ppf "@ @[>> %a@]" print_cont k
 
-and print_mcont ppf = function
-    RetKK ->  pr ppf "__"
-  | DelimitedKK(k,kk) -> pr ppf "@[%a@]%a" print_cont k print_optmcont kk
-
-and print_optmcont ppf = function
-    RetKK -> ()
-  | kk -> pr ppf "@ @[>>> %a@]" print_mcont kk
-
 let print_judgment ppf = function
-    EvalTo (env, k, kk, e, v) -> 
-      pr ppf "@[@[%a@]@ |- @[@[%a@]@[%a@]@[%a@] evalto %a@]@]" 
+    EvalTo (env, k, e, v) -> 
+      pr ppf "@[@[%a@]@ |- @[@[%a@]@[%a@]@ evalto %a@]@]" 
 	print_env env 
 	print_exp e 
 	print_optcont k
-	print_optmcont kk
 	print_val v
   | AppBOp (Lt, v1, v2, Value_of_bool true) ->
       pr ppf "@[%a is less than %a@]" print_val v1 print_val v2
@@ -277,19 +266,19 @@ let print_judgment ppf = function
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
       in pr ppf "@[%a %s %a is %a@]" print_val v1 op print_val v2 print_val v3
-  | AppK (k, kk, v1, v2) ->
-      pr ppf "@[%a => %a%a evalto %a@]" print_val v1 print_cont k print_optmcont kk print_val v2
+  | AppK (k, v1, v2) ->
+      pr ppf "@[%a => %a evalto %a@]" print_val v1 print_cont k print_val v2
 
 let print_pjudgment ppf = function
-    In_EvalTo (env, k, kk, e) ->
-      pr ppf "@[%a@]@ |- %a >> %a >>> %a evalto ?" print_env env print_cont k print_mcont kk print_exp e 
+    In_EvalTo (env, k, e) ->
+      pr ppf "@[%a@]@ |- %a >> %a evalto ?" print_env env print_cont k print_exp e 
   | In_AppBOp (Lt, v1, v2) ->
       pr ppf "%a is less than %a ?" print_val v1 print_val v2
   | In_AppBOp (p, v1, v2) -> 
       let op = match p with Plus -> "plus" | Minus -> "minus" | Mult -> "times"
       in pr ppf "%a %s %a is ?" print_val v1 op print_val v2
-  | In_AppK (k, kk, v) ->
-      pr ppf "@[%a => %a >>> %a evalto ?@]" print_val v print_cont k print_mcont kk
+  | In_AppK (k, v) ->
+      pr ppf "@[%a => %a evalto ?@]" print_val v print_cont k
 
 let rec tex_env ppf = function
     Empty -> ()
@@ -349,18 +338,14 @@ and tex_cont =
 	pr ppf "\\%sMatchKTerm{%a}{%a}{%s}{%s}{%a}{%a}" g  
 	  tex_env env  tex_exp e1  x  y  tex_exp e2  tex_cont k
 
-and tex_mcont ppf = function
-  | RetKK -> pr ppf "\\%sRetKKTerm{}" g
-  | DelimitedKK(k, kk) -> pr ppf "\\%sDelimitedKKTerm{%a}{%a}" g tex_cont k tex_mcont kk
-
 let tex_judgment ppf = function
-    EvalTo (env, k, kk, e, v) -> 
-      pr ppf "\\%sEvalTo{%a}{%a}{%a}{%a}{%a}" g tex_env env tex_cont k tex_mcont kk tex_exp e tex_val v
+    EvalTo (env, k, e, v) -> 
+      pr ppf "\\%sEvalTo{%a}{%a}{%a}{%a}" g tex_env env tex_cont k tex_exp e tex_val v
   | AppBOp (p, v1, v2, v3) -> 
       let op = match p with 
 	  Plus -> "\\MLivPlusTerm" | Minus -> "\\MLivMinusTerm"
 	| Mult -> "\\MLivMultTerm" | Lt -> "\\MLivLTTerm" 
       in pr ppf "\\%sAppBOp{%a}{%s}{%a}{%a}" g
 	   tex_val v1 op tex_val v2 tex_val v3
-  | AppK (k, kk, v1, v2) ->
-      pr ppf "\\%sAppK{%a}{%a}{%a}{%a}" g tex_cont k tex_mcont kk tex_val v1 tex_val v2
+  | AppK (k, v1, v2) ->
+      pr ppf "\\%sAppK{%a}{%a}{%a}" g tex_cont k tex_val v1 tex_val v2

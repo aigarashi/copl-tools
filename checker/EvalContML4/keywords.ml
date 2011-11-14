@@ -40,7 +40,7 @@ let v = [
   (* ContML3 *)
   (">>", GTGT);
   ("=>", DRARROW);
-(*  ("letcc", LETCC); *)
+  ("letcc", LETCC);
   ("_", UNDERSCORE);
 
   (* ML5 expressions *)
@@ -48,10 +48,5 @@ let v = [
   ("with", WITH);
   ("|", BAR);
   ("::", COLCOL);
-
-  (* DCont *)
-  ("shift", SHIFT);
-  (">>>", GTGTGT);
-  ("__", USCOREUSCORE);
 ] 
 

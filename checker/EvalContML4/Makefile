@@ -1,6 +1,6 @@
-PROGNAME = EvalDContML4
-MODULEPATH = EvalDContML4
-PACKED=evalDContML4
+PROGNAME = EvalContML4
+MODULEPATH = EvalContML4
+PACKED=evalContML4
 
 -include ../common/Makefile.game
 
