@@ -12,6 +12,7 @@ GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
 	EvalML1 EvalML2 EvalML3 EvalML4 EvalML5 EvalML6 \
 	EvalML1Err \
 	EvalContML1 EvalContML3 EvalContML4 \
+	EvalDContML4 \
 	EvalRefML3 EvalRefML4 \
 	NamelessML3 EvalNamelessML3 \
 	TypingML2 TypingML3 TypingML4 TypingML6 \
@@ -38,6 +39,7 @@ GAMEOBJS=	Nat/nat.cmo \
 		EvalContML1/evalContML1.cmo \
 		EvalContML3/evalContML3.cmo \
 		EvalContML4/evalContML4.cmo \
+		EvalDContML4/evalDContML4.cmo \
 		EvalRefML3/evalRefML3.cmo \
 		EvalRefML4/evalRefML4.cmo \
 		NamelessML3/namelessML3.cmo \
