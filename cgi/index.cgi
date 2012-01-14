@@ -36,6 +36,18 @@
   (html:div 
    :id "bookinfo"
    (html:div :id "box"
+   (html:h2 "最新情報")
+   (html:ul
+    (html:li
+     "2012年1月14日のジュンク堂書店池袋本店トークセッション"
+     (html:a
+      :href "http://www.junkudo.co.jp/tenpo/evtalk.html#20120114juikebukuro" 
+      "「新春座談会 このコンピュータ書がすごい！ 2012年版〜2011年に出たコンピュータ書ならこれを読め！〜」")
+     "にて本書が紹介された"
+     (html:a
+      :href "http://www.ustream.tv/recorded/19755352/highlight/232691#utm_campaign=t.co&utm_source=232691&utm_medium=social"
+      "模様")
+     "です．"))
    (html:h2 "書籍情報")
    (html:p "("
 	   (html:a :href "http://www.saiensu.co.jp/?page=book_details&ISBN=ISBN978-4-7819-1285-1" "サイエンス社")
@@ -58,9 +70,9 @@
      (html:td "定価: 1850円+税"))
     (html:tr
      (html:td "ISBN: 978-4-7819-1285-1"))
-    #;(html:tr
+#;    (html:tr
      (html:td 
-      (html:a :href "http://saiensu.co.jp" "サイエンス社のこの本に関するページ"))))
+      (html:a :href "http://www.saiensu.co.jp/?page=book_details&ISBN=ISBN978-4-7819-1285-1&YEAR=2011" "サイエンス社のこの本に関するページ"))))
    (html:h2 "補助資料")
    (html:ul 
     (html:li (html:a :href "errata.html" "正誤表"))
