@@ -1,3 +1,7 @@
+2012-04-17  IGARASHI Atsushi  <igarashi@triton>
+
+	* cgi/index.cgi (bookinfo): Information on classes that use the E-Learning system added.
+
 2011-09-20  igarashi  <igarashi@djembe>
 
 	* tools/checker/EvalDContML4: New game for delimited continuations.

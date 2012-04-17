@@ -82,8 +82,12 @@
     (html:li (html:a :href "chap12.pdf" "第一級継続(EvalContML4)"))
     (html:li (html:a :href "chap13.pdf" "参照(EvalRefML3)"))
     )
-   ;(html:h2 "正誤表")
-   ;(html:p "今のところなし")
+   (html:h2 "本演習システムを使っている講義")
+   (html:ul
+    (html:li (html:a :href "/~igarashi/class/sf/" "京都大学 大学院情報学研究科 知能情報学専攻 専門科目「ソフトウェア基礎論」(2010年度〜)"))
+    (html:li "お茶の水女子大学 大学院人間文化創成科学研究科 理学専攻 情報科学コース「言語意味論」(2012年度)")
+    )
+
    (html:hr)
    (html:p "Updated on " lastcommit)
    (html:p "Copyright 2011 Atsushi Igarashi"))
