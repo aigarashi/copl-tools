@@ -1,3 +1,7 @@
+2012-05-02  IGARASHI Atsushi  <igarashi@triton>
+
+	* cgi/index.cgi (bookinfo): typo fixed. This system has been used since 2008.
+
 2012-04-17  IGARASHI Atsushi  <igarashi@triton>
 
 	* cgi/index.cgi (bookinfo): Information on classes that use the E-Learning system added.
