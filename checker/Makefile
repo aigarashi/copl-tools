@@ -16,7 +16,8 @@ GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
 	EvalRefML3 EvalRefML4 \
 	NamelessML3 EvalNamelessML3 \
 	TypingML2 TypingML3 TypingML4 TypingML6 \
-	PolyTypingML3 PolyTypingML4
+	PolyTypingML3 PolyTypingML4 \
+	While
 
 INCLUDES=$(foreach game,$(GAMES),-I $(game)) # -I $(GMCDIR)
 
@@ -49,7 +50,8 @@ GAMEOBJS=	Nat/nat.cmo \
 		TypingML4/typingML4.cmo \
 		TypingML6/typingML6.cmo \
 		PolyTypingML3/polyTypingML3.cmo \
-		PolyTypingML4/polyTypingML4.cmo
+		PolyTypingML4/polyTypingML4.cmo \
+		While/while.cmo
 
 OBJS=mySupport.cmo derivation.cmo lexer.cmo $(GAMEOBJS) main.cmo
 

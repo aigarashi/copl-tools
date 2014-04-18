@@ -1,0 +1,90 @@
+(*
+  While (Winskel's book)
+*)
+
+[Syntax]
+
+i in int
+
+bv in bool
+
+x,y in Var
+
+st in Store ::= Empty
+             |  Bind(st,x,i)
+
+a in AExp ::= i
+           | x
+           | AOp(aop, a, a)
+
+aop in Prim ::= Plus | Minus | Mult
+
+b in BExp ::= bv
+           | Not(b)
+           | LOp(lop, b, b)
+           | COp(comp, a, a)
+
+lop in LOp ::= And | Or
+
+comp in Comp ::= Lt | Eq | Le
+
+c in Com ::= Skip
+          | Assign(x, a)
+          | Seq(c, c)
+          | If(b, c, c)
+          | While(b, c)
+
+[Judgments]
+
+AEvalTo(st, a; i);
+BEvalTo(st, b; bv);
+AppAOp(aop, i, i; i);
+NotB(bv; bv);
+AppLOp(lop, bv, bv; bv);
+AppCOp(comp, i, i; bv);
+
+Exec(st, c; st);
+
+[Rules]
+
+A-Const: AEvalTo(st, i, i) :- ;
+A-Var:  AEvalTo(st, x, i) :- 
+          `try $i = lookup $st $x with Exit -> false` 
+          `$i = lookup $st $x` 
+          %$st($x) = $i%;
+A-Plus: AEvalTo(st, AOp(Plus, a1, a2), i3) :- 
+		AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$i3 = $i1 + $i2`;
+A-Minus: AEvalTo(st, AOp(Minus, a1, a2), i3) :- 
+		AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$i3 = $i1 - $i2`;
+A-Times: AEvalTo(st, AOp(Mult, a1, a2), i3) :- 
+		AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$i3 = $i1 * $i2`;
+
+B-Const: BEvalTo(st, bv, bv) :- ;
+B-Not: BEvalTo(st, Not(b), bv2) :- BEvalTo(st, b, bv1), `$bv2 = not $bv1` %$bv2 = \neg $bv1%;
+B-And: BEvalTo(st, LOp(And, b1, b2), bv3) :- BEvalTo(st, b1, bv1), BEvalTo(st, b2, bv2), `$bv3 = ($bv1 && $bv2)`;
+B-Or: BEvalTo(st, LOp(Or, b1, b2), bv3) :- BEvalTo(st, b1, bv1), BEvalTo(st, b2, bv2), `$bv3 = ($bv1 || $bv2)`;
+B-Lt: BEvalTo(st, COp(Lt, a1, a2), bv) :- AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$bv = ($i1 < $i2)`;
+B-Eq: BEvalTo(st, COp(Eq, a1, a2), bv) :- AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$bv = ($i1 = $i2)`;
+B-Le: BEvalTo(st, COp(Le, a1, a2), bv) :- AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$bv = ($i1 <= $i2)`;
+
+C-Skip: Exec(st, Skip, st) :- ;
+C-Assign: Exec(st1, Assign(x, a), st2) :- AEvalTo(st1, a, i), `$st2 = update $st1 $x $i` %$st2 = $st1[$i/$x]%;
+C-Seq: Exec(st1, Seq(c1, c2), st3) :- Exec(st1, c1, st2), Exec(st2, c2, st3);
+C-IfT: Exec(st1, If(b, c1, c2), st2) :- BEvalTo(st1, b, true), Exec(st1, c1, st2);
+C-IfF: Exec(st1, If(b, c1, c2), st2) :- BEvalTo(st1, b, false), Exec(st1, c2, st2);
+C-WhileT: Exec(st1, While(b, c), st3) :- BEvalTo(st1, b, true), Exec(st1, c, st2), Exec(st2, While(b, c), st3);
+C-WhileF: Exec(st, While(b, c), st) :-BEvalTo(st, b, false);
+
+[ML]
+
+let rec lookup st x =
+    match st with 
+      Empty -> raise Exit
+    | Bind(st, x', v') -> if x = x' then v' else lookup st x
+
+let rec update st x v =    
+    match st with 
+      Empty ->  raise Exit
+    | Bind(st, x', v') -> if x = x' then Bind(st, x', v)
+                          else Bind(update st x v, x', v')
+
