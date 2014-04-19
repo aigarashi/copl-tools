@@ -1,0 +1,606 @@
+﻿/* Standard Article Style for use with LaTeXMathML */
+/* Jeff Knisley (knisleyj@etsu.edu)
+/* Supported in part by the Howard Hughes Medical Institute */
+/* as part of the Symbiosis Project: HHMI #52005872
+
+/* Modification of a style from Arun Ram */
+/* Department of Mathematics */
+/* University of Wisconsin, Madison */ 
+/* Madison, WI 53706 USA */
+/* This is the style information from the mathml template at */
+/* http://www.math.wisc.edu/~ram/MathGlossary/template.xml */
+/*
+/* See http://www.math.wisc.edu/~ram/MathGlossary/mathmlguide.xml for details */
+/* */
+/* Dr. Arun Ram's work was supported in part by the National Science Foundation under Grant No. 0353038. 
+
+/* Internet Explorer does not support before/after tags.  If it ever does, then the original 
+   LaTeXMathML.js script will have to be modified by removing all "if" structures that begin as 
+       if(isIE) { //remove if IE supports :before and :after
+*/
+
+/* To transform to CSS counters, do the following: (note: this is for section.item numbering); 
+    1. Change all span.xxx to display: none 
+    2. Add style to body to reset section counter: For example: 
+         body {    counter-reset: section 0  appendixsection 0}
+
+    3. Add the following style to reset counters after every section change
+         a.section { counter-reset: eqn 0 figure 0 subsection 0 subsubsection 0 definition 0 
+                                    proposition 0 lemma 0 theorem 0 corollary 0 example 0 exercise 0 ;  
+         } 
+         a.appendixsection { counter-reset: eqn 0 figure 0 subsection 0 subsubsection 0 definition 0 
+                                    proposition 0 lemma 0 theorem 0 corollary 0 example 0 exercise 0 ;  
+         } 
+
+    4. For all numbered LaTeX items, set the a.xxx:before to content: counter(section) "."  counter(item) 
+       and also, add    counter-increment: item 1 
+       
+       For example: (Internet Explorer does nto support :before and :after pseudotags -- or counters!)
+       
+         a.subsection:before {
+             content: counter(section) ". " counter(subsection);
+             counter-increment: subsection 1;  
+         } 
+         
+    5. For \ref cross-references, add the line (note: no browser currently supports this!)
+       
+         a.ref:before{ content: target-text(attr(href),before) }
+
+       For \cite cross-references, add the line (note: no browser currently supports this!)
+       
+         a.cite:before{ content: target-text(attr(href),before) }
+
+Note: Alternatively, just uncomment all the commented items below! This will produce 
+   nice results in Firefox and Other CSS2 compliant browsers, but cross-references will not be related
+   to CSS counters until CSS 3 is supported
+
+*/    
+
+
+/* body {
+    counter-reset: section 0 enumerate 0 bibitem 0; 
+} */
+
+
+LaTeX {/* Marks Containers with LaTeX code to be parsed */  
+}
+
+div.title {
+    text-align:center;
+    font-style: normal; 
+    font-weight: bold; 
+    font-size: 150%;
+}
+
+div.author {
+    text-align:center;
+    font-style: normal; 
+    font-size: 130%;     
+}
+
+div.address {
+    text-align:center;
+    font-style:normal; 
+}
+
+div.date {
+    text-align:center;
+    font-style: normal; 
+}
+
+div.abstract {
+    font-style: normal;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+div.abstract:before {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 105%; 
+    content: "Abstract:";     
+} 
+
+div.keyword {
+    font-style: normal;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+div.keyword:before {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 105%; 
+    content: "Keywords:";     
+} 
+
+.centered {
+   text-align:center;
+   margin-left:auto; 
+   margin-right:auto;
+}
+
+h2.section {
+   margin-bottom:0.25em;
+   margin-top:1em;
+}
+
+h3.subsection {
+   margin-bottom:0.25em;
+   margin-top:0.75em;
+}
+
+h4.subsubsection {
+   margin-bottom:0.25em;
+   margin-top:0.5em;
+}
+
+div.enumerate {
+}
+
+div.itemize {
+}
+
+/* vertical spacing */
+
+p.LaTeXMathML {
+	font-size: 0.25em;
+}
+
+p.smallskip {  
+   font-size: 1.5em;
+}
+
+p.medskip {
+    font-size: 3em;
+}
+
+p.bigskip {
+    font-size: 4.5em;
+}
+
+
+/* Font-face LaTeX spans */
+
+span.textbf {
+   font-weight:bold;
+}
+
+span.textit {
+   font-style:italic;
+}
+
+span.emph {
+   font-style:italic;
+   font-weight:bolder;
+}
+
+span.textsc {
+   font-variant:small-caps
+}
+
+span.textsl {
+   font-style:oblique;
+}
+
+span.textsf {
+   font-family:sans-serif, Arial, Helvetica;
+}
+
+span.texttt {
+	font-family:monospace,"Courier New", Courier;
+}
+
+span.tiny {
+	font-size:xx-small;
+}
+
+span.scriptsize{
+	font-size:x-small;
+}
+
+span.footnotesize {
+	font-size:small;
+}
+
+span.small {
+	font-size:small;
+}
+
+span.normalsize {
+	font-size:medium;
+}
+
+
+span.Large {
+	font-size:x-large;
+}
+
+span.LARGE {
+	font-size:xx-large;
+}
+
+span.large {
+	font-size:large;
+}
+
+span.huge {
+	font-size:x-large;
+	font-weight:bolder;
+}
+
+span.HUGE {
+	font-size:xx-large;
+	font-weight:bolder;
+}
+
+
+/* sections */
+
+span.section { font-style: normal; /* display: none */ }
+
+/* a.section { counter-reset: eqn 0 figure 0 subsection 0 subsubsection 0 definition 0 
+                           proposition 0 lemma 0 theorem 0 corollary 0 example 0 exercise 0 ;  
+} 
+
+a.appendixsection { counter-reset: eqn 0 figure 0 subsection 0 subsubsection 0 definition 0 
+                           proposition 0 lemma 0 theorem 0 corollary 0 example 0 exercise 0 ;
+}
+*/
+
+
+/* subsections */
+
+span.subsection { font-style: normal; /* display: none */ }
+
+/* a.subsection {
+    counter-reset: subsubsection 0;
+}
+
+a.subsection:before {
+    content: counter(section) ". " counter(subsection);
+    counter-increment: subsection;  
+} 
+*/
+
+/* subsubsections */
+span.subsubsection{ font-style: normal; /* display: none */ }
+
+/* a.subsubsection:before {
+    content: counter(section) ". " counter(subsection);
+    counter-increment: subsection;  
+} 
+*/
+
+/* figures */
+table.figure {
+   width:100%;
+}
+   
+td.caption {
+   text-align:center;
+}
+
+/* td.caption:before {
+   content: "Figure";
+   font-style: normal; 
+   font-weight: bold 
+}
+*/
+
+td.image {
+   text-align:center;
+}
+
+span.figure {  font-weight: bold; /* display: none */ }
+
+/*a.figure:before {
+   content: counter(section) "." counter(figure);
+   counter-increment: figure;  
+   font-style: normal; 
+   font-weight: bold;
+}
+
+a.figure:after { content: "." }
+*/
+
+/* LaTeXtable  configuration */
+
+table.LaTeXtable {
+
+}
+
+table.LaTeXtable tbody {
+   text-align:center;
+   margin-left:auto; 
+   margin-right:auto;
+}
+
+
+/* table.LaTeXtable td.caption:before {
+   content: "Table ";
+   font-style: normal; 
+   font-weight: bold 
+}
+*/
+
+/*table.LaTeXtable td.tabular table.tabular {
+   text-align:center;	
+} */
+
+span.LaTeXtable {  font-weight: bold; /* display: none */ }
+
+/*a.LaTeXtable:before {
+   content: counter(section) "." counter(LaTeXtable);
+   counter-increment: LaTeXtable;  
+   font-style: normal; 
+   font-weight: bold;
+}
+
+a.LaTeXtable:after { content: "." }
+*/
+
+/* Inline equation */
+
+span.inlinemath {
+	 
+}
+
+/* equation -- numbering in script to accomodate IE */
+table.displayequation {
+   width:100%;
+   }
+   
+td.eq {
+   text-align:center;
+}
+
+td.eqno {
+    width: 10px;
+    text-align:right;
+}
+
+span.eqno {  font-style: normal; /* display: none */ }
+
+/* td.eqno:before { content: "(" }
+
+a.eqno:before {
+   content: counter(section) "." counter(equation);
+   counter-increment: equation;  
+   font-style: normal; 
+}
+
+a.eqno:after { content: ")" }
+*/
+
+/* definition style, including number */
+span.definition { 
+   font-weight: bold; 
+   font-style: normal;
+   /* display: none */ 
+}
+
+/* div.definition:before { 
+    content: "Definition"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.definition:before {
+    content: counter(section) "." counter(definition); 
+    counter-increment: definition 1;
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+a.definition:after { content: "." }
+*/
+
+div.definition{ font-style:italic }
+
+/* proposition style, including number */
+span.proposition {  
+   font-weight: bold; 
+   font-style: normal;
+   /* display: none */ 
+}
+
+/* div.proposition:before { 
+    content: "Proposition"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.proposition:before {
+    content: counter(section) "." counter(proposition); 
+    counter-increment: proposition 1;
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+a.proposition:after { content: "." }
+*/
+
+div.proposition{ font-style:italic }
+
+/* lemma style, including number */
+span.lemma {  
+   font-weight: bold; 
+   font-style: normal;
+   /* display: none */ 
+}
+
+/* div.lemma:before { 
+    content: "Lemma"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.lemma:before {
+    content: counter(section) "." counter(lemma); 
+    counter-increment: lemma 1;
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+a.lemma:after { content: "." }
+*/ 
+
+div.lemma{ font-style:italic }
+
+/* theorem style, including number */
+span.theorem { 
+   font-weight: bold; 
+   font-style: normal;
+   /* display: none */ 
+}
+
+/* div.theorem:before { 
+    content: "Theorem"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.theorem:before {
+    content: counter(section) "." counter(theorem); 
+    counter-increment: theorem 1;
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+a.theorem:after { content: "." }
+*/
+
+div.theorem{ font-style:italic }
+
+/* corollary style, including number */
+span.corollary { 
+   font-weight: bold; 
+   font-style: normal;
+   /* display: none */ 
+}
+
+/* div.corollary:before { 
+    content: "Corollary"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.corollary:before {
+    content: counter(section) "." counter(corollary); 
+    counter-increment: corollary 1;
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+a.corollary:after { content: "." }
+*/ 
+
+div.corollary{ font-style:italic }
+
+/* example style, including number */
+span.example { 
+   font-weight: bold; 
+   font-style: normal;
+   /* display: none */ 
+}
+
+/* div.example:before { 
+    content: "Example"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.example:before {
+    content: counter(section) "." counter(example); 
+    counter-increment: example 1;
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+a.example:after { content: "." }
+*/ 
+
+div.example {
+    font-style: normal;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+/* exercise style, including number */
+span.exercise {  
+   font-weight: bold; 
+   font-style: normal;
+   /* display: none */ 
+}
+
+/* div.exercise:before { 
+    content: "Exercise"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.exercise:before {
+    content: counter(section) "." counter(exercise); 
+    counter-increment: exercise 1;
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+a.exercise:after { content: "." }
+*/ 
+
+/* thebibliography style, including number */
+div.thebibliography {
+    font-style: normal;
+    padding-top: 15px;
+}
+
+div.thebibliography:before { 
+    content: "References"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+a.bibitem {
+    font-style: normal; 
+    font-weight: bold; 
+}
+
+
+/* Proof style, including number */
+div.proof:before { 
+    content: "Proof:"; 
+    font-style: normal; 
+    font-weight: bold 
+}
+
+div.proof:after {
+   content: "\220E";
+   font-weight: bold 
+}
+
+/* cites and refs */
+a.cite {
+    font-style: normal; 
+}
+
+a.ref {
+    font-style: normal; 
+}
+
+/* a.ref:before{ 
+    content: target-text(attr(href),before) 
+}
+
+      
+a.cite:before{ 
+   content: target-text(attr(href),before) 
+}
+*/
