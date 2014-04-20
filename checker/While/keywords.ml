@@ -12,6 +12,8 @@ let v = [
   ("while", WHILE);
   ("do", DO);
   ("skip", SKIP);
+  ("changes", CHANGES);
+  ("to", TO);
   
   ("|-", VDASH);
   (",", COMMA);

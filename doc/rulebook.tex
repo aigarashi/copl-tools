@@ -1,0 +1,934 @@
+\newif\ifbook \bookfalse
+\newif\ifdraft \draftfalse
+
+\documentclass[11pt]{jarticle}
+\usepackage{a4full}
+\usepackage{amsmath}
+
+\usepackage{url,color}
+%\usepackage[dvipdfm,figuresright]{rotating}
+\usepackage[figuresright]{rotating}
+\usepackage{amssymb}
+
+%% local macros
+\usepackage{color}
+\usepackage{bcprules,proof}
+\usepackage{local,src2tex}
+\input{./games.tex}
+
+\pagestyle{empty}
+\begin{document}
+
+\section*{Nat}
+
+\input{formatted-rules/Nat}
+
+\subsection*{Syntax:}
+
+\NatDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\NatDisplayRules
+
+\newpage
+
+\section*{CompareNat1}
+
+\input{formatted-rules/CompareNat1}
+
+\subsection*{Syntax:}
+
+\CompareNatiDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\CompareNatiDisplayRules
+
+\newpage
+
+\section*{CompareNat2}
+
+\input{formatted-rules/CompareNat2}
+
+\subsection*{Syntax:}
+
+\CompareNatiiDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\CompareNatiiDisplayRules
+
+\newpage
+
+\section*{CompareNat3}
+
+\input{formatted-rules/CompareNat3}
+
+\subsection*{Syntax:}
+
+\CompareNatiiiDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\CompareNatiiiDisplayRules
+
+\newpage
+
+\section*{EvalNatExp}
+
+\input{formatted-rules/EvalNatExp}
+
+\subsection*{Syntax:}
+
+\EvalNatExpDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\EvalNatExpDisplayRules
+
+\newpage
+
+\section*{ReduceNatExp}
+
+\input{formatted-rules/ReduceNatExp}
+
+\subsection*{Syntax:}
+
+\ReduceNatExpDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\ReduceNatExpDisplayRules
+
+\newpage
+
+\section*{EvalML1}
+
+\input{formatted-rules/EvalML1}
+
+\subsection*{Syntax:}
+
+\EvalMLiDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\EvalMLiDisplayRules
+
+\newpage
+
+\section*{EvalML1Err}
+
+\input{formatted-rules/EvalML1Err}
+
+\subsection*{Syntax:}
+
+\EvalMLiErrDisplayBNF
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\EvalMLiErrDisplayRules
+
+\newpage
+
+\section*{EvalML2}
+
+\input{formatted-rules/EvalML2}
+
+\subsection*{Syntax:}
+
+\EvalMLiiDisplayBNF
+
+空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\EvalMLiiDisplayRules
+
+\newpage
+
+\section*{EvalML3}
+
+\input{formatted-rules/EvalML3}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\EvalMLiiiMV{i}[] \in \mathbf{int}\\
+\EvalMLiiiMV{b}[] \in \mathbf{bool}\\
+\EvalMLiiiMV{x}[], \EvalMLiiiMV{y}[] \in \mathbf{Var}\\
+\EvalMLiiiMV{v}[] \in \mathbf{Value} ::= \EvalMLiiiMV{i}[]
+\mid \EvalMLiiiMV{b}[] \mid \EvalMLiiiFunTerm{\EvalMLiiiMV{env}[]}
+{\EvalMLiiiMV{x}[]}{\EvalMLiiiMV{e}[]}
+\mid \EvalMLiiiRecTerm{\EvalMLiiiMV{env}[]}{\EvalMLiiiMV{x}[]}
+{\EvalMLiiiMV{y}[]}{\EvalMLiiiMV{e}[]}\\
+\EvalMLiiiMV{env}[] \in \mathbf{Env} ::= \EvalMLiiiEmptyTerm
+\mid \EvalMLiiiBindTerm{\EvalMLiiiMV{env}[]}{\EvalMLiiiMV{x}[]}
+{\EvalMLiiiMV{v}[]}\\
+\EvalMLiiiMV{e}[] \in \mathbf{Exp} ::= \EvalMLiiiMV{i}[]
+\mid \EvalMLiiiMV{b}[] \mid \EvalMLiiiMV{x}[]
+\mid \EvalMLiiiBinOpTerm{\EvalMLiiiMV{op}[]}{\EvalMLiiiMV{e}[]}
+{\EvalMLiiiMV{e}[]} \mid \EvalMLiiiIfTerm{\EvalMLiiiMV{e}[]}
+{\EvalMLiiiMV{e}[]}{\EvalMLiiiMV{e}[]}
+\mid \EvalMLiiiLetTerm{\EvalMLiiiMV{x}[]}{\EvalMLiiiMV{e}[]}
+{\EvalMLiiiMV{e}[]} \\ \hspace*{2.0cm}
+\mid \EvalMLiiiAbsTerm{\EvalMLiiiMV{x}[]}
+{\EvalMLiiiMV{e}[]} \mid \EvalMLiiiAppTerm{\EvalMLiiiMV{e}[]}
+{\EvalMLiiiMV{e}[]} \mid \EvalMLiiiLetRecTerm{\EvalMLiiiMV{x}[]}
+{\EvalMLiiiMV{y}[]}{\EvalMLiiiMV{e}[]}{\EvalMLiiiMV{e}[]}\\
+\EvalMLiiiMV{op}[] \in \mathbf{Prim} ::= \EvalMLiiiPlusTerm
+\mid \EvalMLiiiMinusTerm \mid \EvalMLiiiMultTerm
+\mid \EvalMLiiiLtTerm\\
+\end{array}\]
+
+空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+
+\long\def\EvalMLiiiEAppRec{\infrule[E-AppRec]{
+  \EvalMLiiiEvalTo{\EvalMLiiiMV{env}[]}{\EvalMLiiiMV{e}[_{1}]}
+                    {\EvalMLiiiRecTerm{\EvalMLiiiMV{env}[_{2}]}
+                    {\EvalMLiiiMV{x}[]}{\EvalMLiiiMV{y}[]}
+                    {\EvalMLiiiMV{e}[_{0}]}}
+  \andalso
+  \EvalMLiiiEvalTo{\EvalMLiiiMV{env}[]}{\EvalMLiiiMV{e}[_{2}]}
+                    {\EvalMLiiiMV{v}[_{2}]}
+  \\
+  \EvalMLiiiEvalTo{\EvalMLiiiBindTerm{\EvalMLiiiBindTerm{\EvalMLiiiMV{env}[_{2}]}
+                                     {\EvalMLiiiMV{x}[]}
+                                     {\EvalMLiiiRecTerm{\EvalMLiiiMV{env}[_{2}]}
+                                     {\EvalMLiiiMV{x}[]}{\EvalMLiiiMV{y}[]}
+                                     {\EvalMLiiiMV{e}[_{0}]}}}
+                  {\EvalMLiiiMV{y}[]}{\EvalMLiiiMV{v}[_{2}]}}
+                    {\EvalMLiiiMV{e}[_{0}]}{\EvalMLiiiMV{v}[]}
+}{
+  \EvalMLiiiEvalTo{\EvalMLiiiMV{env}[]}
+                    {\EvalMLiiiAppTerm{\EvalMLiiiMV{e}[_{1}]}
+                    {\EvalMLiiiMV{e}[_{2}]}}{\EvalMLiiiMV{v}[]}}}
+
+\EvalMLiiiEInt\EvalMLiiiEBool\EvalMLiiiEIfT
+\EvalMLiiiEIfF\EvalMLiiiEPlus\EvalMLiiiEMinus\EvalMLiiiETimes\EvalMLiiiELt
+\EvalMLiiiEVari\EvalMLiiiEVarii\EvalMLiiiELet\EvalMLiiiEFun\EvalMLiiiEApp
+\EvalMLiiiELetRec\EvalMLiiiEAppRec\EvalMLiiiBPlus\EvalMLiiiBMinus
+\EvalMLiiiBTimes\EvalMLiiiBLt
+
+\newpage
+
+\section*{NamelessML3}
+
+\input{formatted-rules/NamelessML3}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\NamelessMLiiiMV{i}[] \in \mathbf{int}\\
+\NamelessMLiiiMV{b}[] \in \mathbf{bool}\\
+\NamelessMLiiiMV{x}[], \NamelessMLiiiMV{y}[] \in
+\mathbf{Var}\\
+\NamelessMLiiiMV{n}[] \in \mathbf{int}\\
+\NamelessMLiiiMV{env}[] \in \mathbf{VarList} ::= \NamelessMLiiiEmptyTerm
+\mid \NamelessMLiiiBindTerm{\NamelessMLiiiMV{env}[]}
+{\NamelessMLiiiMV{x}[]}\\
+\NamelessMLiiiMV{e}[] \in \mathbf{Exp} ::= \NamelessMLiiiMV{i}[]
+\mid \NamelessMLiiiMV{b}[] \mid \NamelessMLiiiMV{x}[]
+\mid \NamelessMLiiiBinOpTerm{\NamelessMLiiiMV{op}[]}{\NamelessMLiiiMV{e}[]}
+{\NamelessMLiiiMV{e}[]} \mid \NamelessMLiiiIfTerm{\NamelessMLiiiMV{e}[]}
+{\NamelessMLiiiMV{e}[]}{\NamelessMLiiiMV{e}[]}
+\mid \NamelessMLiiiLetTerm{\NamelessMLiiiMV{x}[]}{\NamelessMLiiiMV{e}[]}
+{\NamelessMLiiiMV{e}[]} \\ \hspace*{2.0cm}
+\mid \NamelessMLiiiAbsTerm{\NamelessMLiiiMV{x}[]}
+{\NamelessMLiiiMV{e}[]} \mid \NamelessMLiiiAppTerm{\NamelessMLiiiMV{e}[]}
+{\NamelessMLiiiMV{e}[]} \mid \NamelessMLiiiLetRecTerm{\NamelessMLiiiMV{x}[]}
+{\NamelessMLiiiMV{y}[]}{\NamelessMLiiiMV{e}[]}
+{\NamelessMLiiiMV{e}[]}\\
+\NamelessMLiiiMV{d}[] \in \mathbf{DBExp} ::= \NamelessMLiiiMV{i}[]
+\mid \NamelessMLiiiMV{b}[]
+\mid \NamelessMLiiiIndexTerm{\NamelessMLiiiMV{n}[]}
+\mid \NamelessMLiiiBinOpDTerm{\NamelessMLiiiMV{op}[]}{\NamelessMLiiiMV{d}[]}
+{\NamelessMLiiiMV{d}[]} \mid \NamelessMLiiiIfDTerm{\NamelessMLiiiMV{d}[]}
+{\NamelessMLiiiMV{d}[]}{\NamelessMLiiiMV{d}[]}
+\mid \NamelessMLiiiLetDTerm{\NamelessMLiiiMV{d}[]}{\NamelessMLiiiMV{d}[]}
+ \\ \hspace*{2.7cm}
+\mid \NamelessMLiiiAbsDTerm{\NamelessMLiiiMV{d}[]}
+\mid \NamelessMLiiiAppDTerm{\NamelessMLiiiMV{d}[]}{\NamelessMLiiiMV{d}[]}
+\mid \NamelessMLiiiLetRecDTerm{\NamelessMLiiiMV{d}[]}
+{\NamelessMLiiiMV{d}[]}\\
+\NamelessMLiiiMV{op}[] \in \mathbf{Prim} ::= \NamelessMLiiiPlusTerm
+\mid \NamelessMLiiiMinusTerm \mid \NamelessMLiiiMultTerm
+\mid \NamelessMLiiiLtTerm\\
+\end{array}\]
+
+空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\NamelessMLiiiDisplayRules
+
+\newpage
+
+\section*{EvalNamelessML3}
+
+\input{formatted-rules/EvalNamelessML3}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\EvalNamelessMLiiiMV{i}[] \in \mathbf{int}\\
+\EvalNamelessMLiiiMV{b}[] \in \mathbf{bool}\\
+\EvalNamelessMLiiiMV{n}[] \in \mathbf{int}\\
+\EvalNamelessMLiiiMV{v}[] \in \mathbf{DBValue} ::= \EvalNamelessMLiiiMV{i}[]
+\mid \EvalNamelessMLiiiMV{b}[]
+\mid \EvalNamelessMLiiiFunTerm{\EvalNamelessMLiiiMV{env}[]}
+{\EvalNamelessMLiiiMV{d}[]}
+\mid \EvalNamelessMLiiiRecTerm{\EvalNamelessMLiiiMV{env}[]}
+{\EvalNamelessMLiiiMV{d}[]}\\
+\EvalNamelessMLiiiMV{env}[] \in \mathbf{DBValueList} ::=
+\EvalNamelessMLiiiEmptyTerm
+\mid \EvalNamelessMLiiiBindTerm{\EvalNamelessMLiiiMV{env}[]}
+{\EvalNamelessMLiiiMV{v}[]}\\
+\EvalNamelessMLiiiMV{d}[] \in \mathbf{DBExp} ::= \EvalNamelessMLiiiMV{i}[]
+\mid \EvalNamelessMLiiiMV{b}[]
+\mid \EvalNamelessMLiiiIndexTerm{\EvalNamelessMLiiiMV{n}[]}
+\mid \EvalNamelessMLiiiBinOpDTerm{\EvalNamelessMLiiiMV{op}[]}
+{\EvalNamelessMLiiiMV{d}[]}{\EvalNamelessMLiiiMV{d}[]}
+\mid \EvalNamelessMLiiiIfDTerm{\EvalNamelessMLiiiMV{d}[]}
+{\EvalNamelessMLiiiMV{d}[]}{\EvalNamelessMLiiiMV{d}[]}
+\mid \EvalNamelessMLiiiLetDTerm{\EvalNamelessMLiiiMV{d}[]}
+{\EvalNamelessMLiiiMV{d}[]}
+\\ \hspace*{2.7cm}
+\mid \EvalNamelessMLiiiAbsDTerm{\EvalNamelessMLiiiMV{d}[]}
+\mid \EvalNamelessMLiiiAppDTerm{\EvalNamelessMLiiiMV{d}[]}
+{\EvalNamelessMLiiiMV{d}[]}
+\mid \EvalNamelessMLiiiLetRecDTerm{\EvalNamelessMLiiiMV{d}[]}
+{\EvalNamelessMLiiiMV{d}[]}\\
+\EvalNamelessMLiiiMV{op}[] \in \mathbf{Prim} ::= \EvalNamelessMLiiiPlusTerm
+\mid \EvalNamelessMLiiiMinusTerm \mid \EvalNamelessMLiiiMultTerm
+\mid \EvalNamelessMLiiiLtTerm\\
+\end{array}\]
+
+空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+
+\long\def\EvalNamelessMLiiiEAppRec{\infrule[E-AppRec]{
+  \EvalNamelessMLiiiEvalTo{\EvalNamelessMLiiiMV{env}[]}
+                            {\EvalNamelessMLiiiMV{d}[_{1}]}
+                            {\EvalNamelessMLiiiRecTerm{\EvalNamelessMLiiiMV{env}[_{2}]}
+                            {\EvalNamelessMLiiiMV{d}[_{0}]}}
+  \andalso
+  \EvalNamelessMLiiiEvalTo{\EvalNamelessMLiiiMV{env}[]}
+                            {\EvalNamelessMLiiiMV{d}[_{2}]}
+                            {\EvalNamelessMLiiiMV{v}[_{2}]}
+  \\
+  \EvalNamelessMLiiiEvalTo{\EvalNamelessMLiiiBindTerm{\EvalNamelessMLiiiBindTerm
+                                                     {\EvalNamelessMLiiiMV{env}[_{2}]}
+                                                     {\EvalNamelessMLiiiRecTerm
+                                                     {\EvalNamelessMLiiiMV{env}[_{2}]}
+                                                     {\EvalNamelessMLiiiMV{d}[_{0}]}}}
+                          {\EvalNamelessMLiiiMV{v}[_{2}]}}
+                            {\EvalNamelessMLiiiMV{d}[_{0}]}
+                            {\EvalNamelessMLiiiMV{v}[]}
+}{
+  \EvalNamelessMLiiiEvalTo{\EvalNamelessMLiiiMV{env}[]}
+                            {\EvalNamelessMLiiiAppDTerm{\EvalNamelessMLiiiMV{d}[_{1}]}
+                            {\EvalNamelessMLiiiMV{d}[_{2}]}}
+                            {\EvalNamelessMLiiiMV{v}[]}}}
+
+
+\EvalNamelessMLiiiDisplayRules
+
+\newpage
+
+\section*{EvalML4}
+
+\input{formatted-rules/EvalML4}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\EvalMLivMV{i}[] \in \mathbf{int}\\
+\EvalMLivMV{b}[] \in \mathbf{bool}\\
+\EvalMLivMV{x}[], \EvalMLivMV{y}[] \in \mathbf{Var}\\
+\EvalMLivMV{v}[] \in \mathbf{Value} ::= \EvalMLivMV{i}[]
+\mid \EvalMLivMV{b}[] \mid \EvalMLivFunTerm{\EvalMLivMV{env}[]}
+{\EvalMLivMV{x}[]}{\EvalMLivMV{e}[]}
+\mid \EvalMLivRecTerm{\EvalMLivMV{env}[]}{\EvalMLivMV{x}[]}{\EvalMLivMV{y}[]}
+{\EvalMLivMV{e}[]} \mid \EvalMLivNilVTerm
+\mid \EvalMLivConsVTerm{\EvalMLivMV{v}[]}
+{\EvalMLivMV{v}[]}\\
+\EvalMLivMV{env}[] \in \mathbf{Env} ::= \EvalMLivEmptyTerm
+\mid \EvalMLivBindTerm{\EvalMLivMV{env}[]}{\EvalMLivMV{x}[]}
+{\EvalMLivMV{v}[]}\\
+\EvalMLivMV{e}[] \in \mathbf{Exp} ::= \EvalMLivMV{i}[] \mid \EvalMLivMV{b}[]
+\mid \EvalMLivMV{x}[] \mid \EvalMLivBinOpTerm{\EvalMLivMV{op}[]}
+{\EvalMLivMV{e}[]}{\EvalMLivMV{e}[]} \mid \EvalMLivIfTerm{\EvalMLivMV{e}[]}
+{\EvalMLivMV{e}[]}{\EvalMLivMV{e}[]} \mid \EvalMLivLetTerm{\EvalMLivMV{x}[]}
+{\EvalMLivMV{e}[]}{\EvalMLivMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \EvalMLivAbsTerm{\EvalMLivMV{x}[]}
+{\EvalMLivMV{e}[]} \mid \EvalMLivAppTerm{\EvalMLivMV{e}[]}{\EvalMLivMV{e}[]}
+\mid \EvalMLivLetRecTerm{\EvalMLivMV{x}[]}{\EvalMLivMV{y}[]}
+{\EvalMLivMV{e}[]}{\EvalMLivMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \EvalMLivNilTerm
+\mid \EvalMLivConsTerm{\EvalMLivMV{e}[]}{\EvalMLivMV{e}[]}
+\mid \EvalMLivMatchTerm{\EvalMLivMV{e}[]}{\EvalMLivMV{e}[]}{\EvalMLivMV{x}[]}
+{\EvalMLivMV{y}[]}{\EvalMLivMV{e}[]}\\
+\EvalMLivMV{op}[] \in \mathbf{Prim} ::= \EvalMLivPlusTerm
+\mid \EvalMLivMinusTerm \mid \EvalMLivMultTerm
+\mid \EvalMLivLtTerm\\
+\end{array}\]
+
+空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+
+\long\def\EvalMLivEAppRec{\infrule[E-AppRec]{
+  \EvalMLivEvalTo{\EvalMLivMV{env}[]}{\EvalMLivMV{e}[_{1}]}
+                   {\EvalMLivRecTerm{\EvalMLivMV{env}[_{2}]}
+                   {\EvalMLivMV{x}[]}{\EvalMLivMV{y}[]}
+                   {\EvalMLivMV{e}[_{0}]}}
+  \andalso
+  \EvalMLivEvalTo{\EvalMLivMV{env}[]}{\EvalMLivMV{e}[_{2}]}
+                   {\EvalMLivMV{v}[_{2}]}
+  \\
+  \EvalMLivEvalTo{\EvalMLivBindTerm{\EvalMLivBindTerm{\EvalMLivMV{env}[_{2}]}
+                                   {\EvalMLivMV{x}[]}
+                                   {\EvalMLivRecTerm{\EvalMLivMV{env}[_{2}]}
+                                   {\EvalMLivMV{x}[]}{\EvalMLivMV{y}[]}
+                                   {\EvalMLivMV{e}[_{0}]}}}
+                 {\EvalMLivMV{y}[]}{\EvalMLivMV{v}[_{2}]}}
+                   {\EvalMLivMV{e}[_{0}]}{\EvalMLivMV{v}[]}
+}{
+  \EvalMLivEvalTo{\EvalMLivMV{env}[]}
+                   {\EvalMLivAppTerm{\EvalMLivMV{e}[_{1}]}
+                   {\EvalMLivMV{e}[_{2}]}}{\EvalMLivMV{v}[]}}}
+
+
+\EvalMLivDisplayRules
+
+\newpage
+
+\section*{EvalML5}
+
+\input{formatted-rules/EvalML5}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\EvalMLvMV{i}[] \in \mathbf{int}\\
+\EvalMLvMV{b}[] \in \mathbf{bool}\\
+\EvalMLvMV{x}[], \EvalMLvMV{y}[] \in \mathbf{Var}\\
+\EvalMLvMV{v}[] \in \mathbf{Value} ::= \EvalMLvMV{i}[] \mid \EvalMLvMV{b}[]
+\mid \EvalMLvFunTerm{\EvalMLvMV{env}[]}{\EvalMLvMV{x}[]}{\EvalMLvMV{e}[]}
+\mid \EvalMLvRecTerm{\EvalMLvMV{env}[]}{\EvalMLvMV{x}[]}{\EvalMLvMV{y}[]}
+{\EvalMLvMV{e}[]} \mid \EvalMLvNilVTerm
+\mid \EvalMLvConsVTerm{\EvalMLvMV{v}[]}{\EvalMLvMV{v}[]}\\
+\EvalMLvMV{env}[] \in \mathbf{Env} ::= \EvalMLvEmptyTerm
+\mid \EvalMLvBindTerm{\EvalMLvMV{env}[]}{\EvalMLvMV{x}[]}
+{\EvalMLvMV{v}[]}\\
+\EvalMLvMV{p}[] \in \mathbf{Pat} ::= \EvalMLvMV{x}[] \mid \EvalMLvNilPTerm
+\mid \EvalMLvConsPTerm{\EvalMLvMV{p}[]}{\EvalMLvMV{p}[]}
+\mid \EvalMLvWildPTerm\\
+\EvalMLvMV{res}[] \in \mathbf{Res} ::= \EvalMLvMV{env}[]
+\mid \EvalMLvFailTerm\\
+\EvalMLvMV{c}[] \in \mathbf{Clauses} ::= \EvalMLvSingleCTerm{\EvalMLvMV{p}[]}
+{\EvalMLvMV{e}[]} \mid \EvalMLvAddCTerm{\EvalMLvMV{p}[]}{\EvalMLvMV{e}[]}
+{\EvalMLvMV{c}[]}\\
+\EvalMLvMV{e}[] \in \mathbf{Exp} ::= \EvalMLvMV{i}[] \mid \EvalMLvMV{b}[]
+\mid \EvalMLvMV{x}[] \mid \EvalMLvBinOpTerm{\EvalMLvMV{op}[]}
+{\EvalMLvMV{e}[]}{\EvalMLvMV{e}[]} \mid \EvalMLvIfTerm{\EvalMLvMV{e}[]}
+{\EvalMLvMV{e}[]}{\EvalMLvMV{e}[]} \mid \EvalMLvLetTerm{\EvalMLvMV{x}[]}
+{\EvalMLvMV{e}[]}{\EvalMLvMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \EvalMLvAbsTerm{\EvalMLvMV{x}[]}
+{\EvalMLvMV{e}[]} \mid \EvalMLvAppTerm{\EvalMLvMV{e}[]}{\EvalMLvMV{e}[]}
+\mid \EvalMLvLetRecTerm{\EvalMLvMV{x}[]}{\EvalMLvMV{y}[]}{\EvalMLvMV{e}[]}
+{\EvalMLvMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \EvalMLvNilTerm \mid \EvalMLvConsTerm{\EvalMLvMV{e}[]}
+{\EvalMLvMV{e}[]} \mid \EvalMLvMatchTerm{\EvalMLvMV{e}[]}
+{\EvalMLvMV{c}[]}\\
+\EvalMLvMV{op}[] \in \mathbf{Prim} ::= \EvalMLvPlusTerm
+\mid \EvalMLvMinusTerm \mid \EvalMLvMultTerm
+\mid \EvalMLvLtTerm\\
+\end{array}\]
+
+空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+
+\long\def\EvalMLvEAppRec{\infrule[E-AppRec]{
+  \EvalMLvEvalTo{\EvalMLvMV{env}[]}{\EvalMLvMV{e}[_{1}]}
+                  {\EvalMLvRecTerm{\EvalMLvMV{env}[_{2}]}{\EvalMLvMV{x}[]}
+                  {\EvalMLvMV{y}[]}{\EvalMLvMV{e}[_{0}]}}
+  \andalso
+  \EvalMLvEvalTo{\EvalMLvMV{env}[]}{\EvalMLvMV{e}[_{2}]}{\EvalMLvMV{v}[_{2}]}
+  \\
+  \EvalMLvEvalTo{\EvalMLvBindTerm{\EvalMLvBindTerm{\EvalMLvMV{env}[_{2}]}
+                                 {\EvalMLvMV{x}[]}
+                                 {\EvalMLvRecTerm{\EvalMLvMV{env}[_{2}]}
+                                 {\EvalMLvMV{x}[]}{\EvalMLvMV{y}[]}
+                                 {\EvalMLvMV{e}[_{0}]}}}
+                {\EvalMLvMV{y}[]}{\EvalMLvMV{v}[_{2}]}}{\EvalMLvMV{e}[_{0}]}
+                  {\EvalMLvMV{v}[]}
+}{
+  \EvalMLvEvalTo{\EvalMLvMV{env}[]}
+                  {\EvalMLvAppTerm{\EvalMLvMV{e}[_{1}]}{\EvalMLvMV{e}[_{2}]}}
+                  {\EvalMLvMV{v}[]}}}
+
+\EvalMLvDisplayRules
+
+\newpage
+
+\section*{TypingML4}
+
+\input{formatted-rules/TypingML4}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\TypingMLivMV{i}[] \in \mathbf{int}\\
+\TypingMLivMV{b}[] \in \mathbf{bool}\\
+\TypingMLivMV{x}[], \TypingMLivMV{y}[] \in \mathbf{Var}\\
+\TypingMLivMV{t}[] \in \mathbf{Types} ::= \TypingMLivTyBoolTerm
+\mid \TypingMLivTyIntTerm \mid \TypingMLivTyFunTerm{\TypingMLivMV{t}[]}
+{\TypingMLivMV{t}[]}
+\mid \TypingMLivTyListTerm{\TypingMLivMV{t}[]}\\
+\TypingMLivMV{env}[] \in \mathbf{Env} ::= \TypingMLivEmptyTerm
+\mid \TypingMLivBindTerm{\TypingMLivMV{env}[]}{\TypingMLivMV{x}[]}
+{\TypingMLivMV{t}[]}\\
+\TypingMLivMV{e}[] \in \mathbf{Exp} ::= \TypingMLivMV{i}[]
+\mid \TypingMLivMV{b}[] \mid \TypingMLivMV{x}[]
+\mid \TypingMLivBinOpTerm{\TypingMLivMV{op}[]}{\TypingMLivMV{e}[]}
+{\TypingMLivMV{e}[]} \mid \TypingMLivIfTerm{\TypingMLivMV{e}[]}
+{\TypingMLivMV{e}[]}{\TypingMLivMV{e}[]}
+\mid \TypingMLivLetTerm{\TypingMLivMV{x}[]}{\TypingMLivMV{e}[]}
+{\TypingMLivMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \TypingMLivAbsTerm{\TypingMLivMV{x}[]}
+{\TypingMLivMV{e}[]} \mid \TypingMLivAppTerm{\TypingMLivMV{e}[]}
+{\TypingMLivMV{e}[]} \mid \TypingMLivLetRecTerm{\TypingMLivMV{x}[]}
+{\TypingMLivMV{y}[]}{\TypingMLivMV{e}[]}{\TypingMLivMV{e}[]}
+ \\ \hspace*{2.0cm}
+\mid \TypingMLivNilTerm \mid \TypingMLivConsTerm{\TypingMLivMV{e}[]}
+{\TypingMLivMV{e}[]} \mid \TypingMLivMatchTerm{\TypingMLivMV{e}[]}
+{\TypingMLivMV{e}[]}{\TypingMLivMV{x}[]}{\TypingMLivMV{y}[]}
+{\TypingMLivMV{e}[]}\\
+\TypingMLivMV{op}[] \in \mathbf{Prim} ::= \TypingMLivPlusTerm
+\mid \TypingMLivMinusTerm \mid \TypingMLivMultTerm
+\mid \TypingMLivLtTerm\\
+\end{array}\]
+
+空の型環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\TypingMLivDisplayRules
+
+\newpage
+
+\section*{PolyTypingML4}
+
+\input{formatted-rules/PolyTypingML4}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\PolyTypingMLivMV{i}[] \in \mathbf{int}\\
+\PolyTypingMLivMV{b}[] \in \mathbf{bool}\\
+\PolyTypingMLivMV{x}[], \PolyTypingMLivMV{y}[] \in
+\mathbf{Var}\\
+\PolyTypingMLivMV{a}[] \in \mathbf{TVar}\\
+\PolyTypingMLivMV{t}[] \in \mathbf{Types} ::=
+\PolyTypingMLivTyFVarTerm{\PolyTypingMLivMV{a}[]}
+\mid \PolyTypingMLivTyBVarTerm{\PolyTypingMLivMV{i}[]}
+\mid \PolyTypingMLivTyBoolTerm \mid \PolyTypingMLivTyIntTerm
+\mid \PolyTypingMLivTyFunTerm{\PolyTypingMLivMV{t}[]}{\PolyTypingMLivMV{t}[]}
+\mid \PolyTypingMLivTyListTerm{\PolyTypingMLivMV{t}[]}\\
+\PolyTypingMLivMV{s}[] \in \mathbf{TyScheme} ::= \PolyTypingMLivMV{t}[]
+\mid \PolyTypingMLivTySchemeTerm{\PolyTypingMLivMV{i}[]}
+{\PolyTypingMLivMV{t}[]}\\
+\PolyTypingMLivMV{env}[] \in \mathbf{Env} ::= \PolyTypingMLivEmptyTerm
+\mid \PolyTypingMLivBindTerm{\PolyTypingMLivMV{env}[]}
+{\PolyTypingMLivMV{x}[]}{\PolyTypingMLivMV{s}[]}\\
+\PolyTypingMLivMV{e}[] \in \mathbf{Exp} ::= \PolyTypingMLivMV{i}[]
+\mid \PolyTypingMLivMV{b}[] \mid \PolyTypingMLivMV{x}[]
+\mid \PolyTypingMLivBinOpTerm{\PolyTypingMLivMV{op}[]}
+{\PolyTypingMLivMV{e}[]}{\PolyTypingMLivMV{e}[]}
+\mid \PolyTypingMLivIfTerm{\PolyTypingMLivMV{e}[]}{\PolyTypingMLivMV{e}[]}
+{\PolyTypingMLivMV{e}[]} \mid \PolyTypingMLivLetTerm{\PolyTypingMLivMV{x}[]}
+{\PolyTypingMLivMV{e}[]}{\PolyTypingMLivMV{e}[]}
+ \\ \hspace*{2.0cm}
+\mid \PolyTypingMLivAbsTerm{\PolyTypingMLivMV{x}[]}{\PolyTypingMLivMV{e}[]}
+\mid \PolyTypingMLivAppTerm{\PolyTypingMLivMV{e}[]}{\PolyTypingMLivMV{e}[]}
+\mid \PolyTypingMLivLetRecTerm{\PolyTypingMLivMV{x}[]}
+{\PolyTypingMLivMV{y}[]}{\PolyTypingMLivMV{e}[]}{\PolyTypingMLivMV{e}[]}
+ \\ \hspace*{2.0cm}
+\mid \PolyTypingMLivNilTerm
+\mid \PolyTypingMLivConsTerm{\PolyTypingMLivMV{e}[]}{\PolyTypingMLivMV{e}[]}
+\mid \PolyTypingMLivMatchTerm{\PolyTypingMLivMV{e}[]}{\PolyTypingMLivMV{e}[]}
+{\PolyTypingMLivMV{x}[]}{\PolyTypingMLivMV{y}[]}
+{\PolyTypingMLivMV{e}[]}\\
+\PolyTypingMLivMV{op}[] \in \mathbf{Prim} ::= \PolyTypingMLivPlusTerm
+\mid \PolyTypingMLivMinusTerm \mid \PolyTypingMLivMultTerm
+\mid \PolyTypingMLivLtTerm\\
+\end{array}\]
+
+空の型環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+
+\long\def\PolyTypingMLivTLet{\infrule[T-Let]{
+  \PolyTypingMLivTyping{\PolyTypingMLivMV{env}[]}{\PolyTypingMLivMV{e}[_{1}]}
+                         {\PolyTypingMLivMV{t}[_{1}]}
+  \andalso
+  \PolyTypingMLivTyping{\PolyTypingMLivBindTerm{\PolyTypingMLivMV{env}[]}
+                       {\PolyTypingMLivMV{x}[]}{\PolyTypingMLivMV{s}[]}}
+                         {\PolyTypingMLivMV{e}[_{2}]}
+                         {\PolyTypingMLivMV{t}[_{2}]}
+  \\
+  (\PolyTypingMLivMV{s}[] = \PolyTypingMLivMV{a}[_{1}] \cdots \PolyTypingMLivMV{a}[_{n}]. \PolyTypingMLivMV{t}[_{1}] \mbox{ and } \{\PolyTypingMLivMV{a}[_{1}],\ldots, \PolyTypingMLivMV{a}[_{n}] \cap \mathit{FTV}(\PolyTypingMLivMV{env}[]) = \emptyset)
+}{
+  \PolyTypingMLivTyping{\PolyTypingMLivMV{env}[]}
+                         {\PolyTypingMLivLetTerm{\PolyTypingMLivMV{x}[]}
+                         {\PolyTypingMLivMV{e}[_{1}]}
+                         {\PolyTypingMLivMV{e}[_{2}]}}
+                         {\PolyTypingMLivMV{t}[_{2}]}}}
+\long\def\PolyTypingMLivTLetRec{\infrule[T-LetRec]{
+  \PolyTypingMLivTyping{\PolyTypingMLivBindTerm{\PolyTypingMLivBindTerm
+                                               {\PolyTypingMLivMV{env}[]}
+                                               {\PolyTypingMLivMV{x}[]}
+                                               {\PolyTypingMLivTyFunTerm
+                                               {\PolyTypingMLivMV{t}[_{1}]}
+                                               {\PolyTypingMLivMV{t}[_{2}]}}}
+                       {\PolyTypingMLivMV{y}[]}{\PolyTypingMLivMV{t}[_{1}]}}
+                         {\PolyTypingMLivMV{e}[_{1}]}
+                         {\PolyTypingMLivMV{t}[_{2}]}
+  \andalso
+  \PolyTypingMLivTyping{\PolyTypingMLivBindTerm{\PolyTypingMLivMV{env}[]}
+                       {\PolyTypingMLivMV{x}[]}{\PolyTypingMLivMV{s}[]}}
+                         {\PolyTypingMLivMV{e}[_{2}]}{\PolyTypingMLivMV{t}[]}
+  \\
+  (\PolyTypingMLivMV{s}[] = \PolyTypingMLivMV{a}[_{1}] \cdots \PolyTypingMLivMV{a}[_{n}]. \PolyTypingMLivMV{t}[_{1}] \rightarrow \PolyTypingMLivMV{t}[_{2}] \mbox{ and } \{\PolyTypingMLivMV{a}[_{1}],\ldots,\PolyTypingMLivMV{a}[_{n}]\} \cap \mathit{FTV}(\PolyTypingMLivMV{env}[]) = \emptyset)
+}{
+  \PolyTypingMLivTyping{\PolyTypingMLivMV{env}[]}
+                         {\PolyTypingMLivLetRecTerm{\PolyTypingMLivMV{x}[]}
+                         {\PolyTypingMLivMV{y}[]}{\PolyTypingMLivMV{e}[_{1}]}
+                         {\PolyTypingMLivMV{e}[_{2}]}}
+                         {\PolyTypingMLivMV{t}[]}}}
+
+\PolyTypingMLivDisplayRules
+
+\newpage
+
+\section*{EvalContML1}
+
+\input{formatted-rules/EvalContML1}
+
+\subsection*{Syntax:}
+
+\EvalContMLiDisplayBNF
+
+継続末尾の \(\Hole\) (とそれに先行する \(\gg\))は省略してよい．
+
+\subsection*{Derivation Rules:}
+\typicallabel{T-Int}
+\EvalContMLiDisplayRules
+
+\newpage
+
+\section*{EvalContML4}
+
+\input{formatted-rules/EvalContML4}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\EvalContMLivMV{i}[] \in \mathbf{int}\\
+\EvalContMLivMV{b}[] \in \mathbf{bool}\\
+\EvalContMLivMV{x}[], \EvalContMLivMV{y}[] \in
+\mathbf{Var}\\
+\EvalContMLivMV{v}[] \in \mathbf{Value} ::= \EvalContMLivMV{i}[]
+\mid \EvalContMLivMV{b}[] \mid \EvalContMLivFunTerm{\EvalContMLivMV{env}[]}
+{\EvalContMLivMV{x}[]}{\EvalContMLivMV{e}[]}
+\mid \EvalContMLivRecTerm{\EvalContMLivMV{env}[]}{\EvalContMLivMV{x}[]}
+{\EvalContMLivMV{y}[]}{\EvalContMLivMV{e}[]} \mid \EvalContMLivNilVTerm
+\mid \EvalContMLivConsVTerm{\EvalContMLivMV{v}[]}{\EvalContMLivMV{v}[]}
+\mid \EvalContMLivContFTerm{\EvalContMLivMV{k}[]}\\
+\EvalContMLivMV{env}[] \in \mathbf{Env} ::= \EvalContMLivEmptyTerm
+\mid \EvalContMLivBindTerm{\EvalContMLivMV{env}[]}{\EvalContMLivMV{x}[]}
+{\EvalContMLivMV{v}[]}\\
+\EvalContMLivMV{e}[] \in \mathbf{Exp} ::= \EvalContMLivMV{i}[]
+\mid \EvalContMLivMV{b}[] \mid \EvalContMLivMV{x}[]
+\mid \EvalContMLivBinOpTerm{\EvalContMLivMV{op}[]}{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{e}[]} \mid \EvalContMLivIfTerm{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{e}[]}{\EvalContMLivMV{e}[]}
+\mid \EvalContMLivLetTerm{\EvalContMLivMV{x}[]}{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \EvalContMLivAbsTerm{\EvalContMLivMV{x}[]}
+{\EvalContMLivMV{e}[]} \mid \EvalContMLivAppTerm{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{e}[]} \mid \EvalContMLivLetRecTerm{\EvalContMLivMV{x}[]}
+{\EvalContMLivMV{y}[]}{\EvalContMLivMV{e}[]}{\EvalContMLivMV{e}[]}
+ \\ \hspace*{2.0cm}
+\mid \EvalContMLivNilTerm \mid \EvalContMLivConsTerm{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{e}[]} \mid \EvalContMLivMatchTerm{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{e}[]}{\EvalContMLivMV{x}[]}{\EvalContMLivMV{y}[]}
+{\EvalContMLivMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \EvalContMLivLetCcTerm{\EvalContMLivMV{x}[]}
+{\EvalContMLivMV{e}[]}\\
+\EvalContMLivMV{op}[] \in \mathbf{Prim} ::= \EvalContMLivPlusTerm
+\mid \EvalContMLivMinusTerm \mid \EvalContMLivMultTerm
+\mid \EvalContMLivLtTerm\\
+\EvalContMLivMV{k}[] \in \mathbf{Cont} ::= \EvalContMLivRetKTerm
+\mid \EvalContMLivEvalRKTerm{\EvalContMLivMV{env}[]}{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{op}[]}{\EvalContMLivMV{k}[]}
+\mid \EvalContMLivAppOpKTerm{\EvalContMLivMV{v}[]}{\EvalContMLivMV{op}[]}
+{\EvalContMLivMV{k}[]} \mid \EvalContMLivBranchKTerm{\EvalContMLivMV{env}[]}
+{\EvalContMLivMV{e}[]}{\EvalContMLivMV{e}[]}{\EvalContMLivMV{k}[]}
+ \\ \hspace*{2.0cm}
+\mid \EvalContMLivLetBodyKTerm{\EvalContMLivMV{env}[]}{\EvalContMLivMV{x}[]}
+{\EvalContMLivMV{e}[]}{\EvalContMLivMV{k}[]}
+\mid \EvalContMLivEvalArgKTerm{\EvalContMLivMV{env}[]}{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{k}[]} \mid \EvalContMLivAppFunKTerm{\EvalContMLivMV{v}[]}
+{\EvalContMLivMV{k}[]}
+ \\ \hspace*{2.0cm}
+\mid \EvalContMLivEvalConsRKTerm{\EvalContMLivMV{env}[]}
+{\EvalContMLivMV{e}[]}{\EvalContMLivMV{k}[]}
+\mid \EvalContMLivConsKTerm{\EvalContMLivMV{v}[]}{\EvalContMLivMV{k}[]}
+\mid \EvalContMLivMatchKTerm{\EvalContMLivMV{env}[]}{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{x}[]}{\EvalContMLivMV{y}[]}{\EvalContMLivMV{e}[]}
+{\EvalContMLivMV{k}[]}\\
+\end{array}\]
+
+空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．また，
+継続末尾の \(\Hole\) (とそれに先行する \(\gg\))は省略してよい．
+
+\subsection*{Derivation Rules:}
+\typicallabel{C-EvalFun}
+\EvalContMLivDisplayRules
+
+\newpage
+\section*{EvalDContML4}
+
+\input{formatted-rules/EvalDContML4}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\EvalDContMLivMV{i}[] \in \mathbf{int}\\
+\EvalDContMLivMV{b}[] \in \mathbf{bool}\\
+\EvalDContMLivMV{x}[], \EvalDContMLivMV{y}[] \in
+\mathbf{Var}\\
+\EvalDContMLivMV{v}[] \in \mathbf{Value} ::= \EvalDContMLivMV{i}[]
+\mid \EvalDContMLivMV{b}[]
+\mid \EvalDContMLivFunTerm{\EvalDContMLivMV{env}[]}{\EvalDContMLivMV{x}[]}
+{\EvalDContMLivMV{e}[]} \mid \EvalDContMLivRecTerm{\EvalDContMLivMV{env}[]}
+{\EvalDContMLivMV{x}[]}{\EvalDContMLivMV{y}[]}{\EvalDContMLivMV{e}[]}
+\mid \EvalDContMLivNilVTerm
+\mid \EvalDContMLivConsVTerm{\EvalDContMLivMV{v}[]}{\EvalDContMLivMV{v}[]}
+\mid \EvalDContMLivContFTerm{\EvalDContMLivMV{k}[]}\\
+\EvalDContMLivMV{env}[] \in \mathbf{Env} ::= \EvalDContMLivEmptyTerm
+\mid \EvalDContMLivBindTerm{\EvalDContMLivMV{env}[]}{\EvalDContMLivMV{x}[]}
+{\EvalDContMLivMV{v}[]}\\
+\EvalDContMLivMV{e}[] \in \mathbf{Exp} ::= \EvalDContMLivMV{i}[]
+\mid \EvalDContMLivMV{b}[] \mid \EvalDContMLivMV{x}[]
+\mid \EvalDContMLivBinOpTerm{\EvalDContMLivMV{op}[]}{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{e}[]} \mid \EvalDContMLivIfTerm{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{e}[]}
+\mid \EvalDContMLivLetTerm{\EvalDContMLivMV{x}[]}{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{e}[]} 
+\\ \hspace*{2.0cm}
+\mid \EvalDContMLivAbsTerm{\EvalDContMLivMV{x}[]}
+{\EvalDContMLivMV{e}[]} \mid \EvalDContMLivAppTerm{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{e}[]} \mid \EvalDContMLivLetRecTerm{\EvalDContMLivMV{x}[]}
+{\EvalDContMLivMV{y}[]}{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{e}[]}
+\mid \EvalDContMLivNilTerm 
+\\ \hspace*{2.0cm}
+\mid \EvalDContMLivConsTerm{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{e}[]} \mid \EvalDContMLivMatchTerm{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{x}[]}{\EvalDContMLivMV{y}[]}
+{\EvalDContMLivMV{e}[]} 
+\\ \hspace*{2.0cm}
+\mid \EvalDContMLivResetTerm{\EvalDContMLivMV{e}[]}
+\mid \EvalDContMLivShiftTerm{\EvalDContMLivMV{x}[]}
+{\EvalDContMLivMV{e}[]}\\
+\EvalDContMLivMV{op}[] \in \mathbf{Prim} ::= \EvalDContMLivPlusTerm
+\mid \EvalDContMLivMinusTerm \mid \EvalDContMLivMultTerm
+\mid \EvalDContMLivLtTerm\\
+\EvalDContMLivMV{kk}[] \in \mathbf{MCont} ::= \EvalDContMLivRetKKTerm
+\mid \EvalDContMLivDelimitedKKTerm{\EvalDContMLivMV{k}[]}
+{\EvalDContMLivMV{kk}[]}\\
+\EvalDContMLivMV{k}[] \in \mathbf{Cont} ::= \EvalDContMLivRetKTerm
+\mid \EvalDContMLivEvalRKTerm{\EvalDContMLivMV{env}[]}{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{op}[]}{\EvalDContMLivMV{k}[]}
+\mid \EvalDContMLivAppOpKTerm{\EvalDContMLivMV{v}[]}{\EvalDContMLivMV{op}[]}
+{\EvalDContMLivMV{k}[]}
+\mid \EvalDContMLivBranchKTerm{\EvalDContMLivMV{env}[]}
+{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{k}[]}
+\\ \hspace*{2.0cm}
+\mid \EvalDContMLivLetBodyKTerm{\EvalDContMLivMV{env}[]}
+{\EvalDContMLivMV{x}[]}{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{k}[]}
+\mid \EvalDContMLivEvalArgKTerm{\EvalDContMLivMV{env}[]}
+{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{k}[]}
+\mid \EvalDContMLivAppFunKTerm{\EvalDContMLivMV{v}[]}{\EvalDContMLivMV{k}[]}
+\mid \EvalDContMLivEvalConsRKTerm{\EvalDContMLivMV{env}[]}
+{\EvalDContMLivMV{e}[]}{\EvalDContMLivMV{k}[]}
+ \\ \hspace*{2.0cm}
+\mid \EvalDContMLivConsKTerm{\EvalDContMLivMV{v}[]}{\EvalDContMLivMV{k}[]}
+\mid \EvalDContMLivMatchKTerm{\EvalDContMLivMV{env}[]}{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{x}[]}{\EvalDContMLivMV{y}[]}{\EvalDContMLivMV{e}[]}
+{\EvalDContMLivMV{k}[]}\\
+\end{array}\]
+
+\subsection*{Derivation Rules:}
+\typicallabel{E-MatchNil}
+\EvalDContMLivDisplayRules
+
+
+
+\newpage
+\section*{EvalRefML3}
+
+\input{formatted-rules/EvalRefML3}
+
+\subsection*{Syntax:}
+
+\[\begin{array}{l}
+\EvalRefMLiiiMV{i}[] \in \mathbf{int}\\
+\EvalRefMLiiiMV{b}[] \in \mathbf{bool}\\
+\EvalRefMLiiiMV{x}[], \EvalRefMLiiiMV{y}[] \in
+\mathbf{Var}\\
+\EvalRefMLiiiMV{l}[] \in \mathbf{Loc}\\
+\EvalRefMLiiiMV{v}[] \in \mathbf{Value} ::= \EvalRefMLiiiMV{i}[]
+\mid \EvalRefMLiiiMV{b}[] \mid \EvalRefMLiiiMV{l}[]
+\mid \EvalRefMLiiiFunTerm{\EvalRefMLiiiMV{env}[]}{\EvalRefMLiiiMV{x}[]}
+{\EvalRefMLiiiMV{e}[]} \mid \EvalRefMLiiiRecTerm{\EvalRefMLiiiMV{env}[]}
+{\EvalRefMLiiiMV{x}[]}{\EvalRefMLiiiMV{y}[]}
+{\EvalRefMLiiiMV{e}[]}\\
+\EvalRefMLiiiMV{env}[] \in \mathbf{Env} ::= \EvalRefMLiiiEmptyTerm
+\mid \EvalRefMLiiiBindTerm{\EvalRefMLiiiMV{env}[]}{\EvalRefMLiiiMV{x}[]}
+{\EvalRefMLiiiMV{v}[]}\\
+\EvalRefMLiiiMV{s}[] \in \mathbf{Store} ::= \EvalRefMLiiiEmptySTerm
+\mid \EvalRefMLiiiBlockTerm{\EvalRefMLiiiMV{s}[]}{\EvalRefMLiiiMV{l}[]}
+{\EvalRefMLiiiMV{v}[]}\\
+\EvalRefMLiiiMV{e}[] \in \mathbf{Exp} ::= \EvalRefMLiiiMV{i}[]
+\mid \EvalRefMLiiiMV{b}[] \mid \EvalRefMLiiiMV{x}[]
+\mid \EvalRefMLiiiBinOpTerm{\EvalRefMLiiiMV{op}[]}{\EvalRefMLiiiMV{e}[]}
+{\EvalRefMLiiiMV{e}[]} \mid \EvalRefMLiiiIfTerm{\EvalRefMLiiiMV{e}[]}
+{\EvalRefMLiiiMV{e}[]}{\EvalRefMLiiiMV{e}[]}
+\mid \EvalRefMLiiiLetTerm{\EvalRefMLiiiMV{x}[]}{\EvalRefMLiiiMV{e}[]}
+{\EvalRefMLiiiMV{e}[]}  \\ \hspace*{2.0cm}
+\mid \EvalRefMLiiiAbsTerm{\EvalRefMLiiiMV{x}[]}
+{\EvalRefMLiiiMV{e}[]} \mid \EvalRefMLiiiAppTerm{\EvalRefMLiiiMV{e}[]}
+{\EvalRefMLiiiMV{e}[]} \mid \EvalRefMLiiiLetRecTerm{\EvalRefMLiiiMV{x}[]}
+{\EvalRefMLiiiMV{y}[]}{\EvalRefMLiiiMV{e}[]}{\EvalRefMLiiiMV{e}[]}
+ \\ \hspace*{2.0cm}
+\mid \EvalRefMLiiiNewRefTerm{\EvalRefMLiiiMV{e}[]}
+\mid \EvalRefMLiiiDerefTerm{\EvalRefMLiiiMV{e}[]}
+\mid \EvalRefMLiiiAssignTerm{\EvalRefMLiiiMV{e}[]}
+{\EvalRefMLiiiMV{e}[]}\\
+\EvalRefMLiiiMV{op}[] \in \mathbf{Prim} ::= \EvalRefMLiiiPlusTerm
+\mid \EvalRefMLiiiMinusTerm \mid \EvalRefMLiiiMultTerm
+\mid \EvalRefMLiiiLtTerm\\
+\end{array}\]
+
+
+空の環境やストア \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+また，ストアが空の場合，判断中でそれに先行する，もしくは続く\texttt{/}
+も省略してよい．また，\rn{E-Assign} に現れ
+る記法 \(\EvalRefMLiiiMV{s}\relax[\EvalRefMLiiiMV{l} =
+\EvalRefMLiiiMV{v}]\) は，\(\EvalRefMLiiiMV{s}\) に現れ
+る \(\EvalRefMLiiiMV{l} = \ldots\) を\(\EvalRefMLiiiMV{l} =
+\EvalRefMLiiiMV{v}\) で置き換えたようなストアであり，正確には
+以下のように定義される．
+\begin{eqnarray*}
+  (\EvalRefMLiiiBlockTerm{\EvalRefMLiiiMV{s}}{
+    \EvalRefMLiiiMV{l}}{\EvalRefMLiiiMV{v}})
+      [\EvalRefMLiiiMV{l} = \EvalRefMLiiiMV{v}[']] & = &
+      \EvalRefMLiiiBlockTerm{\EvalRefMLiiiMV{s}}{
+    \EvalRefMLiiiMV{l}}{\EvalRefMLiiiMV{v}[']} \\
+  (\EvalRefMLiiiBlockTerm{\EvalRefMLiiiMV{s}}{
+    \EvalRefMLiiiMV{l}}{\EvalRefMLiiiMV{v}})
+      [\EvalRefMLiiiMV{l}['] = \EvalRefMLiiiMV{v}[']] & = &
+  \EvalRefMLiiiBlockTerm{
+    (\EvalRefMLiiiMV{s}{}[\EvalRefMLiiiMV{l}['] = \EvalRefMLiiiMV{v}[']])
+   }{\EvalRefMLiiiMV{l}}{\EvalRefMLiiiMV{v}} \qquad
+   \mbox{(if \(\EvalRefMLiiiMV{l} \neq \EvalRefMLiiiMV{l}[']\))}
+\end{eqnarray*}
+
+\subsection*{Derivation Rules:}
+\typicallabel{E-Plus}
+\long\def\EvalRefMLiiiEApp{\infrule[E-App]{
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{1}]}{\EvalRefMLiiiMV{env}[]}
+                       {\EvalRefMLiiiMV{e}[_{1}]}
+                       {\EvalRefMLiiiFunTerm{\EvalRefMLiiiMV{env}[_{2}]}
+                       {\EvalRefMLiiiMV{x}[]}{\EvalRefMLiiiMV{e}[_{0}]}}
+                       {\EvalRefMLiiiMV{s}[_{2}]}
+  \andalso
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{2}]}{\EvalRefMLiiiMV{env}[]}
+                       {\EvalRefMLiiiMV{e}[_{2}]}{\EvalRefMLiiiMV{v}[_{2}]}
+                       {\EvalRefMLiiiMV{s}[_{3}]}
+  \\
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{3}]}
+                       {\EvalRefMLiiiBindTerm{\EvalRefMLiiiMV{env}[_{2}]}
+                       {\EvalRefMLiiiMV{x}[]}{\EvalRefMLiiiMV{v}[_{2}]}}
+                       {\EvalRefMLiiiMV{e}[_{0}]}{\EvalRefMLiiiMV{v}[]}
+                       {\EvalRefMLiiiMV{s}[_{4}]}
+}{
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{1}]}{\EvalRefMLiiiMV{env}[]}
+                       {\EvalRefMLiiiAppTerm{\EvalRefMLiiiMV{e}[_{1}]}
+                       {\EvalRefMLiiiMV{e}[_{2}]}}{\EvalRefMLiiiMV{v}[]}
+                       {\EvalRefMLiiiMV{s}[_{4}]}}}
+\long\def\EvalRefMLiiiEAppRec{\infrule[E-AppRec]{
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{1}]}{\EvalRefMLiiiMV{env}[]}
+                       {\EvalRefMLiiiMV{e}[_{1}]}
+                       {\EvalRefMLiiiRecTerm{\EvalRefMLiiiMV{env}[_{2}]}
+                       {\EvalRefMLiiiMV{x}[]}{\EvalRefMLiiiMV{y}[]}
+                       {\EvalRefMLiiiMV{e}[_{0}]}}{\EvalRefMLiiiMV{s}[_{2}]}
+  \andalso
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{2}]}{\EvalRefMLiiiMV{env}[]}
+                       {\EvalRefMLiiiMV{e}[_{2}]}{\EvalRefMLiiiMV{v}[_{2}]}
+                       {\EvalRefMLiiiMV{s}[_{3}]}
+  \\
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{3}]}
+                       {\EvalRefMLiiiBindTerm{\EvalRefMLiiiBindTerm{\EvalRefMLiiiMV{env}[_{2}]}
+                                             {\EvalRefMLiiiMV{x}[]}
+                                             {\EvalRefMLiiiRecTerm{\EvalRefMLiiiMV{env}[_{2}]}
+                                             {\EvalRefMLiiiMV{x}[]}
+                                             {\EvalRefMLiiiMV{y}[]}
+                                             {\EvalRefMLiiiMV{e}[_{0}]}}}
+                       {\EvalRefMLiiiMV{y}[]}{\EvalRefMLiiiMV{v}[_{2}]}}
+                       {\EvalRefMLiiiMV{e}[_{0}]}{\EvalRefMLiiiMV{v}[]}
+                       {\EvalRefMLiiiMV{s}[_{4}]}
+}{
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_{1}]}{\EvalRefMLiiiMV{env}[]}
+                       {\EvalRefMLiiiAppTerm{\EvalRefMLiiiMV{e}[_{1}]}
+                       {\EvalRefMLiiiMV{e}[_{2}]}}{\EvalRefMLiiiMV{v}[]}
+                       {\EvalRefMLiiiMV{s}[_{4}]}}}
+
+\EvalRefMLiiiDisplayRules
+
+\newpage
+\section*{While}
+
+\input{formatted-rules/While}
+
+\WhileDisplayBNF
+
+\WhileDisplayRules
+
+% \WhileAConst
+% \WhileAVar
+% \WhileAPlus
+% \WhileAMinus
+% \WhileATimes
+% \WhileBConst
+% \WhileBNot
+% \WhileBAnd
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

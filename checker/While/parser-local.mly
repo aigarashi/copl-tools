@@ -48,7 +48,7 @@ Judgment:
     St VDASH AExp EVALTO SInt { AEvalTo($1, $3, $5) }
   | St VDASH BExp EVALTO TRUE { BEvalTo($1, $3, true) }
   | St VDASH BExp EVALTO FALSE { BEvalTo($1, $3, false) }
-  | Com CHANGES St TO St { Exec($3, $1, $5) }
+  | Comm CHANGES St TO St { Exec($3, $1, $5) }
 
   | St VDASH AExp error { errAt 4 "Syntax error: 'evalto' expected" }
   | St VDASH AExp EVALTO error { errAt 5 "Syntax error: integer expected" }
@@ -58,12 +58,13 @@ Judgment:
 partialj :
     St VDASH AExp EVALTO QM { In_AEvalTo($1, $3) }
   | St VDASH BExp EVALTO QM { In_BEvalTo($1, $3) }
+  | Comm CHANGES St TO QM { In_Exec($3, $1) }
 
 St:
     /* empty */ { Empty } 
   | LCID EQ SInt St2 { List.fold_left (fun st (id, v) -> Bind(st, Var id, v)) Empty (($1,$3)::$4) }
   | LCID error { errAt 2 "Syntax error: '=' expected" }
-  | LCID EQ error { errAt 3 "Syntax error: value expected" }
+  | LCID EQ error { errAt 3 "Syntax error: integer expected" }
 
 St2:
     /* empty */ { [] }
@@ -103,24 +104,33 @@ BExp1:
   | BExp2 AMPAMP BExp1 { LOp(And, $1, $3) }
 
 BExp2:
+    BExp3 { $1 }
+  | BANG BExp4 { Not $2 }
+
+BExp3:
     TRUE { BExp_of_bool true }
   | FALSE { BExp_of_bool false }
   | AExp LT AExp { COp(Lt, $1, $3) }
   | AExp EQ AExp { COp(Eq, $1, $3) }
   | AExp LE AExp { COp(Le, $1, $3) }
-  | BANG BExp2 { Not $2 }
   | LPAREN BExp RPAREN { $2 }
 
-Com:
-    Com1 { $1 }
-  | IF BExp THEN Com1 ELSE Com1 { If($2, $4, $6) }
-  | WHILE LPAREN BExp RPAREN DO Com1 { While($3, $6) }
+BExp4:
+    TRUE { BExp_of_bool true }
+  | FALSE { BExp_of_bool false }
+  | BANG BExp4 { Not $2 }
+  | LPAREN BExp RPAREN { $2 }
 
-Com1:
-    Com2 { $1 }
-  | Com2 SEMI Com1 { Seq($1, $3) }
+Comm:
+    Comm1 { $1 }
+  | IF BExp THEN Comm1 ELSE Comm1 { If($2, $4, $6) }
+  | WHILE LPAREN BExp RPAREN DO Comm1 { While($3, $6) }
 
-Com2:
+Comm1:
+    Comm2 { $1 }
+  | Comm2 SEMI Comm1 { Seq($1, $3) }
+
+Comm2:
     SKIP { Skip }
   | LCID COLEQ AExp { Assign(Var $1, $3) }
-  | LPAREN Com RPAREN { $2 }
+  | LPAREN Comm RPAREN { $2 }

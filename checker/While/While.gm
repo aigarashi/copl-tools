@@ -61,11 +61,11 @@ A-Times: AEvalTo(st, AOp(Mult, a1, a2), i3) :-
 
 B-Const: BEvalTo(st, bv, bv) :- ;
 B-Not: BEvalTo(st, Not(b), bv2) :- BEvalTo(st, b, bv1), `$bv2 = not $bv1` %$bv2 = \neg $bv1%;
-B-And: BEvalTo(st, LOp(And, b1, b2), bv3) :- BEvalTo(st, b1, bv1), BEvalTo(st, b2, bv2), `$bv3 = ($bv1 && $bv2)`;
-B-Or: BEvalTo(st, LOp(Or, b1, b2), bv3) :- BEvalTo(st, b1, bv1), BEvalTo(st, b2, bv2), `$bv3 = ($bv1 || $bv2)`;
+B-And: BEvalTo(st, LOp(And, b1, b2), bv3) :- BEvalTo(st, b1, bv1), BEvalTo(st, b2, bv2), `$bv3 = ($bv1 && $bv2)` %$bv3 = ($bv1 \land $bv2)%;
+B-Or: BEvalTo(st, LOp(Or, b1, b2), bv3) :- BEvalTo(st, b1, bv1), BEvalTo(st, b2, bv2), `$bv3 = ($bv1 || $bv2)` %$bv3 = ($bv1 \lor $bv2)%;
 B-Lt: BEvalTo(st, COp(Lt, a1, a2), bv) :- AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$bv = ($i1 < $i2)`;
 B-Eq: BEvalTo(st, COp(Eq, a1, a2), bv) :- AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$bv = ($i1 = $i2)`;
-B-Le: BEvalTo(st, COp(Le, a1, a2), bv) :- AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$bv = ($i1 <= $i2)`;
+B-Le: BEvalTo(st, COp(Le, a1, a2), bv) :- AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$bv = ($i1 <= $i2)` %$bv3 = ($i1 \leq $i2)%;
 
 C-Skip: Exec(st, Skip, st) :- ;
 C-Assign: Exec(st1, Assign(x, a), st2) :- AEvalTo(st1, a, i), `$st2 = update $st1 $x $i` %$st2 = $st1[$i/$x]%;

@@ -1,0 +1,337 @@
+% 本文中のコメント: どれも \drafttrue の時のみ本文に現れる．
+%  \finish{...}: ... を本文に埋め込み，マージンに印をつける
+%  \begin{underconstruction} ... \end{underconstruction}: 
+%     箇条書き＋マージンの印
+%
+\newcommand{\finish}[1]{\ifdraft [{\it #1\/}]
+                        \marginpar{$\longleftarrow$}
+                        \fi \typeout{*** Finish ***}}
+
+\newenvironment{underconstruction}%
+                        {\begin{itemize}\it }
+                        {\end{itemize}
+                         \ifdraft
+                         \marginpar{$\longleftarrow$}
+                         \fi \typeout{*** Under construction ***}}
+
+\ifbook
+\ifdraft
+\theorembodyfont{\normalfont}
+\fi
+\newtheorem{theorem}{定理}[chapter]
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{example}[theorem]{例}
+\newtheorem{principle}[theorem]{原理}
+\newtheorem{exercise}{演習問題}[chapter]
+%\newtheorem{online}[exercise]{演習問題(オンライン版)}
+\newenvironment{online}{\begin{exercise}\textbf{(オンライン演習システムより)}}
+{\end{exercise}}
+\fi
+
+\def\endofstm{~\hfill\mbox{$\square$}}
+
+\newenvironment{retheorem}[1]{%
+\begin{trivlist}
+\item [\hskip \labelsep{\textbf{定理 \ref{#1} (再掲) }}]
+}{%
+\end{trivlist}}
+
+% references
+\newcommand{\figref}[1]{図\ref{fig:#1}}
+\newcommand{\tabref}[1]{表\ref{tab:#1}}
+\newcommand{\chapref}[1]{第\ref{chap:#1}章}
+\newcommand{\secref}[1]{\ref{sec:#1}節}
+\newcommand{\thmref}[1]{定理\ref{thm:#1}}
+\newcommand{\lemref}[1]{補題\ref{lem:#1}}
+\newcommand{\defref}[1]{定義\ref{def:#1}}
+\newcommand{\exref}[1]{演習問題\ref{ex:#1}}
+
+% emphasize
+\definecolor{gray96}{gray}{.9}
+\setlength{\fboxsep}{0pt}
+\newcommand{\gb}[1]{\ifmmode%
+  \colorbox{gray96}{\(#1\)}
+\else%
+  $\colorbox{gray96}{#1}$
+\fi
+}
+\newif\ifshowdiff
+\newcommand{\diff}[1]{\ifshowdiff\relax\gb{#1}\else#1\fi}
+\newcommand{\HIGHLIGHT}{\gb}
+\newenvironment{showdiff}{\showdifftrue}{\showdifffalse}
+\newenvironment{newrule}{\newruletrue}{\newrulefalse}
+
+\newcommand{\wb}[1]{\!\colorbox{white}{\!\(#1\)\!}\!}
+
+\newcommand{\mv}[1]{\mbox{$\langle\mbox{\boldmath{$#1$}}\rangle$}}
+
+% Abbreviations
+\newcommand{\OCAML}{OCaml}
+
+% Indexing
+\long\def\Index{\@ifnextchar[{\@indexx}{\@index}}
+\long\def\@indexx[#1]#2{%
+  #2\ifbook\index{#1}\fi%
+}
+\long\def\@index#1{%
+  \@indexx[#1]{#1}%
+}
+\long\def\newterm{\@ifnextchar[{\@newtermx}{\@newterm}}
+\long\def\@newtermx[#1]#2#3{%
+  \textbf{\Index[#1]{#2}}(#3)%
+}
+\long\def\@newterm#1#2{%
+  \textbf{\Index{#1}}(#2)%
+}
+\let\reterm\Index
+%\newcommand{\keywords}{1]{\textbf{本章のキーワード:} #1}
+
+\newcommand{\これ}{\ifbook 本書\else 本講義\fi}
+
+% metavariables
+\newcommand{\Jdg}{\mathcal{J}}
+\newcommand{\Drv}{\mathcal{D}}
+\newcommand{\EnvSet}{\mathbf{Env}}
+\newcommand{\Env}{\mathcal{E}}
+
+% binary operations
+\newcommand{\defeq}{\mathbin{\stackrel{\textrm{\tiny def}}{=}}}
+\newcommand{\defiff}{\mathbin{\stackrel{\textrm{\tiny def}}{\iff}}}
+
+% constants
+\newcommand{\Nat}{\mathbf{Nat}}
+\newcommand{\NatExp}{\mathbf{Exp}}
+\newcommand{\error}{\textbf{error}}
+\newcommand{\matcherror}{\textbf{MatchError}}
+
+\newcommand{\dom}{\mathit{dom}}
+\newcommand{\FTV}{\mathit{FTV}}
+\newcommand{\FV}{\mathit{FV}}
+\newcommand{\set}[1]{%
+\def\s{#1\relax}
+\ifx\s\relax\emptyset\else\{#1\}\fi%
+}
+
+\newcommand{\sizeof}{\mathit{size}}
+\newcommand{\heightof}{\mathit{height}}
+\newcommand{\var}{\mathop{\textit{var}}}
+\newcommand{\val}{\mathop{\textit{val}}}
+
+\ifbook
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% for writing down proofs: copied from bcptheorem.sty
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\def\endofpfmarker{\mbox{$\square$}}
+\def\endofpfmarker{\mbox{(証明終)}}
+\def\endofpfcommands{%
+  \ifmmode
+    % This assumes that the feqn style is being used:
+    \egroup$\hbox{\ }\hfill\endofpfmarker$\bgroup
+  \else
+    ~\hfill\endofpfmarker
+  \fi
+  }
+\def\endofpf{}
+\def\startofpf{\gdef\endofpf{\endofpfcommands\gdef\endofpf{}}}
+
+\newcommand{\prooflabelface}{\bf}
+
+\newenvironment{pf}{%
+   \startofpf \trivlist
+     \item[\hskip \labelsep{\prooflabelface
+                     証明:  
+                   }]%
+   }{\endofpf\endtrivlist}
+\newenvironment{pfof}[1]{%
+   \startofpf \trivlist
+     \item[\hskip \labelsep{\prooflabelface 
+                     #1の証明: 
+                   }]%
+   }{\endofpf\endtrivlist}
+\newenvironment{pfsketch}{%
+   \startofpf \trivlist
+     \item[\hskip \labelsep{\prooflabelface 
+                     Proof sketch: 
+                   }]%
+   }{\endofpf\endtrivlist}
+
+% Aliases
+\newenvironment{proof}{\begin{pf}}{\end{pf}}
+\newenvironment{proofof}{\begin{pfof}}{\end{pfof}}
+\newenvironment{proofsketch}{\begin{pfsketch}}{\end{pfsketch}}
+
+% These are now deprecated:
+\newenvironment{pfnobox}{\begin{pf}}{\end{pf}}
+\newenvironment{pfofnobox}[1]{%
+   \trivlist  \startofpf
+     \item[\hskip \labelsep{\bf 
+                     Proof of #1: 
+                   }]%
+   }{\endofpf\endtrivlist}
+\newenvironment{pfsketchnobox}{%
+   \trivlist  \startofpf
+     \item[\hskip \labelsep{\bf 
+                     Proof sketch: 
+                   }]%
+   }{\endofpf\endtrivlist}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Still needs to be fixed!!
+\newcommand{\casefont}[1]{\textbf{#1}}
+\newcounter{casecounter}
+\renewcommand{\thecasecounter}{\roman{casecounter}}
+
+\def\flushtopCaseHeader#1{%
+   \raise 0.5\baselineskip
+   \hbox{%
+    {\setbox\@tempboxa\hbox{#1}%
+     \@tempdima\dp\@tempboxa
+     \@tempdimb\ht\@tempboxa
+     \ht\@tempboxa\z@
+     \lower \@tempdimb \box\@tempboxa
+     }}}
+
+\def\indentedtext{\list{}{
+   \listparindent 1.5em 
+ % \itemindent\listparindent
+ % \advance\leftmargin -1em
+   \advance\leftmargin .5em 
+ \itemindent 0em
+ \parsep 0pt plus 1pt
+ \partopsep 0pt 
+ \topsep 0pt plus 1pt minus 1pt}\item[]}
+\let\endindentedtext=\endlist
+
+\newenvironment{bcpcasearray}{\quad\begin{array}[t]{@{}l@{\qquad}l@{\qquad}l@{\qquad}l}}{\end{array}}
+
+% \newenvironment{namedcase}[1]{%
+%         \smallbreak \pagebreak[3]
+%         \noindent #1 \nobreak 
+%         \list{}{\topsep 0pt plus 1pt
+%                 \partopsep 0pt
+%                 \parskip 0pt
+%                 \leftmargin 1.5pc  
+%                 \@beginparpenalty\@M
+%                 }\item[]\clubpenalty\@M}%
+%         {\endlist}
+\newenvironment{namedcase}[1]{%
+        \smallbreak \pagebreak[3]
+        \noindent #1 \\[\smallskipamount] \ignorespaces}%
+        {}
+
+\newenvironment{case}[1]{%
+        \refstepcounter{casecounter}%
+        \begin{namedcase}{\casefont{Case \thecasecounter: } #1}%
+        }{\end{namedcase}}
+
+\newenvironment{textcase}[1]{%
+        \refstepcounter{casecounter}%
+        \begin{namedcase}{\casefont{Case: } #1}%
+        }{\end{namedcase}}
+
+\newenvironment{namedeqncase}[2]{%
+        \begin{namedcase}{\casefont{Case {\rm #1}: } $\bcpcasearray{#2}$ }%
+        }{\end{namedcase}}
+
+\newenvironment{numberedcase}[2]{%
+        \begin{namedcase}{\casefont{Case {\rm #1}: } $\bcpcasearray{#2}$ }%
+        }{\end{namedcase}}
+
+\newenvironment{numberedcases}[2]{%
+        \begin{namedcase}{\casefont{Cases {\rm #1}: } $\bcpcasearray{#2}$ }%
+        }{\end{namedcase}}
+
+\newenvironment{namedcases}[1]{%
+        \begin{namedcase}{\casefont{Cases {\rm #1}: }}%
+        }{\end{namedcase}}
+
+\newenvironment{rncase}[1]{%
+        \begin{namedcase}{\casefont{規則 \rn{#1} の場合: }}%
+        }{\end{namedcase}}
+
+\newenvironment{rntextcase}[2]{%
+        \begin{namedcase}{\casefont{Case \rn{#1}: } #2}%
+        }{\end{namedcase}}
+
+\newenvironment{rneqncase}[2]{%
+        \begin{namedcase}{\casefont{Case \rn{#1}: }
+           $\begin{bcpcasearray} #2 \end{bcpcasearray}$ }%
+        }{\end{namedcase}}
+
+\newenvironment{rnsubcase}[1]{%
+        \begin{namedcase}{\casefont{Subcase \rn{#1}: }}%
+        }{\end{namedcase}}
+
+\newenvironment{rneqnsubcase}[2]{%
+        \begin{namedcase}{\casefont{Subcase \rn{#1}: } 
+           $\begin{bcpcasearray} #2 \end{bcpcasearray}$ }%
+        }{\end{namedcase}}
+
+\newenvironment{textsubcase}[1]{%
+        \begin{namedcase}{\casefont{Subcase: } #1}\ignorespaces
+        }{\end{namedcase}}
+
+\newenvironment{eqncase}[1]{%
+        \begin{namedcase}{\casefont{Case: } 
+           $\begin{bcpcasearray} #1 \end{bcpcasearray}$ }\ignorespaces
+        }{\end{namedcase}}
+
+\newenvironment{eqnsubcase}[1]{%
+        \begin{namedcase}{\casefont{Subcase: } 
+           $\begin{bcpcasearray} #1 \end{bcpcasearray}$ }\ignorespaces
+        }{\end{namedcase}}
+
+\newenvironment{rulepaircase}[3]{%
+        \begin{namedcase}{\casefont{Case \rn{#1}/\rn{#2}: }
+        $#3$}\smallskip%
+        }{\end{namedcase}}
+
+\newenvironment{rulecase}[2]{%
+        \begin{namedcase}{\casefont{Case \rn{#1}:}\hfill
+        \advancedepthby{0.5\baselineskip}%
+                       {\flushtopCaseHeader{\small #2}}\hfill}}{\end{namedcase}}
+
+\newenvironment{infaxcase}[2]{%
+        \begin{namedcase}{\casefont{Case \rn{#1}: } $#2$}\smallskip %
+        }{\end{namedcase}}
+
+\newenvironment{infrulecase}[3]{%
+        \begin{namedcase}{\casefont{Case \rn{#1}: } 
+                          ${\strut\displaystyle #2}
+                           \over
+                           {\strut\displaystyle #3}$}
+                         \smallskip
+        }{\end{namedcase}}
+
+\newenvironment{infaxpluscase}[3]{%
+        \begin{namedcase}{\casefont{Case #1: } $#2$\ \ \ #3}\smallskip
+        }{\end{namedcase}}
+
+\newenvironment{infrulepluscase}[4]{%
+        \begin{namedcase}{\casefont{Case #1: } 
+                          ${\strut\displaystyle #2}
+                           \over
+                           {\strut\displaystyle #3}$
+                          \ \ \ #4}
+                         \smallskip
+        }{\end{namedcase}}
+
+\newenvironment{basecase}[1]{%
+        \begin{namedcase}{\casefont{Base step: } #1}%
+        }{\end{namedcase}}
+
+\newenvironment{inductioncase}[1]{%
+        \begin{namedcase}{\casefont{Induction step: } #1}%
+        }{\end{namedcase}}
+
+
+\fi % ifbook
+
+

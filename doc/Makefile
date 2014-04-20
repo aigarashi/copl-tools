@@ -1,4 +1,25 @@
-all: main.pdf
+TOPDIR=..
+GMCDIR=$(TOPDIR)/gmc
+GMC=$(GMCDIR)/gmc
+GAMESDIR=$(TOPDIR)/checker
+SRC2DRV=tools/src2tex/src2drv
+SRC2TEX=tools/src2tex/src2tex
+
+GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
+	EvalML1 EvalML1Err EvalML2 EvalML3 EvalML4 EvalML5 EvalML6 \
+	NamelessML3 EvalNamelessML3 \
+	TypingML2 TypingML3 TypingML4 TypingML6 PolyTypingML4 \
+	EvalML4Err \
+	EvalContML1 EvalContML3 EvalContML4 \
+	EvalDContML4 \
+	EvalRefML3 \
+	While
+
+all: rulebook.pdf
+
+rulebook.pdf: rules rulebook.tex
+	platex rulebook.tex
+	dvipdfmx rulebook.dvi
 
 %.pdf: %.dvi
 	dvipdfmx $<
@@ -6,16 +27,24 @@ all: main.pdf
 %.dvi: %.tex
 	platex $<
 
-games.dvi:: natrules.tex ML1rules.tex natderivs.tex ML1derivs.tex
+rules: formatted-rules $(addprefix formatted-rules/,$(addsuffix .tex,$(GAMES)))
 
-natrules.tex:
-	../gmc/gmc -TeX ../examples/nat.gm > $@
+formatted-rules:
+	-mkdir $@
 
-natderivs.tex:
-	../examples/common/checker -TeX -full -game nat ../examples/nat.drv > $@
+formatted-rules/%.tex: gmc formatted-rules 
+	$(GMC) -TeX $(notdir $(basename $@)) $(GAMESDIR)/$(notdir $(basename $@))/$(notdir $(patsubst %.tex,%.gm,$@)) > $@
 
-ML1rules.tex:
-	../gmc/gmc -TeX ../examples/ML1.gm > $@
+gmc:
+	make -C $(GMCDIR)
 
-ML1derivs.tex:
-	../examples/common/checker -TeX -full -game ML1 ../examples/ML1.drv > $@
+$(SRC2DRV): $(SRC2DRV).mll
+	$(MAKE) -C tools/src2tex src2drv
+
+$(SRC2TEX): $(SRC2TEX).mll
+	$(MAKE) -C tools/src2tex src2tex
+
+clean:
+	-rm *.aux *.log *.dvi
+	-rm *~
+	-rm -rf formatted-rules

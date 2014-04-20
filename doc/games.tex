@@ -1,54 +1,1316 @@
-\documentclass[10pt]{jarticle}
+\makeatletter
 
-\usepackage{a4full}
-\usepackage{bcprules,proof,rotating}
+\newcommand{\newprefixedcommand}[1]{%
+   \expandafter\newcommand\csname #1\endcsname[1][\expandafter\currentsystem]{%
+     \expandafter\csname ##1#1\expandafter\endcsname
+}
+}
+% judgments
+\newprefixedcommand{MV}
+\newprefixedcommand{PlusIs}
+\newprefixedcommand{MultIs}
+\newprefixedcommand{MinusIs}
+\newprefixedcommand{Lt}
+\newprefixedcommand{EvalTo}
+\newprefixedcommand{EvalToL}
+\newprefixedcommand{OneStepTo}
+\newprefixedcommand{OneStepToD}
+\newprefixedcommand{MultiStepTo}
+\newprefixedcommand{Typing}
+\newprefixedcommand{TypingL}
+\newprefixedcommand{TranslateTo}
+\newprefixedcommand{TranslateToV}
+\newprefixedcommand{TranslateToL}
 
-\begin{document}
+% expressions
+\newprefixedcommand{BinOpTerm}
+\newprefixedcommand{IfTerm}
+\newprefixedcommand{AppBOp}
+\newprefixedcommand{PlusTerm}
+\newprefixedcommand{MinusTerm}
+\newprefixedcommand{MultTerm}
+\newprefixedcommand{LtTerm}
+\newprefixedcommand{LetTerm}
+\newprefixedcommand{AbsTerm}
+\newprefixedcommand{AppTerm}
+\newprefixedcommand{LetRecTerm}
+\newprefixedcommand{IndexTerm}
+\newprefixedcommand{NilTerm}
+\newprefixedcommand{ConsTerm}
+\newprefixedcommand{MatchTerm}
+\newprefixedcommand{LetCcTerm}
 
-\newcommand{\metavar}[1]{\mbox{\boldmath $#1$}}
+% values
+\newprefixedcommand{FunTerm}
+\newprefixedcommand{RecTerm}
+\newprefixedcommand{NilVTerm}
+\newprefixedcommand{ConsVTerm}
+\newprefixedcommand{ContFTerm}
 
-\section{nat.gm}
-\label{sec:nat.gm}
+% environments
+\newprefixedcommand{EmptyTerm}
+\newprefixedcommand{BindTerm}
 
-\newcommand{\EvalTo}[2]{\mathtt{#1} \Downarrow \mathtt{#2}}
-\newcommand{\PlusIs}[3]{\mathtt{#1} + \mathtt{#2} = \mathtt{#3}}
-\newcommand{\MultIs}[3]{\mathtt{#1} * \mathtt{#2} = \mathtt{#3}}
-\newcommand{\PTerm}[2]{{#1} \texttt{ + } {#2}}
-\newcommand{\MTerm}[2]{{#1} \texttt{ * } {#2}}
-\newcommand{\STerm}[1]{S({#1})}
-\newcommand{\ZTerm}{Z}
+% nameless expressions
+\newprefixedcommand{BinOpDTerm}
+\newprefixedcommand{IfDTerm}
+\newprefixedcommand{PlusDTerm}
+\newprefixedcommand{MinusDTerm}
+\newprefixedcommand{MultDTerm}
+\newprefixedcommand{LtDTerm}
+\newprefixedcommand{LetDTerm}
+\newprefixedcommand{AbsDTerm}
+\newprefixedcommand{AppDTerm}
+\newprefixedcommand{LetRecDTerm}
+
+% type expressions
+\newprefixedcommand{TyIntTerm}
+\newprefixedcommand{TyBoolTerm}
+\newprefixedcommand{TyFunTerm}
+\newprefixedcommand{TyListTerm}
+\newprefixedcommand{TySchemeTerm}
+
+% continuations
+\newprefixedcommand{AppK}
+\newprefixedcommand{RetKTerm}
+\newprefixedcommand{EvalRKTerm}
+\newprefixedcommand{AppOpKTerm}
+\newprefixedcommand{BranchKTerm}
+\newprefixedcommand{LetBodyKTerm}
+\newprefixedcommand{EvalArgKTerm}
+\newprefixedcommand{AppFunKTerm}
+\newprefixedcommand{EvalConsRKTerm}
+\newprefixedcommand{ConsKTerm}
+\newprefixedcommand{MatchKTerm}
+
+\hyphenation{eval-nat-exp reduce-nat-exp compare-nat}
+
+% Game nat
+\def\@NatMV#1[#2]{%
+  \ensuremath{\mbox{\boldmath $#1#2$}}%
+}
+\newcommand{\NatMV}[1]{%
+  \@ifnextchar[{\@NatMV{#1}}{\@NatMV{#1}[]}
+}
+\newcommand{\NatSTerm}[1]{%
+  \mathtt{S\texttt{(}#1\texttt{)}}
+}
+\newcommand{\NatZTerm}{%
+  \mathtt{Z}
+}
+\newcommand{\NatPTerm}[2]{%
+  #1 \mathbin{\texttt{+}} #2
+}
+\newcommand{\NatMTerm}[2]{%
+  #1 \mathbin{\texttt{*}} #2
+}
+\newcommand{\NatPlusIs}[3]{%
+  #1 \texttt{ plus } #2 \texttt{ is } #3
+}
+\newcommand{\NatMultIs}[3]{%
+  #1 \texttt{ times } #2 \texttt{ is } #3
+}
+% Game CompareNat[1-3]
+\newcommand{\CompareNatiMV}{\NatMV}
+\newcommand{\CompareNatiSTerm}{\NatSTerm}
+\newcommand{\CompareNatiZTerm}{\NatZTerm}
+\newcommand{\CompareNatiLt}[2]{%
+  #1 \texttt{ is less than } #2
+}
+\newcommand{\CompareNatiiMV}{\NatMV}
+\newcommand{\CompareNatiiSTerm}{\NatSTerm}
+\newcommand{\CompareNatiiZTerm}{\NatZTerm}
+\newcommand{\CompareNatiiLt}{\CompareNatiLt}
+\newcommand{\CompareNatiiiMV}{\NatMV}
+\newcommand{\CompareNatiiiSTerm}{\NatSTerm}
+\newcommand{\CompareNatiiiZTerm}{\NatZTerm}
+\newcommand{\CompareNatiiiLt}{\CompareNatiLt}
+
+% Game EvalNatExp
+\newcommand{\EvalNatExpMV}{\NatMV}
+\newcommand{\EvalNatExpSTerm}{\NatSTerm}
+\newcommand{\EvalNatExpZTerm}{\NatZTerm}
+\newcommand{\EvalNatExpPTerm}{\NatPTerm}
+\newcommand{\EvalNatExpMTerm}{\NatMTerm}
+\newcommand{\EvalNatExpEvalTo}[2]{%
+  #1 \Downarrow #2
+}
+\newcommand{\EvalNatExpPlusIs}{\NatPlusIs}
+\newcommand{\EvalNatExpMultIs}{\NatMultIs}
+%\newcommand{\EvalNatExpLt}{\CompareNatiLt}
+
+% Game ReduceNatExp
+\newcommand{\ReduceNatExpMV}{\NatMV}
+\newcommand{\ReduceNatExpSTerm}{\NatSTerm}
+\newcommand{\ReduceNatExpZTerm}{\NatZTerm}
+\newcommand{\ReduceNatExpPTerm}{\NatPTerm}
+\newcommand{\ReduceNatExpMTerm}{\NatMTerm}
+\newcommand{\ReduceNatExpOneStepTo}[2]{%
+  #1 \longrightarrow #2
+}
+\newcommand{\ReduceNatExpOneStepToD}[2]{%
+  #1 \longrightarrow_d #2
+}
+\newcommand{\ReduceNatExpMultiStepTo}[2]{%
+  #1 \longrightarrow^* #2
+}
+\newcommand{\ReduceNatExpPlusIs}{\NatPlusIs}
+\newcommand{\ReduceNatExpMultIs}{\NatMultIs}
+
+% Game EvalML1
+\def\@EvalMLiMV#1[#2]{%
+  \ensuremath{\mbox{\boldmath $#1#2$}}%
+}
+\newcommand{\EvalMLiMV}[1]{%
+  \@ifnextchar[{\@EvalMLiMV{#1}}{\@EvalMLiMV{#1}[]}
+}
+\newcommand{\EvalMLiBinOpTerm}[3]{%
+  #2 \mathbin{#1} #3
+}
+\newcommand{\EvalMLiIfTerm}[3]{%
+  \texttt{if } #1 \texttt{ then } #2 \texttt{ else } #3
+}
+\newcommand{\EvalMLiPlusTerm}{\texttt{+}}
+\newcommand{\EvalMLiMinusTerm}{\texttt{-}}
+\newcommand{\EvalMLiMultTerm}{\texttt{*}}
+\newcommand{\EvalMLiLtTerm}{\texttt{<}}
+
+\newcommand{\EvalMLiEvalTo}[2]{%
+  #1 \Downarrow #2
+}
+\newcommand{\EvalMLiAppBOp}[4]{%
+\def\EvalMLiPlusTerm{\texttt{ plus }}%
+\def\EvalMLiMinusTerm{\texttt{ minus }}%
+\def\EvalMLiMultTerm{\texttt{ times }}%
+\def\EvalMLiLtTerm{\texttt{ less than }}%
+  #2 #1 #3\texttt{ is }#4
+}
+
+% Game EvalML1Err
+
+\newcommand{\EvalMLiErrMV}{\EvalMLiMV}
+\newcommand{\EvalMLiErrBinOpTerm}{\EvalMLiBinOpTerm}
+\newcommand{\EvalMLiErrIfTerm}{\EvalMLiIfTerm}
+\newcommand{\EvalMLiErrPlusTerm}{\EvalMLiPlusTerm}
+\newcommand{\EvalMLiErrMinusTerm}{\EvalMLiMinusTerm}
+\newcommand{\EvalMLiErrMultTerm}{\EvalMLiMultTerm}
+\newcommand{\EvalMLiErrLtTerm}{\EvalMLiLtTerm}
+\newcommand{\EvalMLiErrEvalTo}{\EvalMLiEvalTo}
+\newcommand{\EvalMLiErrAppBOp}{\EvalMLiAppBOp}
+
+\newcommand{\EvalMLiErrErrorTerm}{\textbf{error}}
+
+% Game EvalML2
+\def\@EvalMLiiMV#1[#2]{%
+\def\arg{#1}%
+\def\env{env}%
+\ifx\env\arg\mbox{\boldmath $\mathcal{E}#2$} \else\mbox{\boldmath $#1#2$} \fi
+}
+\newcommand{\EvalMLiiMV}[1]{%
+  \@ifnextchar[{\@EvalMLiiMV{#1}}{\@EvalMLiiMV{#1}[]}
+}
+
+\newcommand{\EvalMLiiEmptyTerm}{\bullet}
+
+\newcommand{\EvalMLiiBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalMLiiEmptyTerm}%
+\ifx\emptyenv\arg #2 \;\texttt{=}\; #3%
+\else #1, #2 \;\texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\EvalMLiiBinOpTerm}{\EvalMLiBinOpTerm}
+\newcommand{\EvalMLiiIfTerm}{\EvalMLiIfTerm}
+
+\newcommand{\EvalMLiiLetTerm}[3]{%
+  \texttt{let } #1 \texttt{ = } #2 \texttt{ in } #3
+}
+
+\newcommand{\EvalMLiiPlusTerm}{\EvalMLiPlusTerm}
+\newcommand{\EvalMLiiMinusTerm}{\EvalMLiMinusTerm}
+\newcommand{\EvalMLiiMultTerm}{\EvalMLiMultTerm}
+\newcommand{\EvalMLiiLtTerm}{\EvalMLiLtTerm}
+
+\newcommand{\EvalMLiiEvalTo}[3]{%
+  \mathrel{\diff{#1 \vdash}} \EvalMLiEvalTo{#2}{#3}
+}
+\newcommand{\EvalMLiiAppBOp}{\EvalMLiAppBOp}
+
+% Game EvalML3
+
+\newcommand{\EvalMLiiiMV}{\EvalMLiiMV}
+
+\newcommand{\EvalMLiiiEmptyTerm}{\bullet}
+
+\newcommand{\EvalMLiiiBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalMLiiiEmptyTerm}%
+\ifx\emptyenv\arg #2 \;\texttt{=}\; #3%
+\else #1, #2 \;\texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\EvalMLiiiFunTerm}[3]{%
+  \texttt{(} #1 \texttt{)[fun } #2 \rightarrow #3 \texttt{]}
+}
+\newcommand{\EvalMLiiiRecTerm}[4]{%
+  \texttt{(} #1 \texttt{)[rec } #2 \texttt{ = fun } #3 \rightarrow #4 \texttt{]}
+}
+
+\newcommand{\EvalMLiiiBinOpTerm}{\EvalMLiiBinOpTerm}
+\newcommand{\EvalMLiiiIfTerm}{\EvalMLiiIfTerm}
+\newcommand{\EvalMLiiiLetTerm}{\EvalMLiiLetTerm}
+
+\newcommand{\EvalMLiiiAbsTerm}[2]{%
+  \texttt{fun } #1 \rightarrow #2
+}
+
+\newcommand{\EvalMLiiiAppTerm}[2]{%
+  #1 \; #2
+}
+
+\newcommand{\EvalMLiiiLetRecTerm}[4]{%
+  \texttt{let rec } #1 \texttt{ = fun } #2 \rightarrow #3 \texttt{ in } #4
+}
+
+\newcommand{\EvalMLiiiPlusTerm}{\EvalMLiiPlusTerm}
+\newcommand{\EvalMLiiiMinusTerm}{\EvalMLiiMinusTerm}
+\newcommand{\EvalMLiiiMultTerm}{\EvalMLiiMultTerm}
+\newcommand{\EvalMLiiiLtTerm}{\EvalMLiiLtTerm}
+
+\newcommand{\EvalMLiiiEvalTo}[3]{%
+  #1 \mathrel{\vdash} \EvalMLiEvalTo{#2}{#3}
+}
+\newcommand{\EvalMLiiiEvalToL}[3]{%
+\begin{array}[t]{@{}l@{}l@{}}
+  #1 \mathrel{\vdash} & #2 \\
+                      & \Downarrow #3
+\end{array}
+}
 
 
-規則:
-%
-\input{natrules}
+\newcommand{\EvalMLiiiAppBOp}{\EvalMLiiAppBOp}
 
-導出例
-%
-\begin{sidewaysfigure}
-\scriptsize
-\input{natderivs}
-\end{sidewaysfigure}
+% Game EvalML4
+\newcommand{\EvalMLivMV}{\EvalMLiiiMV}
 
-\section{ML1.gm}
+\newcommand{\EvalMLivFunTerm}{\EvalMLiiiFunTerm}
+\newcommand{\EvalMLivRecTerm}{\EvalMLiiiRecTerm}
 
-\newcommand{\TrueTerm}{true}
-\newcommand{\FalseTerm}{false}
-\newcommand{\IfTerm}[3]{if\ {#1}\ then\ {#2}\ else\ {#3}}
-\newcommand{\AppBOp}[4]{{#2} {#1} {#3} = {#4}}
-\newcommand{\PlusTerm}{+}
-\newcommand{\MinusTerm}{-}
-\newcommand{\MultTerm}{*}
-\newcommand{\BinOpTerm}[3]{{#2} {#1} {#3}}
-\newcommand{\LtTerm}{<}
+\newcommand{\EvalMLivNilVTerm}{\texttt{[]}}
+\newcommand{\EvalMLivConsVTerm}[2]{%
+  #1 \mathbin{\texttt{::}} #2
+}
 
-規則:
-%
-\input{ML1rules}
+\newcommand{\EvalMLivEmptyTerm}{\bullet}
 
-導出例
-%
-\input{ML1derivs}
+\newcommand{\EvalMLivBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalMLiviEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\; #3%
+\else #1, #2 \;\texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\EvalMLivBinOpTerm}{\EvalMLiiiBinOpTerm}
+\newcommand{\EvalMLivIfTerm}{\EvalMLiiiIfTerm}
+\newcommand{\EvalMLivLetTerm}{\EvalMLiiiLetTerm}
+\newcommand{\EvalMLivAbsTerm}{\EvalMLiiiAbsTerm}
+\newcommand{\EvalMLivAppTerm}{\EvalMLiiiAppTerm}
+\newcommand{\EvalMLivLetRecTerm}{\EvalMLiiiLetRecTerm}
+
+\newcommand{\EvalMLivNilTerm}{\texttt{[]}}
+
+\newcommand{\EvalMLivConsTerm}[2]{%
+  #1 \mathbin{\texttt{::}} #2
+}
+
+\newcommand{\EvalMLivMatchTerm}[5]{
+  \texttt{match } #1 \texttt{ with []} \rightarrow #2
+    \texttt{ | } #3 \mathbin{\texttt{::}} #4 \rightarrow #5
+}
+
+\newcommand{\EvalMLivPlusTerm}{\EvalMLiiiPlusTerm}
+\newcommand{\EvalMLivMinusTerm}{\EvalMLiiiMinusTerm}
+\newcommand{\EvalMLivMultTerm}{\EvalMLiiiMultTerm}
+\newcommand{\EvalMLivLtTerm}{\EvalMLiiiLtTerm}
+
+\newcommand{\EvalMLivEvalTo}{\EvalMLiiiEvalTo}
+\newcommand{\EvalMLivEvalToL}{\EvalMLiiiEvalToL}
+
+\newcommand{\EvalMLivAppBOp}{\EvalMLiiiAppBOp}
+
+% Game EvalML5
+\newcommand{\EvalMLvMV}{\EvalMLivMV}
+
+\newcommand{\EvalMLvFunTerm}{\EvalMLivFunTerm}
+\newcommand{\EvalMLvRecTerm}{\EvalMLivRecTerm}
+\newcommand{\EvalMLvNilVTerm}{\EvalMLivNilVTerm}
+\newcommand{\EvalMLvConsVTerm}{\EvalMLivConsVTerm}
+
+\newcommand{\EvalMLvEmptyTerm}{\bullet}
+\newcommand{\EvalMLvBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalMLvEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\;#3%
+\else #1, #2 \;\texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\EvalMLvNilPTerm}{\texttt{[]}}
+\newcommand{\EvalMLvConsPTerm}[2]{%
+  #1 \mathbin{\texttt{::}} #2
+}
+\newcommand{\EvalMLvWildPTerm}{\texttt{\char'137}}
+
+\newcommand{\EvalMLvFailTerm}{F}
+
+\newcommand{\EvalMLvSingleCTerm}[2]{
+%\def\arg{#3}%
+%\def\emptyclause{\EvalMLvEmptyCTerm}%
+%\ifx\emptyclause\arg #1 \rightarrow #2%
+%\else 
+#1 \rightarrow #2%
+%\fi
+}
+\newcommand{\EvalMLvAddCTerm}[3]{% p e c
+%\def\arg{#3}%
+%\def\emptyclause{\EvalMLvEmptyCTerm}%
+%\ifx\emptyclause\arg #1 \rightarrow #2%
+%\else 
+#1 \rightarrow #2 \texttt{ | } #3%
+%\fi
+}
+
+\newcommand{\EvalMLvBinOpTerm}{\EvalMLivBinOpTerm}
+\newcommand{\EvalMLvIfTerm}{\EvalMLivIfTerm}
+\newcommand{\EvalMLvLetTerm}{\EvalMLivLetTerm}
+\newcommand{\EvalMLvAbsTerm}{\EvalMLivAbsTerm}
+\newcommand{\EvalMLvAppTerm}{\EvalMLivAppTerm}
+\newcommand{\EvalMLvLetRecTerm}{\EvalMLivLetRecTerm}
+\newcommand{\EvalMLvNilTerm}{\EvalMLivNilTerm}
+\newcommand{\EvalMLvConsTerm}{\EvalMLivConsTerm}
+
+\newcommand{\EvalMLvMatchTerm}[2]{% e c
+  \texttt{match } #1 \texttt{ with } #2
+}
+
+\newcommand{\EvalMLvPlusTerm}{\EvalMLivPlusTerm}
+\newcommand{\EvalMLvMinusTerm}{\EvalMLivMinusTerm}
+\newcommand{\EvalMLvMultTerm}{\EvalMLivMultTerm}
+\newcommand{\EvalMLvLtTerm}{\EvalMLivLtTerm}
+
+\newcommand{\EvalMLvEvalTo}{\EvalMLivEvalTo}
+\newcommand{\EvalMLvEvalToL}{\EvalMLivEvalToL}
+
+\newcommand{\EvalMLvAppBOp}{\EvalMLivAppBOp}
+
+\newcommand{\EvalMLvMatches}[3]{% v p res
+\def\arg{#3}%
+\def\fail{\EvalMLvFailTerm}%
+\def\emptyenv{\EvalMLvEmptyTerm}
+\ifx\arg\fail#2\texttt{ doesn't match }#1%
+\else\ifx\arg\emptyenv #2 \texttt{ matches } #1 \texttt{ when }()%
+\else #2 \texttt{ matches } #1 \texttt{ when }(#3)%
+\fi\fi
+}
+
+\newcommand{\EvalMLvMatchesL}[3]{% v p res
+\def\arg{#3}%
+\def\fail{\EvalMLvFailTerm}%
+\def\emptyenv{\EvalMLvEmptyTerm}
+\ifx\arg\fail#2\texttt{ doesn't match }#1%
+\else\ifx\arg\emptyenv #2 \texttt{ matches } #1 \texttt{ when }()%
+\else #2 \texttt{ matches } #1 \\ \texttt{ when }(#3)%
+\fi\fi
+}
+
+% Game EvalNamelessML3
+
+\def\@EvalNamelessMLiiiMV#1[#2]{%
+\def\arg{#1}%
+\def\env{env}%
+\def\val{v}%
+\ifx\env\arg\mbox{\boldmath $\mathcal{V}#2$}\else%
+\ifx\val\arg\mbox{\boldmath $w#2$}\else\mbox{\boldmath $#1#2$}\fi\fi
+}
+\newcommand{\EvalNamelessMLiiiMV}[1]{%
+  \@ifnextchar[{\@EvalNamelessMLiiiMV{#1}}{\@EvalNamelessMLiiiMV{#1}[]}
+}
+\newcommand{\EvalNamelessMLiiiEmptyTerm}{\bullet}
+
+\newcommand{\EvalNamelessMLiiiBindTerm}[2]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalNamelessMLiiiEmptyTerm}%
+\ifx\emptyenv\arg #2%
+\else #1, #2%
+\fi
+}
+
+\newcommand{\EvalNamelessMLiiiFunTerm}[2]{%
+  \texttt{(} #1 \texttt{)[fun } . \rightarrow #2 \texttt{]}
+}
+\newcommand{\EvalNamelessMLiiiRecTerm}[2]{%
+  \texttt{(} #1 \texttt{)[rec } . \texttt{ = fun } . \rightarrow #2 \texttt{]}
+}
+
+\newcommand{\EvalNamelessMLiiiIndexTerm}[1]{%
+  \texttt{\#} #1
+}
+\newcommand{\EvalNamelessMLiiiBinOpDTerm}{\EvalMLiiiBinOpTerm}
+\newcommand{\EvalNamelessMLiiiIfDTerm}{\EvalMLiiiIfTerm}
+\newcommand{\EvalNamelessMLiiiLetDTerm}[2]{%
+  \texttt{let } . \texttt{ = } #1 \texttt{ in } #2
+}
+\newcommand{\EvalNamelessMLiiiAbsDTerm}[1]{%
+  \texttt{fun } . \rightarrow #1
+}
+
+\newcommand{\EvalNamelessMLiiiAppDTerm}{\EvalMLiiiAppTerm}
+
+\newcommand{\EvalNamelessMLiiiLetRecDTerm}[2]{%
+  \texttt{let rec } . \texttt{ = fun } . \rightarrow #1 \texttt{ in } #2
+}
+
+\newcommand{\EvalNamelessMLiiiPlusTerm}{\EvalMLiiiPlusTerm}
+\newcommand{\EvalNamelessMLiiiMinusTerm}{\EvalMLiiiMinusTerm}
+\newcommand{\EvalNamelessMLiiiMultTerm}{\EvalMLiiiMultTerm}
+\newcommand{\EvalNamelessMLiiiLtTerm}{\EvalMLiiiLtTerm}
+
+\newcommand{\EvalNamelessMLiiiEvalTo}{\EvalMLiiiEvalTo}
+\newcommand{\EvalNamelessMLiiiEvalToL}{\EvalMLiiiEvalToL}
+
+\newcommand{\EvalNamelessMLiiiAppBOp}{\EvalMLiiiAppBOp}
+
+% NamelessML3
+\def\@NamelessMLiiiMV#1[#2]{%
+\def\arg{#1}%
+\def\env{env}%
+\ifx\env\arg\mbox{\boldmath $\mathcal{X}#2$}\else\mbox{\boldmath $#1#2$}\fi
+}
+\newcommand{\NamelessMLiiiMV}[1]{%
+  \@ifnextchar[{\@NamelessMLiiiMV{#1}}{\@NamelessMLiiiMV{#1}[]}
+}
+
+\newcommand{\NamelessMLiiiEmptyTerm}{\bullet}
+
+\newcommand{\NamelessMLiiiBindTerm}[2]{%
+\def\arg{#1}%
+\def\emptyenv{\NamelessMLiiiEmptyTerm}%
+\ifx\emptyenv\arg #2%
+\else #1, #2%
+\fi
+}
+
+\newcommand{\NamelessMLiiiBinOpTerm}{\EvalMLiiiBinOpTerm}
+\newcommand{\NamelessMLiiiIfTerm}{\EvalMLiiiIfTerm}
+\newcommand{\NamelessMLiiiLetTerm}{\EvalMLiiiLetTerm}
+\newcommand{\NamelessMLiiiAbsTerm}{\EvalMLiiiAbsTerm}
+\newcommand{\NamelessMLiiiAppTerm}{\EvalMLiiiAppTerm}
+\newcommand{\NamelessMLiiiLetRecTerm}{\EvalMLiiiLetRecTerm}
+
+\newcommand{\NamelessMLiiiNilTerm}{\texttt{[]}}
+
+\newcommand{\NamelessMLiiiIndexTerm}{\EvalNamelessMLiiiIndexTerm}
+\newcommand{\NamelessMLiiiBinOpDTerm}{\EvalMLiiiBinOpTerm}
+\newcommand{\NamelessMLiiiIfDTerm}{\EvalMLiiiIfTerm}
+\newcommand{\NamelessMLiiiLetDTerm}[2]{%
+  \texttt{let } . \texttt{ = } #1 \texttt{ in } #2
+}
+\newcommand{\NamelessMLiiiAbsDTerm}[1]{%
+  \texttt{fun } . \rightarrow #1
+}
+
+\newcommand{\NamelessMLiiiAppDTerm}{\EvalMLiiiAppTerm}
+
+\newcommand{\NamelessMLiiiLetRecDTerm}[2]{%
+  \texttt{let rec } . \texttt{ = } \texttt{fun } . \rightarrow #1 \texttt{ in } #2
+}
+
+\newcommand{\NamelessMLiiiPlusTerm}{\EvalMLiiiPlusTerm}
+\newcommand{\NamelessMLiiiMinusTerm}{\EvalMLiiiMinusTerm}
+\newcommand{\NamelessMLiiiMultTerm}{\EvalMLiiiMultTerm}
+\newcommand{\NamelessMLiiiLtTerm}{\EvalMLiiiLtTerm}
+
+\newcommand{\NamelessMLiiiTranslateToV}[2]{%  for values and envs
+  #1 \Longrightarrow #2
+}
+\newcommand{\NamelessMLiiiTranslateTo}[3]{%
+  #1 \mathrel{\vdash} #2 \Longrightarrow #3
+}
+\newcommand{\NamelessMLiiiTranslateToL}[3]{%
+\begin{array}[t]{l@{}l}
+  #1 \mathrel{\vdash} & #2 \\
+                      & \Longrightarrow #3
+\end{array}
+}
 
 
-\end{document}
+% Game TypingML2
+
+\newcommand{\TypingMLiiTyBoolTerm}{\texttt{bool}}
+\newcommand{\TypingMLiiTyIntTerm}{\texttt{int}}
+
+\def\@TypingMLiiMV#1[#2]{%
+\def\arg{#1}%
+\def\env{env}%
+\def\t{t}
+\def\a{a}
+\ifx\env\arg\mbox{\boldmath $\Gamma#2$}%
+\else\ifx\arg\t\mbox{\boldmath $\tau#2$}%
+\else\ifx\arg\a\mbox{\boldmath $\alpha#2$}%
+\else\mbox{\boldmath $#1#2$}%
+\fi\fi\fi
+}
+\newcommand{\TypingMLiiMV}[1]{%
+  \@ifnextchar[{\@TypingMLiiMV{#1}}{\@TypingMLiiMV{#1}[]}
+}
+
+\newcommand{\TypingMLiiEmptyTerm}{\bullet}
+\newcommand{\TypingMLiiBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\TypingMLiiEmptyTerm}%
+\ifx\emptyenv\arg #2 \colon #3%
+\else #1, #2 \colon #3%
+\fi
+}
+
+\newcommand{\TypingMLiiBinOpTerm}{\EvalMLiiBinOpTerm}
+\newcommand{\TypingMLiiIfTerm}{\EvalMLiiIfTerm}
+\newcommand{\TypingMLiiLetTerm}{\EvalMLiiLetTerm}
+
+\newcommand{\TypingMLiiPlusTerm}{\EvalMLiiPlusTerm}
+\newcommand{\TypingMLiiMinusTerm}{\EvalMLiiMinusTerm}
+\newcommand{\TypingMLiiMultTerm}{\EvalMLiiMultTerm}
+\newcommand{\TypingMLiiLtTerm}{\EvalMLiiLtTerm}
+
+\newcommand{\TypingMLiiTyping}[3]{% env e t
+  #1 \mathrel{\vdash} #2 : #3
+}
+
+% Game TypingML3
+
+\newcommand{\TypingMLiiiTyBoolTerm}{\TypingMLiiTyBoolTerm}
+\newcommand{\TypingMLiiiTyIntTerm}{\TypingMLiiTyIntTerm}
+\newcommand{\TypingMLiiiTyFunTerm}[2]{% t1 t2
+  #1 \rightarrow #2
+}
+
+\newcommand{\TypingMLiiiMV}{\TypingMLiiMV}
+
+\newcommand{\TypingMLiiiEmptyTerm}{\bullet}
+\newcommand{\TypingMLiiiBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\TypingMLiiiEmptyTerm}%
+\ifx\emptyenv\arg #2 \colon #3%
+\else #1, #2 \colon #3%
+\fi
+}
+
+\newcommand{\TypingMLiiiBinOpTerm}{\TypingMLiiBinOpTerm}
+\newcommand{\TypingMLiiiIfTerm}{\TypingMLiiIfTerm}
+\newcommand{\TypingMLiiiLetTerm}{\TypingMLiiLetTerm}
+
+\newcommand{\TypingMLiiiAbsTerm}{\EvalMLivAbsTerm}
+\newcommand{\TypingMLiiiAppTerm}{\EvalMLivAppTerm}
+\newcommand{\TypingMLiiiLetRecTerm}{\EvalMLivLetRecTerm}
+
+\newcommand{\TypingMLiiiPlusTerm}{\TypingMLiiPlusTerm}
+\newcommand{\TypingMLiiiMinusTerm}{\TypingMLiiMinusTerm}
+\newcommand{\TypingMLiiiMultTerm}{\TypingMLiiMultTerm}
+\newcommand{\TypingMLiiiLtTerm}{\TypingMLiiLtTerm}
+
+\newcommand{\TypingMLiiiTyping}{\TypingMLiiTyping}
+
+% Game TypingML4
+
+\newcommand{\TypingMLivTyBoolTerm}{\TypingMLiiiTyBoolTerm}
+\newcommand{\TypingMLivTyIntTerm}{\TypingMLiiiTyIntTerm}
+\newcommand{\TypingMLivTyFunTerm}{\TypingMLiiiTyFunTerm}
+\newcommand{\TypingMLivTyListTerm}[1]{%
+  #1 \; \texttt{list}
+}
+
+\newcommand{\TypingMLivMV}{\TypingMLiiiMV}
+
+\newcommand{\TypingMLivEmptyTerm}{\TypingMLiiiEmptyTerm}
+
+\newcommand{\TypingMLivBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\TypingMLivEmptyTerm}%
+\ifx\emptyenv\arg #2 \colon #3%
+\else #1, #2 \colon #3%
+\fi
+}
+
+\newcommand{\TypingMLivBinOpTerm}{\TypingMLiiiBinOpTerm}
+\newcommand{\TypingMLivIfTerm}{\TypingMLiiiIfTerm}
+\newcommand{\TypingMLivLetTerm}{\TypingMLiiiLetTerm}
+
+\newcommand{\TypingMLivAbsTerm}{\TypingMLiiiAbsTerm}
+\newcommand{\TypingMLivAppTerm}{\TypingMLiiiAppTerm}
+\newcommand{\TypingMLivLetRecTerm}{\TypingMLiiiLetRecTerm}
+\newcommand{\TypingMLivNilTerm}{\EvalMLivNilTerm}
+\newcommand{\TypingMLivConsTerm}{\EvalMLivConsTerm}
+\newcommand{\TypingMLivMatchTerm}{\EvalMLivMatchTerm}
+
+\newcommand{\TypingMLivPlusTerm}{\TypingMLiiiPlusTerm}
+\newcommand{\TypingMLivMinusTerm}{\TypingMLiiiMinusTerm}
+\newcommand{\TypingMLivMultTerm}{\TypingMLiiiMultTerm}
+\newcommand{\TypingMLivLtTerm}{\TypingMLiiiLtTerm}
+
+\newcommand{\TypingMLivTyping}{\TypingMLiiiTyping}
+
+\newcommand{\TypingMLivTypingL}[2]{%
+\begin{array}[t]{@{}l@{}l}
+  #1 \mathrel{\vdash} & #2 \\
+\end{array}
+}
+
+% Game PolyTypingML4
+
+\newcommand{\clos}[2]{\mathit{clos}(#1, #2)}
+\newcommand{\PolyTypingMLivTyBoolTerm}{\TypingMLiiiTyBoolTerm}
+\newcommand{\PolyTypingMLivTyIntTerm}{\TypingMLivTyIntTerm}
+\newcommand{\PolyTypingMLivTyFunTerm}{\TypingMLivTyFunTerm}
+\newcommand{\PolyTypingMLivTyListTerm}{\TypingMLivTyListTerm}
+
+\newcommand{\PolyTypingMLivTyFVarTerm}[1]{#1}
+\newcommand{\PolyTypingMLivTyBVarTerm}[1]{#1}
+\newcommand{\PolyTypingMLivTySchemeTerm}[2]{#1.#2}
+
+
+\newcommand{\PolyTypingMLivMV}[1]{%
+  \@ifnextchar[{\@PolyTypingMLivMV{#1}}{\@PolyTypingMLivMV{#1}[]}
+}
+\def\@PolyTypingMLivMV#1[#2]{%
+\def\arg{#1}%
+\def\env{env}%
+\def\t{t}
+\def\s{s}
+\def\a{a}
+\def\b{beta}
+\ifx\env\arg\mbox{\boldmath $\Gamma#2$}%
+\else\ifx\arg\t\mbox{\boldmath $\tau#2$}%
+\else\ifx\arg\s\mbox{\boldmath $\sigma#2$}%
+\else\ifx\arg\a\mbox{\boldmath $\alpha#2$}%
+\else\ifx\arg\b\mbox{\boldmath $\beta#2$}%
+\else\mbox{\boldmath $#1#2$}%
+\fi\fi\fi\fi\fi
+}
+
+\newcommand{\PolyTypingMLivEmptyTerm}{\bullet}
+\newcommand{\PolyTypingMLivBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\PolyTypingMLivEmptyTerm}%
+\ifx\emptyenv\arg #2 \colon #3%
+\else #1, #2 \colon #3%
+\fi
+}
+
+\newcommand{\PolyTypingMLivBinOpTerm}{\TypingMLivBinOpTerm}
+\newcommand{\PolyTypingMLivIfTerm}{\TypingMLivIfTerm}
+\newcommand{\PolyTypingMLivLetTerm}{\TypingMLivLetTerm}
+\newcommand{\PolyTypingMLivAbsTerm}{\TypingMLivAbsTerm}
+\newcommand{\PolyTypingMLivAppTerm}{\TypingMLivAppTerm}
+\newcommand{\PolyTypingMLivLetRecTerm}{\TypingMLivLetRecTerm}
+\newcommand{\PolyTypingMLivMatchTerm}{\TypingMLivMatchTerm}
+\newcommand{\PolyTypingMLivNilTerm}{\TypingMLivNilTerm}
+\newcommand{\PolyTypingMLivConsTerm}{\TypingMLivConsTerm}
+
+\newcommand{\PolyTypingMLivPlusTerm}{\TypingMLivPlusTerm}
+\newcommand{\PolyTypingMLivMinusTerm}{\TypingMLivMinusTerm}
+\newcommand{\PolyTypingMLivMultTerm}{\TypingMLivMultTerm}
+\newcommand{\PolyTypingMLivLtTerm}{\TypingMLivLtTerm}
+
+\newcommand{\PolyTypingMLivTyping}{\TypingMLivTyping}
+\newcommand{\PolyTypingMLivTypingL}{\TypingMLivTypingL}
+
+
+%% Game EvalML4Err
+
+\newcommand{\EvalMLivErrErrorTerm}{\error}
+
+\newcommand{\EvalMLivErrMV}{\EvalMLivMV}
+
+\newcommand{\EvalMLivErrFunTerm}{\EvalMLivFunTerm}
+\newcommand{\EvalMLivErrRecTerm}{\EvalMLivRecTerm}
+
+\newcommand{\EvalMLivErrNilVTerm}{\EvalMLivNilVTerm}
+\newcommand{\EvalMLivErrConsVTerm}{\EvalMLivConsVTerm}
+
+\newcommand{\EvalMLivErrEmptyTerm}{\bullet}
+
+\newcommand{\EvalMLivErrBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalMLivErrEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\;#3%
+\else #1, #2\;\texttt{=}\;#3%
+\fi
+}
+
+\newcommand{\EvalMLivErrBinOpTerm}{\EvalMLivBinOpTerm}
+\newcommand{\EvalMLivErrIfTerm}{\EvalMLivIfTerm}
+\newcommand{\EvalMLivErrLetTerm}{\EvalMLivLetTerm}
+\newcommand{\EvalMLivErrAbsTerm}{\EvalMLivAbsTerm}
+\newcommand{\EvalMLivErrAppTerm}{\EvalMLivAppTerm}
+\newcommand{\EvalMLivErrLetRecTerm}{\EvalMLivLetRecTerm}
+
+\newcommand{\EvalMLivErrNilTerm}{\EvalMLivNilTerm}
+
+\newcommand{\EvalMLivErrConsTerm}{\EvalMLivConsTerm}
+
+\newcommand{\EvalMLivErrMatchTerm}{\EvalMLivMatchTerm}
+
+\newcommand{\EvalMLivErrPlusTerm}{\EvalMLivPlusTerm}
+\newcommand{\EvalMLivErrMinusTerm}{\EvalMLivMinusTerm}
+\newcommand{\EvalMLivErrMultTerm}{\EvalMLivMultTerm}
+\newcommand{\EvalMLivErrLtTerm}{\EvalMLivLtTerm}
+
+\newcommand{\EvalMLivErrEvalTo}{\EvalMLivEvalTo}
+\newcommand{\EvalMLivErrEvalToL}{\EvalMLivEvalToL}
+
+\newcommand{\EvalMLivErrAppBOp}{\EvalMLivAppBOp}
+
+% Game EvalContMLi
+
+\newcommand{\EvalContMLiMV}{\EvalMLiMV}
+\newcommand{\EvalContMLiBinOpTerm}{\EvalMLiBinOpTerm}
+\newcommand{\EvalContMLiIfTerm}{\EvalMLiIfTerm}
+\newcommand{\EvalContMLiPlusTerm}{\EvalMLiPlusTerm}
+\newcommand{\EvalContMLiMinusTerm}{\EvalMLiMinusTerm}
+\newcommand{\EvalContMLiMultTerm}{\EvalMLiMultTerm}
+\newcommand{\EvalContMLiLtTerm}{\EvalMLiLtTerm}
+
+\newcommand{\Hole}{\ensuremath{\itbox{\char'137}}}
+\newcommand{\EvalContMLiRetKTerm}{\Hole}
+\newcommand{\EvalContMLiEvalRKTerm}[3]{%
+ \{\EvalContMLiBinOpTerm{#2}{\Hole}{#1} \} \gg #3}
+\newcommand{\EvalContMLiAppOpKTerm}[3]{%
+ \{\EvalContMLiBinOpTerm{#2}{#1}{\Hole} \} \gg #3}
+\newcommand{\EvalContMLiBranchKTerm}[3]{%
+ \{\EvalContMLiIfTerm{\Hole}{#1}{#2}\} \gg #3}
+
+\newcommand{\EvalContMLiEvalTo}[3]{%
+  #2 \gg #1 \Downarrow #3
+}
+\newcommand{\EvalContMLiAppBOp}{\EvalMLiAppBOp}
+\newcommand{\EvalContMLiAppK}[3]{%
+  #2 \Rightarrow #1 \Downarrow #3
+}
+
+% Game EvalContMLiii
+
+\newcommand{\EvalContMLiiiMV}{\EvalMLiiiMV}
+
+\newcommand{\EvalContMLiiiFunTerm}{\EvalMLiiiFunTerm}
+\newcommand{\EvalContMLiiiRecTerm}{\EvalMLiiiRecTerm}
+\newcommand{\EvalContMLiiiContFTerm}[1]{%
+ \texttt{[}#1\texttt{]}
+}
+
+\newcommand{\EvalContMLiiiEmptyTerm}{\bullet}
+
+\newcommand{\EvalContMLiiiBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalContMLiiiiEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\;#3%
+\else #1, #2\;\texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\EvalContMLiiiBinOpTerm}{\EvalMLiiiBinOpTerm}
+\newcommand{\EvalContMLiiiIfTerm}{\EvalMLiiiIfTerm}
+\newcommand{\EvalContMLiiiLetTerm}{\EvalMLiiiLetTerm}
+\newcommand{\EvalContMLiiiAbsTerm}{\EvalMLiiiAbsTerm}
+\newcommand{\EvalContMLiiiAppTerm}{\EvalMLiiiAppTerm}
+\newcommand{\EvalContMLiiiLetRecTerm}{\EvalMLiiiLetRecTerm}
+\newcommand{\EvalContMLiiiLetCcTerm}[2]{%
+  \texttt{letcc } #1 \texttt{ in } #2
+}
+\newcommand{\EvalContMLiiiPlusTerm}{\EvalMLiiiPlusTerm}
+\newcommand{\EvalContMLiiiMinusTerm}{\EvalMLiiiMinusTerm}
+\newcommand{\EvalContMLiiiMultTerm}{\EvalMLiiiMultTerm}
+\newcommand{\EvalContMLiiiLtTerm}{\EvalMLiiiLtTerm}
+
+\newcommand{\EvalContMLiiiRetKTerm}{\Hole}
+\newcommand{\EvalContMLiiiEvalRKTerm}[4]{%
+ \{\diff{#1 \mathrel{\vdash}} \EvalContMLiiiBinOpTerm{#3}{\Hole}{#2} \} \gg #4}
+\newcommand{\EvalContMLiiiAppOpKTerm}[3]{%
+ \{\EvalContMLiiiBinOpTerm{#2}{#1}{\Hole} \} \gg #3}
+\newcommand{\EvalContMLiiiBranchKTerm}[4]{%
+ \{\diff{#1 \mathrel{\vdash}} \EvalContMLiiiIfTerm{\Hole}{#2}{#3}\} \gg #4}
+\newcommand{\EvalContMLiiiLetBodyKTerm}[4]{%
+ \{#1 \mathrel{\vdash} \EvalContMLiiiLetTerm{#2}{\Hole}{#3} \} \gg #4}
+\newcommand{\EvalContMLiiiEvalArgKTerm}[3]{%
+ \{#1 \mathrel{\vdash} \EvalContMLiiiAppTerm{\Hole}{#2} \} \gg #3}
+\newcommand{\EvalContMLiiiAppFunKTerm}[2]{%
+ \{\EvalContMLiiiAppTerm{#1}{\Hole} \} \gg #2}
+
+\newcommand{\EvalContMLiiiEvalTo}[4]{%
+  \diff{#1 \mathrel{\vdash}} #3 \gg #2 \Downarrow #4
+}
+\newcommand{\EvalContMLiiiAppBOp}{\EvalMLiAppBOp}
+\newcommand{\EvalContMLiiiAppK}{\EvalContMLiAppK}
+
+% Game EvalContMLiv
+\newcommand{\EvalContMLivMV}{\EvalMLivMV}
+
+\newcommand{\EvalContMLivFunTerm}{\EvalMLivFunTerm}
+\newcommand{\EvalContMLivRecTerm}{\EvalMLivRecTerm}
+\newcommand{\EvalContMLivNilVTerm}{\EvalMLivNilVTerm}
+\newcommand{\EvalContMLivConsVTerm}{\EvalMLivConsVTerm}
+\newcommand{\EvalContMLivContFTerm}{\EvalContMLiiiContFTerm}
+
+\newcommand{\EvalContMLivEmptyTerm}{\bullet}
+\newcommand{\EvalContMLivBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalContMLiviEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\;#3%
+\else #1, #2\;\texttt{=}\;#3%
+\fi
+}
+
+\newcommand{\EvalContMLivBinOpTerm}{\EvalMLivBinOpTerm}
+\newcommand{\EvalContMLivIfTerm}{\EvalMLivIfTerm}
+\newcommand{\EvalContMLivLetTerm}{\EvalMLivLetTerm}
+\newcommand{\EvalContMLivAbsTerm}{\EvalMLivAbsTerm}
+\newcommand{\EvalContMLivAppTerm}{\EvalMLivAppTerm}
+\newcommand{\EvalContMLivLetRecTerm}{\EvalMLivLetRecTerm}
+\newcommand{\EvalContMLivNilTerm}{\EvalMLivNilTerm}
+\newcommand{\EvalContMLivConsTerm}{\EvalMLivConsTerm}
+\newcommand{\EvalContMLivMatchTerm}{\EvalMLivMatchTerm}
+
+\newcommand{\EvalContMLivLetCcTerm}{\EvalContMLiiiLetCcTerm}
+
+\newcommand{\EvalContMLivPlusTerm}{\EvalMLivPlusTerm}
+\newcommand{\EvalContMLivMinusTerm}{\EvalMLivMinusTerm}
+\newcommand{\EvalContMLivMultTerm}{\EvalMLivMultTerm}
+\newcommand{\EvalContMLivLtTerm}{\EvalMLivLtTerm}
+
+\newcommand{\EvalContMLivRetKTerm}{\EvalContMLiiiRetKTerm}
+\newcommand{\EvalContMLivEvalRKTerm}{\EvalContMLiiiEvalRKTerm}
+\newcommand{\EvalContMLivAppOpKTerm}{\EvalContMLiiiAppOpKTerm}
+\newcommand{\EvalContMLivBranchKTerm}{\EvalContMLiiiBranchKTerm}
+\newcommand{\EvalContMLivLetBodyKTerm}{\EvalContMLiiiLetBodyKTerm}
+\newcommand{\EvalContMLivEvalArgKTerm}{\EvalContMLiiiEvalArgKTerm}
+\newcommand{\EvalContMLivAppFunKTerm}{\EvalContMLiiiAppFunKTerm}
+\newcommand{\EvalContMLivEvalConsRKTerm}[3]{%
+  \{ #1 \mathrel{\vdash} \EvalContMLivConsTerm{\Hole}{#2} \} \gg #3
+}
+\newcommand{\EvalContMLivConsKTerm}[2]{%
+  \{ \EvalContMLivConsVTerm{#1}{\Hole} \} \gg #2
+}
+\newcommand{\EvalContMLivMatchKTerm}[6]{%
+  \{ #1 \mathrel{\vdash} \EvalContMLivMatchTerm{\Hole}{#2}{#3}{#4}{#5} \} \gg #6
+}
+
+\newcommand{\EvalContMLivEvalTo}{\EvalContMLiiiEvalTo}
+\newcommand{\EvalContMLivAppBOp}{\EvalContMLiiiAppBOp}
+\newcommand{\EvalContMLivAppK}{\EvalContMLiiiAppK}
+
+% Game EvalDDContMLiv
+\newcommand{\EvalDContMLivMV}{\EvalMLivMV}
+
+\newcommand{\EvalDContMLivFunTerm}{\EvalMLivFunTerm}
+\newcommand{\EvalDContMLivRecTerm}{\EvalMLivRecTerm}
+\newcommand{\EvalDContMLivNilVTerm}{\EvalMLivNilVTerm}
+\newcommand{\EvalDContMLivConsVTerm}{\EvalMLivConsVTerm}
+\newcommand{\EvalDContMLivContFTerm}{\EvalContMLiiiContFTerm}
+
+\newcommand{\EvalDContMLivEmptyTerm}{\bullet}
+\newcommand{\EvalDContMLivBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalDContMLiviEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\;#3%
+\else #1, #2\;\texttt{=}\;#3%
+\fi
+}
+
+\newcommand{\EvalDContMLivBinOpTerm}{\EvalMLivBinOpTerm}
+\newcommand{\EvalDContMLivIfTerm}{\EvalMLivIfTerm}
+\newcommand{\EvalDContMLivLetTerm}{\EvalMLivLetTerm}
+\newcommand{\EvalDContMLivAbsTerm}{\EvalMLivAbsTerm}
+\newcommand{\EvalDContMLivAppTerm}{\EvalMLivAppTerm}
+\newcommand{\EvalDContMLivLetRecTerm}{\EvalMLivLetRecTerm}
+\newcommand{\EvalDContMLivNilTerm}{\EvalMLivNilTerm}
+\newcommand{\EvalDContMLivConsTerm}{\EvalMLivConsTerm}
+\newcommand{\EvalDContMLivMatchTerm}{\EvalMLivMatchTerm}
+
+\newcommand{\EvalDContMLivShiftTerm}[2]{
+  \texttt{shift } #1 \texttt{ in } #2
+}
+\newcommand{\EvalDContMLivResetTerm}[1]{
+  \{\ #1 \ \}
+  % \texttt{\curlyopen }
+}
+
+\newcommand{\EvalDContMLivPlusTerm}{\EvalMLivPlusTerm}
+\newcommand{\EvalDContMLivMinusTerm}{\EvalMLivMinusTerm}
+\newcommand{\EvalDContMLivMultTerm}{\EvalMLivMultTerm}
+\newcommand{\EvalDContMLivLtTerm}{\EvalMLivLtTerm}
+
+\newcommand{\EvalDContMLivRetKTerm}{\EvalContMLivRetKTerm}
+\newcommand{\EvalDContMLivEvalRKTerm}{\EvalContMLivEvalRKTerm}
+\newcommand{\EvalDContMLivAppOpKTerm}{\EvalContMLivAppOpKTerm}
+\newcommand{\EvalDContMLivBranchKTerm}{\EvalContMLivBranchKTerm}
+\newcommand{\EvalDContMLivLetBodyKTerm}{\EvalContMLivLetBodyKTerm}
+\newcommand{\EvalDContMLivEvalArgKTerm}{\EvalContMLivEvalArgKTerm}
+\newcommand{\EvalDContMLivAppFunKTerm}{\EvalContMLivAppFunKTerm}
+\newcommand{\EvalDContMLivEvalConsRKTerm}{\EvalContMLivEvalConsRKTerm}
+\newcommand{\EvalDContMLivConsKTerm}{\EvalContMLivConsKTerm}
+\newcommand{\EvalDContMLivMatchKTerm}{\EvalContMLivMatchKTerm}
+
+\newcommand{\EvalDContMLivRetKKTerm}{\Hole\Hole}
+\newcommand{\EvalDContMLivDelimitedKKTerm}[2]{%
+  #1 \ggg #2
+}
+
+
+%\newcommand{\ggg}{\mathrel{>\!>\!>}}
+\newcommand{\EvalDContMLivEvalTo}[5]{%
+  \diff{#1 \mathrel{\vdash}} #4 \gg #2 \ggg #3 \Downarrow #5
+}
+\newcommand{\EvalDContMLivAppBOp}{\EvalContMLiiiAppBOp}
+\newcommand{\EvalDContMLivAppK}[4]{%
+  #3 \Rightarrow #1 \ggg #2 \Downarrow #4
+}
+
+% EvalRefML3
+
+\newcommand{\EvalRefMLiiiMV}[1]{%
+  \@ifnextchar[{\@EvalRefMLiiiMV{#1}}{\@EvalRefMLiiiMV{#1}[]}
+}
+\def\@EvalRefMLiiiMV#1[#2]{%
+\def\arg{#1}%
+\def\env{env}%
+\def\st{s}
+\ifx\env\arg\mbox{\boldmath $\mathcal{E}#2$}\else%
+\ifx\st\arg\mbox{\boldmath $S#2$}\else%
+\mbox{\boldmath $#1#2$}\fi\fi
+}
+
+\newcommand{\EvalRefMLiiiFunTerm}{\EvalMLiiiFunTerm}
+\newcommand{\EvalRefMLiiiRecTerm}{\EvalMLiiiRecTerm}
+
+\newcommand{\EvalRefMLiiiEmptyTerm}{\bullet}
+
+\newcommand{\EvalRefMLiiiBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalRefMLiiiiEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\;#3%
+\else #1, #2\; \texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\EvalRefMLiiiEmptySTerm}{\bullet}
+
+\newcommand{\EvalRefMLiiiBlockTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalRefMLiiiEmptyTerm}%
+\ifx\emptyenv\arg #2\;\texttt{=}\; #3%
+\else #1, #2\;\texttt{=}\;#3%
+\fi
+}
+
+\newcommand{\EvalRefMLiiiBinOpTerm}{\EvalMLiiiBinOpTerm}
+\newcommand{\EvalRefMLiiiIfTerm}{\EvalMLiiiIfTerm}
+\newcommand{\EvalRefMLiiiLetTerm}{\EvalMLiiiLetTerm}
+\newcommand{\EvalRefMLiiiAbsTerm}{\EvalMLiiiAbsTerm}
+\newcommand{\EvalRefMLiiiAppTerm}{\EvalMLiiiAppTerm}
+\newcommand{\EvalRefMLiiiLetRecTerm}{\EvalMLiiiLetRecTerm}
+
+\newcommand{\EvalRefMLiiiNewRefTerm}[1]{%
+  \texttt{ref } #1
+}
+\newcommand{\EvalRefMLiiiDerefTerm}[1]{%
+  \texttt{!} #1
+}
+\newcommand{\EvalRefMLiiiAssignTerm}[2]{%
+  #1 \texttt{ := } #2
+}
+
+\newcommand{\EvalRefMLiiiPlusTerm}{\EvalMLiiiPlusTerm}
+\newcommand{\EvalRefMLiiiMinusTerm}{\EvalMLiiiMinusTerm}
+\newcommand{\EvalRefMLiiiMultTerm}{\EvalMLiiiMultTerm}
+\newcommand{\EvalRefMLiiiLtTerm}{\EvalMLiiiLtTerm}
+
+\newcommand{\EvalRefMLiiiEvalTo}[5]{%
+ \diff{#1 \texttt{ /}}\texttt{ } \EvalMLiiiEvalTo{#2}{#3}{#4} \texttt{ }\diff{\texttt{/ } #5}
+}
+
+\newcommand{\EvalRefMLiiiAppBOp}{\EvalMLiiiAppBOp}
+
+
+% Game EvalML6
+\newcommand{\EvalMLviMV}{\EvalMLvMV}
+
+\newcommand{\EvalMLviFunTerm}{\EvalMLvFunTerm}
+\newcommand{\EvalMLviRecTerm}{\EvalMLvRecTerm}
+\newcommand{\EvalMLviCnstrVTerm}[1]{%
+ #1
+}
+\newcommand{\EvalMLviCnstrViTerm}[2]{%
+ #1 \; #2
+}
+\newcommand{\EvalMLviCnstrViiTerm}[3]{%
+ #1\texttt{(}#2\texttt{,}#3\texttt{)}
+}
+\newcommand{\EvalMLviCnstrViiiTerm}[4]{%
+ #1\texttt{(}#2\texttt{,}#3\texttt{,}#4\texttt{)}
+}
+
+\newcommand{\EvalMLviEmptyTerm}{\bullet}
+\newcommand{\EvalMLviBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\EvalMLviEmptyTerm}%
+\ifx\emptyenv\arg #2 \;\texttt{=}\; #3%
+\else #1, #2 \;\texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\EvalMLviWildPTerm}{\texttt{\char'137}}
+\newcommand{\EvalMLviCnstrPTerm}[1]{%
+ #1
+}
+\newcommand{\EvalMLviCnstrPiTerm}[2]{%
+ #1 \; #2
+}
+\newcommand{\EvalMLviCnstrPiiTerm}[3]{%
+ #1\texttt{(}#2\texttt{,}#3\texttt{)}
+}
+\newcommand{\EvalMLviCnstrPiiiTerm}[4]{%
+ #1\texttt{(}#2\texttt{,}#3\texttt{,}#4\texttt{)}
+}
+
+\newcommand{\EvalMLviFailTerm}{F}
+
+\newcommand{\EvalMLviEmptyCTerm}{\bullet}
+\newcommand{\EvalMLviAddCTerm}[3]{% p e c
+\def\arg{#3}%
+\def\emptyclause{\EvalMLviEmptyCTerm}%
+\ifx\emptyclause\arg #1 \rightarrow #2%
+\else #1 \rightarrow #2 \texttt{ | } #3%
+\fi
+}
+
+\newcommand{\EvalMLviBinOpTerm}{\EvalMLvBinOpTerm}
+\newcommand{\EvalMLviIfTerm}{\EvalMLvIfTerm}
+\newcommand{\EvalMLviLetTerm}{\EvalMLvLetTerm}
+\newcommand{\EvalMLviAbsTerm}{\EvalMLvAbsTerm}
+\newcommand{\EvalMLviAppTerm}{\EvalMLvAppTerm}
+\newcommand{\EvalMLviLetRecTerm}{\EvalMLvLetRecTerm}
+\newcommand{\EvalMLviCnstrETerm}[1]{%
+ #1
+}
+\newcommand{\EvalMLviCnstrEiTerm}[2]{%
+ #1 \; #2
+}
+\newcommand{\EvalMLviCnstrEiiTerm}[3]{%
+ #1\texttt{(}#2\texttt{,}#3\texttt{)}
+}
+\newcommand{\EvalMLviCnstrEiiiTerm}[4]{%
+ #1\texttt{(}#2\texttt{,}#3\texttt{,}#4\texttt{)}
+}
+\newcommand{\EvalMLviMatchTerm}[2]{% e c
+  \texttt{match } #1 \texttt{ with } #2
+}
+
+\newcommand{\EvalMLviPlusTerm}{\EvalMLvPlusTerm}
+\newcommand{\EvalMLviMinusTerm}{\EvalMLvMinusTerm}
+\newcommand{\EvalMLviMultTerm}{\EvalMLvMultTerm}
+\newcommand{\EvalMLviLtTerm}{\EvalMLvLtTerm}
+
+\newcommand{\EvalMLviEvalTo}{\EvalMLvEvalTo}
+
+\newcommand{\EvalMLviAppBOp}{\EvalMLvAppBOp}
+
+\newcommand{\EvalMLviMatches}[3]{% v p res
+\def\arg{#3}%
+\def\fail{\EvalMLviFailTerm}%
+\def\emptyenv{\EvalMLviEmptyTerm}
+\ifx\arg\fail#2\texttt{ doesn't match }#1%
+\else\ifx\arg\emptyenv #2 \texttt{ matches } #1 \texttt{ when }()%
+\else #2 \texttt{ matches } #1 \texttt{ when }(#3)%
+\fi\fi
+}
+
+% Game TypingML6
+
+\newcommand{\TypingMLviMV}[1]{%
+  \@ifnextchar[{\@TypingMLviMV{#1}}{\@TypingMLviMV{#1}[]}
+}
+\def\@TypingMLviMV#1[#2]{%
+\def\arg{#1}%
+\def\env{env}%
+\def\t{t}
+\def\a{a}
+\def\tn{tn}
+\def\sg{sg}
+\def\Sg{Sg}
+\ifx\arg\env\mbox{\boldmath $\Gamma#2$}%
+\else\ifx\arg\t\mbox{\boldmath $\tau#2$}%
+\else\ifx\arg\a\mbox{\boldmath $\alpha#2$}%
+\else\ifx\arg\sg%
+  \mathchoice{\mbox{\boldmath $\Sigma#2$}}
+             {\mbox{\boldmath $\Sigma#2$}}
+             {\scriptsize \Sigma#2}
+             {\tiny \Sigma#2}%
+\else\ifx\arg\Sg Sig%
+\else\ifx\arg\tn\mbox{\boldmath $t#2$}%
+\else\mbox{\boldmath $#1#2$}%
+\fi\fi\fi\fi\fi\fi
+}
+
+\newcommand{\TypingMLviTyBoolTerm}{\TypingMLiiiTyBoolTerm}
+\newcommand{\TypingMLviTyIntTerm}{\TypingMLiiiTyIntTerm}
+\newcommand{\TypingMLviTyFunTerm}{\TypingMLiiiTyFunTerm}
+
+\newcommand{\TypingMLviCnstrTTerm}[1]{%
+  #1
+}
+\newcommand{\TypingMLviCnstrTiTerm}[2]{%
+  #1 \rightarrow #2
+}
+\newcommand{\TypingMLviCnstrTiiTerm}[3]{%
+  #1 \times #2 \rightarrow #3
+}
+\newcommand{\TypingMLviCnstrTiiiTerm}[4]{%
+  #1 \times #2 \times #3 \rightarrow #4
+}
+
+\newcommand{\TypingMLviWildPTerm}{\EvalMLviWildPTerm}
+\newcommand{\TypingMLviCnstrPTerm}{\EvalMLviCnstrPTerm}
+\newcommand{\TypingMLviCnstrPiTerm}{\EvalMLviCnstrPiTerm}
+\newcommand{\TypingMLviCnstrPiiTerm}{\EvalMLviCnstrPiiTerm}
+\newcommand{\TypingMLviCnstrPiiiTerm}{\EvalMLviCnstrPiiiTerm}
+
+\newcommand{\TypingMLviEmptyTerm}{\TypingMLiiiEmptyTerm}
+\newcommand{\TypingMLviBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\TypingMLviEmptyTerm}%
+\ifx\emptyenv\arg #2 \colon #3%
+\else #1, #2 \colon #3%
+\fi
+}
+
+\newcommand{\TypingMLviEmptySTerm}{\bullet}
+\newcommand{\TypingSTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\TypingMLviEmptySTerm}%
+\ifx\emptyenv\arg #2 \colon #3%
+\else #1, #2 \colon #3%
+\fi
+}
+
+\newcommand{\TypingMLviSingleCTerm}{\EvalMLvSingleCTerm}
+\newcommand{\TypingMLviAddCTerm}[3]{% p e c
+%\def\arg{#3}%
+%\def\emptyclause{\TypingMLviSingleCTerm}%
+%\ifx\emptyclause\arg #1 \rightarrow #2%
+%\else 
+#1 \rightarrow #2 \texttt{ | } #3%
+%\fi
+}
+
+
+\newcommand{\TypingMLviBinOpTerm}{\TypingMLiiiBinOpTerm}
+\newcommand{\TypingMLviIfTerm}{\TypingMLiiiIfTerm}
+\newcommand{\TypingMLviLetTerm}{\TypingMLiiiLetTerm}
+
+\newcommand{\TypingMLviAbsTerm}{\TypingMLiiiAbsTerm}
+\newcommand{\TypingMLviAppTerm}{\TypingMLiiiAppTerm}
+\newcommand{\TypingMLviLetRecTerm}{\TypingMLiiiLetRecTerm}
+\newcommand{\TypingMLviCnstrETerm}{\EvalMLviCnstrETerm}
+\newcommand{\TypingMLviCnstrEiTerm}{\EvalMLviCnstrEiTerm}
+\newcommand{\TypingMLviCnstrEiiTerm}{\EvalMLviCnstrEiiTerm}
+\newcommand{\TypingMLviCnstrEiiiTerm}{\EvalMLviCnstrEiiiTerm}
+\newcommand{\TypingMLviMatchTerm}{\EvalMLviMatchTerm}
+
+\newcommand{\TypingMLviPlusTerm}{\TypingMLiiiPlusTerm}
+\newcommand{\TypingMLviMinusTerm}{\TypingMLiiiMinusTerm}
+\newcommand{\TypingMLviMultTerm}{\TypingMLiiiMultTerm}
+\newcommand{\TypingMLviLtTerm}{\TypingMLiiiLtTerm}
+
+\newcommand{\TypingMLviTyping}[4]{%
+  #2 \vdash_{#1} #3 : #4
+}
+\newcommand{\TypingMLviPatTyping}[4]{% sig
+\def\arg{#4}%
+\def\emptyenv{\TypingMLviEmptyTerm}
+\ifx\arg\emptyenv #2 \texttt{ matches$_{#1}$ } #3 \texttt{ when }()%
+\else #2 \texttt{ matches$_{#1}$ } #3 \texttt{ when }(#4)%
+\fi
+}
+
+% Game While
+\newcommand{\WhileAOpTerm}[3]{%
+  #2 \mathbin{#1} #3
+}
+\newcommand{\WhileBOpTerm}[3]{%
+  #2 \mathbin{#1} #3
+}
+\newcommand{\WhileNotTerm}[1]{%
+  \texttt{!}#1
+}
+\newcommand{\WhileLOpTerm}[3]{%
+  #2 \mathbin{#1} #3
+}
+\newcommand{\WhileCOpTerm}[3]{%
+  #2 \mathbin{#1} #3
+}
+\newcommand{\WhileSkipTerm}{%
+  \texttt{skip}
+}
+\newcommand{\WhileAssignTerm}[2]{%
+  #1 \texttt{:=} #2
+}
+\newcommand{\WhileSeqTerm}[2]{%
+  #1 \texttt{;} #2
+}
+\newcommand{\WhileIfTerm}[3]{%
+  \texttt{if } #1 \texttt{ then } #2 \texttt{ else } #3
+}
+\newcommand{\WhileWhileTerm}[2]{%
+  \texttt{while (} #1 \texttt{) do } #2
+}
+\newcommand{\WhileAEvalTo}[3]{%
+  #1 \vdash #2 \Downarrow #3
+}
+\newcommand{\WhileBEvalTo}[3]{%
+  #1 \vdash #2 \Downarrow #3
+}
+\newcommand{\WhileExec}[3]{%
+  #2 \texttt{ changes } #1 \texttt{ to } #3
+}
+\newcommand{\WhileMV}[1]{%
+  \@ifnextchar[{\@WhileMV{#1}}{\@WhileMV{#1}[]}
+}
+\def\@WhileMV#1[#2]{%
+\def\arg{#1}%
+\def\st{st}%
+\ifx\arg\st\mbox{\boldmath $\sigma#2$}%
+\else\mbox{\boldmath $#1#2$}%
+\fi
+}
+\newcommand{\WhileEmptyTerm}{\bullet}
+
+\newcommand{\WhileBindTerm}[3]{%
+\def\arg{#1}%
+\def\emptyenv{\WhileEmptyTerm}%
+\ifx\emptyenv\arg #2 \;\texttt{=}\; #3%
+\else #1, #2 \;\texttt{=}\; #3%
+\fi
+}
+
+\newcommand{\WhilePlusTerm}{\texttt{+}}
+\newcommand{\WhileMinusTerm}{\texttt{-}}
+\newcommand{\WhileMultTerm}{\texttt{*}}
+\newcommand{\WhileLtTerm}{\texttt{<}}
+\newcommand{\WhileEqTerm}{\texttt{=}}
+\newcommand{\WhileLeTerm}{\texttt{<=}}
+\newcommand{\WhileAndTerm}{\texttt{\&\&}}
+\newcommand{\WhileOrTerm}{\texttt{||}}
+
+\makeatother

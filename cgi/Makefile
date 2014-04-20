@@ -9,7 +9,8 @@ GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
 	TypingML2 TypingML3 TypingML4 TypingML6 \
 	PolyTypingML3 PolyTypingML4 \
 	EvalContML1 EvalContML4 \
-	EvalRefML3
+	EvalRefML3 \
+	While
 
 html: $(addsuffix .html,$(GAMES))
 	-mkdir games
