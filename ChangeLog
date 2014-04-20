@@ -1,3 +1,9 @@
+2014-04-20  igarashi  <igarashi@oboe>
+
+	* tools/checker/While: New game for While.
+	* tools/checker/{Makefile,main.ml}: Added entry for While.
+	* doc/games.tex, doc/Makefile, doc/rulebook.tex: While.
+
 2012-10-11  IGARASHI Atsushi  <igarashi@triton>
 
 	* cgi/index.cgi (bookinfo): More information on a class that use the E-learning system.
