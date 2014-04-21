@@ -1,0 +1,34 @@
+NAME
+	checker - checks derivations
+
+SYNOPSIS
+	checker -game GAME [-full] [-TeX] [-against JUDGMENT] [FILE ...]
+       	checker -game GAME [-full] [-TeX] -prove JUDGMENT
+
+DESCRIPTION
+
+	Check the derivation in the FILES (stdin by default) or generate
+	a derivation.
+
+	-game GAME
+	      specify GAME, which can be Nat, NatExp and so on.
+
+	-full
+		display the whole derivation
+
+	-TeX
+		output the result in a TeX form
+
+	-prove JUDGMENT
+		try to generate a derivation whose conclusion is JUDGMENT
+
+	-against JUDGMENT
+		checks whether the conclusion of the derivation is JUDGMENT
+
+AUTHOR
+	Written by Atsushi Igarashi <igarashi@kuis.kyoto-u.ac.jp>.
+
+COPYRIGHT
+	Copyright (C) 2014 Atsushi Igarashi.  Licensed under MIT License.
+	This is free software: you are free to change and redistribute it.
+	There is NO WARRANTY, to the extent permitted by law.
