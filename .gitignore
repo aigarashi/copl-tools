@@ -1,4 +1,5 @@
 *~
 *.cmo
 *.cmi
+*.pot
 parser.output

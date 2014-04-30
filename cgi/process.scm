@@ -70,7 +70,7 @@
 	(list 
 	 (html:h1 
 	  (cond
-	   [(zero? no) (_ "Corect derivation.")]
+	   [(zero? no) (_ "Correct derivation.")]
 	   [(and (not (lookupdb uname 'finished)) ;; not yet finished
 		 (= (length (cdr (lookupdb uname 'solved)))
 		    how-many-q))

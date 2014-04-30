@@ -1,0 +1,348 @@
+# Japanese translations for copl-tools package.
+# Copyright (C) 2014 Atsushi Igarashi
+# This file is distributed under the same license as the copl-tools package.
+# Atsushi Igarashi <igarashi@kuis.kyoto-u.ac.jp>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 20140430\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-30 18:05+0900\n"
+"PO-Revision-Date: 2014-04-30 18:06+0900\n"
+"Last-Translator: Atsushi Igarashi <igarashi@kuis.kyoto-u.ac.jp>\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid ""
+"Concepts of Programming Languages (No.24 of Informatics Core Text Series)"
+msgstr "プログラミング言語の基礎概念(ライブラリ情報学コア・テキスト24)"
+
+msgid "Bibliographic Information"
+msgstr "書籍情報"
+
+msgid "SAIENSU-SHA"
+msgstr "サイエンス社"
+
+msgid "Paperback, 192 pages"
+msgstr "単行本(ソフトカバー): 192ページ"
+
+msgid "Publisher: Saiensu-Sha Co., Ltd."
+msgstr "出版社: サイエンス社"
+
+msgid "Published: July, 2011"
+msgstr "発売: 2011年7月"
+
+msgid "Price: 1850 yen (+tax)"
+msgstr "定価: 1850円+税"
+
+msgid "Supplemental Material"
+msgstr "補助資料"
+
+msgid "Errata"
+msgstr "正誤表"
+
+msgid "Guide to the E-Learning System"
+msgstr "演習システムガイド"
+
+msgid "Continuations (EvalContML1)"
+msgstr "継続(EvalContML1)"
+
+msgid "First-class Continuations (EvalContML4)"
+msgstr "第一級継続(EvalContML4)"
+
+msgid "References (EvalRefML3)"
+msgstr "参照(EvalRefML3)"
+
+msgid "Lectures that use this textbook"
+msgstr "本演習システムを使っている講義"
+
+msgid ""
+"\"Semantics of Computer Programs\", Graduate School of Informatics, Kyoto "
+"University (2013-)"
+msgstr ""
+"京都大学 大学院情報学研究科 通信情報システム専攻 専門科目「プログラム意味論」"
+"(2013年度〜)"
+
+msgid ""
+"\"Foundations of Software\", Graduate School of Informatics, Kyoto University"
+msgstr ""
+"京都大学 大学院情報学研究科 知能情報学専攻 専門科目「ソフトウェア基礎論」"
+"(2008年度〜2012年度)"
+
+msgid ""
+"お茶の水女子大学 大学院人間文化創成科学研究科 理学専攻 情報科学コース「言語意"
+"味論」(2012年度)"
+msgstr ""
+"お茶の水女子大学 大学院人間文化創成科学研究科 理学専攻 情報科学コース「言語意"
+"味論」(2012年度)"
+
+msgid "お茶の水女子大学 理学部 情報科学科「計算モデル論」(2012年度)"
+msgstr "お茶の水女子大学 理学部 情報科学科「計算モデル論」(2012年度)"
+
+msgid "Concepts of Programming Languages"
+msgstr "プログラミング言語の基礎概念"
+
+msgid "(No.24 of Informatics Core Text Series)"
+msgstr "(ライブラリ情報学コア・テキスト24)"
+
+msgid "Log in to the E-Learning System"
+msgstr "演習システムへのログイン"
+
+msgid "User Name"
+msgstr "ユーザ名"
+
+msgid "Password"
+msgstr "パスワード"
+
+msgid "Password Reissue"
+msgstr "パスワードの(再)発行と送付"
+
+msgid "User Registration"
+msgstr "新規ユーザ登録"
+
+msgid "News"
+msgstr "おしらせ"
+
+msgid "(Click the header to display/hide the content"
+msgstr ""
+"(内容の表示・非表示を切り替えるには日付・タイトル行をクリックしてください．)"
+
+msgid "Display/hide old news"
+msgstr "古いおしらせの表示・非表示の切替"
+
+#, elisp-format
+msgid "~a's grade"
+msgstr "~a さんの成績"
+
+#, elisp-format
+msgid "~D questions solved out of ~D questions"
+msgstr "~D 問正解 (~D 問中)"
+
+msgid "Select a problem by clicking the table below"
+msgstr "下の表をクリックして問題を選択してください"
+
+msgid "Misc."
+msgstr "その他"
+
+msgid "Sandbox"
+msgstr "おすなば"
+
+msgid "Manual (pdf)"
+msgstr "演習システムガイド(pdf)"
+
+msgid "Cheatsheet (pdf)"
+msgstr "推論規則集(pdf)"
+
+msgid "Statistics"
+msgstr "統計"
+
+msgid "Logout"
+msgstr "ログアウト"
+
+#, elisp-format
+msgid ""
+"You cannot solve Q ~D yet.  Please solve other problems first and come back."
+msgstr "Q ~d はまだ解けません．他の問題を解いてから出直してください．"
+
+msgid "<< Next"
+msgstr "<< 次の問題へ"
+
+msgid "Previous >>"
+msgstr "前の問題へ >>"
+
+#, elisp-format
+msgid "Question No.~d"
+msgstr "第 ~d 問"
+
+#, elisp-format
+msgid "Derive the judgment ~d in system ~d"
+msgstr "判断 ~d をシステム ~d で導出せよ．"
+
+msgid "Fill your solution below:"
+msgstr "解答欄"
+
+msgid "Solution file:"
+msgstr "解答ファイル:"
+
+msgid "Send file"
+msgstr "ファイルを送信"
+
+msgid "Send your solution in the form"
+msgstr "フォームの解答を送信"
+
+msgid "No such question"
+msgstr "そんな問題はありません"
+
+msgid "You can play without solving problems."
+msgstr "問題を解かずに遊ぶこともできます"
+
+msgid "Choose a derivation system: "
+msgstr "導出システム名を選んでください: "
+
+msgid "// Write a derivation here."
+msgstr "// ここに導出を書いてください"
+
+msgid "Send"
+msgstr "送信"
+
+msgid "Please login first."
+msgstr "ログインしてください"
+
+msgid "Empty input?"
+msgstr "空ファイルが送信されたようです"
+
+msgid "Invalid access."
+msgstr "不正なアクセスです"
+
+msgid "Logged out."
+msgstr "ログアウトしました．"
+
+msgid "Sent to the registered address."
+msgstr "登録されたアドレスに送付しました"
+
+msgid "Invalid user name or pasword."
+msgstr "ユーザ名もしくはパスワードが違います．"
+
+msgid "To log out, please log in first."
+msgstr "ログアウトするには，まずログインしてください"
+
+msgid "User name"
+msgstr "ユーザ名"
+
+msgid "# of solved problems"
+msgstr "解答数"
+
+msgid "Days passed"
+msgstr "経過日数"
+
+msgid "Date of completion"
+msgstr "修了日"
+
+#, elisp-format
+msgid "No.~d"
+msgstr "~d 位"
+
+#, elisp-format
+msgid "~d problems"
+msgstr "~d 問"
+
+#, elisp-format
+msgid "~d days"
+msgstr "~d 日"
+
+msgid "Please solve one problem and you can see statistics."
+msgstr "問題を1問解いたら見られるようになります．"
+
+msgid "ranking"
+msgstr "ランキング"
+
+msgid "Ranking within your group"
+msgstr "グループ内ランキング"
+
+msgid "Global ranking table"
+msgstr "全体ランキング"
+
+msgid "Percentage of correct answers"
+msgstr "問題ごとの解答率"
+
+msgid "\"Concepts of Programming Languages\""
+msgstr "「プログラミング言語の基礎概念」"
+
+msgid "E-Learning Systemm User Registration Form"
+msgstr "演習システム ユーザ登録フォーム"
+
+msgid "Your Name"
+msgstr "氏名"
+
+msgid "E-mail address"
+msgstr "メイルアドレス"
+
+msgid "E-mail address (to doublecheck)"
+msgstr "メイルアドレス(確認)"
+
+msgid "Register"
+msgstr "登録"
+
+msgid ""
+"Your e-mail addresses and names will never be used for other purposes than "
+"sending a password or contacting you."
+msgstr ""
+"このフォームで収集したメイルアドレス・氏名はパスワードの送信，管理者からの連"
+"絡以外には用いません．"
+
+msgid "The statistics will show only your user name."
+msgstr "システムの成績統計表示欄ではユーザ名のみが表示されます．"
+
+msgid "User name was empty!"
+msgstr "ユーザ名が空です!"
+
+msgid "A user of this name already exists!"
+msgstr "そのユーザ名は既に存在します!"
+
+msgid ""
+"A user name should be 2-8 alphanumeric (including a hyphen and period) "
+"characters."
+msgstr "ユーザ名は英数字(ピリオド・ハイフンも含む)2〜8文字でお願いします．"
+
+msgid "Invalid e-mail address."
+msgstr "不正なメイルアドレスです"
+
+msgid "The two addresses don't match"
+msgstr "ふたつのメイルアドレスが違っています"
+
+msgid "Empty name"
+msgstr "氏名欄が空です"
+
+msgid "Temporary registration successful!"
+msgstr "仮登録に成功しました!"
+
+#, elisp-format
+msgid ""
+"A temporary password has been sent to ~d.  Please login to the system from "
+"~d to confirm your registration. If the e-mail address you gave was wrong, "
+"please press the button below to cancel the registration"
+msgstr ""
+"仮パスワードを ~d 宛てにメールで送りました．本登録を行うには ~d からログイン"
+"してください．もし，アドレスを間違えていた場合には以下のボタンで登録をキャン"
+"セルしてください．"
+
+msgid "the top page"
+msgstr "トップページ"
+
+msgid "Cancel registration"
+msgstr "登録キャンセル"
+
+msgid "Registration failed for the following reason."
+msgstr "以下の理由で登録に失敗しました．"
+
+msgid "Cannot remove confirmed users."
+msgstr "正式ユーザは削除できません"
+
+#, elisp-format
+msgid "Temporary user ~d has been removed."
+msgstr "仮ユーザ ~d の登録を消去しました．"
+
+msgid "Correct derivation."
+msgstr "正しい導出です．"
+
+msgid "Correct.  Congratulations! You have solved all the problems!"
+msgstr "正解です．おめでとうございます！これで全て解答完了です．"
+
+msgid "Correct."
+msgstr "正解です．"
+
+msgid "Wrong answer..."
+msgstr "残念..."
+
+msgid "Back to the problem."
+msgstr "今の問題にもどる"
+
+msgid "Empty file."
+msgstr "空ファイルが送信されたようです"
+
+msgid "Don't access this URL directly."
+msgstr "このURLを直接アクセスしないでください"

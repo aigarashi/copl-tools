@@ -23,7 +23,7 @@
 
 (define header 
   (html:head 
-   (html:title (_ "User registration"))
+   (html:title (_ "User Registration"))
    (html:meta 
     :http-equiv "content-type" 
     :content "text/html; charset=utf-8")
@@ -113,7 +113,7 @@
 	       (cons (lambda () (user-exists? uname))
 		     (_ "A user of this name already exists!"))
 	       (cons (lambda () (invalid-name? uname)) 
-		     (_ "A user name should be 2-8 alphanumeric (including a hyphen and period) charcters."))
+		     (_ "A user name should be 2-8 alphanumeric (including a hyphen and period) characters."))
 	       (cons (lambda () (invalid-address? address))
 		     (_ "Invalid e-mail address."))
 	       (cons (lambda () (not (string=? address address2)))
@@ -134,7 +134,7 @@
 		header
 		(html:body
 		 (html:h1 (_ "Temporary registration successful!"))
-		 (html:p (format (_ "A temporary password has been sent to ~D.  Please login to the system from ~D to confirm your registration.
+		 (html:p (format (_ "A temporary password has been sent to ~d.  Please login to the system from ~d to confirm your registration.
 If the e-mail address you gave was wrong, please press the button below to cancel the registration") 
 				 address (html:a :href index (_ "the top page"))))
 		 (html:form
@@ -173,7 +173,7 @@ If the e-mail address you gave was wrong, please press the button below to cance
 	   (display-registration-page
 	    :msg (if nontmp-uname?
 		     (_ "Cannot remove confirmed users.")
-		     (format (_ "Temporary user ~D has been removed.") uname))))))]
+		     (format (_ "Temporary user ~d has been removed.") uname))))))]
      [else
       (list
        (cgi-header)

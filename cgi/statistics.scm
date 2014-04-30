@@ -85,9 +85,9 @@
 		      (if (even? i) "even" "odd"))
 	   (if (zero? rank)
 	       (html:td :class "rank")
-	       (html:td :class "rank" (format (_ "No.~D") rank)))
+	       (html:td :class "rank" (format (_ "No.~d") rank)))
 	   (html:td :class "name" nm)
-	   (html:td :class "num" (format (_ "~D problems") noq))
+	   (html:td :class "num" (format (_ "~d problems") noq))
 	   (html:td
 	    :class "num"
 	    (format (_ "~d days")
@@ -152,7 +152,7 @@
 				    :rowspan (number->string (caddr res))
 				    (cadr res))
 			   ""))
-		     (html:td (format "Q. ~D" i))
+		     (html:td (format "Q. ~d" i))
 		     (let* ((ratio (/ n how-many-users))
 			    (max-bar-length 20)
 			    (bar-length (floor->exact (+ (* ratio max-bar-length) 0.5))))

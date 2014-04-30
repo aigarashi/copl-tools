@@ -26,7 +26,7 @@
 
 (define-constant header 
   (html:head 
-   (html:title (gettext (_ "Concepts of Programming Languages (No.24 of Informatics Core Text Series)")))
+   (html:title (_ "Concepts of Programming Languages (No.24 of Informatics Core Text Series)"))
    (html:meta 
     :http-equiv "content-type" 
     :content "text/html; charset=utf-8")
@@ -79,8 +79,8 @@
     (html:li (html:a :href "errata.html" (_ "Errata")))
     (html:li (html:a :href "guide.pdf" (_ "Guide to the E-Learning System")))
     (html:li (html:a :href "chap11.pdf" (_ "Continuations (EvalContML1)")))
-    (html:li (html:a :href "chap12.pdf" (_ "First-class Continuations")))
-    (html:li (html:a :href "chap13.pdf" (_ "References")))
+    (html:li (html:a :href "chap12.pdf" (_ "First-class Continuations (EvalContML4)")))
+    (html:li (html:a :href "chap13.pdf" (_ "References (EvalRefML3)")))
     )
    (html:h2 (_ "Lectures that use this textbook"))
    (html:ul
@@ -243,8 +243,8 @@ function ToggleOldnews() {
     ;; solved should be non #f
     (html:div
      :id "side"
-     (html:h2 (format (_ "~A's grade") name))
-     (html:p (format (_ "~D questions solved out of ~D questions" how-many-q (length solved))))
+     (html:h2 (format (_ "~a's grade") name))
+     (html:p (format (_ "~d questions solved out of ~d questions" how-many-q (length solved))))
      (html:p (_ "Select a problem by clicking the table below"))
      (display-qlist solved)
      (html:h2 (_ "Misc."))
@@ -268,7 +268,7 @@ function ToggleOldnews() {
 	;; then check if you are qualified to solve it
 	(if (not (qualified? n (cdr (lookupdb uname 'solved))))
 	    (html:p 
-	     (format (_ "You cannot solve Q ~D yet.  Please solve other problems first and come back.") 
+	     (format (_ "You cannot solve Q ~d yet.  Please solve other problems first and come back.") 
 		     (number->string n)))
 	    (let* ((game (car q))
 		   (goal (cadr q))
@@ -292,8 +292,8 @@ function ToggleOldnews() {
 		(if (< n how-many-q)
 		    (html:a :href #`"?qno=,(+ n 1)" (_ "Previous >>"))
 		    ""))
-	       (html:h1 (format (_ "Question No.~D") n)
-	       (html:p (format (_ "Derive the judgment ~D in system ~D")
+	       (html:h1 (format (_ "Question No.~d") n)
+	       (html:p (format (_ "Derive the judgment ~d in system ~d")
 			       rulesurl (html:pre :id "question" goal)))
 	       (html:h1 (_ "Fill your solution below:"))
 	       (html:form :enctype "multipart/form-data"
