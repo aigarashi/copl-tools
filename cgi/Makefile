@@ -17,15 +17,19 @@ html: $(addsuffix .html,$(GAMES))
 	mv $^ games
 
 %.scm: $(GMC)
-	$(GMC) -sexp $(basename $@) ../checker/$(basename $@)/$(patsubst %.scm,%.gm,$@) > $@
+	$(GMC) -sexp $* ../checker/$*/$(patsubst %.scm,%.gm,$@) > $@
 
 %.html: %.scm
-	$(RULE2TEX) $(basename $@) > $@
+	$(RULE2TEX) $* > $@
 
 $(GMC):
 	make -C $(GMCDIR)
 
+mo: po/ja.po
+	msgfmt --output-file ja/LC_MESSAGES/copl.mo $^
+
 clean:
+	-rm *~
 	-rm $(addsuffix .html, $(GAMES)) $(addsuffix .scm,$(GAMES))
 	-rm -rf games
 
