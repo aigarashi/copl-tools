@@ -26,7 +26,7 @@
 
 (define-constant header 
   (html:head 
-   (html:title "プログラミング言語の基礎概念(ライブラリ情報学コア・テキスト24)")
+   (html:title (gettext (_ "Concepts of Programming Languages (No.24 of Informatics Core Text Series)")))
    (html:meta 
     :http-equiv "content-type" 
     :content "text/html; charset=utf-8")
@@ -36,9 +36,9 @@
   (html:div 
    :id "bookinfo"
    (html:div :id "box"
-   (html:h2 "書籍情報")
+   (html:h2 (_ "Bibliographic Information"))
    (html:p "("
-	   (html:a :href "http://www.saiensu.co.jp/?page=book_details&ISBN=ISBN978-4-7819-1285-1" "サイエンス社")
+	   (html:a :href "http://www.saiensu.co.jp/?page=book_details&ISBN=ISBN978-4-7819-1285-1" (_ "SAIENSU-SHA"))
 	   ","
 	   (html:a :href "http://www.amazon.co.jp/dp/4781912850/" "amazon.co.jp")
 	   ","
@@ -49,13 +49,13 @@
      (html:td :rowspan "6" (html:img :src "../image/CoPL-thumb.jpg" 
 				     :align "left" :width "100px" 
 				     :alt "cover picture"))
-     (html:td "単行本（ソフトカバー）: 192ページ"))
+     (html:td (_ "Paperback, 192 pages")))
     (html:tr
-     (html:td "出版社: サイエンス社"))
+     (html:td (_ "Publisher: Saiensu-Sha Co., Ltd.")))
     (html:tr
-     (html:td "発売: 2011年7月"))
+     (html:td (_ "Published: July, 2011")))
     (html:tr
-     (html:td "定価: 1850円+税"))
+     (html:td (_ "Price: 1850 yen (+tax)")))
     (html:tr
      (html:td "ISBN: 978-4-7819-1285-1"))
 #;    (html:tr
@@ -74,20 +74,20 @@
       "模様")
      "です．(2012/1/14記)")
     )
-   (html:h2 "補助資料")
+   (html:h2 (_ "Supplemental Material"))
    (html:ul 
-    (html:li (html:a :href "errata.html" "正誤表"))
-    (html:li (html:a :href "guide.pdf" "演習システムガイド"))
-    (html:li (html:a :href "chap11.pdf" "継続(EvalContML1)"))
-    (html:li (html:a :href "chap12.pdf" "第一級継続(EvalContML4)"))
-    (html:li (html:a :href "chap13.pdf" "参照(EvalRefML3)"))
+    (html:li (html:a :href "errata.html" (_ "Errata")))
+    (html:li (html:a :href "guide.pdf" (_ "Guide to the E-Learning System")))
+    (html:li (html:a :href "chap11.pdf" (_ "Continuations (EvalContML1)")))
+    (html:li (html:a :href "chap12.pdf" (_ "First-class Continuations")))
+    (html:li (html:a :href "chap13.pdf" (_ "References")))
     )
-   (html:h2 "本演習システムを使っている講義")
+   (html:h2 (_ "Lectures that use this textbook"))
    (html:ul
-    (html:li (html:a :href "/~igarashi/class/sem/" "京都大学 大学院情報学研究科 通信情報システム専攻 専門科目「プログラム意味論」(2013年度〜)"))
-    (html:li (html:a :href "/~igarashi/class/sf12w/" "京都大学 大学院情報学研究科 知能情報学専攻 専門科目「ソフトウェア基礎論」(2008年度〜2012年度)"))
-    (html:li "お茶の水女子大学 大学院人間文化創成科学研究科 理学専攻 情報科学コース「言語意味論」(2012年度)")
-    (html:li "お茶の水女子大学 理学部 情報科学科「計算モデル論」(2012年度)")
+    (html:li (html:a :href "/~igarashi/class/sem/" (_ "\"Semantics of Computer Programs\", Graduate School of Informatics, Kyoto University (2013-)")))
+    (html:li (html:a :href "/~igarashi/class/sf12w/" (_ "\"Foundations of Software\", Graduate School of Informatics, Kyoto University")))
+    (html:li (_ "お茶の水女子大学 大学院人間文化創成科学研究科 理学専攻 情報科学コース「言語意味論」(2012年度)"))
+    (html:li (_ "お茶の水女子大学 理学部 情報科学科「計算モデル論」(2012年度)"))
     )
 
    (html:hr)
@@ -109,20 +109,20 @@
   (let-keywords 
    options ((msg #f) (msg2 #f) (uname ""))
    (html:div
-    (html:h1 "プログラミング言語の基礎概念")
-    (html:h3 "(ライブラリ情報学コア・テキスト24)")
+    (html:h1 (_ "Concepts of Programming Languages"))
+    (html:h3 (_ "(No.24 of Informatics Core Text Series)"))
     (display-news #t)
     bookinfo
     (html:div 
      :id "login"
-     (html:h2 "演習システムへのログイン")
+     (html:h2 (_ "Log in to the E-Learning System"))
      (html:form 
       :action thisurl :method "post"
       (html:fieldset
        ;(html:legend "ログインしてください")
-       (html:label :for "username" :class "label" "ユーザ名")
+       (html:label :for "username" :class "label" (_ "User Name"))
        (html:input :type "text" :name "name" :id "username" :value uname :class "input")
-       (html:label :for "passwd"  :class "label" "パスワード")
+       (html:label :for "passwd"  :class "label" (_ "Password"))
        (html:input :type "password" :name "passwd" :id "passwd" :class "input")
        (html:input :type "hidden" :name "command" :value "login")
        (html:input :type "submit" :value "ログイン" :class "button")))
@@ -132,8 +132,8 @@
      (html:form 
       :action thisurl :method "post"
       (html:fieldset
-       (html:legend "パスワードの(再)発行と送付")
-       (html:label :for "username" :class "label" "ユーザ名")
+       (html:legend (_ "Password Reissue"))
+       (html:label :for "username" :class "label" (_ "User Name"))
        (html:input :type "text" :name "name" :id "username" :class "input")
        (html:input :type "hidden" :name "command" :value "renew")
        (html:input :type "submit" :value "新パスワードの送付" :class "button")))
@@ -142,7 +142,7 @@
 	 '())
      (html:p
       (html:a :href "registration.cgi"
-      "新規ユーザ登録"))
+      (_ "User Registration")))
       )
     #;(html:div
      :id "footer" 
@@ -226,12 +226,12 @@ function ToggleOldnews() {
 	(list
 	 (html:div 
 	  :class "newsbox"
-	  (html:h1 "おしらせ")
-	  (html:p "(内容の表示・非表示を切り替えるには日付・タイトル行をクリックしてください．)")
+	  (html:h1 (_ "News"))
+	  (html:p (_ "(Click the header to display/hide the content"))
 	  (html:p :class "nofloat")
 	  (if (not public?)
 	      (html:input :type "button" :onclick "ToggleOldnews()"
-			  :value "古いおしらせの表示・非表示の切替")
+			  :value (_ "Display/hide old news"))
 	      '())
 	  JStoggle
 	  (html:div
@@ -243,23 +243,23 @@ function ToggleOldnews() {
     ;; solved should be non #f
     (html:div
      :id "side"
-     (html:h2 name "さんの成績")
-     (html:p how-many-q " 問中 " (length solved) " 問正解 ")
-     (html:p "下の表をクリックして問題を選択してください")
+     (html:h2 (format (_ "~A's grade") name))
+     (html:p (format (_ "~D questions solved out of ~D questions" how-many-q (length solved))))
+     (html:p (_ "Select a problem by clicking the table below"))
      (display-qlist solved)
-     (html:h2 "その他")
+     (html:h2 (_ "Misc."))
      (html:p :id "commandlist"
-	     (html:a :href "index.cgi" "おすなば")
+	     (html:a :href "index.cgi" (_ "Sandbox"))
 	     " | "
-	     (html:a :href (command-url "news") "おしらせ")
+	     (html:a :href (command-url "news") (_ "News"))
 	     " | "
-	     (html:a :href "guide.pdf" "演習システムガイド(pdf)")
+	     (html:a :href "guide.pdf" (_ "Manual (pdf)"))
 	     " | "
-	     (html:a :href "rulebook.pdf" "推論規則集(pdf)")
+	     (html:a :href "rulebook.pdf" (_ "Cheatsheet (pdf)"))
 	     " | "
-	     (html:a :href (command-url "stats") "統計")
+	     (html:a :href (command-url "stats") (_ "Statistics"))
 	     " | "
-	     (html:a :href (command-url "logout") "ログアウト"))
+	     (html:a :href (command-url "logout") (_ "Logout")))
      )))
 
 (define (display-q n uname)
@@ -267,7 +267,9 @@ function ToggleOldnews() {
     (if q ;; if n-th problem exists, q must be a list
 	;; then check if you are qualified to solve it
 	(if (not (qualified? n (cdr (lookupdb uname 'solved))))
-	    (html:p #`"Q,(number->string n)はまだ解けません．他の問題を解いてから出直してください．")
+	    (html:p 
+	     (format (_ "You cannot solve Q ~D yet.  Please solve other problems first and come back.") 
+		     (number->string n)))
 	    (let* ((game (car q))
 		   (goal (cadr q))
 		   (commonform 
@@ -284,42 +286,41 @@ function ToggleOldnews() {
 	      (list
 	       (html:p
 		(if (< 1 n) 
-		    (list (html:a :href #`"?qno=,(- n 1)" "<< 前の問題へ")
+		    (list (html:a :href #`"?qno=,(- n 1)" (_ "<< Next"))
 			  " ")
 		    "")
 		(if (< n how-many-q)
-		    (html:a :href #`"?qno=,(+ n 1)" "次の問題へ >>")
+		    (html:a :href #`"?qno=,(+ n 1)" (_ "Previous >>"))
 		    ""))
-	       (html:h1 "第" n "問")
-	       (html:p "導出システム " rulesurl " で判断 "
-		       (html:pre :id "question" goal)
-		       " を導出せよ．")
-	       (html:h1 "解答欄")
+	       (html:h1 (format (_ "Question No.~D") n)
+	       (html:p (format (_ "Derive the judgment ~D in system ~D")
+			       rulesurl (html:pre :id "question" goal)))
+	       (html:h1 (_ "Fill your solution below:"))
 	       (html:form :enctype "multipart/form-data"
 			  :action "index.cgi" :method "post"
-			  (html:label "解答ファイル:")
+			  (html:label (_ "Solution file:"))
 			  (html:input :type "file" :name "derivation")
 			  (html:input :type "hidden" :name "command" :value "answer")
-			  (commonform "ファイルを送信"))
+			  (commonform (_ "Send file")))
 	       (html:form :action "index.cgi" :method "post"
 			  (html:textarea :name "derivation" :rows "25" :cols "100" :wrap "off" goal)
 			  (html:input :type "hidden" :name "command" :value "answer")
-			  (commonform "フォームの解答を送信")))))
+			  (commonform (_ "Send your solution in the form"))))))
 	    ;; if n is too large
-	(html:p "そんな問題はありません"))))
+	(html:p (_ "No such question")))))
 
 (define (display-sandbox)
   (list
-   (html:h1 "おすなば")
+   (html:h1 (_ "Sandbox"))
    (html:form 
     :name "sandbox" :action "index.cgi" :method "post"
-    (html:p "問題を解かずに遊ぶこともできます")
-    (html:p "導出システム名を選んでください: "
+    (html:p (_ "You can play without solving problems."))
+    (html:p (_ "Choose a derivation system: ")
 	    (html:select :name "game"
 			 (map (lambda (g) (html:option :value g g)) *gamelist*)))
     (html:textarea :name "derivation" :rows "25" :cols "80" :wrap "off"
-		   "// ここに導出を書いてください")
-    (html:input :type "submit" :value "送信")
+		   (_ "// Write a derivation here."))
+    (html:input :type "submit" :value (_ "Send"))
     (html:input :type "hidden" :name "no" :value "0")
     (html:input :type "hidden" :name "command" :value "answer"))
    (html:script :type "text/javascript" "<!--
@@ -374,11 +375,11 @@ function ToggleOldnews() {
 	  (html:body
 	   (html:p
 	    (cond [(not (or (zero? no) uname))
-		   "ログインしてください"]
+		   (_ "Please login first.")]
 		  [(not deriv)
-		   "空ファイルが送信されたようです"]
+		   (_ "Empty input?")]
 		  [(not game)
-		   "不正なアクセスです"]))))))))
+		   (_ "Invalid access.")]))))))))
 
 (define (main params)
    ; possible parameters
@@ -409,7 +410,7 @@ function ToggleOldnews() {
 	(html:head
 	 (html:meta :http-equiv "Refresh" :content "0;url=index.cgi"))
 	(html:body
-	 (html:p "ログアウトしました．"))))]
+	 (html:p (_ "Logged out.")))))]
      [(and (eq? command 'answer) name)  ;; trying to answer a question
       (check-and-show params)]
      [(and (eq? command 'news) name)
@@ -433,7 +434,7 @@ function ToggleOldnews() {
 	 (html:div
 	  :id "contents"
 	  (html:div :id "main"
-		    (html:h1 "統計コーナー")
+		    (html:h1 (_ "Statistics"))
 		    (display-statistics name))
 	  (display-sidebar name)))))]
      [name  ;; he/she has already logged in
@@ -468,7 +469,7 @@ function ToggleOldnews() {
 	(html:body
 	 :id "login-screen"
 	 (display-login-page	 
-	  :msg2 (html:p "登録されたアドレスに送付しました")))))]
+	  :msg2 (html:p (_ "Sent to the registered address."))))))]
      [(and (eq? command 'login) 
 	   (or (check-passwd lname lpasswd)
 	       (check-passwd-tmp lname lpasswd)))
@@ -513,11 +514,11 @@ function ToggleOldnews() {
 	  (cond
 	   [(eq? command 'login)
 	    (display-login-page	
-	     :msg (html:p "ユーザ名もしくはパスワードが違います")
+	     :msg (html:p (_ "Invalid user name or pasword."))
 	     :uname lname)]
 	   [(eq? command 'logout) 
 	    (display-login-page
-	     :msg (html:p "ログアウトするには，まずログインしてください"))]
+	     :msg (html:p (_ "To log out, please log in first.")))]
 	   [else (display-login-page)]))))))))
 
 (cgi-output-character-encoding "utf-8")

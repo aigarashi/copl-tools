@@ -70,15 +70,15 @@
 	(list 
 	 (html:h1 
 	  (cond
-	   [(zero? no) "正しい導出です．"]
+	   [(zero? no) (_ "Corect derivation.")]
 	   [(and (not (lookupdb uname 'finished)) ;; not yet finished
 		 (= (length (cdr (lookupdb uname 'solved)))
 		    how-many-q))
 	    ;; when the last problem is solved...
 	    (write-log uname (format "All the problems have been solved!") :header #t)
 	    (updatedb uname 'finished (lambda (s) (sys-time)))
-	    (format "正解です．おめでとうございます！これで ~d 問全て解答完了です．" how-many-q)]
-	   [else "正解です．"]))))
+	    (_ "Correct.  Congratulations! You have solved all the problems!")]
+	   [else (_ "Correct.")]))))
       ;; 不正解 orz
       (begin
 	(unless (zero? no)
@@ -89,7 +89,7 @@
 		   :header #t)
 	(write-log uname "--")
 	(list
-	 (html:h1 "残念...")
+	 (html:h1 (_ "Wrong answer..."))
 	 (html:pre (html-escape-string (caddr result))) 
 	 (html:table :id "userinput"
 		     (let* ((locs (parse-errmsg (caddr result)))
@@ -104,7 +104,7 @@
 	     (list
 	      (html:hr)
 	      (html:a :href "" :onclick "history.back(); return false"
-		      "今の問題にもどる")))
+		      (_ "Back to the problem."))))
 		#;(html:a :href "index.cgi" "あきらめて別の問題を解く")))))
 
 #;(cgi-main
@@ -156,9 +156,9 @@
 	   (html:body
 	    (html:p
 	     (cond [(not (or (zero? no) uname))
-		    "ログインしてください"]
+		    (_ "Please login first.")]
 		   [(not deriv)
-		    "空ファイルが送信されたようです"]
+		    (_ "Empty file.")]
 		   [(not game)
-		    "このURLを直接アクセスしないでください"]))))))))
+		    (_ "Don't access this URL directly.")]))))))))
  :merge-cookies #t)

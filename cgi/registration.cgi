@@ -23,7 +23,7 @@
 
 (define header 
   (html:head 
-   (html:title "「プログラミング言語の基礎概念」演習システム ユーザ登録")
+   (html:title (_ "User registration"))
    (html:meta 
     :http-equiv "content-type" 
     :content "text/html; charset=utf-8")
@@ -37,34 +37,34 @@
 			 (address2 ""))
      (html:div
       :id "registration"
-      (html:h1 "「プログラミング言語の基礎概念」")
-      (html:h1 "演習システム ユーザ登録フォーム")
+      (html:h1 (_ "\"Concepts of Programming Languages\""))
+      (html:h1 (_ "E-Learning Systemm User Registration Form"))
       (html:form
        :action thisurl :method "post"
        (html:ol
 	(html:li
-	 (html:label :for "username" :class "label" "ユーザ名")
+	 (html:label :for "username" :class "label" (_ "User Name"))
 	 (html:input :type "text" :name "name" :size "8"
 		     :id "username" :value uname))
 	(html:li
-	 (html:label :for "fullname" :class "label" "氏名")
+	 (html:label :for "fullname" :class "label" (_ "Your Name"))
 	 (html:input :type "text" :name "fname" :size "20"
 		     :id "fullname" :value fname))
 	(html:li
-	 (html:label :for "address" :class "label" "メイルアドレス")
+	 (html:label :for "address" :class "label" (_ "E-mail address"))
 	 (html:input :type "text" :name "address" :size "40" 
 		     :id "address" :value address))
 	(html:li
-	 (html:label :for "address2" :class "label""メイルアドレス(確認)")
+	 (html:label :for "address2" :class "label" (_ "E-mail address (to doublecheck)"))
 	 (html:input :type "text" :name "address2" :size "40"
 		     :id "address2" :value address2)))
        (html:input :type "hidden" :name "command" :value "register")
        (if msg
 	   (html:p (html:span :class "warn" msg))
 	   '())
-       (html:input :type "submit" :value "登録"))
-      (html:p :class "warn" "このフォームで収集したメイルアドレス・氏名はパスワードの送信，管理者からの連絡以外には用いません．")
-      (html:p :class "warn" "システムの成績統計表示欄ではユーザ名のみが表示されます．")
+       (html:input :type "submit" :value (_ "Register")))
+      (html:p :class "warn" (_ "Your e-mail addresses and names will never be used for other purposes than sending a password or contacting you."))
+      (html:p :class "warn" (_ "The statistics will show only your user name."))
       )))
 
 (define (invalid-name? s)
@@ -109,17 +109,17 @@
 	     (check-errors
 	      (list
 	       (cons (lambda () (zero? (string-length uname)))
-		     "ユーザ名が空です!")
+		     (_ "User name was empty!"))
 	       (cons (lambda () (user-exists? uname))
-		     "そのユーザ名は既に存在します!")
+		     (_ "A user of this name already exists!"))
 	       (cons (lambda () (invalid-name? uname)) 
-		     "ユーザ名は英数字(ピリオド・ハイフンも含む)2〜8文字でお願いします")
+		     (_ "A user name should be 2-8 alphanumeric (including a hyphen and period) charcters."))
 	       (cons (lambda () (invalid-address? address))
-		     "不正なメイルアドレスです")
+		     (_ "Invalid e-mail address."))
 	       (cons (lambda () (not (string=? address address2)))
-		     "ふたつのメイルアドレスが違っています")
+		     (_ "The two addresses don't match"))
 	       (cons (lambda () (zero? (string-length fname)))
-		     "氏名欄が空です")))))
+		     (_ "Empty name"))))))
 	(if (null? valid?)
 	    ;; all checks passed!
 	    (begin
@@ -133,17 +133,15 @@
 	       (html:html
 		header
 		(html:body
-		 (html:h1 "仮登録に成功しました!")
-		 (html:p #`"仮パスワードを,|address|宛てにメールで送りました．
-本登録を行うには"
-			 (html:a :href index "トップページ")
-			 "からログインしてください．
-もし，アドレスを間違えていた場合には以下のボタンで登録をキャンセルしてください．")
+		 (html:h1 (_ "Temporary registration successful!"))
+		 (html:p (format (_ "A temporary password has been sent to ~D.  Please login to the system from ~D to confirm your registration.
+If the e-mail address you gave was wrong, please press the button below to cancel the registration") 
+				 address (html:a :href index (_ "the top page"))))
 		 (html:form
 		  :action thisurl :method "post"
 		  (html:input :type "hidden" :name "command" :value "cancel")
 		  (html:input :type "hidden" :name "name" :value uname)
-		  (html:input :type "submit" :value "登録キャンセル"))))))
+		  (html:input :type "submit" :value (_ "Cancel registration")))))))
 	    ;; when one of the checks failed...
 	    (list
 	     (cgi-header)
@@ -156,7 +154,7 @@
 		 (display-registration-page
 		  :msg
 		  (list
-		   (html:p "以下の理由で登録に失敗しました．")
+		   (html:p (_ "Registration failed for the following reason."))
 		   (map (lambda (s) (html:p s)) valid?))
 		  :uname uname :fname fname :address address :address2 address2)]
 		 [else (display-registration-page)]))))))]
@@ -174,8 +172,8 @@
 	  (html:body
 	   (display-registration-page
 	    :msg (if nontmp-uname?
-		     "正式ユーザは削除できません"
-		     #`"仮ユーザ ,|uname| の登録を消去しました．"))))))]
+		     (_ "Cannot remove confirmed users.")
+		     (format (_ "Temporary user ~D has been removed.") uname))))))]
      [else
       (list
        (cgi-header)

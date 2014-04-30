@@ -72,10 +72,10 @@
      :id "ranking"
      (html:tr
       (html:th)
-      (html:th "ユーザ名")
-      (html:th "解答数")
-      (html:th "経過日数")
-      (html:th "修了日"))
+      (html:th (_ "User name"))
+      (html:th (_ "# of solved problems"))
+      (html:th (_ "Days passed"))
+      (html:th (_ "Date of completion")))
      (map-with-index
       (match-lambda* 
        [(i (rank nm noq score))
@@ -85,12 +85,12 @@
 		      (if (even? i) "even" "odd"))
 	   (if (zero? rank)
 	       (html:td :class "rank")
-	       (html:td :class "rank" rank "位"))
+	       (html:td :class "rank" (format (_ "No.~D") rank)))
 	   (html:td :class "name" nm)
-	   (html:td :class "num" noq "問")
+	   (html:td :class "num" (format (_ "~D problems") noq))
 	   (html:td
 	    :class "num"
-	    (format "~d 日"
+	    (format (_ "~d days")
 		    (round (/ (- (if finished 
 				     (cdr finished) (sys-time))
 				 (cdr (lookupdb nm 'user-since)))
@@ -105,7 +105,7 @@
       ranked-list)))
   (let* ((solved (cdr (lookupdb name 'solved))))
     (if (zero? (length solved))
-	(html:p "問題を1問解いたら見られるようになります．")
+	(html:p (_ "Please solve one problem and you can see statistics."))
 	(let* ((unames (user-list))
 	       (solved-list (filter-map 
 			     (lambda (uname) 
@@ -123,9 +123,9 @@
 	    (list
 	     ;; if NAME belongs to a group, then generate another table
 	     (let ((group (cdr (lookupdb name 'group))))
-	       (if (null? group) (html:h2 "ランキング")
+	       (if (null? group) (html:h2 (_ "ranking"))
 		   (list
-		    (html:h2 "グループ内ランキング")
+		    (html:h2 (_ "Ranking within your group"))
 		    (generate-ranking
 		     (add-rank
 		     (filter 
@@ -133,11 +133,11 @@
 			(eq? (cdr (lookupdb (car entry) 'group)) group))
 		      sorted-list))
 		     )
-		    (html:h2 "全体ランキング"))))
+		    (html:h2 (_ "Global ranking table")))))
 	     ;;
 	     (generate-ranking ranked-list)
 	     ;;
-	     (html:h2 "問題ごとの解答率")
+	     (html:h2 (_ "Percentage of correct answers"))
 	     (html:table
 	      :id "graph"
 	      (map-with-index
@@ -152,7 +152,7 @@
 				    :rowspan (number->string (caddr res))
 				    (cadr res))
 			   ""))
-		     (html:td "第" i "問")
+		     (html:td (format "Q. ~D" i))
 		     (let* ((ratio (/ n how-many-users))
 			    (max-bar-length 20)
 			    (bar-length (floor->exact (+ (* ratio max-bar-length) 0.5))))
