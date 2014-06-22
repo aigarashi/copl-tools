@@ -123,12 +123,14 @@ BExp4:
 
 Comm:
     Comm1 { $1 }
-  | IF BExp THEN Comm1 ELSE Comm1 { If($2, $4, $6) }
-  | WHILE LPAREN BExp RPAREN DO Comm1 { While($3, $6) }
+  | IF BExp THEN Comm ELSE Comm { If($2, $4, $6) }
+  | WHILE LPAREN BExp RPAREN DO Comm { While($3, $6) }
 
 Comm1:
     Comm2 { $1 }
   | Comm2 SEMI Comm1 { Seq($1, $3) }
+  | Comm2 SEMI IF BExp THEN Comm ELSE Comm { Seq($1, If($4, $6, $8)) }
+  | Comm2 SEMI WHILE LPAREN BExp RPAREN DO Comm { Seq($1, While($5, $8)) }
 
 Comm2:
     SKIP { Skip }

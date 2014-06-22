@@ -68,8 +68,8 @@
       )))
 
 (define (invalid-name? s)
-  ;; 英数字(ピリオド・ハイフン含む) 2-8文字
-  (not (#/^[A-Za-z0-9\.\-]{2,8}$/ s)))
+  ;; 英数字(ピリオド・ハイフン含む) 2-8文字 (ただし一文字目は英字)
+  (not (#/^[A-za-z][A-Za-z0-9\.\-]{1,7}$/ s)))
 
 (define (invalid-address? s)
   ;; see http://blog.livedoor.jp/dankogai/archives/51189905.html

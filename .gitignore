@@ -1,10 +1,6 @@
 *~
-*.cmo
-*.cmi
+*.cm[iox]
 *.pot
-parser.output
-parser.ml
-parser.mli
-parser.mly
+parser.*
 core.ml
 .depend

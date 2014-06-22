@@ -14,12 +14,12 @@
 
 体系定義を修正したら:
 
-- checker の make -> local_html/dc へコピー
+- checker/ の make -> local_html/dc へコピー
 
-- tools/cgi で make． games/*.html の生成．
+- cgi で make． games/*.html の生成．
    games/ -> local_html/dc へコピー
 
-- root で make rules,  rulebook.tex を編集．pdf の生成
+- doc/ で make rules,  rulebook.tex を編集．pdf の生成
    local_html/dc へコピー
 
 - io:local_html/dc/news.scm の編集
