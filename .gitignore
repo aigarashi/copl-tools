@@ -3,3 +3,8 @@
 *.cmi
 *.pot
 parser.output
+parser.ml
+parser.mli
+parser.mly
+core.ml
+.depend
