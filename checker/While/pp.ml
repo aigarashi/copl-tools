@@ -111,13 +111,11 @@ module Comm =
 struct
 (* if e is the (left) operand of e_up, do you need parentheses for e? *)
   let (<) e e_up = match e, e_up with
-      (If(_,_,_) | While(_,_)), Seq(_,_) -> true
+      (If(_,_,_) | While(_,_) | Seq(_,_)), Seq(_,_) -> true
     | _ -> false
 
 (* if e is the (right) operand of e_up, do you need parentheses for e? *)
-  let (>) e_up e = match e_up, e with
-      Seq(_,_), Seq(_,_) -> true
-    | _ -> false
+  let (>) e_up e = false
 
   let rec print ppf c =
     let with_paren_L = with_paren (<)

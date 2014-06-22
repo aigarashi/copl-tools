@@ -24,48 +24,52 @@ INCLUDES=$(foreach game,$(GAMES),-I $(game)) # -I $(GMCDIR)
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
-GAMEOBJS=	Nat/nat.cmo \
-		CompareNat1/compareNat1.cmo \
-		CompareNat2/compareNat2.cmo \
-		CompareNat3/compareNat3.cmo \
-		EvalNatExp/evalNatExp.cmo \
-		ReduceNatExp/reduceNatExp.cmo \
-		EvalML1/evalML1.cmo \
-		EvalML2/evalML2.cmo \
-		EvalML3/evalML3.cmo \
-		EvalML4/evalML4.cmo \
-		EvalML5/evalML5.cmo \
-		EvalML6/evalML6.cmo \
-		EvalML1Err/evalML1Err.cmo \
-		EvalContML1/evalContML1.cmo \
-		EvalContML3/evalContML3.cmo \
-		EvalContML4/evalContML4.cmo \
-		EvalDContML4/evalDContML4.cmo \
-		EvalRefML3/evalRefML3.cmo \
-		EvalRefML4/evalRefML4.cmo \
-		NamelessML3/namelessML3.cmo \
-		EvalNamelessML3/evalNamelessML3.cmo \
-		TypingML2/typingML2.cmo \
-		TypingML3/typingML3.cmo \
-		TypingML4/typingML4.cmo \
-		TypingML6/typingML6.cmo \
-		PolyTypingML3/polyTypingML3.cmo \
-		PolyTypingML4/polyTypingML4.cmo \
-		While/while.cmo
+GAMEOBJS=	Nat/nat.cmx \
+		CompareNat1/compareNat1.cmx \
+		CompareNat2/compareNat2.cmx \
+		CompareNat3/compareNat3.cmx \
+		EvalNatExp/evalNatExp.cmx \
+		ReduceNatExp/reduceNatExp.cmx \
+		EvalML1/evalML1.cmx \
+		EvalML2/evalML2.cmx \
+		EvalML3/evalML3.cmx \
+		EvalML4/evalML4.cmx \
+		EvalML5/evalML5.cmx \
+		EvalML6/evalML6.cmx \
+		EvalML1Err/evalML1Err.cmx \
+		EvalContML1/evalContML1.cmx \
+		EvalContML3/evalContML3.cmx \
+		EvalContML4/evalContML4.cmx \
+		EvalDContML4/evalDContML4.cmx \
+		EvalRefML3/evalRefML3.cmx \
+		EvalRefML4/evalRefML4.cmx \
+		NamelessML3/namelessML3.cmx \
+		EvalNamelessML3/evalNamelessML3.cmx \
+		TypingML2/typingML2.cmx \
+		TypingML3/typingML3.cmx \
+		TypingML4/typingML4.cmx \
+		TypingML6/typingML6.cmx \
+		PolyTypingML3/polyTypingML3.cmx \
+		PolyTypingML4/polyTypingML4.cmx \
+		While/while.cmx
 
-OBJS=mySupport.cmo derivation.cmo lexer.cmo $(GAMEOBJS) main.cmo
+FIRSTOBJS=mySupport.cmx derivation.cmx lexer.cmx 
+OBJS=$(GAMEOBJS) main.cmx
 
 DEPEND += lexer.ml
 
-all: $(GMCDIR)/gmc $(addsuffix .pack,$(GAMES)) $(OBJS) $(DEPEND) 
-	$(OCAMLC) -o $(PROGNAME) str.cma $(OBJS)
+all: $(GMCDIR)/gmc $(FIRSTOBJS) $(addsuffix .pack,$(GAMES)) $(OBJS) $(DEPEND) 
+	$(OCAMLOPT) -o $(PROGNAME) str.cmxa $(FIRSTOBJS) $(OBJS)
 
 %.pack: 
 	$(MAKE) -C `basename $@ .pack` depend
 	$(MAKE) -C `basename $@ .pack`
 
 %.cmo: %.ml
-	ocamlc $(INCLUDES) -c $<
+	$(OCAMLC) $(INCLUDES) -c $<
+
+%.cmx: %.ml
+	$(OCAMLOPT) $(INCLUDES) -c $<
 
 lexer.ml: lexer.mll
 	@rm -f $@
