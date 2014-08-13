@@ -2,4 +2,6 @@
 *.cmo
 *.cmi
 *.cmx
-parser.output
+parser.*
+.depend
+core.ml
