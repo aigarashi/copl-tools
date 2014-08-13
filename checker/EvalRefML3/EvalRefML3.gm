@@ -56,7 +56,7 @@ E-Plus: EvalTo(s1, env, BinOp(Plus, e1, e2), i3, s3) :-
 		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Plus, i1, i2, i3);
 E-Minus: EvalTo(s1, env, BinOp(Minus, e1, e2), i3, s3) :- 
 		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Minus, i1, i2, i3);
-E-Mult: EvalTo(s1, env, BinOp(Mult, e1, e2), i3, s2) :- 
+E-Times: EvalTo(s1, env, BinOp(Mult, e1, e2), i3, s2) :- 
 		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(s1, env, BinOp(Lt, e1, e2), b3, s3) :-
 		EvalTo(s1, env, e1, i1, s2), EvalTo(s2, env, e2, i2, s3), AppBOp(Lt, i1, i2, b3);
