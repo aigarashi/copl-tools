@@ -99,7 +99,7 @@ E-Assign: EvalTo(s1, env, Assign(e1, e2), v, s4) :-
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
-B-Mult: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
+B-Times: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
 B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 
 [ML]
