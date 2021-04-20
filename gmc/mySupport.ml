@@ -104,7 +104,7 @@ struct
 	  if s.[i] = closing then
 	    if k = 0 then i else advance (k - 1) (i + 1) lim
 	  else advance k (i + 1) lim in
-      advance k start (String.length s);;
+      advance k start (Stdlib.String.length s);;
 
   let advance_to_non_alpha s start =
     let rec advance i lim =
@@ -117,7 +117,7 @@ struct
 			    'Î'|'Ô'|'Û'|'Ë'|'Ï'|'Ü'|'Ç' ->
               advance (i + 1) lim
 	  | _ -> i in
-      advance start (String.length s);;
+      advance start (Stdlib.String.length s);;
 
   (* We are just at the beginning of an ident in s, starting at start. *)
   let find_ident s start =
@@ -126,16 +126,16 @@ struct
       | '(' | '{' as c ->
 	  let new_start = start + 1 in
 	  let stop = advance_to_closing c (closing c) 0 s new_start in
-	    String.sub s new_start (stop - start - 1), stop + 1
+	    Stdlib.String.sub s new_start (stop - start - 1), stop + 1
 	      (* Regular ident *)
       | _ ->
 	  let stop = advance_to_non_alpha s (start + 1) in
-	    String.sub s start (stop - start), stop;;
+	    Stdlib.String.sub s start (stop - start), stop;;
 
   (* Substitute $ident, $(ident), or ${ident} in s,
      according to the function mapping f. *)
   let rec add_substitute b f s =
-    let lim = String.length s in
+    let lim = Stdlib.String.length s in
     let rec subst previous i =
       if i < lim then begin
 	  match s.[i] with
@@ -161,37 +161,37 @@ struct
       else if previous == '\\' then add_char b previous in
       subst ' ' 0;;
 
-      let escaped_for_Scheme s = (* adapted from String.escaped *)
+      let escaped_for_Scheme s = (* adapted from Stdlib.String.escaped *)
 	let n = ref 0 in
-	  for i = 0 to String.length s - 1 do
+	  for i = 0 to Stdlib.String.length s - 1 do
 	    n := !n +
-              (match String.unsafe_get s i with
+              (match Stdlib.String.get s i with
 		  '"' | '\\' | '\n' | '\t' | ',' -> 2
 		| _ -> 1) (* assuming non-printable character won't appear *)
 	      (* | c -> if is_printable c then 1 else 4 *)
 	  done;
-	  if !n = String.length s then s else begin
-	      let s' = String.create !n in
+	  if !n = Stdlib.String.length s then s else begin
+	      let s' = Bytes.create !n in
 		n := 0;
-		for i = 0 to String.length s - 1 do
+		for i = 0 to Stdlib.String.length s - 1 do
 		  begin
-		    match String.unsafe_get s i with
+		    match Stdlib.String.get s i with
 			('"' | '\\') as c ->
-			  String.unsafe_set s' !n '\\'; incr n; 
-			  String.unsafe_set s' !n c
+			  Bytes.set s' !n '\\'; incr n; 
+			  Bytes.set s' !n c
 		      | ',' ->
-			  String.unsafe_set s' !n ','; incr n; 
-			  String.unsafe_set s' !n ','
+			  Bytes.set s' !n ','; incr n; 
+			  Bytes.set s' !n ','
 		      | '\n' ->
-			  String.unsafe_set s' !n '\\'; incr n; 
-			  String.unsafe_set s' !n 'n'
+			  Bytes.set s' !n '\\'; incr n; 
+			  Bytes.set s' !n 'n'
 		      | '\t' ->
-			  String.unsafe_set s' !n '\\'; incr n; 
-			  String.unsafe_set s' !n 't'
-		      | c -> String.unsafe_set s' !n c
+			  Bytes.set s' !n '\\'; incr n; 
+			  Bytes.set s' !n 't'
+		      | c -> Bytes.set s' !n c
 		  end;
 		  incr n
 		done;
-		s'
+		Bytes.to_string s'
 	    end
 end
