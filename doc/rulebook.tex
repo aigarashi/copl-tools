@@ -27,6 +27,15 @@
 
 \NatDisplayBNF
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \NatPlusIs{\NatMV{n}[_{1}]}{\NatMV{n}[_{2}]}{\NatMV{n}[_{3}]}
+}
+\infax{
+  \NatMultIs{\NatMV{n}[_{1}]}{\NatMV{n}[_{2}]}{\NatMV{n}[_{3}]}
+}
+
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 \NatDisplayRules
@@ -40,6 +49,12 @@
 \subsection*{Syntax:}
 
 \CompareNatiDisplayBNF
+
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \CompareNatiLt{\CompareNatiMV{n}[_{1}]}{\CompareNatiMV{n}[_{2}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
@@ -55,6 +70,12 @@
 
 \CompareNatiiDisplayBNF
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \CompareNatiiLt{\CompareNatiMV{n}[_{1}]}{\CompareNatiMV{n}[_{2}]}
+}
+
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 \CompareNatiiDisplayRules
@@ -68,6 +89,12 @@
 \subsection*{Syntax:}
 
 \CompareNatiiiDisplayBNF
+
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \CompareNatiiiLt{\CompareNatiMV{n}[_{1}]}{\CompareNatiMV{n}[_{2}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
@@ -83,6 +110,18 @@
 
 \EvalNatExpDisplayBNF
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalNatExpEvalTo{\EvalNatExpMV{e}}{\EvalNatExpMV{n}}
+}
+\infax{
+  \EvalNatExpPlusIs{\NatMV{n}[_{1}]}{\NatMV{n}[_{2}]}{\NatMV{n}[_{3}]}
+}
+\infax{
+  \EvalNatExpMultIs{\NatMV{n}[_{1}]}{\NatMV{n}[_{2}]}{\NatMV{n}[_{3}]}
+}
+
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 \EvalNatExpDisplayRules
@@ -97,6 +136,23 @@
 
 \ReduceNatExpDisplayBNF
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \ReduceNatExpOneStepTo{\EvalNatExpMV{e}[_1]}{\EvalNatExpMV{e}[_2]}
+}
+\infax{
+  \ReduceNatExpOneStepToD{\EvalNatExpMV{e}[_1]}{\EvalNatExpMV{e}[_2]}
+}
+\infax{
+  \ReduceNatExpMultiStepTo{\EvalNatExpMV{e}[_1]}{\EvalNatExpMV{e}[_2]}
+}
+\infax{
+  \ReduceNatExpPlusIs{\NatMV{n}[_{1}]}{\NatMV{n}[_{2}]}{\NatMV{n}[_{3}]}
+}
+\infax{
+  \ReduceNatExpMultIs{\NatMV{n}[_{1}]}{\NatMV{n}[_{2}]}{\NatMV{n}[_{3}]}
+}
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 \ReduceNatExpDisplayRules
@@ -111,6 +167,28 @@
 
 \EvalMLiDisplayBNF
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalMLiEvalTo{\EvalMLiMV{e}}{\EvalMLiMV{v}}
+}
+\infax{
+    \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
+
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 \EvalMLiDisplayRules
@@ -124,6 +202,28 @@
 \subsection*{Syntax:}
 
 \EvalMLiErrDisplayBNF
+
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalMLiEvalTo{\EvalMLiMV{e}}{\EvalMLiMV{r}}
+}
+\infax{
+    \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
@@ -140,6 +240,28 @@
 \EvalMLiiDisplayBNF
 
 空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalMLiiEvalTo{\EvalMLiiMV{env}}{\EvalMLiMV{e}}{\EvalMLiMV{v}}
+}
+\infax{
+    \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
@@ -182,6 +304,28 @@
 \end{array}\]
 
 空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalMLiiEvalTo{\EvalMLiiMV{env}}{\EvalMLiMV{e}}{\EvalMLiMV{v}}
+}
+\infax{
+    \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
@@ -261,6 +405,13 @@
 
 空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \NamelessMLiiiTranslateTo{\NamelessMLiiiMV{env}[]}{\NamelessMLiiiMV{e}[]}
+                             {\NamelessMLiiiMV{d}[]}
+}
+
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 \NamelessMLiiiDisplayRules
@@ -309,6 +460,29 @@
 
 空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+    \EvalNamelessMLiiiEvalTo{\EvalNamelessMLiiiMV{env}[]}
+                            {\EvalNamelessMLiiiMV{d}[]}
+                            {\EvalNamelessMLiiiMV{v}[]}
+}
+\infax{
+    \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 
@@ -380,6 +554,28 @@
 \end{array}\]
 
 空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
+
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalMLiiEvalTo{\EvalMLiiMV{env}}{\EvalMLiMV{e}}{\EvalMLiMV{v}}
+}
+\infax{
+    \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
@@ -455,6 +651,34 @@
 
 空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalMLvMatches{\EvalMLvMV{v}[]}{\EvalMLvMV{p}[]}{\EvalMLvMV{env}}
+}
+\infax{
+  \EvalMLvMatches{\EvalMLvMV{v}}{\EvalMLvMV{p}}{\EvalMLvFailTerm}
+}
+\infax{
+  \EvalMLiiEvalTo{\EvalMLiiMV{env}}{\EvalMLiMV{e}}{\EvalMLiMV{v}}
+}
+\infax{
+    \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
+
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 
@@ -521,6 +745,13 @@
 
 空の型環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+    \TypingMLivTyping{\TypingMLivMV{env}[]}{\TypingMLivMV{e}[]}
+                     {\TypingMLivMV{t}[]}
+}
+
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 \TypingMLivDisplayRules
@@ -576,6 +807,12 @@
 
 空の型環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+    \TypingMLivTyping{\TypingMLivMV{env}[]}{\TypingMLivMV{e}[]}
+                     {\TypingMLivMV{t}[]}
+}
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
 
@@ -631,6 +868,33 @@
 \EvalContMLiDisplayBNF
 
 継続末尾の \(\Hole\) (とそれに先行する \(\gg\))は省略してよい．
+
+\subsection*{Judgment Form(s):}
+
+\infax{
+  \EvalContMLiAppK{\EvalContMLiMV{k}[]}{\EvalContMLiMV{v}[_1]}
+  {\EvalContMLiMV{v}[_2]}
+}
+\infax{
+  \EvalContMLiEvalTo{\EvalContMLiMV{k}[]}{\EvalContMLiMV{e}[]}
+  {\EvalContMLiMV{v}[]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{T-Int}
@@ -703,6 +967,32 @@
 
 空の環境 \(\bullet\) (とそれに続くコンマ)は入力時には省略する．また，
 継続末尾の \(\Hole\) (とそれに先行する \(\gg\))は省略してよい．
+
+\subsection*{Judgment Form(s):}
+\infax{
+  \EvalContMLivEvalTo{\EvalContMLivMV{env}[]}{\EvalContMLivMV{k}[]}
+  {\EvalContMLivMV{e}[]}{\EvalContMLivMV{v}[]}
+}
+\infax{
+  \EvalContMLivAppK{\EvalContMLivMV{k}[]}{\EvalContMLivMV{v}[_1]}
+  {\EvalContMLivMV{v}[_2]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 
 \subsection*{Derivation Rules:}
 \typicallabel{C-EvalFun}
@@ -781,6 +1071,32 @@
 {\EvalDContMLivMV{k}[]}\\
 \end{array}\]
 
+\subsection*{Judgment Form(s):}
+\infax{
+  \EvalDContMLivAppK{\EvalDContMLivMV{k}[]}{\EvalDContMLivMV{kk}[]}
+                      {\EvalDContMLivMV{v}[_1]}{\EvalDContMLivMV{v}[_2]}
+}
+\infax{
+  \EvalDContMLivEvalTo{\EvalDContMLivMV{env}[]}{\EvalDContMLivMV{k}[]}
+                        {\EvalDContMLivMV{kk}[]}{\EvalDContMLivMV{e}[]}
+                        {\EvalDContMLivMV{v}[]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 \subsection*{Derivation Rules:}
 \typicallabel{E-MatchNil}
 \EvalDContMLivDisplayRules
@@ -857,6 +1173,28 @@
    \mbox{(if \(\EvalRefMLiiiMV{l} \neq \EvalRefMLiiiMV{l}[']\))}
 \end{eqnarray*}
 
+\subsection*{Judgment Form(s):}
+\infax{
+  \EvalRefMLiiiEvalTo{\EvalRefMLiiiMV{s}[_1]}{\EvalRefMLiiiMV{env}[]}
+                       {\EvalRefMLiiiMV{e}[]}{\EvalRefMLiiiMV{v}[]}
+                       {\EvalRefMLiiiMV{s}[_2]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiPlusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMinusTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+                  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiMultTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{i}[_{3}]}
+}
+\infax{
+  \EvalMLiAppBOp{\EvalMLiLtTerm}{\EvalMLiMV{i}[_{1}]}{\EvalMLiMV{i}[_{2}]}
+  {\EvalMLiMV{b}[_{3}]}
+}
 \subsection*{Derivation Rules:}
 \typicallabel{E-Plus}
 \long\def\EvalRefMLiiiEApp{\infrule[E-App]{
@@ -914,8 +1252,22 @@
 
 \input{formatted-rules/While}
 
+\subsection*{Syntax:}
 \WhileDisplayBNF
 
+\subsection*{Judgment Form(s):}
+
+\infax{
+    \WhileAEvalTo{\WhileMV{st}[]}{\WhileMV{a}[]}{\WhileMV{i}[]}
+}
+\infax{
+  \WhileAEvalTo{\WhileMV{st}[]}{\WhileMV{b}[]}{\WhileMV{bv}[]}
+}
+\infax{
+  \WhileExec{\WhileMV{st}[_1]}{\WhileMV{c}}{\WhileMV{st}[_2]}
+}
+
+\subsection*{Derivation Rules:}
 \WhileDisplayRules
 
 % \WhileAConst
