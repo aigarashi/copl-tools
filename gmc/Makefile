@@ -3,21 +3,21 @@ OCAMLOPT=ocamlopt
 OCAMLDEP=ocamldep
 OCAMLYACC=ocamlyacc
 OCAMLLEX=ocamllex
-INCLUDES=                 # all relevant -I options here
+INCLUDES=-I +str          # all relevant -I options here
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
 
 PROGNAME=gmc
 
 # The list of object files for prog1
-# OBJS=syntax.cmx parser.cmx lexer.cmx emit.cmx main.cmx
-OBJS=mySupport.cmo syntax.cmo parser.cmo lexer.cmo emit.cmo mode.cmo main.cmo
+OBJS=mySupport.cmx syntax.cmx parser.cmx lexer.cmx emit.cmx mode.cmx main.cmx
+# OBJS=mySupport.cmo syntax.cmo parser.cmo lexer.cmo emit.cmo mode.cmo main.cmo
 
 DEPEND += lexer.ml parser.ml
 
 all: $(DEPEND) $(OBJS)
-	$(OCAMLC) -o $(PROGNAME) $(OCAMLFLAGS) str.cma $(OBJS)
-#	$(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) str.cmxa $(OBJS)
+#	$(OCAMLC) -o $(PROGNAME) $(OCAMLFLAGS) str.cma $(OBJS)
+	$(OCAMLOPT) -o $(PROGNAME) $(OCAMLFLAGS) str.cmxa $(OBJS)
 
 # Common rules
 .SUFFIXES: .ml .mli .cmo .cmi .cmx
@@ -31,7 +31,7 @@ all: $(DEPEND) $(OBJS)
 .ml.cmx:
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
 
-parser.ml parser.mli: parser.mly	
+parser.ml parser.mli: parser.mly
 	@rm -f $@
 	$(OCAMLYACC) -v $<
 	@chmod -w $@
