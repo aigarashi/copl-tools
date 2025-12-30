@@ -1,7 +1,7 @@
 (*
-  ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
-  ML2: ML1 + let (´Ä¶­)
-  ML3: ML2 + fun (´Ø¿ôÃê¾İ¡¦Å¬ÍÑ) + let rec (ºÆµ¢´Ø¿ôÄêµÁ)
+  ML1: æ•´æ•° (represented by int) + ä¸‰å‰‡æ¼”ç®— + çœŸå½å€¤ + If + æ¯”è¼ƒæ¼”ç®— 
+  ML2: ML1 + let (ç’°å¢ƒ)
+  ML3: ML2 + fun (é–¢æ•°æŠ½è±¡ãƒ»é©ç”¨) + let rec (å†å¸°é–¢æ•°å®šç¾©)
   ML4: ML3 + list + match
   ML4Err: ML4 + error handling
 *)
@@ -95,7 +95,7 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 E-IfErr1:	EvalTo(env, If(e1, e2, e3), Error) :-
 		EvalTo(env, e1, r),
 		`match r with Res_of_Value (Value_of_bool _) -> false | _ -> true`
-		%$r \mbox{ ¤Ï¿¿µ¶ÃÍ¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯çœŸå½å€¤ã§ã¯ãªã„}%;
 E-IfErr2: 	EvalTo(env, If(e1, e2, e3), Error) :- 
 		EvalTo(env, e1, true), EvalTo(env, e2, Error);
 E-IfErr3: 	EvalTo(env, If(e1, e2, e3), v) :- 
@@ -104,42 +104,42 @@ E-IfErr3: 	EvalTo(env, If(e1, e2, e3), v) :-
 E-PlusErr1:	EvalTo(env, BinOp(Plus, e1, e2), Error) :-
 		EvalTo(env, e1, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 E-PlusErr2:	EvalTo(env, BinOp(Plus, e1, e2), Error) :-
 		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 
 E-MinusErr1:	EvalTo(env, BinOp(Minus, e1, e2), Error) :-
 		EvalTo(env, e1, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 E-MinusErr2:	EvalTo(env, BinOp(Minus, e1, e2), Error) :-
 		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 
 E-TimesErr1:	EvalTo(env, BinOp(Mult, e1, e2), Error) :-
 		EvalTo(env, e1, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 E-TimesErr2:	EvalTo(env, BinOp(Mult, e1, e2), Error) :-
 		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 
 E-LtErr1:	EvalTo(env, BinOp(Lt, e1, e2), Error) :-
 		EvalTo(env, e1, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 E-LtErr2:	EvalTo(env, BinOp(Lt, e1, e2), Error) :-
 		EvalTo(env, e1, i1),
 		EvalTo(env, e2, r),
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
-		%$r \mbox{ ¤ÏÀ°¿ô¤Ç¤Ï¤Ê¤¤}%;
+		%$r \mbox{ ã¯æ•´æ•°ã§ã¯ãªã„}%;
 
 E-VarErr:  EvalTo(env, x, Error) :- ` try lookup $env $x with _ -> true ` 
 	   	       	  	     %$x \not \in \dom($env)%;
@@ -150,7 +150,7 @@ E-LetErr2:  EvalTo(env, Let(x, e1, e2), Error) :-
 		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, Error);
 
 E-AppErr1: EvalTo(env, App(e1, e2), Error) :-
-         EvalTo(env, e1, r), `match r with Res_of_Value (Fun(_,_,_) | Rec(_,_,_,_)) -> false | _ -> true` %$r \mbox{ ¤Ï´Ø¿ôÊÄÊñ¤Ç¤Ï¤Ê¤¤}%;
+         EvalTo(env, e1, r), `match r with Res_of_Value (Fun(_,_,_) | Rec(_,_,_,_)) -> false | _ -> true` %$r \mbox{ ã¯é–¢æ•°é–‰åŒ…ã§ã¯ãªã„}%;
 
 E-AppErr2: EvalTo(env, App(e1, e2), Error) :-
 	   EvalTo(env, e1, Fun(env2, x, e0)),
@@ -177,7 +177,7 @@ E-ConsErr2: EvalTo(env,Cons(e1,e2),Error) :- EvalTo(env,e1,v1), EvalTo(env,e2,Er
 
 E-MatchErr1: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,r),
 	     `match $r with Res_of_Value (NilV | ConsV(_,_)) -> false | _ -> true`
-             % $r \mbox{ ¤Ï \EvalMLivErrNilVTerm{} ¤Ç¤â \(\EvalMLivErrConsVTerm{\EvalMLivMV{v}{_1}}{\EvalMLivMV{v}{_2}}\) ¤Ç¤â¤Ê¤¤} %;
+             % $r \mbox{ ã¯ \EvalMLivErrNilVTerm{} ã§ã‚‚ \(\EvalMLivErrConsVTerm{\EvalMLivMV{v}{_1}}{\EvalMLivMV{v}{_2}}\) ã§ã‚‚ãªã„} %;
 
 E-MatchErr2: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,NilV), EvalTo(env,e2,Error);
 E-MatchErr3: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- 

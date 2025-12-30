@@ -1,7 +1,7 @@
 (*
-  ML1: À°¿ô (represented by int) + »°Â§±é»» + ¿¿µ¶ÃÍ + If + Èæ³Ó±é»» 
-  ML2: ML1 + let (´Ä¶­)
-  ML3: ML2 + fun (´Ø¿ôÃê¾İ¡¦Å¬ÍÑ) + let rec (ºÆµ¢´Ø¿ôÄêµÁ)
+  ML1: æ•´æ•° (represented by int) + ä¸‰å‰‡æ¼”ç®— + çœŸå½å€¤ + If + æ¯”è¼ƒæ¼”ç®— 
+  ML2: ML1 + let (ç’°å¢ƒ)
+  ML3: ML2 + fun (é–¢æ•°æŠ½è±¡ãƒ»é©ç”¨) + let rec (å†å¸°é–¢æ•°å®šç¾©)
   NamelessML3: ML3 in de Bruin notation
 *)
 
