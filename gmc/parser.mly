@@ -2,7 +2,7 @@
 open Syntax
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -50,7 +50,7 @@ BarForms :
     Form { [ $1 ] }
   | Form BAR BarForms { $1 :: $3 }
 
-Form : 
+Form :
     LCID { Var $1 }
   | UCID { App($1, []) }
   | UCID LPAREN ComLCIDs RPAREN { App($1, appVar $3) }
@@ -82,17 +82,17 @@ RuleDecls :
   | Rule error { errAt 2 "Syntax error: semicolon expected" }
 
 Rule :
-    Name COLON Judgment COLHYP PremiseList { 
+    Name COLON Judgment COLHYP PremiseList {
 	{ rname = $1; rconc = $3; rprem = $5 }
-    } 
-  | Name COLON Judgment error { 
+    }
+  | Name COLON Judgment error {
 	errAt 4 "Syntax error: \":-\" expected"
-    } 
-  | Name error { 
+    }
+  | Name error {
 	errAt 2 "Syntax error: colon expected after a rule name"
-    } 
+    }
 
-Name : 
+Name :
     LCID { $1 }
   | UCID { $1 }
   | SYMID { $1 }
@@ -101,15 +101,15 @@ RuleSEMIs :
     /* empty */ { [] }
   | Rule SEMI RuleSEMIs { $1 :: $3 }
 
-Judgment : 
+Judgment :
     UCID LPAREN ComTerms RPAREN { {pred = $1; args = $3} }
   | UCID LPAREN error { errAt 3 "Syntax error: closing parenthesis expected" }
 
 ComTerms :
-    Term { [ $1 ] } 
+    Term { [ $1 ] }
   | Term COMMA ComTerms { $1 :: $3 }
 
-Term : 
+Term :
     LCID { Var $1 }
   | UCID { App($1, []) }
   | UCID LPAREN ComTerms RPAREN { App($1, $3) }

@@ -21,36 +21,36 @@ open MySupport.Pervasives
 open MySupport.Error
 open Syntax
 
-let invars_of_jdg (env : Env.t) (jdg : judgment) : VarSet.t = 
+let invars_of_jdg (env : Env.t) (jdg : judgment) : VarSet.t =
   let innums = List.length (fst (Env.lookup_jcon env jdg.pred)) in
   let interms = take innums jdg.args in
-    List.fold_left (fun s t -> VarSet.union s (fv_of_term t)) 
-      VarSet.empty interms 
+    List.fold_left (fun s t -> VarSet.union s (fv_of_term t))
+      VarSet.empty interms
 
-let outvars_of_jdg (env :Env.t) (jdg : judgment) : VarSet.t = 
+let outvars_of_jdg (env :Env.t) (jdg : judgment) : VarSet.t =
   let outnums = List.length (fst (Env.lookup_jcon env jdg.pred)) in
   let outterms = drop outnums jdg.args in
-    List.fold_left (fun s t -> VarSet.union s (fv_of_term t)) 
-      VarSet.empty outterms 
+    List.fold_left (fun s t -> VarSet.union s (fv_of_term t))
+      VarSet.empty outterms
 
-let rec check_premises 
-    (env : Env.t) (vars_given : VarSet.t) (prems : premise list) 
+let rec check_premises
+    (env : Env.t) (vars_given : VarSet.t) (prems : premise list)
     : VarSet.t option =
   match prems with
       [] -> Some vars_given
     | J jdg :: rest ->
 	let invars = invars_of_jdg env jdg in
-	  if VarSet.is_empty (VarSet.diff invars vars_given) 
+	  if VarSet.is_empty (VarSet.diff invars vars_given)
 	    (* invars \subseteq vars_given *)
 	  then
 	    let newvars = VarSet.union (outvars_of_jdg env jdg) vars_given in
 	      check_premises env newvars rest
 	  else None
-    | Qexp (s, _, _) :: rest -> (* assume a side condition is mode correct and 
+    | Qexp (s, _, _) :: rest -> (* assume a side condition is mode correct and
 			all variables in exp are instantiated here *)
 	let b = Buffer.create (String.length s) in
 	let vars = ref VarSet.empty in
-	let subst s = 
+	let subst s =
 	  vars := VarSet.add s !vars;
 	  s
 	in
@@ -60,17 +60,17 @@ let rec check_premises
 let check_rule (env : Env.t) (r : rule) : bool =
   let invars = invars_of_jdg env r.rconc in
   match check_premises env invars r.rprem with
-      Some outvars -> 
+      Some outvars ->
 	let conc_ovars = outvars_of_jdg env r.rconc in
 	  VarSet.is_empty (VarSet.diff conc_ovars outvars)
     | None -> false
 
 let rec check_rules (env : Env.t) (rs : rule list) (i : int) : bool =
-  match rs with 
+  match rs with
       [] -> true
-    | r :: rest -> 
+    | r :: rest ->
 	if check_rule env r then check_rules env rest (i+1)
-	else 
+	else
 	  begin
 	    warning ("mode check failure in " ^ string_of_int i ^"-th rule");
 	    false

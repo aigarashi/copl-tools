@@ -4,7 +4,7 @@ open Lexing
 let reservedWords = [
     (* Keywords *)
     ("in", Parser.IN);
-] 
+]
 
 let newline lexbuf =
   let pos = lexbuf.lex_curr_p in
@@ -34,7 +34,7 @@ rule main = parse
 | ['a'-'z']+ ['0'-'9']*  '\''*
 | ['a'-'z']+ '\''* ['0'-'9']*
     { let id = Lexing.lexeme lexbuf in
-      try 
+      try
         List.assoc id reservedWords
       with
       _ -> Parser.LCID id
@@ -42,7 +42,7 @@ rule main = parse
 | ['A'-'Z'] ['a'-'z' 'A'-'Z']* ['0'-'9']*  '\''*
 | ['A'-'Z'] ['a'-'z' 'A'-'Z']* '\''* ['0'-'9']*
     { let id = Lexing.lexeme lexbuf in
-      try 
+      try
         List.assoc id reservedWords
       with
       _ -> Parser.UCID id
@@ -50,7 +50,7 @@ rule main = parse
 | ['A'-'Z' 'a'-'z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']* {
       Parser.SYMID (Lexing.lexeme lexbuf)
 }
-| '\"' [^ '\"' '\n' '\t' ' ']* '\"' { 
+| '\"' [^ '\"' '\n' '\t' ' ']* '\"' {
       let name = Lexing.lexeme lexbuf in
 	Parser.SYMID (String.sub name 1 (String.length name - 2))
     }
