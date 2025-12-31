@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
   TypingML3: typing for ML3
@@ -48,13 +48,13 @@ Typing(env, e; t);
 
 T-Int: 	Typing(env, i, TyInt) :- ;
 T-Bool: Typing(env, b, TyBool) :- ;
-T-If: 	Typing(env, If(e1, e2, e3), t) :- 
+T-If: 	Typing(env, If(e1, e2, e3), t) :-
 		Typing(env, e1, TyBool), Typing(env, e2, t), Typing(env, e3, t);
-T-Plus: Typing(env, BinOp(Plus, e1, e2), TyInt) :- 
+T-Plus: Typing(env, BinOp(Plus, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
-T-Minus: Typing(env, BinOp(Minus, e1, e2), TyInt) :- 
+T-Minus: Typing(env, BinOp(Minus, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
-T-Times: Typing(env, BinOp(Mult, e1, e2), TyInt) :- 
+T-Times: Typing(env, BinOp(Mult, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
@@ -62,32 +62,32 @@ T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 T-Var1:  Typing(Bind(env,x,s), x, t) :- `inst $s $t` %$s \succeq $t%;
 T-Var2:  Typing(Bind(env,y,s), x, t) :- `$y <> $x` %$y \neq $x%, Typing(env, x, t);
 *)
-T-Var:  Typing(env, x, t) :- `try $s = lookup $env $x with Exit -> false` 
-		             `$s = lookup $env $x` 
+T-Var:  Typing(env, x, t) :- `try $s = lookup $env $x with Exit -> false`
+		             `$s = lookup $env $x`
                              %$env($x) = $s%,
 		       	     `inst $s $t` %$s \succeq $t%;
 
 T-Let:  Typing(env, Let(x, e1, e2), t2) :-
 		Typing(env, e1, t1), Typing(Bind(env,x,s), e2, t2),
-                 `closure $env $t1 $s` 
+                 `closure $env $t1 $s`
                  %$s = $a1 \cdots \textcolor{brown}{\mathbf{a_n}}. $t1 \mbox{ and } \{$a1,\ldots,\textcolor{brown}{\mathbf{a_n}}\} \cap \mathit{FTV}($env) = \emptyset%;
 
-T-Abs:  Typing(env,Abs(x,e), TyFun(t1,t2)) :- Typing(Bind(env,x,t1), e, t2);
-T-App:  Typing(env,App(e1,e2), t2) :- 
+T-Fun:  Typing(env,Abs(x,e), TyFun(t1,t2)) :- Typing(Bind(env,x,t1), e, t2);
+T-App:  Typing(env,App(e1,e2), t2) :-
                 Typing(env, e1, TyFun(t1,t2)), Typing(env, e2, t1);
 
 T-LetRec: Typing(env, LetRec(x, y, e1, e2), t) :-
-	        Typing(Bind(Bind(env, x, TyFun(t1, t2)), 
-                                      y, t1), 
-                        e1, t2), 
+	        Typing(Bind(Bind(env, x, TyFun(t1, t2)),
+                                      y, t1),
+                        e1, t2),
                 Typing(Bind(env,x,s), e2, t),
                 `closure $env (TyFun($t1,$t2)) $s`
                  %$s = $a1 \cdots \textcolor{brown}{\mathbf{a_n}}. $t1 \rightarrow $t2 \mbox{ and } \{$a1,\ldots,\textcolor{brown}{\mathbf{a_n}}\} \cap \mathit{FTV}($env) = \emptyset%;
 
 T-Nil: Typing(env, Nil, TyList(t)) :- ;
 T-Cons: Typing(env, Cons(e1,e2), TyList(t)) :- Typing(env, e1, t), Typing(env, e2, TyList(t));
-T-Match: Typing(env, Match(e1,e2,x,y,e3), t) :- 
-	 	 Typing(env, e1, TyList(t')), 
+T-Match: Typing(env, Match(e1,e2,x,y,e3), t) :-
+	 	 Typing(env, e1, TyList(t')),
 	 	 Typing(env, e2, t),
 		 Typing(Bind(Bind(env, x, t'), y, TyList(t')), e3, t);
 
@@ -121,17 +121,17 @@ let inst tysc ty =  (* ty doesn't contain TyBVar *)
   let rec aux subst tysc ty =
     match tysc, ty with
         TyFVar a, TyFVar a' -> if a = a' then subst else raise Not_match
-      | TyBVar i, ty -> 
-	  (try 
+      | TyBVar i, ty ->
+	  (try
 	      if List.assoc i subst = ty then subst
-	      else raise Not_match 
+	      else raise Not_match
 	    with Not_found -> (i, ty)::subst)
-      | TyBool, TyBool 
+      | TyBool, TyBool
       | TyInt, TyInt -> subst
       | TyList t1, TyList t2 -> aux subst t1 t2
-      | TyFun(t11, t12), TyFun(t21, t22) -> aux (aux subst t11 t21) t12 t22 
+      | TyFun(t11, t12), TyFun(t21, t22) -> aux (aux subst t11 t21) t12 t22
       | _, TyBVar _ -> err "inst: Implementation error!"
-      | _ -> raise Not_match 	
+      | _ -> raise Not_match
   in
     let TyScheme_of_Types tysc | TyScheme(_, tysc) = tysc in
     try let _ = aux [] tysc ty in true with Not_match -> false
@@ -142,23 +142,23 @@ let closure env ty tysc =
   let rec aux subst tysc ty =
     match tysc, ty with
         TyFVar(a), TyFVar(a') -> if a = a' then subst else raise Not_match
-      | TyBVar(i), TyFVar(TVar a) -> 
-      	  (try 
-	      if List.assoc a subst = i then subst 
+      | TyBVar(i), TyFVar(TVar a) ->
+      	  (try
+	      if List.assoc a subst = i then subst
 	      else raise Not_match
-	    with Not_found -> 
+	    with Not_found ->
 	      if List.mem a fv then raise Not_match else (a, i)::subst)
       | TyBool, TyBool -> subst
       | TyInt, TyInt -> subst
       | TyList t1, TyList t2 -> aux subst t1 t2
       | TyFun(t11, t12), TyFun(t21, t22) -> aux (aux subst t11 t21) t12 t22
       | _, TyBVar(i) -> err "closure: Implementation error!"
-      | _ -> raise Not_match 
-  in 
+      | _ -> raise Not_match
+  in
     let TyScheme_of_Types tysc | TyScheme(_, tysc) = tysc in
     try let _ = aux [] tysc ty in true with Not_match -> false
 
 let rec lookup env x =
-    match env with 
+    match env with
       Empty -> raise Exit
     | Bind(env, x', t) -> if x = x' then t else lookup env x
