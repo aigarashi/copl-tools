@@ -18,7 +18,7 @@ type sobj = Exp of Core.exp
 let tbl = Hashtbl.create 1024
 
 module S = Set.Make(
-  struct type t = string  let compare = Pervasives.compare end
+  struct type t = string  let compare = Stdlib.compare end
 )
 
 exception Not_linear
