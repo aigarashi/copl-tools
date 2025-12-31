@@ -19,7 +19,7 @@ GAMES=Nat CompareNat1 CompareNat2 CompareNat3 EvalNatExp ReduceNatExp \
 	PolyTypingML3 PolyTypingML4 \
 	While
 
-INCLUDES=$(foreach game,$(GAMES),-I $(game)) # -I $(GMCDIR)
+INCLUDES=$(foreach game,$(GAMES),-I $(game)) -I +str # -I $(GMCDIR)
 
 OCAMLFLAGS=$(INCLUDES)    # add other options for ocamlc here
 OCAMLOPTFLAGS=$(INCLUDES) # add other options for ocamlopt here
@@ -59,7 +59,7 @@ OBJS=$(GAMEOBJS) main.cmx
 DEPEND += lexer.ml
 
 all: $(GMCDIR)/gmc $(FIRSTOBJS) $(addsuffix .pack,$(GAMES)) $(OBJS) $(DEPEND) 
-	$(OCAMLOPT) -o $(PROGNAME) str.cmxa $(FIRSTOBJS) $(OBJS)
+	$(OCAMLOPT) -I +str -o $(PROGNAME) str.cmxa $(FIRSTOBJS) $(OBJS)
 
 %.pack: 
 	$(MAKE) -C `basename $@ .pack` depend
