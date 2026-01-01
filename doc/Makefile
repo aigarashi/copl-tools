@@ -32,7 +32,7 @@ rules: formatted-rules $(addprefix formatted-rules/,$(addsuffix .tex,$(GAMES)))
 formatted-rules:
 	-mkdir $@
 
-formatted-rules/%.tex: gmc formatted-rules 
+formatted-rules/%.tex: gmc formatted-rules
 	$(GMC) -TeX $(notdir $(basename $@)) $(GAMESDIR)/$(notdir $(basename $@))/$(notdir $(patsubst %.tex,%.gm,$@)) > $@
 
 gmc:
