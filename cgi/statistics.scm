@@ -1,35 +1,37 @@
-#! /usr/bin/gosh
+(define-module statistics
+  (use text.html-lite)
+  (use gauche.sequence)
+  (use util.match)
+  (use file.util)
+  (use srfi-1)
+  (use srfi-13)
+  (use srfi-19)
 
-(use text.html-lite)
-(use gauche.sequence)
-(use util.match)
+  (use global)
+  (use questions)
 
-;;(load "./site-local.scm")
-;;(load "./global.scm")
-;;(load "./userdb.scm")
+  (export display-statistics)
+)
 
-(use file.util)
-(use srfi-1)
-(use srfi-13)
-(use srfi-19)
+(select-module statistics)
 
-(define *histgram* (make-vector how-many-q 0))
+(define *histogram* (make-vector how-many-q 0))
 (define *score-for-q* 50)
 
 (define (accumulate! solved)
-  ;; takes a list of solved question numbers and update *histgram*
+  ;; takes a list of solved question numbers and update *histogram*
   (map (lambda (i)
 	 (let* ((i (- i 1)))
 	   ;; Question numbers are 1-origin.
 	   (when (< i how-many-q)
-		 (vector-set! *histgram* i (+ (vector-ref *histgram* i) 1)))))
+		 (vector-set! *histogram* i (+ (vector-ref *histogram* i) 1)))))
        solved))
 
 (define (score solved)
 	(length solved)
   #;(round
    (fold (lambda (i sum)
-	   (let ((n (vector-ref *histgram* (- i 1))))
+	   (let ((n (vector-ref *histogram* (- i 1))))
 	     ;; n stands for # of people who solved i-th question
 	     ;; n must be non-zero
 	     (+ sum
@@ -159,7 +161,7 @@
 				(make-string (- max-bar-length bar-length) #\□)
 				(format "(~d %)" (round->exact (* ratio 100))))))
 		    '())))
-	       *histgram*))))))))
+	       *histogram*))))))))
 
 (define (main args)
   (write (display-statistics)))

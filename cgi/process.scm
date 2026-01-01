@@ -1,15 +1,14 @@
-#!/usr/bin/gosh
 ;-*-Scheme-*-
 
-(use www.cgi)
-(use text.html-lite)
-(use gauche.process)
+(define-module process
+  (use www.cgi)
+  (use text.html-lite)
+  (use gauche.process)
 
-;; (load "./site-local.scm")
-;; (load "./global.scm")
-;; (load "./userdb.scm")
-;; (load "./hilight.scm")
-;; (load "./questions.scm")
+  (export invoke-checker display-result)
+)
+
+(select-module process)
 
 (define (make-cmd game fullp)
     (if fullp

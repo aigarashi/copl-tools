@@ -1,13 +1,20 @@
-#!/usr/bin/gosh
+(define-module userdb
+  (use www.cgi)
+  (use util.match)
+  (use gauche.logger)
+  (use gauche.process)  ;; for process
+  (use srfi-13)  ;; for string manipulation
+  (use srfi-27)  ;; for random-integer
+  (use file.util)
 
-(use www.cgi)
-;(use gauche.fcntl)
-(use util.match)
-(use gauche.logger)
-(use gauche.process)  ;; for process
-(use srfi-13)  ;; for string manipulation
-(use srfi-27)  ;; for random-integer
-(use file.util)
+  (export
+   new-userdb tmp-users dbfile logfile write-log
+   lookupdb updatedb update-solved renew-passwd
+   user-list check-passwd check-passwd-tmp expired?
+   user-exists? create-temporary-account delete-temporary-account)
+)
+
+(select-module userdb)
 
 ;; USER DB format
 ;; (entry_1 ... entry_n)

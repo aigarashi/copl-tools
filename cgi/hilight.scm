@@ -1,9 +1,13 @@
 ;-*-Scheme-*-
+(define-module hilight
+  (use text.html-lite)
+  (use srfi-13)
+  (use gauche.sequence)
+  (use util.match)
+  (export generate-linenums emphasize)
+)
 
-(use text.html-lite)
-(use srfi-13)
-(use gauche.sequence)
-(use util.match)
+(select-module hilight)
 
 (define (insert-tag-at n tag str)
   (if (number? n)

@@ -11,13 +11,15 @@
 (use srfi-19)
 (use util.match)
 
-(load "./site-local.scm")
-(load "./global.scm")
-(load "./userdb.scm")
-(load "./questions.scm")
-(load "./hilight.scm")
-(load "./process.scm")
-(load "./statistics.scm")
+(define-constant *system-dir* "/home/igarashi/git/copl-tools/cgi/")
+(set! *load-path* (cons *system-dir* *load-path*))
+(use test.site-local)
+(use global)
+(use userdb)
+(use questions)
+(use hilight)
+(use process)
+(use statistics)
 
 (define-constant lastcommit (substring "$Date::                           $" 8 33))
 
@@ -521,5 +523,5 @@ function ToggleOldnews() {
 	     :msg (html:p "ログアウトするには，まずログインしてください"))]
 	   [else (display-login-page)]))))))))
 
-(cgi-output-character-encoding "utf-8")
-(cgi-main main :merge-cookies #t)
+;#(cgi-output-character-encoding "utf-8")
+;#(cgi-main main :merge-cookies #t)

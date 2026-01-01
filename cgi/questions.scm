@@ -1,4 +1,23 @@
 ;-*-Scheme-*-
+(define-module questions
+  (use text.html-lite)
+  (use gauche.collection)
+  (use srfi-27)
+  (use global)
+
+  (export
+   questions-of
+   get-q
+   qualified?
+   how-many-q
+   sections-passed
+   prerequisite-satisfied?
+   display-qlist
+   )
+)
+
+(select-module questions)
+
 ; Format:
 ;  QDB = (section_1 ... section_n)
 ;  section = (name description prerequisites QVec)
@@ -19,9 +38,6 @@
 ;       ("Z plus ~s is ~s" ("S(Z)" "S(Z)") ("S(S(Z))" "S(S(Z))"))
 ;          -> "Z plus S(Z) is S(Z)" or "Z plus S(S(Z)) is S(S(Z))"
 
-(use text.html-lite)
-(use gauche.collection)
-(use srfi-27)
 
 (define (title-of section)
   (car section))

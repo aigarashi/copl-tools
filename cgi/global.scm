@@ -1,5 +1,14 @@
 ;; global.scm
 ;; define global variables
+(define-module global
+  (use test.site-local)
+  (export
+   *userdb-dir*
+   *question-db*
+   *news*
+   ))
+
+(select-module global)
 
 (define *userdb-dir* ;; user database directory
   (string-append *system-dir* "users/"))
