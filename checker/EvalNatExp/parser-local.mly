@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -34,14 +34,14 @@ let errAt i s =
 
 %%
 
-Judgment: 
+Judgment:
     Exp EVALTO Nat { EvalTo($1, $3) }
   | Nat PLUS Nat IS Nat { PlusIs($1, $3, $5) }
   | Nat MULT Nat IS Nat { MultIs($1, $3, $5) }
 
-  | Exp error { errAt 2 "Syntax error: '*', '+', or 'evalto' expected" } 
+  | Exp error { errAt 2 "Syntax error: '*', '+', or 'evalto' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: natural number expected" }
-  | Nat error { errAt 2 "Syntax error: 'plus', 'times', '+', '*', or 'evalto' expected" }   
+  | Nat error { errAt 2 "Syntax error: 'plus', 'times', '+', '*', or 'evalto' expected" }
        /* intentional shift/reduce conflict with Judgment: Exp error */
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
   | Nat PLUS Nat error { errAt 4 "Syntax error: 'is' expected" }
@@ -55,10 +55,10 @@ partialj:
   | Nat PLUS Nat IS QM { In_PlusIs($1, $3) }
   | Nat MULT Nat IS QM { In_MultIs($1, $3) }
 
-  | Exp error { errAt 2 "Syntax error: '+', '*', or 'evalto' expected" } 
+  | Exp error { errAt 2 "Syntax error: '+', '*', or 'evalto' expected" }
   | Exp EVALTO error { errAt 3 "Syntax error: '?' expected" }
 
-  | Nat error { errAt 2 "Syntax error: 'plus', 'times', '+', '*', or 'evalto' expected" }   
+  | Nat error { errAt 2 "Syntax error: 'plus', 'times', '+', '*', or 'evalto' expected" }
        /* intentional shift/reduce conflict with partialj: Exp error */
   | Nat PLUS error { errAt 3 "Syntax error: natural number expected" }
   | Nat PLUS Nat error { errAt 4 "Syntax error: 'is' expected" }
@@ -89,5 +89,3 @@ Nat:
   | S LPAREN Nat error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
   | S LPAREN error { errAt 3 "Syntax error: natural number expected after S(" }
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
-
-

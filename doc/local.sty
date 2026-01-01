@@ -1,7 +1,7 @@
-% $BK\J8Cf$N%3%a%s%H(B: $B$I$l$b(B \drafttrue $B$N;~$N$_K\J8$K8=$l$k!%(B
-%  \finish{...}: ... $B$rK\J8$KKd$a9~$_!$%^!<%8%s$K0u$r$D$1$k(B
-%  \begin{underconstruction} ... \end{underconstruction}: 
-%     $B2U>r=q$-!\%^!<%8%s$N0u(B
+% 本文中のコメント: どれも \drafttrue の時のみ本文に現れる．
+%  \finish{...}: ... を本文に埋め込み，マージンに印をつける
+%  \begin{underconstruction} ... \end{underconstruction}:
+%     箇条書き＋マージンの印
 %
 \newcommand{\finish}[1]{\ifdraft [{\it #1\/}]
                         \marginpar{$\longleftarrow$}
@@ -18,14 +18,14 @@
 \ifdraft
 \theorembodyfont{\normalfont}
 \fi
-\newtheorem{theorem}{$BDjM}(B}[chapter]
-\newtheorem{lemma}[theorem]{$BJdBj(B}
-\newtheorem{definition}[theorem]{$BDj5A(B}
-\newtheorem{example}[theorem]{$BNc(B}
-\newtheorem{principle}[theorem]{$B86M}(B}
-\newtheorem{exercise}{$B1i=,LdBj(B}[chapter]
-%\newtheorem{online}[exercise]{$B1i=,LdBj(B($B%*%s%i%$%sHG(B)}
-\newenvironment{online}{\begin{exercise}\textbf{($B%*%s%i%$%s1i=,%7%9%F%`$h$j(B)}}
+\newtheorem{theorem}{定理}[chapter]
+\newtheorem{lemma}[theorem]{補題}
+\newtheorem{definition}[theorem]{定義}
+\newtheorem{example}[theorem]{例}
+\newtheorem{principle}[theorem]{原理}
+\newtheorem{exercise}{演習問題}[chapter]
+%\newtheorem{online}[exercise]{演習問題(オンライン版)}
+\newenvironment{online}{\begin{exercise}\textbf{(オンライン演習システムより)}}
 {\end{exercise}}
 \fi
 
@@ -33,19 +33,19 @@
 
 \newenvironment{retheorem}[1]{%
 \begin{trivlist}
-\item [\hskip \labelsep{\textbf{$BDjM}(B \ref{#1} ($B:F7G(B) }}]
+\item [\hskip \labelsep{\textbf{定理 \ref{#1} (再掲) }}]
 }{%
 \end{trivlist}}
 
 % references
-\newcommand{\figref}[1]{$B?^(B\ref{fig:#1}}
-\newcommand{\tabref}[1]{$BI=(B\ref{tab:#1}}
-\newcommand{\chapref}[1]{$BBh(B\ref{chap:#1}$B>O(B}
-\newcommand{\secref}[1]{\ref{sec:#1}$B@a(B}
-\newcommand{\thmref}[1]{$BDjM}(B\ref{thm:#1}}
-\newcommand{\lemref}[1]{$BJdBj(B\ref{lem:#1}}
-\newcommand{\defref}[1]{$BDj5A(B\ref{def:#1}}
-\newcommand{\exref}[1]{$B1i=,LdBj(B\ref{ex:#1}}
+\newcommand{\figref}[1]{図\ref{fig:#1}}
+\newcommand{\tabref}[1]{表\ref{tab:#1}}
+\newcommand{\chapref}[1]{第\ref{chap:#1}章}
+\newcommand{\secref}[1]{\ref{sec:#1}節}
+\newcommand{\thmref}[1]{定理\ref{thm:#1}}
+\newcommand{\lemref}[1]{補題\ref{lem:#1}}
+\newcommand{\defref}[1]{定義\ref{def:#1}}
+\newcommand{\exref}[1]{演習問題\ref{ex:#1}}
 
 % emphasize
 \definecolor{gray96}{gray}{.9}
@@ -85,9 +85,9 @@
   \textbf{\Index{#1}}(#2)%
 }
 \let\reterm\Index
-%\newcommand{\keywords}{1]{\textbf{$BK\>O$N%-!<%o!<%I(B:} #1}
+%\newcommand{\keywords}{1]{\textbf{本章のキーワード:} #1}
 
-\newcommand{\$B$3$l(B}{\ifbook $BK\=q(B\else $BK\9V5A(B\fi}
+\newcommand{\これ}{\ifbook 本書\else 本講義\fi}
 
 % metavariables
 \newcommand{\Jdg}{\mathcal{J}}
@@ -124,7 +124,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\def\endofpfmarker{\mbox{$\square$}}
-\def\endofpfmarker{\mbox{($B>ZL@=*(B)}}
+\def\endofpfmarker{\mbox{(証明終)}}
 \def\endofpfcommands{%
   \ifmmode
     % This assumes that the feqn style is being used:
@@ -141,19 +141,19 @@
 \newenvironment{pf}{%
    \startofpf \trivlist
      \item[\hskip \labelsep{\prooflabelface
-                     $B>ZL@(B:  
+                     証明:
                    }]%
    }{\endofpf\endtrivlist}
 \newenvironment{pfof}[1]{%
    \startofpf \trivlist
-     \item[\hskip \labelsep{\prooflabelface 
-                     #1$B$N>ZL@(B: 
+     \item[\hskip \labelsep{\prooflabelface
+                     #1の証明:
                    }]%
    }{\endofpf\endtrivlist}
 \newenvironment{pfsketch}{%
    \startofpf \trivlist
-     \item[\hskip \labelsep{\prooflabelface 
-                     Proof sketch: 
+     \item[\hskip \labelsep{\prooflabelface
+                     Proof sketch:
                    }]%
    }{\endofpf\endtrivlist}
 
@@ -166,14 +166,14 @@
 \newenvironment{pfnobox}{\begin{pf}}{\end{pf}}
 \newenvironment{pfofnobox}[1]{%
    \trivlist  \startofpf
-     \item[\hskip \labelsep{\bf 
-                     Proof of #1: 
+     \item[\hskip \labelsep{\bf
+                     Proof of #1:
                    }]%
    }{\endofpf\endtrivlist}
 \newenvironment{pfsketchnobox}{%
    \trivlist  \startofpf
-     \item[\hskip \labelsep{\bf 
-                     Proof sketch: 
+     \item[\hskip \labelsep{\bf
+                     Proof sketch:
                    }]%
    }{\endofpf\endtrivlist}
 
@@ -199,13 +199,13 @@
      }}}
 
 \def\indentedtext{\list{}{
-   \listparindent 1.5em 
+   \listparindent 1.5em
  % \itemindent\listparindent
  % \advance\leftmargin -1em
-   \advance\leftmargin .5em 
+   \advance\leftmargin .5em
  \itemindent 0em
  \parsep 0pt plus 1pt
- \partopsep 0pt 
+ \partopsep 0pt
  \topsep 0pt plus 1pt minus 1pt}\item[]}
 \let\endindentedtext=\endlist
 
@@ -213,11 +213,11 @@
 
 % \newenvironment{namedcase}[1]{%
 %         \smallbreak \pagebreak[3]
-%         \noindent #1 \nobreak 
+%         \noindent #1 \nobreak
 %         \list{}{\topsep 0pt plus 1pt
 %                 \partopsep 0pt
 %                 \parskip 0pt
-%                 \leftmargin 1.5pc  
+%                 \leftmargin 1.5pc
 %                 \@beginparpenalty\@M
 %                 }\item[]\clubpenalty\@M}%
 %         {\endlist}
@@ -253,7 +253,7 @@
         }{\end{namedcase}}
 
 \newenvironment{rncase}[1]{%
-        \begin{namedcase}{\casefont{$B5,B'(B \rn{#1} $B$N>l9g(B: }}%
+        \begin{namedcase}{\casefont{規則 \rn{#1} の場合: }}%
         }{\end{namedcase}}
 
 \newenvironment{rntextcase}[2]{%
@@ -270,7 +270,7 @@
         }{\end{namedcase}}
 
 \newenvironment{rneqnsubcase}[2]{%
-        \begin{namedcase}{\casefont{Subcase \rn{#1}: } 
+        \begin{namedcase}{\casefont{Subcase \rn{#1}: }
            $\begin{bcpcasearray} #2 \end{bcpcasearray}$ }%
         }{\end{namedcase}}
 
@@ -279,12 +279,12 @@
         }{\end{namedcase}}
 
 \newenvironment{eqncase}[1]{%
-        \begin{namedcase}{\casefont{Case: } 
+        \begin{namedcase}{\casefont{Case: }
            $\begin{bcpcasearray} #1 \end{bcpcasearray}$ }\ignorespaces
         }{\end{namedcase}}
 
 \newenvironment{eqnsubcase}[1]{%
-        \begin{namedcase}{\casefont{Subcase: } 
+        \begin{namedcase}{\casefont{Subcase: }
            $\begin{bcpcasearray} #1 \end{bcpcasearray}$ }\ignorespaces
         }{\end{namedcase}}
 
@@ -303,7 +303,7 @@
         }{\end{namedcase}}
 
 \newenvironment{infrulecase}[3]{%
-        \begin{namedcase}{\casefont{Case \rn{#1}: } 
+        \begin{namedcase}{\casefont{Case \rn{#1}: }
                           ${\strut\displaystyle #2}
                            \over
                            {\strut\displaystyle #3}$}
@@ -315,7 +315,7 @@
         }{\end{namedcase}}
 
 \newenvironment{infrulepluscase}[4]{%
-        \begin{namedcase}{\casefont{Case #1: } 
+        \begin{namedcase}{\casefont{Case #1: }
                           ${\strut\displaystyle #2}
                            \over
                            {\strut\displaystyle #3}$
@@ -333,5 +333,3 @@
 
 
 \fi % ifbook
-
-

@@ -53,15 +53,15 @@ GAMEOBJS=	Nat/nat.cmx \
 		PolyTypingML4/polyTypingML4.cmx \
 		While/while.cmx
 
-FIRSTOBJS=mySupport.cmx derivation.cmx lexer.cmx 
+FIRSTOBJS=mySupport.cmx derivation.cmx lexer.cmx
 OBJS=$(GAMEOBJS) main.cmx
 
 DEPEND += lexer.ml
 
-all: $(GMCDIR)/gmc $(FIRSTOBJS) $(addsuffix .pack,$(GAMES)) $(OBJS) $(DEPEND) 
+all: $(GMCDIR)/gmc $(FIRSTOBJS) $(addsuffix .pack,$(GAMES)) $(OBJS) $(DEPEND)
 	$(OCAMLOPT) -I +str -o $(PROGNAME) str.cmxa $(FIRSTOBJS) $(OBJS)
 
-%.pack: 
+%.pack:
 	$(MAKE) -C `basename $@ .pack` depend
 	$(MAKE) -C `basename $@ .pack`
 

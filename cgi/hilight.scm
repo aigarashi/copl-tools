@@ -7,7 +7,7 @@
 
 (define (insert-tag-at n tag str)
   (if (number? n)
-      (if (> n (string-length str)) 
+      (if (> n (string-length str))
 	  str
 	  (let ((segment1 (string-copy str 0 n))
 		(segment2 (string-copy str n)))
@@ -41,29 +41,29 @@
 (define (emphasize lines locs)
   (define sorted-locs (sort-locs locs))
   (define (aux locs lines)
-    (match 
+    (match
      locs
      [() lines]
      [(((line1 char1) . loc2) . rest)
-      (aux rest 
-	   (insert-tag 
+      (aux rest
+	   (insert-tag
 	    line1 char1 "<span class=\"error\">"
 	    (match loc2
 		   [() (insert-tag line1 #f "</span>" lines)]
 		   [(line2 char2)
 		    (define (aux2 i lines)
-		      (if (= i line2) 
+		      (if (= i line2)
 			  (insert-tag line2 char2 "</span>" lines)
 			  (insert-tag (+ i 1) 0 "<span class=\"error\">"
 				      (aux2 (+ i 1)
 					    (insert-tag i #f "</span>" lines)))))
 		    (aux2 line1 lines)
 		    ])))]))
-  (cons (length lines) 
+  (cons (length lines)
 	(string-join (aux sorted-locs lines) "\n" 'suffix)))
 
-#;(define *sample-str* 
-"(S(Z) + S(Z)) * S(S(Z)) evalto S(S(S(S(Z)))) by E-Mult { 
+#;(define *sample-str*
+"(S(Z) + S(Z)) * S(S(Z)) evalto S(S(S(S(Z)))) by E-Mult {
   S(Z) + S(Z) evalto S(S(Z)) by E-Plus {
     S(Z) evalto S(Z) by E-Const {};
     S(Z) evalto S(Z) by E-Const {};

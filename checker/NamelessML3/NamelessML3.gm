@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
   NamelessML3: translation from ML3 to de Bruijn ML3
@@ -37,7 +37,7 @@ d in DBExp ::= i
             | AbsD(d)        (* fun . -> d *)
             | AppD(d, d)
             | LetRecD(d, d)  (* let rec . . = d in d *)
- 
+
 op in Prim ::= Plus | Minus | Mult | Lt
 
 [Judgments]
@@ -48,20 +48,20 @@ TranslateTo(env, e; d);
 
 Tr-Int: TranslateTo(env, i, i) :- ;
 Tr-Bool: TranslateTo(env, b, b) :- ;
-Tr-If: 	TranslateTo(env, If(e1, e2, e3), IfD(d1, d2, d3)) :- 
+Tr-If: 	TranslateTo(env, If(e1, e2, e3), IfD(d1, d2, d3)) :-
 		TranslateTo(env, e1, d1), TranslateTo(env, e2, d2), TranslateTo(env, e3, d3);
-Tr-Plus: TranslateTo(env, BinOp(Plus, e1, e2), BinOpD(Plus, d1, d2)) :- 
+Tr-Plus: TranslateTo(env, BinOp(Plus, e1, e2), BinOpD(Plus, d1, d2)) :-
 		TranslateTo(env, e1, d1), TranslateTo(env, e2, d2);
-Tr-Minus: TranslateTo(env, BinOp(Minus, e1, e2), BinOpD(Minus, d1, d2)) :- 
+Tr-Minus: TranslateTo(env, BinOp(Minus, e1, e2), BinOpD(Minus, d1, d2)) :-
 		TranslateTo(env, e1, d1), TranslateTo(env, e2, d2);
-Tr-Times: TranslateTo(env, BinOp(Mult, e1, e2), BinOpD(Mult, d1, d2)) :- 
+Tr-Times: TranslateTo(env, BinOp(Mult, e1, e2), BinOpD(Mult, d1, d2)) :-
 		TranslateTo(env, e1, d1), TranslateTo(env, e2, d2);
-Tr-Lt: TranslateTo(env, BinOp(Lt, e1, e2), BinOpD(Lt, d1, d2)) :- 
+Tr-Lt: TranslateTo(env, BinOp(Lt, e1, e2), BinOpD(Lt, d1, d2)) :-
 		TranslateTo(env, e1, d1), TranslateTo(env, e2, d2);
 
 Tr-Var1:  TranslateTo(Bind(env,x), x, Index(n)) :- `$n = 1`;
-Tr-Var2:  TranslateTo(Bind(env,y), x, Index(n2)) :- 
-                 `$y <> $x` %$y \neq $x%, 
+Tr-Var2:  TranslateTo(Bind(env,y), x, Index(n2)) :-
+                 `$y <> $x` %$y \neq $x%,
                  TranslateTo(env, x, Index(n1)),
                  `$n2 = $n1 + 1`;
 
@@ -75,4 +75,3 @@ Tr-App: TranslateTo(env, App(e1, e2), AppD(d1, d2)) :-
 Tr-LetRec: TranslateTo(env, LetRec(x, y, e1, e2), LetRecD(d1, d2)) :-
                 TranslateTo(Bind(Bind(env,x), y), e1, d1),
                 TranslateTo(Bind(env,x), e2, d2);
-

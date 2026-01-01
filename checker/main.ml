@@ -55,8 +55,8 @@ let games = [
     ("While", (While.Link.check_deriv, While.Link.make_deriv));
   ]
 
-let () = 
-  Arg.parse spec (fun s -> filenames := s :: !filenames) 
+let () =
+  Arg.parse spec (fun s -> filenames := s :: !filenames)
     (Printf.sprintf "\
 Usage: %s -game gamename [-full] [-TeX] [-against conclusion] [filename ...]
        %s -game gamename [-full] [-TeX] -prove judgment" commandname commandname);
@@ -64,16 +64,16 @@ Usage: %s -game gamename [-full] [-TeX] [-against conclusion] [filename ...]
   if !gname = "" then err "Game name must be given."
   else
     begin
-      let check_deriv, make_deriv = 
-	try List.assoc !gname games with 
+      let check_deriv, make_deriv =
+	try List.assoc !gname games with
 	    Not_found -> failwith ("No such game: " ^ !gname) in
 	if !jdg = "" then (* checker mode *)
 	  let against = if !concl = "" then None else Some !concl in
-	  let make_lexbuf s = 
+	  let make_lexbuf s =
 	    let lexbuf = Lexing.from_channel (open_in s) in
 	    let pos = lexbuf.lex_curr_p in
 	      lexbuf.lex_curr_p <- { pos with pos_fname = s};
-	      lexbuf 
+	      lexbuf
 	  in
 	  let rec loop lexbufs = match lexbufs with
 	      [] -> ()
@@ -84,9 +84,9 @@ Usage: %s -game gamename [-full] [-TeX] [-against conclusion] [filename ...]
 		  done
 		with End_of_file -> ();
 		loop rest
-	  in 
+	  in
 	    match !deriv with
-		Some d -> 
+		Some d ->
 		  (* If a string is given by a command line, it should
 		     be one derivation *)
 		  (try
@@ -95,18 +95,18 @@ Usage: %s -game gamename [-full] [-TeX] [-against conclusion] [filename ...]
 	      | None ->
 		  (* If it is not given, a sequence of derivations may
 		     be supplied from stdin or files *)
-		  let lexbufs = 
+		  let lexbufs =
 		    match !filenames with
 			[] -> [Lexing.from_channel stdin]
-		      | _ -> List.rev_map make_lexbuf !filenames 
+		      | _ -> List.rev_map make_lexbuf !filenames
 		  in loop lexbufs
-	    
+
 	else (* -prove mode*)
 	  let lexbuf = Lexing.from_string !jdg in
-	    try 
-	      make_deriv lexbuf !fullp !texp 
+	    try
+	      make_deriv lexbuf !fullp !texp
 	    with
-		Stack_overflow -> 
-		  err ("Couldn't find a derivation for " ^ !jdg ^ 
+		Stack_overflow ->
+		  err ("Couldn't find a derivation for " ^ !jdg ^
 			 " within a reasonable amount of memory.")
     end

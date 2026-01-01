@@ -12,10 +12,10 @@
 (load "./questions.scm")
 
 (define (make-cmd game fullp)
-    (if fullp 
+    (if fullp
 	#`",|*system-dir*|checker -full -game ,game 2>&1"
 	#`",|*system-dir*|checker -game ,game 2>&1"))
-	
+
 (define (invoke-checker game fullp deriv problem)
   (let* ((cmd (append
 	       (list #`",|*system-dir*|checker" "-check" deriv "-game" game)
@@ -23,7 +23,7 @@
 	       (if problem (list "-against" (cadr problem)) '())
 	       (list :output :pipe :error :pipe)))
 	 ;; An old syntax is used to specify the command line
-	 ;; If a newer gauche is run on the system, 
+	 ;; If a newer gauche is run on the system,
 	 ;;   it should be changed (remove apply and move keyword lists
 	 (process (apply run-process cmd))
 	 (result (port->string (process-output process)))
@@ -35,7 +35,7 @@
   (define lines (string-split s "\n"))
   (define (aux lines)
     (if (null? lines) '()
-	(rxmatch-if 
+	(rxmatch-if
 	 (#/line\s([0-9]+),\scharacter\s([0-9]+) -- line\s([0-9]+),\scharacter\s([0-9]+)/ (car lines))
 	 (#f from-line from-char to-line to-char)
 	 (cons (cons (list (string->number from-line) (string->number from-char))
@@ -60,15 +60,15 @@
 	;; have to be executed in a transaction, but the solved
 	;; problem list is monotonically increasing, so access between
 	;; two accesses won't do any harm, I guess.
-	(write-log uname 
+	(write-log uname
 		   (format "check succeeded in game ~a" game) :header #t)
-	(unless (zero? no)  
+	(unless (zero? no)
 		;; if no <> 0, then it must be the case that uname is set
 		(update-solved uname no)
 		(write-log uname (format "Q #~d solved!" no) :header #t))
 	(write-log uname "--")
-	(list 
-	 (html:h1 
+	(list
+	 (html:h1
 	  (cond
 	   [(zero? no) "正しい導出です．"]
 	   [(and (not (lookupdb uname 'finished)) ;; not yet finished
@@ -84,13 +84,13 @@
 	(unless (zero? no)
 		;; if no <> 0, then it must be the case that uname is set
 		(write-log uname (format "Solving Q #~d failed!" no) :header #t))
-	(write-log uname 
+	(write-log uname
 		   (format "check failed in game ~a\n~a" game (caddr result))
 		   :header #t)
 	(write-log uname "--")
 	(list
 	 (html:h1 "残念...")
-	 (html:pre (html-escape-string (caddr result))) 
+	 (html:pre (html-escape-string (caddr result)))
 	 (html:table :id "userinput"
 		     (let* ((locs (parse-errmsg (caddr result)))
 			    (lines (string-split deriv "\n"))
@@ -126,11 +126,11 @@
 	    :content-type "text/html; charset=utf-8")
 	    (html-doctype)
 	    (html:html
-	     (html:head 
-	      (html:meta 
-	       :http-equiv "content-type" 
+	     (html:head
+	      (html:meta
+	       :http-equiv "content-type"
 	       :content "text/html; charset=utf-8")
-	      (html:link :href "./global.css" :rel "stylesheet" 
+	      (html:link :href "./global.css" :rel "stylesheet"
 			 :type "text/css"))
 	     (html:body
 	      html-msg
@@ -148,9 +148,9 @@
 	    :content-type "text/html; charset=utf-8")
 	  (html-doctype)
 	  (html:html
-	   (html:head 
-	    (html:meta 
-	     :http-equiv "content-type" 
+	   (html:head
+	    (html:meta
+	     :http-equiv "content-type"
 	     :content "text/html; charset=utf-8")
 	    (html:style :type "text/css" *style*))
 	   (html:body

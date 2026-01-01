@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -36,7 +36,7 @@ let errAt i s =
 
 %%
 
-Judgment: 
+Judgment:
   | Nat PLUS Nat IS Nat { PlusIs($1, $3, $5) }
   | Nat MULT Nat IS Nat { MultIs($1, $3, $5) }
 
@@ -68,5 +68,3 @@ Nat:
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
   | LCID { errAt 1 "Syntax error" }
   | INTL { errAt 1 "Syntax error" }
-
-

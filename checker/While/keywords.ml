@@ -3,7 +3,7 @@ open Parser
 let v = [
   (* game-specific keywords *)
   ("evalto", EVALTO);
-  
+
   ("if", IF);
   ("then", THEN);
   ("else", ELSE);
@@ -14,7 +14,7 @@ let v = [
   ("skip", SKIP);
   ("changes", CHANGES);
   ("to", TO);
-  
+
   ("|-", VDASH);
   (",", COMMA);
 
@@ -28,5 +28,4 @@ let v = [
   ("=", EQ);
   ("<=", LE);
   (":=", COLEQ);
-] 
-
+]

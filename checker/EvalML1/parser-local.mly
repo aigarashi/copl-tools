@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -48,7 +48,7 @@ let tbl = Hashtbl.create 1024
 
 %%
 
-Judgment: 
+Judgment:
     Exp EVALTO Val { EvalTo($1, $3) }
   | SInt PLUS SInt IS SInt { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
   | SInt MULT SInt IS SInt { AppBOp(Mult, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
@@ -95,15 +95,15 @@ partialj :
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
-  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
-  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
-  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
+  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) }
+  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) }
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) }
 
   | Exp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
   | Exp2 BinOp2 error { errAt 3 "Syntax error: expression expected" }
   | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
 
-LongExp: 
+LongExp:
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
 
   | IF error { errAt 2 "Syntax error: expression expected" }
@@ -154,7 +154,7 @@ Val:
 
 /******** experimental feature for macro defintions *********/
 /* Macro definition disabled.
-MacroDefs: 
+MacroDefs:
     { () }
   | MacroDef MacroDefs { () }
 */
@@ -166,18 +166,18 @@ MacroDef:
   | DEF MVVALUE EQ error { errAt 4 "Syntax error: value expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
-Val: MVVALUE { 
+Val: MVVALUE {
   try
-    match Hashtbl.find tbl $1 with 
+    match Hashtbl.find tbl $1 with
       Value v -> v
-    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
 AExp: MVEXP {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Exp e -> e
-    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

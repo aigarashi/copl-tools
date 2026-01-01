@@ -22,7 +22,7 @@
 
 (define (format-bnf bnfdefs)
   (html:div :class "bnf"
-     (html:pre 
+     (html:pre
       :class "TeX"
       (html:div
        "$\\displaystyle{\\begin{array}{l}\n"
@@ -32,9 +32,9 @@
 (define (infrule name premises concl)
   (let ((delimited-premises (intersperse " \\qquad " premises))
 	(nameID (normalize-rname name)))
-    (html:div 
+    (html:div
      :id nameID :class "rule" ; :style "display: none;"
-     (html:pre 
+     (html:pre
       :class "TeX"
       (html:div
        `("$\\displaystyle{\\frac{\n"
@@ -42,7 +42,7 @@
 	 ,concl "}}$"
 	 ,(html:span :class "rname" "(" name ")")))))))
 
-(define (mv base suffix primes alist) 
+(define (mv base suffix primes alist)
   ;; formatting metavariables
   ;; alist is to transform names to special symbols
   (let* ((tmp (assoc base alist))
@@ -53,10 +53,10 @@
 
 ;;;; HTML stuff
 (define (header-LaTeXMathML) ; for loading LaTeXMathML
-  (list (html:script :type "text/javascript" 
+  (list (html:script :type "text/javascript"
 ;		     :src "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.js")
 		     :src "../LaTeXMathML.js")
-	(html:link :rel "stylesheet" :type "text/css" 
+	(html:link :rel "stylesheet" :type "text/css"
 ;		   :href "http://math.etsu.edu/LaTeXMathML/LaTeXMathML.standardarticle.css")))
 		   :href "../LaTeXMathML.standardarticle.css")))
 
@@ -69,8 +69,8 @@ span.rname { font-variant: small-caps; }
 
 (define (js:ShowStuff)
   ;; Javascipt function to swap display/no display for all content
-  ;; within span tags Click_Menu  
-(html:script :language "JavaScript" 
+  ;; within span tags Click_Menu
+(html:script :language "JavaScript"
 "<!--
  var current=\"\"; // no rule is displayed at first
 
@@ -79,7 +79,7 @@ span.rname { font-variant: small-caps; }
  // all content within span/div tags
 
  if (Click_Menu.style.display == \"none\") {
-   if (current != \"\") current.style.display = \"none\"; 
+   if (current != \"\") current.style.display = \"none\";
    Click_Menu.style.display = \"\";
    current = Click_Menu;
  } else {
@@ -95,11 +95,11 @@ span.rname { font-variant: small-caps; }
 ;;; main function
 (define (main args)
   (load (string-append "./" (cadr args) ".scm"))
-  (write-tree 
+  (write-tree
    (list
     (html-doctype)
     (html:html
-     (html:head 
+     (html:head
       (html:title (cadr args))
       (html:meta :http-equiv "content-type" :content "text/html; charset=utf-8")
       (rule-style)
@@ -256,7 +256,7 @@ span.rname { font-variant: small-caps; }
   `("\\mbox{(}" ,env "\\mbox{)[fun }" ,x "\\rightarrow" ,e "\\mbox{]}"))
 
 (define (EvalML3:RecTerm env x y e)
-  `("\\mbox{(}" ,env 
+  `("\\mbox{(}" ,env
     "\\mbox{)[rec }" ,x " = \\mbox{fun }" ,y "\\rightarrow" ,e "\\mbox{]}"))
 
 (define EvalML3:EmptyTerm EvalML2:EmptyTerm)
@@ -330,7 +330,7 @@ span.rname { font-variant: small-caps; }
 (define EvalML4:FunTerm EvalML3:FunTerm)
 (define EvalML4:RecTerm EvalML3:RecTerm)
 (define (EvalML4:NilVTerm) "[]")
-(define (EvalML4:ConsVTerm v1 v2) 
+(define (EvalML4:ConsVTerm v1 v2)
   `(,v1 "\\mbox{ :: }" ,v2))
 
 (define EvalML4:EmptyTerm EvalML3:EmptyTerm)
@@ -344,12 +344,12 @@ span.rname { font-variant: small-caps; }
 
 (define (EvalML4:NilTerm) "[]")
 
-(define (EvalML4:ConsTerm v1 v2) 
+(define (EvalML4:ConsTerm v1 v2)
   `(,v1 "\\mbox{ :: }" ,v2))
 
 (define (EvalML4:MatchTerm e1 e2 x y e)
   `("\\mbox{match }" ,e1 "\\mbox{ with } "
-    "   [] \\rightarrow " ,e2 
+    "   [] \\rightarrow " ,e2
     " \\mid " ,x "\\mbox{ :: } " ,y " \\rightarrow " ,e))
 
 (define EvalML4:PlusTerm EvalML3:PlusTerm)
@@ -487,7 +487,7 @@ span.rname { font-variant: small-caps; }
   `("\\mbox{(}" ,env "\\mbox{)[fun }. \\rightarrow" ,e "\\mbox{]}"))
 
 (define (EvalNamelessML3:RecTerm env e)
-  `("\\mbox{(}" ,env 
+  `("\\mbox{(}" ,env
     "\\mbox{)[rec .} = \\mbox{fun }. \\rightarrow" ,e "\\mbox{]}"))
 
 (define EvalNamelessML3:EmptyTerm EvalML3:EmptyTerm)
@@ -735,12 +735,12 @@ span.rname { font-variant: small-caps; }
 					 ("t" "\\tau")
 					   ("s" "\\sigma")))))
 
-(define (PolyTypingML3:TySchemeTerm i t) 
+(define (PolyTypingML3:TySchemeTerm i t)
   `(,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" :suffix "1"))
     "\\cdots"
     ,(PolyTypingML3:TyFVarTerm (PolyTypingML3:mv "a" :suffix "n"))
     "." ,t))
-    
+
 (define PolyTypingML3:EmptyTerm TypingML3:EmptyTerm)
 (define PolyTypingML3:BindTerm TypingML3:BindTerm)
 
@@ -923,7 +923,7 @@ span.rname { font-variant: small-caps; }
 (define (While:SkipTerm) "\\mbox{skip}")
 (define (While:AssignTerm x a) `(,x ":=" ,a))
 (define (While:SeqTerm c1 c2) `(,c1 ";" ,c2))
-(define (While:IfTerm b c1 c2) 
+(define (While:IfTerm b c1 c2)
   `("\\mbox{if }" ,b "\\mbox{ then }" ,c1 "\\mbox{ else }" ,c2))
 (define (While:WhileTerm b c)
   `("\\mbox{while (}" ,b "\\mbox{) do }" ,c))

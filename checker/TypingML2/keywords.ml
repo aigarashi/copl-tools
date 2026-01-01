@@ -10,7 +10,7 @@ let v = [
   ("if", IF);
   ("then", THEN);
   ("else", ELSE);
-  
+
   ("*", AST);
   ("+", CROSS);
   ("-", HYPHEN);
@@ -28,5 +28,4 @@ let v = [
   ("int", INT);
   ("bool", BOOL);
 
-] 
-
+]

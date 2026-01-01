@@ -24,16 +24,16 @@
 
 (define-constant twenty-four-hours 86400)  ;; in seconds
 
-(define-constant header 
-  (html:head 
+(define-constant header
+  (html:head
    (html:title "プログラミング言語の基礎概念(ライブラリ情報学コア・テキスト24)")
-   (html:meta 
-    :http-equiv "content-type" 
+   (html:meta
+    :http-equiv "content-type"
     :content "text/html; charset=utf-8")
    (html:link :href "./global.css" :rel "stylesheet" :type "text/css")))
 
 (define-constant bookinfo
-  (html:div 
+  (html:div
    :id "bookinfo"
    (html:div :id "box"
    (html:h2 "書籍情報")
@@ -46,8 +46,8 @@
 	   ")")
    (html:table
     (html:tr
-     (html:td :rowspan "6" (html:img :src "../image/CoPL-thumb.jpg" 
-				     :align "left" :width "100px" 
+     (html:td :rowspan "6" (html:img :src "../image/CoPL-thumb.jpg"
+				     :align "left" :width "100px"
 				     :alt "cover picture"))
      (html:td "単行本（ソフトカバー）: 192ページ"))
     (html:tr
@@ -59,14 +59,14 @@
     (html:tr
      (html:td "ISBN: 978-4-7819-1285-1"))
 #;    (html:tr
-     (html:td 
+     (html:td
       (html:a :href "http://www.saiensu.co.jp/?page=book_details&ISBN=ISBN978-4-7819-1285-1&YEAR=2011" "サイエンス社のこの本に関するページ")))
-    
+
     )
    (html:ul
     (html:li "2012年1月14日のジュンク堂書店池袋本店トークセッション"
      (html:a
-      :href "http://www.junkudo.co.jp/tenpo/evtalk.html#20120114juikebukuro" 
+      :href "http://www.junkudo.co.jp/tenpo/evtalk.html#20120114juikebukuro"
       "「新春座談会 このコンピュータ書がすごい！ 2012年版〜2011年に出たコンピュータ書ならこれを読め！〜」")
      "にて本書が紹介された"
      (html:a
@@ -75,7 +75,7 @@
      "です．(2012/1/14記)")
     )
    (html:h2 "補助資料")
-   (html:ul 
+   (html:ul
     (html:li (html:a :href "errata.html" "正誤表"))
     (html:li (html:a :href "guide.pdf" "演習システムガイド"))
     (html:li (html:a :href "chap11.pdf" "継続(EvalContML1)"))
@@ -97,7 +97,7 @@
 
 (define (command-url com . options)
   (string-concatenate
-   (list 
+   (list
     thisurl
     "?command="
     com
@@ -106,17 +106,17 @@
      "&" 'prefix))))
 
 (define (display-login-page . options)
-  (let-keywords 
+  (let-keywords
    options ((msg #f) (msg2 #f) (uname ""))
    (html:div
     (html:h1 "プログラミング言語の基礎概念")
     (html:h3 "(ライブラリ情報学コア・テキスト24)")
     (display-news #t)
     bookinfo
-    (html:div 
+    (html:div
      :id "login"
      (html:h2 "演習システムへのログイン")
-     (html:form 
+     (html:form
       :action thisurl :method "post"
       (html:fieldset
        ;(html:legend "ログインしてください")
@@ -129,7 +129,7 @@
      (if msg
 	 (html:p (html:span :class "warn" msg))
 	 '())
-     (html:form 
+     (html:form
       :action thisurl :method "post"
       (html:fieldset
        (html:legend "パスワードの(再)発行と送付")
@@ -145,7 +145,7 @@
       "新規ユーザ登録"))
       )
     #;(html:div
-     :id "footer" 
+     :id "footer"
      (html:hr)
      "Copyright 2011 Atsushi Igarashi"))))
 
@@ -177,7 +177,7 @@
 	      (format-news rest public? passed-sections))]))
 
 (define-constant JStoggle
-  (html:script 
+  (html:script
    :type "text/javascript"
    "<!--
 function Toggle(id) {
@@ -224,7 +224,7 @@ function ToggleOldnews() {
     (if (null? formatted-news)
 	'()
 	(list
-	 (html:div 
+	 (html:div
 	  :class "newsbox"
 	  (html:h1 "おしらせ")
 	  (html:p "(内容の表示・非表示を切り替えるには日付・タイトル行をクリックしてください．)")
@@ -235,7 +235,7 @@ function ToggleOldnews() {
 	      '())
 	  JStoggle
 	  (html:div
-	   :class "news" :id "newslist" 
+	   :class "news" :id "newslist"
 	   (html:dl formatted-news)))))))
 
 (define (display-sidebar name)
@@ -270,20 +270,20 @@ function ToggleOldnews() {
 	    (html:p #`"Q,(number->string n)はまだ解けません．他の問題を解いてから出直してください．")
 	    (let* ((game (car q))
 		   (goal (cadr q))
-		   (commonform 
+		   (commonform
 		    (lambda (label)
 		      (list
 		       (html:input :type "hidden" :name "game" :value game)
 		       (html:input :type "hidden" :name "no" :value n)
 		       (html:input :type "submit" :value label))))
-		   (rulesurl (html:a 
+		   (rulesurl (html:a
 			      :target "_blank"
-			      :href (string-concatenate (list "games/" 
-							      (symbol->string game) ".html")) 
+			      :href (string-concatenate (list "games/"
+							      (symbol->string game) ".html"))
 			      game)))
 	      (list
 	       (html:p
-		(if (< 1 n) 
+		(if (< 1 n)
 		    (list (html:a :href #`"?qno=,(- n 1)" "<< 前の問題へ")
 			  " ")
 		    "")
@@ -311,7 +311,7 @@ function ToggleOldnews() {
 (define (display-sandbox)
   (list
    (html:h1 "おすなば")
-   (html:form 
+   (html:form
     :name "sandbox" :action "index.cgi" :method "post"
     (html:p "問題を解かずに遊ぶこともできます")
     (html:p "導出システム名を選んでください: "
@@ -346,7 +346,7 @@ function ToggleOldnews() {
 	   (html:html
 	    header
 	    (html:body
-	     (html:div 
+	     (html:div
 	      :id "contents"
 	     (html:div
 	      :id "main"
@@ -387,22 +387,22 @@ function ToggleOldnews() {
    ;  passwd:  pass word
    ;  loginas:  login name, obtained from cookie, if already logged in
    ;  qno: question number to show
-  (let ((command (string->symbol 
+  (let ((command (string->symbol
 		  (or (cgi-get-parameter "command" params) "nop")))
 	(lname (cgi-get-parameter "name" params))
 	(lpasswd (cgi-get-parameter "passwd" params))
 	(name (cgi-get-parameter "loginas" params))
 	(qno (cgi-get-parameter "qno" params)))
-    (cond 
+    (cond
      [(and (eq? command 'logout) name) ;; trying to logout
       (list ;; deleting cookie
        (cgi-header :content-type "text/html; charset=utf-8"
 		   :cookies
-		   (construct-cookie-string 
-		    `(("loginas" ,name 
+		   (construct-cookie-string
+		    `(("loginas" ,name
 		       :domain ,*domainname*
 		       :path ,*system-url-local*
-		       :expires ,(- (sys-time) 1) 
+		       :expires ,(- (sys-time) 1)
 		       :max-age 0))))
        (html-doctype)
        (html:html
@@ -467,15 +467,15 @@ function ToggleOldnews() {
 	header
 	(html:body
 	 :id "login-screen"
-	 (display-login-page	 
+	 (display-login-page
 	  :msg2 (html:p "登録されたアドレスに送付しました")))))]
-     [(and (eq? command 'login) 
+     [(and (eq? command 'login)
 	   (or (check-passwd lname lpasswd)
 	       (check-passwd-tmp lname lpasswd)))
       (unless (check-passwd lname lpasswd)
 	      ;; create a db file when first-time login
 	      (call-with-output-file (dbfile lname)
-		(lambda (out) 
+		(lambda (out)
 		  (let ((userinfo (lookupdb tmp-users lname)))
 		    (write (new-userdb userinfo) out))))
 	      ;; and delete the entry from the temporary DB
@@ -485,17 +485,17 @@ function ToggleOldnews() {
 		(lambda (out) )))
       (list
        (cgi-header :cookies
-		   (construct-cookie-string 
-		    `(("loginas" ,lname 
+		   (construct-cookie-string
+		    `(("loginas" ,lname
 		       :domain ,*domainname*
 		       :path ,*system-url-local*
-		       :expires ,(+ (sys-time) twenty-four-hours) 
+		       :expires ,(+ (sys-time) twenty-four-hours)
 		       :max-age ,twenty-four-hours))))
        (html-doctype)
        (html:html
 	header
 	(html:body
-	 (html:div 
+	 (html:div
 	  :id "contents"
 	  (html:div
 	   :id "main"
@@ -512,10 +512,10 @@ function ToggleOldnews() {
 	 :id "login-screen"
 	  (cond
 	   [(eq? command 'login)
-	    (display-login-page	
+	    (display-login-page
 	     :msg (html:p "ユーザ名もしくはパスワードが違います")
 	     :uname lname)]
-	   [(eq? command 'logout) 
+	   [(eq? command 'logout)
 	    (display-login-page
 	     :msg (html:p "ログアウトするには，まずログインしてください"))]
 	   [else (display-login-page)]))))))))

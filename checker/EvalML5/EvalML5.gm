@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
   ML4: ML3 + list + match
@@ -79,15 +79,15 @@ NM-ConsConsR: Matches(ConsV(v1,v2), ConsP(p1,p2), Fail) :- Matches(v2, p2, Fail)
 
 E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
-E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, true), EvalTo(env, e2, v);
-E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, false), EvalTo(env, e3, v);
-E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :- 
+E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :- 
+E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Minus, i1, i2, i3);
-E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :- 
+E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
@@ -95,7 +95,7 @@ E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
 *)
-E-Var:  EvalTo(env, x, v) :- 
+E-Var:  EvalTo(env, x, v) :-
           `try $v = lookup $env $x with Exit -> false`
           `$v = lookup $env $x`
           %$env($x) = $v%;
@@ -115,17 +115,17 @@ E-AppRec: EvalTo(env,App(e1, e2), v) :-
          EvalTo(Bind(Bind(env2, x, Rec(env2, x, y, e0)), y, v2), e0, v);
 E-Nil: EvalTo(env,Nil,NilV) :- ;
 E-Cons: EvalTo(env,Cons(e1,e2),ConsV(v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
-E-MatchM1: EvalTo(env,Match(e0,SingleC(p,e)),v') :- 
-	    EvalTo(env,e0,v), Matches(v,p,env1), 
+E-MatchM1: EvalTo(env,Match(e0,SingleC(p,e)),v') :-
+	    EvalTo(env,e0,v), Matches(v,p,env1),
               `$env2 = uplus $env $env1` %$env2 = $env; $env1%,
             EvalTo(env2,e,v');
-E-MatchM2: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
-	    EvalTo(env,e0,v), Matches(v,p,env1), 
+E-MatchM2: EvalTo(env,Match(e0,AddC(p,e,c)),v') :-
+	    EvalTo(env,e0,v), Matches(v,p,env1),
               `$env2 = uplus $env $env1` %$env2 = $env; $env1%,
             EvalTo(env2,e,v');
-E-MatchN: EvalTo(env,Match(e0,AddC(p,e,c)),v') :- 
+E-MatchN: EvalTo(env,Match(e0,AddC(p,e,c)),v') :-
 	    EvalTo(env,e0,v), Matches(v,p,Fail), EvalTo(env,Match(e0,c),v');
-           
+
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
 B-Minus: AppBOp(Minus, i1, i2, i3) 	:- `$i3 = $i1 - $i2`;
 B-Times: AppBOp(Mult, i1, i2, i3) 	:- `$i3 = $i1 * $i2`;
@@ -151,6 +151,6 @@ let rec uplus env1 env2 =
    | Bind(env2, x, v) -> Bind(uplus env1 env2, x, v)
 
 let rec lookup env x =
-    match env with 
+    match env with
       Empty -> raise Exit
     | Bind(env, x', v') -> if x = x' then v' else lookup env x

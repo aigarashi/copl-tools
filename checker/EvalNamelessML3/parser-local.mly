@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -37,7 +37,7 @@ let tbl = Hashtbl.create 1024
 
 /* ML2 */
 %token VDASH COMMA
-%token LET EQ IN 
+%token LET EQ IN
 
 /* ML3 */
 %token FUN RARROW
@@ -61,7 +61,7 @@ let tbl = Hashtbl.create 1024
 
 %%
 
-Judgment: 
+Judgment:
     Env VDASH DExp EVALTO Val { EvalTo($1, $3, $5) }
   | SInt PLUS SInt IS SInt { AppBOp(Plus, DBValue_of_int $1, DBValue_of_int $3, DBValue_of_int $5) }
   | SInt MULT SInt IS SInt { AppBOp(Mult, DBValue_of_int $1, DBValue_of_int $3, DBValue_of_int $5) }
@@ -105,7 +105,7 @@ partialj :
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | Val Env2 { List.fold_left (fun env v -> Bind(env, v)) Empty ($1::$2) }
 
 Env2:
@@ -117,15 +117,15 @@ Env2:
 DExp:
   | LongDExp { $1 }
   | DExp1 { $1 }
-  | DExp1 BinOp1 LongDExp { BinOpD($2, $1, $3) } 
-  | DExp2 BinOp2 LongDExp { BinOpD($2, $1, $3) } 
-  | DExp3 BinOp3 LongDExp { BinOpD($2, $1, $3) } 
+  | DExp1 BinOp1 LongDExp { BinOpD($2, $1, $3) }
+  | DExp2 BinOp2 LongDExp { BinOpD($2, $1, $3) }
+  | DExp3 BinOp3 LongDExp { BinOpD($2, $1, $3) }
 
   | DExp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
   | DExp2 BinOp2 error { errAt 3 "Syntax error: expression expected" }
   | DExp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
 
-LongDExp: 
+LongDExp:
   | IF DExp THEN DExp ELSE DExp { IfD($2, $4, $6) }
   | LET DOT EQ DExp IN DExp { LetD($4, $6) }
   | LET REC DOT EQ FUN DOT RARROW DExp IN DExp { LetRecD($8, $10) }
@@ -165,7 +165,7 @@ DExp3:
     DExp3 BinOp3 DExp4 { BinOpD($2, $1, $3) }
   | DExp4 { $1 }
 
-DExp4:  /* function application: 
+DExp4:  /* function application:
           argument is an atomic expression without unary minus */
     DExp4 DAExp { AppD($1, $2) }
   | DMinExp { $1 }
@@ -180,7 +180,7 @@ BinOp2:
 BinOp3:
     AST { Mult }
 
-DMinExp: 
+DMinExp:
     HYPHEN INTL { DBExp_of_int (- $2) }
   | DAExp { $1 }
 
@@ -203,7 +203,7 @@ Val:
   | TRUE { DBValue_of_bool true }
   | FALSE { DBValue_of_bool false }
   | LPAREN Env RPAREN LBRACKET FUN DOT RARROW DExp RBRACKET { Fun($2, $8) }
-  | LPAREN Env RPAREN LBRACKET REC DOT EQ FUN DOT RARROW DExp RBRACKET 
+  | LPAREN Env RPAREN LBRACKET REC DOT EQ FUN DOT RARROW DExp RBRACKET
       { Rec($2, $11) }
 
   | LPAREN Env RPAREN error { errAt 4 "Syntax error: '[' expected" }
@@ -222,7 +222,7 @@ Val:
 
 /******** experimental feature for macro defintions *********/
 
-MacroDefs: 
+MacroDefs:
   | MacroDef MacroDefs { () }
 
 MacroDef:
@@ -236,26 +236,26 @@ MacroDef:
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
 
-Val: MVVALUE { 
+Val: MVVALUE {
   try
-    match Hashtbl.find tbl $1 with 
+    match Hashtbl.find tbl $1 with
       DBValue v -> v
-    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
 DAExp: MVDEXP {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       DExp e -> e
-    | _ -> errAt 1 "Cannot happen! DAExp: MVDEXP" 
+    | _ -> errAt 1 "Cannot happen! DAExp: MVDEXP"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Env: MVENV Env2 {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       DBValueList e -> List.fold_left (fun env v -> Bind(env, v)) e $2
-    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+    | _ -> errAt 1 "Cannot happen! Env: MVENV"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

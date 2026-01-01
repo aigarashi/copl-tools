@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -23,15 +23,15 @@ module S = Set.Make(
 
 exception Not_linear
 
-let rec fpv = function 
+let rec fpv = function
     Pat_of_Var (Var s) -> S.singleton s
   | CnstrP _ -> S.empty
   | CnstrPi(_,p) -> fpv p
-  | CnstrPii(_, p1, p2) -> 
+  | CnstrPii(_, p1, p2) ->
       let fpv1 = fpv p1 and fpv2 = fpv p2 in
 	if S.is_empty (S.inter fpv1 fpv2) then S.union fpv1 fpv2
 	else raise Not_linear
-  | CnstrPiii(_, p1, p2,p3) -> 
+  | CnstrPiii(_, p1, p2,p3) ->
       let fpv1 = fpv p1 and fpv2 = fpv p2 and fpv3 = fpv p3 in
 	if S.is_empty (S.inter fpv1 fpv2) && S.is_empty (S.inter fpv1 fpv3) && S.is_empty (S.inter fpv2 fpv3)
 	then S.union fpv1 (S.union fpv2 fpv3)
@@ -58,7 +58,7 @@ let rec fpv = function
 
 /* ML2 */
 %token VDASH COMMA
-%token LET EQ IN 
+%token LET EQ IN
 
 /* ML3 */
 %token FUN RARROW
@@ -84,7 +84,7 @@ let rec fpv = function
 
 %%
 
-Judgment: 
+Judgment:
     Env VDASH Exp EVALTO Val { EvalTo($1, $3, $5) }
   | Val MATCHES Pat WHEN LPAREN Env RPAREN { Matches($1, $3, Res_of_Env $6) }
   | Val DOESNT MATCH Pat { Matches($1, $4, Fail) }
@@ -131,7 +131,7 @@ partialj :
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | LCID EQ Val Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
   | LCID error { errAt 2 "Syntax error: '=' expected" }
   | LCID EQ error { errAt 3 "Syntax error: value expected" }
@@ -143,19 +143,19 @@ Env2:
   | COMMA error { errAt 2 "Syntax error: variable expected" }
   | COMMA LCID error { errAt 3 "Syntax error: '=' expected" }
   | COMMA LCID EQ error { errAt 4 "Syntax error: value expected" }
-  
+
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
-  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
-  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
-  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
+  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) }
+  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) }
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) }
 
   | Exp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
   | Exp2 BinOp2 error { errAt 3 "Syntax error: expression expected" }
   | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
 
-LongExp: 
+LongExp:
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
@@ -187,16 +187,16 @@ LongExp:
   | MATCH Exp error { errAt 3 "Syntax error: 'with' expected" }
   | MATCH Exp WITH error { errAt 4 "Syntax error: pattern expected" }
 
-NMExp:  
+NMExp:
   /* expression which doesn't end with "match": it appears
       outside delimiting contexts */
   | NMLongExp { $1 }
   | Exp1 { $1 }
-  | Exp1 BinOp1 NMLongExp { BinOp($2, $1, $3) } 
-  | Exp2 BinOp2 NMLongExp { BinOp($2, $1, $3) } 
-  | Exp3 BinOp3 NMLongExp { BinOp($2, $1, $3) } 
+  | Exp1 BinOp1 NMLongExp { BinOp($2, $1, $3) }
+  | Exp2 BinOp2 NMLongExp { BinOp($2, $1, $3) }
+  | Exp3 BinOp3 NMLongExp { BinOp($2, $1, $3) }
 
-NMLongExp: 
+NMLongExp:
   | IF Exp THEN Exp ELSE NMExp { If($2, $4, $6) }
   | LET LCID EQ Exp IN NMExp { Let(Var $2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN NMExp { LetRec(Var $3, Var $6, $8, $10) }
@@ -214,13 +214,13 @@ Exp3:
     Exp3 BinOp3 Exp4 { BinOp($2, $1, $3) }
   | Exp4 { $1 }
 
-Exp4:  /* function application: 
+Exp4:  /* function application:
           argument is an atomic expression without unary minus */
-    Exp4 AExp { 
+    Exp4 AExp {
       match $1 with
 	  CnstrE c -> CnstrEi(c, $2)
-	| _ -> App($1, $2) 
-    }  
+	| _ -> App($1, $2)
+    }
   | MinExp { $1 }
 
 
@@ -234,7 +234,7 @@ BinOp2:
 BinOp3:
     AST { Mult }
 
-MinExp: 
+MinExp:
     HYPHEN INTL { Exp_of_int (- $2) }
   | AExp { $1 }
 
@@ -260,7 +260,7 @@ SInt: /* signed int */
     INTL { $1 }
   | HYPHEN INTL { - $2 }
 
-AVal: 
+AVal:
     SInt { Value_of_int $1 }
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
@@ -271,7 +271,7 @@ Val:
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
-  | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
+  | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET
       { Rec($2, Var $6, Var $9, $11) }
   | UCID { CnstrV(Cnstr $1) }
   | UCID AVal { CnstrVi(Cnstr $1, $2) }
@@ -299,13 +299,13 @@ Val:
   | UCID LPAREN Val COMMA Val COMMA error { errBtw 2 7 "Syntax error: value expected" }
   | UCID LPAREN Val COMMA Val COMMA Val error { errBtw 2 8 "Syntax error: unmatched parenthesis" }
 
-Clauses: 
-  | Pat RARROW Exp { 
-	try ignore (fpv $1); SingleC($1, $3) with 
+Clauses:
+  | Pat RARROW Exp {
+	try ignore (fpv $1); SingleC($1, $3) with
 	    Not_linear -> errBtw 1 1 "Pattern variables should be disjoint"
       }
   | Pat RARROW NMExp BAR Clauses {
-	try ignore (fpv $1); AddC($1, $3, $5) with 
+	try ignore (fpv $1); AddC($1, $3, $5) with
 	    Not_linear -> errBtw 1 1 "Pattern variables should be disjoint"
       }
 
@@ -331,7 +331,7 @@ Pat:
 
 /******** experimental feature for macro defintions *********/
 
-MacroDefs: 
+MacroDefs:
   | MacroDef MacroDefs { () }
 
 MacroDef:
@@ -344,26 +344,26 @@ MacroDef:
   | DEF MVENV EQ error { errAt 4 "Syntax error: environment expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
-Val: MVVALUE { 
+Val: MVVALUE {
   try
-    match Hashtbl.find tbl $1 with 
+    match Hashtbl.find tbl $1 with
       Value v -> v
-    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
 AExp: MVEXP {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Exp e -> e
-    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Env: MVENV Env2 {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Env e -> List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) e $2
-    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+    | _ -> errAt 1 "Cannot happen! Env: MVENV"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

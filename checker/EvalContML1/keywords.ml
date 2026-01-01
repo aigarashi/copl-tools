@@ -27,5 +27,4 @@ let v = [
   (">>", GTGT);
   ("=>", DRARROW);
   ("_", UNDERSCORE);
-] 
-
+]

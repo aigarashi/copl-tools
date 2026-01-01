@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   TypingML2: typing for ML2
 *)
@@ -34,13 +34,13 @@ Typing(env, e; t);
 
 T-Int: 	Typing(env, i, TyInt) :- ;
 T-Bool: Typing(env, b, TyBool) :- ;
-T-If: 	Typing(env, If(e1, e2, e3), t) :- 
+T-If: 	Typing(env, If(e1, e2, e3), t) :-
 		Typing(env, e1, TyBool), Typing(env, e2, t), Typing(env, e3, t);
-T-Plus: Typing(env, BinOp(Plus, e1, e2), TyInt) :- 
+T-Plus: Typing(env, BinOp(Plus, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
-T-Minus: Typing(env, BinOp(Minus, e1, e2), TyInt) :- 
+T-Minus: Typing(env, BinOp(Minus, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
-T-Times: Typing(env, BinOp(Mult, e1, e2), TyInt) :- 
+T-Times: Typing(env, BinOp(Mult, e1, e2), TyInt) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);
 T-Lt: 	Typing(env, BinOp(Lt, e1, e2), TyBool) :-
 		Typing(env, e1, TyInt), Typing(env, e2, TyInt);

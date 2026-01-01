@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
   ML4: ML3 + list + match
@@ -66,10 +66,10 @@ E-If: EvalTo(env, k, kk, If(e1, e2, e3), v) :-
        EvalTo(env, BranchK(env,e2,e3,k), kk, e1, v);
 E-BinOp: EvalTo(env, k, kk, BinOp(op, e1, e2), v) :-
 	  EvalTo(env, EvalRK(env,e2,op,k), kk, e1, v);
-E-Var:  EvalTo(env, k, kk, x, v2) :- 
+E-Var:  EvalTo(env, k, kk, x, v2) :-
           `try $v1 = lookup $env $k $x with Exit -> false`
           `$v1 = lookup $env $k $x`
-          %$env($x) = $v1%, 
+          %$env($x) = $v1%,
           AppK(k, kk, v1, v2);
 E-Let:  EvalTo(env, k, kk, Let(x, e1, e2), v) :-
 		EvalTo(env, LetBodyK(env,x,e2,k), kk, e1, v);
@@ -111,7 +111,7 @@ C-EvalFunC: AppK(AppFunK(ContF(k1), k2), kk, v1, v2) :- AppK(k1, DelimitedKK(k2,
 C-EvalConsR: AppK(EvalConsRK(env, e, k), kk, v1, v2) :- EvalTo(env, ConsK(v1, k), kk, e, v2);
 C-Cons: AppK(ConsK(v1, k), kk, v2, v3) :- AppK(k, kk, ConsV(v1, v2), v3);
 C-MatchNil: AppK(MatchK(env,e1,x,y,e2,k), kk, NilV, v) :- EvalTo(env, k, kk, e1, v);
-C-MatchCons: AppK(MatchK(env,e1,x,y,e2,k), kk, ConsV(v1, v2), v) :- 
+C-MatchCons: AppK(MatchK(env,e1,x,y,e2,k), kk, ConsV(v1, v2), v) :-
                EvalTo(Bind(Bind(env, x, v1), y, v2), k, kk, e2, v);
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
@@ -124,6 +124,6 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 (* exception Fatal *)
 
 let rec lookup env k x =
-    match env with 
+    match env with
       Empty -> raise Exit
     | Bind(env, x', v') -> if x = x' then v' else lookup env k x

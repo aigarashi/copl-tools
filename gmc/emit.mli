@@ -1,8 +1,8 @@
 open Syntax
 
-val emit_seq : 
-  ?spbefore:bool -> string -> 
-  (Format.formatter -> 'a -> 'b) -> Format.formatter -> 'a list 
+val emit_seq :
+  ?spbefore:bool -> string ->
+  (Format.formatter -> 'a -> 'b) -> Format.formatter -> 'a list
   -> unit
 val emit_comseq : (Format.formatter -> 'a -> 'b) -> Format.formatter -> 'a list -> unit
 val emit_barseq : (Format.formatter -> 'a -> 'b) -> Format.formatter -> 'a list -> unit
@@ -15,8 +15,8 @@ module TypeDef :
   end
 
 module JdgDef :
-  sig 
-    val emit : Env.t -> Format.formatter -> (judgment * int) list -> unit 
+  sig
+    val emit : Env.t -> Format.formatter -> (judgment * int) list -> unit
   end
 
 module Rules :
@@ -53,7 +53,7 @@ module Rules :
 module type EMITTER =
 sig
   val of_bnf : Env.t -> Format.formatter -> syndef list -> unit
-  val of_judgments : Env.t -> Format.formatter -> (judgment * int) list -> unit 
+  val of_judgments : Env.t -> Format.formatter -> (judgment * int) list -> unit
     (* integers specifies how many arguments are considered as input *)
   val of_rules : (id * decl) list -> Format.formatter -> rule list -> unit
 end
@@ -68,7 +68,7 @@ module ML : EMITTER
 module type SIMPLE_EMITTER = (* emitter without environment information *)
 sig
   val of_bnf : Format.formatter -> string -> syndef list -> unit
-  val of_judgments : Format.formatter -> string -> (judgment * int) list -> unit 
+  val of_judgments : Format.formatter -> string -> (judgment * int) list -> unit
     (* integers specifies how many arguments are considered as input *)
   val of_rules : Format.formatter -> string -> rule list -> unit
 end

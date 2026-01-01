@@ -7,4 +7,4 @@ let v = [
   ("plus", PLUS);
   ("times", MULT);
   ("is", IS);
-] 
+]

@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -36,7 +36,7 @@ let tbl = Hashtbl.create 1024
 
 /* ML2 */
 %token VDASH COMMA
-%token LET EQ IN 
+%token LET EQ IN
 
 /* ML3 */
 %token FUN RARROW
@@ -65,7 +65,7 @@ let tbl = Hashtbl.create 1024
 
 %%
 
-Judgment: 
+Judgment:
     Env VDASH Exp COLON Type { Typing($1, $3, $5) }
   | Env VDASH Exp error { errAt 4 "Syntax error: colon expected" }
   | Env VDASH Exp COLON error { errAt 5 "Syntax error: type expression expected" }
@@ -76,34 +76,34 @@ partialj :
   | Env VDASH Exp COLON error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | LCID COLON Type Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
   | LCID error { errAt 2 "Syntax error: ':' expected" }
   | LCID COLON error { errAt 3 "Syntax error: type expected" }
 
 Env2:
-    /* empty */ { [] } 
+    /* empty */ { [] }
   | COMMA LCID COLON Type Env2 { ($2, $4) :: $5 }
   | error { errAt 1 "Syntax error: comma expected" }
   | COMMA error { errAt 2 "Syntax error: variable expected" }
   | COMMA LCID error { errAt 3 "Syntax error: ':' expected" }
   | COMMA LCID COLON error { errAt 4 "Syntax error: type expected" }
 
-  
+
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
-  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
+  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) }
   | Exp3 COLCOL LongExp { Cons($1, $3) }  /* left op. of :: is Exp3 (not Exp2) */
-  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
-  | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) } 
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) }
+  | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) }
 
   | Exp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
   | Exp3 COLCOL error { errAt 3 "Syntax error: expression expected" }
   | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
   | Exp4 BinOp4 error { errAt 3 "Syntax error: expression expected" }
 
-LongExp: 
+LongExp:
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
@@ -164,7 +164,7 @@ Exp4:
     Exp4 BinOp4 Exp5 { BinOp($2, $1, $3) }
   | Exp5 { $1 }
 
-Exp5:  /* function application: 
+Exp5:  /* function application:
           argument is an atomic expression without unary minus */
     Exp5 AExp { App($1, $2) }
   | MinExp { $1 }
@@ -179,7 +179,7 @@ BinOp3:
 BinOp4:
     AST { Mult }
 
-MinExp: 
+MinExp:
     HYPHEN INTL { Exp_of_int (- $2) }
   | AExp { $1 }
 
@@ -209,10 +209,10 @@ AType:
   | BOOL { TyBool }
   | LPAREN Type RPAREN { $2 }
   | LPAREN Type error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
-    
+
 /******** experimental feature for macro defintions *********/
 
-MacroDefs: 
+MacroDefs:
   | MacroDef MacroDefs { () }
 
 MacroDef:
@@ -225,26 +225,26 @@ MacroDef:
   | DEF MVTENV EQ error { errAt 4 "Syntax error: environment expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
-AType: MVTYPE { 
+AType: MVTYPE {
   try
-    match Hashtbl.find tbl $1 with 
+    match Hashtbl.find tbl $1 with
       Type v -> v
-    | _ -> errAt 1 "Cannot happen! Type: MVTYPE" 
+    | _ -> errAt 1 "Cannot happen! Type: MVTYPE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
 AExp: MVEXP {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Exp e -> e
-    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Env: MVTENV Env2 {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Env e -> List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) e $2
-    | _ -> errAt 1 "Cannot happen! Env: MVTENV" 
+    | _ -> errAt 1 "Cannot happen! Env: MVTENV"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

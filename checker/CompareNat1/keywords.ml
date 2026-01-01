@@ -7,4 +7,4 @@ let v = [
   ("is", IS);
   ("less", LESS);
   ("than", THAN);
-] 
+]

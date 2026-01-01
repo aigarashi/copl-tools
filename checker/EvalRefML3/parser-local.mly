@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -38,7 +38,7 @@ let tbl = Hashtbl.create 1024
 
 /* ML2 */
 %token VDASH COMMA
-%token LET EQ IN 
+%token LET EQ IN
 
 /* ML3 */
 %token FUN RARROW
@@ -69,7 +69,7 @@ SLASHStore :
 
   | SLASH error { errAt 2 "Syntax error: store expected" }
 
-Judgment: 
+Judgment:
     Store SLASH Env VDASH Exp EVALTO Val SLASHStore { EvalTo($1, $3, $5, $7, $8) }
   | Env VDASH Exp EVALTO Val SLASHStore { EvalTo(EmptyS, $1, $3, $5, $6) }
   | SInt PLUS SInt IS SInt { AppBOp(Plus, Value_of_int $1, Value_of_int $3, Value_of_int $5) }
@@ -124,7 +124,7 @@ partialj :
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | LCID EQ Val Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
   | LCID error { errAt 2 "Syntax error: '=' expected" }
   | LCID EQ error { errAt 3 "Syntax error: value expected" }
@@ -145,7 +145,7 @@ Store:
   | AT LCID EQ error { errAt 4 "Syntax error: value expected" }
 
 Store2:
-    /* empty */ { [] } 
+    /* empty */ { [] }
   | COMMA AT LCID EQ Val Store2 { ($3, $5) :: $6 }
 /*  | error { errAt 1 "Syntax error: comma expected" }  */
   | COMMA error { errAt 2 "Syntax error: '@' expected" }
@@ -157,16 +157,16 @@ Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
   | Exp2 COLONEQ LongExp { Assign($1, $3) }  /* left op. of := is Exp2 (not Exp1) */
-  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
-  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
-  | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) } 
+  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) }
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) }
+  | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) }
 
   | Exp2 COLONEQ error { errAt 3 "Syntax error: expression expected" }
   | Exp2 BinOp2 error { errAt 3 "Syntax error: expression expected" }
   | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
   | Exp4 BinOp4 error { errAt 3 "Syntax error: expression expected" }
 
-LongExp: 
+LongExp:
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
@@ -210,7 +210,7 @@ Exp4:
     Exp4 BinOp4 Exp5 { BinOp($2, $1, $3) }
   | Exp5 { $1 }
 
-Exp5:  /* function application: 
+Exp5:  /* function application:
           argument is an atomic expression without unary minus */
     Exp5 AExp { App($1, $2) }
   | REF AExp { NewRef($2) }
@@ -226,7 +226,7 @@ BinOp3:
 BinOp4:
     AST { Mult }
 
-MinExp: 
+MinExp:
     HYPHEN INTL { Exp_of_int (- $2) }
   | AExp { $1 }
 
@@ -252,7 +252,7 @@ Val:
   | AT LCID { Value_of_Loc (Loc $2) }
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET
       { Fun($2, Var $6, $8) }
-  | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
+  | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET
       { Rec($2, Var $6, Var $9, $11) }
 
   | LPAREN Env RPAREN error { errAt 4 "Syntax error: '[' expected" }
@@ -272,7 +272,7 @@ Val:
 
 /******** experimental feature for macro defintions *********/
 
-MacroDefs: 
+MacroDefs:
   | MacroDef MacroDefs { () }
 
 MacroDef:
@@ -287,34 +287,34 @@ MacroDef:
   | DEF MVSTORE EQ error { errAt 4 "Syntax error: store expected" }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
-Val: MVVALUE { 
+Val: MVVALUE {
   try
-    match Hashtbl.find tbl $1 with 
+    match Hashtbl.find tbl $1 with
       Value v -> v
-    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
 AExp: MVEXP {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Exp e -> e
-    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Env: MVENV Env2 {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Env e -> List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) e $2
-    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+    | _ -> errAt 1 "Cannot happen! Env: MVENV"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Store: MVSTORE Store2 {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Store s -> List.fold_left (fun store (id, v) -> Block(store, Loc id, v)) s $2
-    | _ -> errAt 1 "Cannot happen! Store: MVSTORE" 
+    | _ -> errAt 1 "Cannot happen! Store: MVSTORE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

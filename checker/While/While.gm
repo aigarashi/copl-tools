@@ -48,15 +48,15 @@ Exec(st, c; st);
 [Rules]
 
 A-Const: AEvalTo(st, i, i) :- ;
-A-Var:  AEvalTo(st, x, i) :- 
-          `try $i = lookup $st $x with Exit -> false` 
-          `$i = lookup $st $x` 
+A-Var:  AEvalTo(st, x, i) :-
+          `try $i = lookup $st $x with Exit -> false`
+          `$i = lookup $st $x`
           %$st($x) = $i%;
-A-Plus: AEvalTo(st, AOp(Plus, a1, a2), i3) :- 
+A-Plus: AEvalTo(st, AOp(Plus, a1, a2), i3) :-
 		AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$i3 = $i1 + $i2`;
-A-Minus: AEvalTo(st, AOp(Minus, a1, a2), i3) :- 
+A-Minus: AEvalTo(st, AOp(Minus, a1, a2), i3) :-
 		AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$i3 = $i1 - $i2`;
-A-Times: AEvalTo(st, AOp(Mult, a1, a2), i3) :- 
+A-Times: AEvalTo(st, AOp(Mult, a1, a2), i3) :-
 		AEvalTo(st, a1, i1), AEvalTo(st, a2, i2), `$i3 = $i1 * $i2`;
 
 B-Const: BEvalTo(st, bv, bv) :- ;
@@ -78,13 +78,12 @@ C-WhileF: Exec(st, While(b, c), st) :-BEvalTo(st, b, false);
 [ML]
 
 let rec lookup st x =
-    match st with 
+    match st with
       Empty -> raise Exit
     | Bind(st, x', v') -> if x = x' then v' else lookup st x
 
-let rec update st x v =    
-    match st with 
+let rec update st x v =
+    match st with
       Empty ->  raise Exit
     | Bind(st, x', v') -> if x = x' then Bind(st, x', v)
                           else Bind(update st x v, x', v')
-

@@ -1,5 +1,5 @@
-(* 
-    ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+(*
+    ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
 *)
 
 [Syntax]
@@ -23,7 +23,7 @@ EvalTo(e; v);
 AppBOp(op, v, v; v);
 
 (* AppBOp(Lt, v1, v2, v3) is written "v1 < v2 is v3",
-    or "v1 is less than v2" when v3 is true, 
+    or "v1 is less than v2" when v3 is true,
     or "v1 is not less than v2" when v3 is false"
 *)
 
@@ -31,15 +31,15 @@ AppBOp(op, v, v; v);
 
 E-Int: 	EvalTo(i, i) :- ;
 E-Bool: EvalTo(b, b) :- ;
-E-IfT: 	EvalTo(If(e1, e2, e3), v) :- 
+E-IfT: 	EvalTo(If(e1, e2, e3), v) :-
 		EvalTo(e1, true), EvalTo(e2, v);
-E-IfF: 	EvalTo(If(e1, e2, e3), v) :- 
+E-IfF: 	EvalTo(If(e1, e2, e3), v) :-
 		EvalTo(e1, false), EvalTo(e3, v);
-E-Plus: EvalTo(BinOp(Plus, e1, e2), i3) :- 
+E-Plus: EvalTo(BinOp(Plus, e1, e2), i3) :-
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(BinOp(Minus, e1, e2), i3) :- 
+E-Minus: EvalTo(BinOp(Minus, e1, e2), i3) :-
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Minus, i1, i2, i3);
-E-Times: EvalTo(BinOp(Mult, e1, e2), i3) :- 
+E-Times: EvalTo(BinOp(Mult, e1, e2), i3) :-
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(BinOp(Lt, e1, e2), b3) :-
 		EvalTo(e1, i1), EvalTo(e2, i2), AppBOp(Lt, i1, i2, b3);

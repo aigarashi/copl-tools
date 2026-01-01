@@ -19,7 +19,7 @@
 
 (define (accumulate! solved)
   ;; takes a list of solved question numbers and update *histgram*
-  (map (lambda (i) 
+  (map (lambda (i)
 	 (let* ((i (- i 1)))
 	   ;; Question numbers are 1-origin.
 	   (when (< i how-many-q)
@@ -28,7 +28,7 @@
 
 (define (score solved)
 	(length solved)
-  #;(round 
+  #;(round
    (fold (lambda (i sum)
 	   (let ((n (vector-ref *histgram* (- i 1))))
 	     ;; n stands for # of people who solved i-th question
@@ -39,7 +39,7 @@
 
 (define q-section-list
   (call-with-input-file *question-db*
-    (lambda (in) 
+    (lambda (in)
       (define (aux qdb i)
 	(if (null? qdb) '()
 	    (let ((howmany (vector-length (questions-of (car qdb)))))
@@ -52,9 +52,9 @@
     (match l
       [() '()]
       [((and (_ _ score) entry) . rest)
-       (if (= score lastscore)  
+       (if (= score lastscore)
 	    ;; if this person has the same score as the last one
-	   (cons (cons 0 entry) 
+	   (cons (cons 0 entry)
 		 (aux lastscore (+ howmany 1) lastrank rest))
 	    (let ((newrank (+ howmany lastrank)))
 	      (cons (cons newrank entry)
@@ -77,10 +77,10 @@
       (html:th "経過日数")
       (html:th "修了日"))
      (map-with-index
-      (match-lambda* 
+      (match-lambda*
        [(i (rank nm noq score))
 	(let ((finished (lookupdb nm 'finished)))
-	  (html:tr 
+	  (html:tr
 	   :class (if (string=? nm name) "you"
 		      (if (even? i) "even" "odd"))
 	   (if (zero? rank)
@@ -91,13 +91,13 @@
 	   (html:td
 	    :class "num"
 	    (format "~d 日"
-		    (round (/ (- (if finished 
+		    (round (/ (- (if finished
 				     (cdr finished) (sys-time))
 				 (cdr (lookupdb nm 'user-since)))
 			      24 60 60)))
-	    (html:td 
+	    (html:td
 	     :class "num"
-	     (if finished (date->string 
+	     (if finished (date->string
 			   (time-utc->date (seconds->time (cdr finished)))
 			   "~1")
 		 "")))
@@ -107,8 +107,8 @@
     (if (zero? (length solved))
 	(html:p "問題を1問解いたら見られるようになります．")
 	(let* ((unames (user-list))
-	       (solved-list (filter-map 
-			     (lambda (uname) 
+	       (solved-list (filter-map
+			     (lambda (uname)
 			       (let ((solved (cdr (lookupdb uname 'solved))))
 				 (and (positive? (length solved))
 				      (cons uname solved))))
@@ -128,7 +128,7 @@
 		    (html:h2 "グループ内ランキング")
 		    (generate-ranking
 		     (add-rank
-		     (filter 
+		     (filter
 		      (lambda (entry)
 			(eq? (cdr (lookupdb (car entry) 'group)) group))
 		      sorted-list))
@@ -147,7 +147,7 @@
 		    (qualified? i solved)
 		    (html:tr
 		     (let ((res (assoc i q-section-list)))
-		       (if res 
+		       (if res
 			   (html:td :class "section"
 				    :rowspan (number->string (caddr res))
 				    (cadr res))
@@ -156,7 +156,7 @@
 		     (let* ((ratio (/ n how-many-users))
 			    (max-bar-length 20)
 			    (bar-length (floor->exact (+ (* ratio max-bar-length) 0.5))))
-		       (html:td (make-string bar-length #\■) 
+		       (html:td (make-string bar-length #\■)
 				(make-string (- max-bar-length bar-length) #\□)
 				(format "(~d %)" (round->exact (* ratio 100))))))
 		    '())))

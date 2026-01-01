@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
   ML4: ML3 + list + match
@@ -45,15 +45,15 @@ AppBOp(op, v, v; v);
 
 E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
-E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, true), EvalTo(env, e2, v);
-E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, false), EvalTo(env, e3, v);
-E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :- 
+E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :- 
+E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Minus, i1, i2, i3);
-E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :- 
+E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
@@ -61,7 +61,7 @@ E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
 *)
-E-Var:  EvalTo(env, x, v) :- 
+E-Var:  EvalTo(env, x, v) :-
           `try $v = lookup $env $x with LookupFailure -> false`
           `$v = lookup $env $x`
           %$env($x) = $v%;
@@ -83,7 +83,7 @@ E-AppRec: EvalTo(env,App(e1, e2), v) :-
 E-Nil: EvalTo(env,Nil,NilV) :- ;
 E-Cons: EvalTo(env,Cons(e1,e2),ConsV(v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
 E-MatchNil: EvalTo(env,Match(e1,e2,x,y,e3),v) :- EvalTo(env,e1,NilV), EvalTo(env,e2,v);
-E-MatchCons: EvalTo(env,Match(e1,e2,x,y,e3),v) :- 
+E-MatchCons: EvalTo(env,Match(e1,e2,x,y,e3),v) :-
 	     EvalTo(env,e1,ConsV(v1,v2)), EvalTo(Bind(Bind(env,x,v1), y,v2), e3, v);
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
@@ -96,9 +96,9 @@ E-IfErr1:	EvalTo(env, If(e1, e2, e3), Error) :-
 		EvalTo(env, e1, r),
 		`match r with Res_of_Value (Value_of_bool _) -> false | _ -> true`
 		%$r \mbox{ は真偽値ではない}%;
-E-IfErr2: 	EvalTo(env, If(e1, e2, e3), Error) :- 
+E-IfErr2: 	EvalTo(env, If(e1, e2, e3), Error) :-
 		EvalTo(env, e1, true), EvalTo(env, e2, Error);
-E-IfErr3: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfErr3: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, false), EvalTo(env, e3, Error);
 
 E-PlusErr1:	EvalTo(env, BinOp(Plus, e1, e2), Error) :-
@@ -141,7 +141,7 @@ E-LtErr2:	EvalTo(env, BinOp(Lt, e1, e2), Error) :-
 		`match r with Res_of_Value (Value_of_int _) -> false | _ -> true`
 		%$r \mbox{ は整数ではない}%;
 
-E-VarErr:  EvalTo(env, x, Error) :- ` try lookup $env $x with _ -> true ` 
+E-VarErr:  EvalTo(env, x, Error) :- ` try lookup $env $x with _ -> true `
 	   	       	  	     %$x \not \in \dom($env)%;
 
 E-LetErr1:  EvalTo(env, Let(x, e1, e2), Error) :-
@@ -180,7 +180,7 @@ E-MatchErr1: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,r),
              % $r \mbox{ は \EvalMLivErrNilVTerm{} でも \(\EvalMLivErrConsVTerm{\EvalMLivMV{v}{_1}}{\EvalMLivMV{v}{_2}}\) でもない} %;
 
 E-MatchErr2: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- EvalTo(env,e1,NilV), EvalTo(env,e2,Error);
-E-MatchErr3: EvalTo(env,Match(e1,e2,x,y,e3),Error) :- 
+E-MatchErr3: EvalTo(env,Match(e1,e2,x,y,e3),Error) :-
 	     EvalTo(env,e1,ConsV(v1,v2)), EvalTo(Bind(Bind(env,x,v1), y,v2), e3, Error);
 
 
@@ -189,6 +189,6 @@ E-MatchErr3: EvalTo(env,Match(e1,e2,x,y,e3),Error) :-
 exception LookupFailure
 
 let rec lookup env x =
-    match env with 
+    match env with
       Empty -> raise LookupFailure
     | Bind(env, x', v') -> if x = x' then v' else lookup env x

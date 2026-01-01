@@ -24,5 +24,4 @@ let v = [
   ("<", LT);
 
   ("error", ERROR);
-] 
-
+]

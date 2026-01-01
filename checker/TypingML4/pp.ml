@@ -21,7 +21,7 @@ let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus, minus, lt, and cons
        plus and minus associates stronger than cons and lt
        cons associates to the right and stronger than lt *)
-    BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _) 
+    BinOp((Plus | Minus | Lt), _, _), BinOp(Mult, _, _)
   | Cons(_,_),                        BinOp(Mult, _, _)
   | BinOp(Lt, _, _),                  BinOp((Plus | Minus), _, _)
   | Cons(_, _),                       BinOp((Plus | Minus), _, _)
@@ -56,27 +56,27 @@ let (>) e_up e = match e_up, e with
       -> true
   | App(_, _),                   Exp_of_int i when is_negative i -> true
   | _ -> false
- 
-let rec print_exp ppf e = 
-  let with_paren_L = with_paren (<) 
+
+let rec print_exp ppf e =
+  let with_paren_L = with_paren (<)
   and with_paren_R = with_paren (fun e_up e -> e > e_up) in
     match e with
 	Exp_of_int i -> pr ppf "%d" i
       | Exp_of_bool true -> pr ppf "true"
       | Exp_of_bool false -> pr ppf "false"
       | Exp_of_Var (Var id) -> pp_print_string ppf id
-      | BinOp(p, e1, e2) -> 
-	  let op = 
+      | BinOp(p, e1, e2) ->
+	  let op =
 	    match p with Plus -> "+" | Minus -> "-" | Mult -> "*" | Lt -> "<" in
-	    pr ppf "%a %s %a" 
-	      (with_paren_L print_exp e) e1 
+	    pr ppf "%a %s %a"
+	      (with_paren_L print_exp e) e1
 	      op
 	      (with_paren_R print_exp e) e2
       | If(e1, e2, e3) ->
 	  pr ppf "if %a then %a else %a"
-	    print_exp e1 
+	    print_exp e1
 	    print_exp e2
-	    print_exp e3 
+	    print_exp e3
       | Let(Var x, e1, e2) ->
 	  pr ppf "let %s = %a in %a"
 	    x
@@ -85,7 +85,7 @@ let rec print_exp ppf e =
       | Abs(Var x, e) ->
 	  pr ppf "fun %s -> %a" x print_exp e
       | App(e1, e2) ->
-	  pr ppf "%a %a" 
+	  pr ppf "%a %a"
 	    (with_paren_L print_exp e) e1
 	    (with_paren_R print_exp e) e2
       | LetRec(Var x, Var y, e1, e2) ->
@@ -93,8 +93,8 @@ let rec print_exp ppf e =
 	    print_exp e1
 	    print_exp e2
       | Nil -> pr ppf "[]"
-      | Cons(e1, e2) -> pr ppf "%a :: %a" 
-	    (with_paren_L print_exp e) e1 
+      | Cons(e1, e2) -> pr ppf "%a :: %a"
+	    (with_paren_L print_exp e) e1
 	    (with_paren_R print_exp e) e2
       | Match(e1, e2, Var x, Var y, e3) ->
 	  pr ppf "match %a with [] -> %a | %s :: %s -> %a"
@@ -109,21 +109,21 @@ let (<) t t_up = match t, t_up with
     (* -> is right associative,
        list binds tighter than ->
     *)
-  | TyFun(_,_),  TyFun(_,_) 
+  | TyFun(_,_),  TyFun(_,_)
   | TyFun(_,_),  TyList _
       -> true
   | _ -> false
 
 (* if t is the right operand of t_up, do you need parentheses for t? *)
-let (>) t_up t = false 
+let (>) t_up t = false
 
-let rec print_type ppf t = 
-  let with_paren_L = with_paren (<) 
+let rec print_type ppf t =
+  let with_paren_L = with_paren (<)
   and with_paren_R = with_paren (fun e_up e -> e > e_up) in
     match t with
 	TyInt -> pp_print_string ppf "int"
       | TyBool -> pp_print_string ppf "bool"
-      | TyFun(t1, t2) -> 
+      | TyFun(t1, t2) ->
 	  pr ppf "%a -> %a"
 	    (with_paren_L print_type t) t1
 	    (with_paren_R print_type t) t2
@@ -138,13 +138,13 @@ and print_env' ppf = function
   | Bind(env', Var x, t) -> pr ppf "%a%s : %a,@ " print_env' env' x print_type t
 
 let print_judgment ppf = function
-    Typing (env, e, t) -> 
+    Typing (env, e, t) ->
       pr ppf "@[@[%a@]@ |- @[%a@]@ : %a@]" print_env env print_exp e print_type t
 
 let print_pjudgment ppf = function
     In_Typing (env, e) ->
-      pr ppf "@[%a@]@ |- %a : ?" print_env env print_exp e 
+      pr ppf "@[%a@]@ |- %a : ?" print_env env print_exp e
 
 let tex_judgment ppf = function
-    Typing (env, e, t) -> 
+    Typing (env, e, t) ->
       pr ppf "\\Typing{%a}{%a}{%a}" print_env env print_exp e print_type t

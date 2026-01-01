@@ -1,13 +1,13 @@
 {
-module Make(X : 
+module Make(X :
   sig
     module Core : sig type judgment end
 
-    module P : 
+    module P :
     sig
       type token
-	  
-      val toplevel : 
+
+      val toplevel :
 	(Lexing.lexbuf -> token) -> Lexing.lexbuf -> Core.judgment Derivation.t
 
       val lparen : token
@@ -33,13 +33,13 @@ module Make(X :
     module MV : sig val v : (string * (string -> P.token)) list end
   end
 ) =
-struct 
+struct
 
 open X.P
 
 open Lexing
 
-let tbl = 
+let tbl =
   let tbl = Hashtbl.create 1024 in
     List.iter (fun (word, token) -> Hashtbl.add tbl word token) X.K.v;
     tbl
@@ -49,15 +49,15 @@ let newline lexbuf =
     lexbuf.lex_curr_p <-
       { pos with pos_lnum = pos.pos_lnum + 1; pos_bol = pos.pos_cnum }
 
-let find_mv mv = 
-  let tbl = 
-    List.map 
-      (fun (name, token) -> 
-	(Str.regexp ("^\\$" ^ name ^ "[0-9 _ ']*$"), token)) 
+let find_mv mv =
+  let tbl =
+    List.map
+      (fun (name, token) ->
+	(Str.regexp ("^\\$" ^ name ^ "[0-9 _ ']*$"), token))
       X.MV.v in
   let rec aux = function
       [] -> raise Not_found
-    | (regexp, token) :: rest -> 
+    | (regexp, token) :: rest ->
 	if Str.string_match regexp mv 0 then token mv
 	else aux rest
   in
@@ -70,7 +70,7 @@ rule main = parse
   (* ignore spacing and newline characters *)
   | [' ' '\009' '\012' '\r']* '\n'    { newline lexbuf; main lexbuf }
   (* ignore // and the following characters until the end of the line *)
-  | "//" [^ '\n']* '\n' { newline lexbuf; main lexbuf } 
+  | "//" [^ '\n']* '\n' { newline lexbuf; main lexbuf }
 
 (* special symbols *)
 | "(" { lparen }
@@ -89,7 +89,7 @@ rule main = parse
 (* lowercase names *)
 | ['a'-'z' '_'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
     { let name = Lexing.lexeme lexbuf in
-      try 
+      try
         Hashtbl.find tbl name
       with
       _ -> lcid name
@@ -97,7 +97,7 @@ rule main = parse
 (* Uppercase names added for EvalML6 *)
 | ['A'-'Z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
     { let name = Lexing.lexeme lexbuf in
-      try 
+      try
         Hashtbl.find tbl name
       with
       _ -> ucid name
@@ -106,20 +106,20 @@ rule main = parse
 | ['A'-'Z' 'a'-'z' '_']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
 | ['A'-'Z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']*
     { let name = Lexing.lexeme lexbuf in
-      try 
+      try
         Hashtbl.find tbl name
       with
       _ -> id name
      }
 
 (* quoted names *)
-| '\"' [^ '\"' '\n' '\t' ' ']* '\"' { 
+| '\"' [^ '\"' '\n' '\t' ' ']* '\"' {
       let name = Lexing.lexeme lexbuf in
 	id (String.sub name 1 (String.length name - 2))
     }
 
 | "-d->"
-| ['!' '"' '#' '$' '%' '&' '*' '+' '-' '.' '/' ':' '<' '=' '>' '+' 
+| ['!' '"' '#' '$' '%' '&' '*' '+' '-' '.' '/' ':' '<' '=' '>' '+'
    '@' '^' '`' '~' '|']+ | "\'" | "," {
     let sym = Lexing.lexeme lexbuf in
       try Hashtbl.find tbl sym with _ -> id sym
@@ -132,14 +132,14 @@ rule main = parse
 | '$' ['A'-'Z' 'a'-'z' '_']+ ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'']*
 | '$' ['A'-'Z'] ['A'-'Z' 'a'-'z' '0'-'9' '_' '\'' '-']* {
       let name = Lexing.lexeme lexbuf in
-      try 
+      try
         find_mv name
       with
       _ -> id name
     }
 
 | eof { eof }
-| _ { 
+| _ {
       let c = String.escaped (Lexing.lexeme lexbuf) in
       let pos = lexbuf.lex_curr_p in
       let pos' = {pos with pos_cnum = pos.pos_cnum - 1} in

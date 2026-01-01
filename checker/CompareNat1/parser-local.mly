@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -34,7 +34,7 @@ let errAt i s =
 
 %%
 
-Judgment: 
+Judgment:
     Nat IS LESS THAN Nat { Lt($1, $5) }
 
   | Nat error { errAt 2 "Syntax error: 'is' expected" }
@@ -56,4 +56,3 @@ Nat:
   | S LPAREN Nat error { errBtw 2 4 "Syntax error: unmatched parenthesis" }
   | S LPAREN error { errAt 3 "Syntax error: natural number expected after S(" }
   | S error { errAt 2 "Syntax error: opening parenthesis expected after S" }
-

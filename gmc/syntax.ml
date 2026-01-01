@@ -181,8 +181,8 @@ struct
       [] -> env
     | (jdg, in_num) :: rest ->
 	let argcats = (* categories of arguments of the judgment *)
-	  List.map 
-            (function 
+	  List.map
+            (function
              | Var x -> lookup_cat env (base_LCID x)
              | _ -> failwith "Implementation bug: Syntax.of_jdg")
             jdg.args in

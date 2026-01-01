@@ -1,9 +1,9 @@
-(S(Z) + S(Z)) * S(S(Z)) evalto S(S(S(S(Z)))) by E-Mult { 
+(S(Z) + S(Z)) * S(S(Z)) evalto S(S(S(S(Z)))) by E-Mult {
   S(Z) + S(Z) evalto S(S(Z)) by E-Plus {
     S(Z) evalto S(Z) by E-Const {};
     S(Z) evalto S(Z) by E-Const {};
     S(Z) plus S(Z) is S(S(Z)) by P-Succ {
-      S(Z) plus Z is S(Z) by P-Zero {} 
+      S(Z) plus Z is S(Z) by P-Zero {}
     }
   };
   S(S(Z)) evalto S(S(Z)) by E-Const {};
@@ -22,5 +22,4 @@
       }
     }
   }
-}    
-
+}

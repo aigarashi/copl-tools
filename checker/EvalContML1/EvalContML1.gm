@@ -1,5 +1,5 @@
-(* 
-    ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+(*
+    ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
     ContML1: CPS-style ML1
 *)
 

@@ -15,7 +15,7 @@ struct
 (* if e is the left operand of e_up, do you need parentheses for e? *)
   let (<) e e_up = match e, e_up with
     (* mult associates stronger than plus or minus *)
-      AOp((Plus | Minus), _, _), AOp(Mult, _, _) 
+      AOp((Plus | Minus), _, _), AOp(Mult, _, _)
 	-> true
     | _ -> false
 
@@ -59,7 +59,7 @@ module BExp =
 struct
 (* if e is the (left) operand of e_up, do you need parentheses for e? *)
   let (<) e e_up = match e, e_up with
-      LOp(Or,_,_), LOp(And,_,_) 
+      LOp(Or,_,_), LOp(And,_,_)
     | LOp(_,_,_),   Not _
       -> true
     | _ -> false
@@ -80,7 +80,7 @@ struct
     | LOp(p, b1, b2) ->
       let op = match p with And -> "&&" | Or -> "||" in
       pr ppf "%a %s %a"
-	(with_paren_L print b) b1 
+	(with_paren_L print b) b1
 	op
 	(with_paren_R print b) b2
     | COp(p, a1, a2) ->
@@ -97,7 +97,7 @@ struct
     | LOp(p, b1, b2) ->
       let op = match p with And -> "\\&\\&" | Or -> "||" in
       pr ppf "\\%sLOpTerm{%a}{%s}{%a}" g
-	(with_paren_L tex b) b1 
+	(with_paren_L tex b) b1
 	op
 	(with_paren_R tex b) b2
     | COp(p, a1, a2) ->
@@ -164,12 +164,12 @@ and print_st' ppf = function
   | Bind(st',Var x,i) -> pr ppf "%a%s = %d,@ " print_st' st' x i
 
 let print_judgment ppf = function
-    AEvalTo(st, a, i) -> 
+    AEvalTo(st, a, i) ->
       pr ppf "@[@[%a@]@ |- @[%a@]@ evalto %d@]" print_st st AExp.print a i
   | BEvalTo(st, b, bv) ->
     pr ppf "@[@[%a@]@ |- @[%a@]@ evalto %b@]" print_st st BExp.print b bv
-  | Exec(st1, c, st2) -> 
-    pr ppf "@[@[%a@]@ changes @[%a@]@ to @[%a@]@]" 
+  | Exec(st1, c, st2) ->
+    pr ppf "@[@[%a@]@ changes @[%a@]@ to @[%a@]@]"
       Comm.print c print_st st1 print_st st2
 
 let print_pjudgment ppf j = pr ppf "Pretty printer not implemented"
@@ -183,4 +183,3 @@ let tex_judgment ppf = function
       pr ppf "\\%sBEvalTo{%a}{%a}{%b}" g tex_st st BExp.tex b bv
   | Exec(st1, c, st2) ->
       pr ppf "\\%sExec{%a}{%a}{%a}" g tex_st st1 Comm.tex c tex_st st2
-

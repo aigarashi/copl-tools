@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -44,7 +44,7 @@ let errAt i s =
 %token <string> MVENV
 %%
 
-Judgment: 
+Judgment:
     St VDASH AExp EVALTO SInt { AEvalTo($1, $3, $5) }
   | St VDASH BExp EVALTO TRUE { BEvalTo($1, $3, true) }
   | St VDASH BExp EVALTO FALSE { BEvalTo($1, $3, false) }
@@ -61,7 +61,7 @@ partialj :
   | Comm CHANGES St TO QM { In_Exec($3, $1) }
 
 St:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | LCID EQ SInt St2 { List.fold_left (fun st (id, v) -> Bind(st, Var id, v)) Empty (($1,$3)::$4) }
   | LCID error { errAt 2 "Syntax error: '=' expected" }
   | LCID EQ error { errAt 3 "Syntax error: integer expected" }
@@ -73,7 +73,7 @@ St2:
   | COMMA error { errAt 2 "Syntax error: variable expected" }
   | COMMA LCID error { errAt 3 "Syntax error: '=' expected" }
   | COMMA LCID EQ error { errAt 4 "Syntax error: value expected" }
-  
+
 AExp:
   | AExp1 { $1 }
   | AExp CROSS AExp1 { AOp(Plus, $1, $3) }

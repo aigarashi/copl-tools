@@ -21,11 +21,11 @@
 ;; If information registered at (1) is wrong, the tmp registration can
 ;; be canceled right after the tmp registration.
 
-(define header 
-  (html:head 
+(define header
+  (html:head
    (html:title "「プログラミング言語の基礎概念」演習システム ユーザ登録")
-   (html:meta 
-    :http-equiv "content-type" 
+   (html:meta
+    :http-equiv "content-type"
     :content "text/html; charset=utf-8")
    (html:link :href "./global.css" :rel "stylesheet" :type "text/css")))
 
@@ -52,7 +52,7 @@
 		     :id "fullname" :value fname))
 	(html:li
 	 (html:label :for "address" :class "label" "メイルアドレス")
-	 (html:input :type "text" :name "address" :size "40" 
+	 (html:input :type "text" :name "address" :size "40"
 		     :id "address" :value address))
 	(html:li
 	 (html:label :for "address2" :class "label""メイルアドレス(確認)")
@@ -87,7 +87,7 @@
   (match conditions
 	 [() ()]
 	 [((error? . msg) . rest)
-	  (if (error?) 
+	  (if (error?)
 	      (cons msg (check-errors rest))
 	      (check-errors rest))]
 	 ))
@@ -97,13 +97,13 @@
   ;  name: login name
   ;  address: email address
   ;  fname: full name
-  (let ((command (string->symbol 
+  (let ((command (string->symbol
 		  (or (cgi-get-parameter "command" params) "nop")))
 	(uname (cgi-get-parameter "name" params))
 	(fname (cgi-get-parameter "fname" params))
 	(address (cgi-get-parameter "address" params))
 	(address2 (cgi-get-parameter "address2" params)))
-    (cond 
+    (cond
      [(eq? command 'register)
       (let ((valid?
 	     (check-errors
@@ -112,7 +112,7 @@
 		     "ユーザ名が空です!")
 	       (cons (lambda () (user-exists? uname))
 		     "そのユーザ名は既に存在します!")
-	       (cons (lambda () (invalid-name? uname)) 
+	       (cons (lambda () (invalid-name? uname))
 		     "ユーザ名は英数字(ピリオド・ハイフンも含む)2〜8文字でお願いします")
 	       (cons (lambda () (invalid-address? address))
 		     "不正なメイルアドレスです")
@@ -189,9 +189,8 @@
 (cgi-main main)
 
 ;  Yes -> request to choose another name, leaving other entries as they are
-;  No -> Put the information in the temporary list with a timp stamp and a 
+;  No -> Put the information in the temporary list with a timp stamp and a
 ;        new password
 ;    expiration: two days
 ;    login procedure should lookup this temporary user list
 ;    renew procedure should update this list
-

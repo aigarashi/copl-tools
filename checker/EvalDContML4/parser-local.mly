@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -39,7 +39,7 @@ let tbl = Hashtbl.create 1024
 
 /* ML2 */
 %token VDASH COMMA
-%token LET EQ IN 
+%token LET EQ IN
 
 /* ML3 */
 %token FUN RARROW
@@ -71,7 +71,7 @@ let tbl = Hashtbl.create 1024
 
 %%
 
-Judgment: 
+Judgment:
     Env VDASH Exp GTGT Cont GTGTGT MCont EVALTO Val { EvalTo($1, $5, $7, $3, $9) }
   | Env VDASH Exp GTGT Cont EVALTO Val { EvalTo($1, $5, RetKK, $3, $7) }
   | Env VDASH Exp EVALTO Val { EvalTo($1, RetK, RetKK, $3, $5) }
@@ -143,7 +143,7 @@ partialj :
   | SInt MINUS SInt IS error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | LCID EQ Val Env2 { List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) Empty (($1,$3)::$4) }
   | LCID error { errAt 2 "Syntax error: '=' expected" }
   | LCID EQ error { errAt 3 "Syntax error: value expected" }
@@ -155,30 +155,30 @@ Env2:
   | COMMA error { errAt 2 "Syntax error: variable expected" }
   | COMMA LCID error { errAt 3 "Syntax error: '=' expected" }
   | COMMA LCID EQ error { errAt 4 "Syntax error: value expected" }
-  
+
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
-  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
+  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) }
   | Exp3 COLCOL LongExp { Cons($1, $3) }  /* left op. of :: is Exp3 (not Exp2) */
-  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
-  | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) } 
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) }
+  | Exp4 BinOp4 LongExp { BinOp($2, $1, $3) }
 
   | Exp1 BinOp1 error { errAt 3 "Syntax error: expression expected" }
   | Exp3 COLCOL error { errAt 3 "Syntax error: expression expected" }
   | Exp3 BinOp3 error { errAt 3 "Syntax error: expression expected" }
   | Exp4 BinOp4 error { errAt 3 "Syntax error: expression expected" }
 
-LongExp: 
+LongExp:
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
   | LET REC LCID EQ FUN LCID RARROW Exp IN Exp { LetRec(Var $3, Var $6, $8, $10) }
   | FUN LCID RARROW Exp { Abs(Var $2, $4) }
   | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID COLCOL LCID RARROW Exp
-      { if $9 = $11 
+      { if $9 = $11
 	then errBtw 9 11 "These variables shouldn't be the same"
 	else Match($2, $7, Var $9, Var $11, $13) }
-  | SHIFT LCID IN Exp { Shift(Var $2, $4) } 
+  | SHIFT LCID IN Exp { Shift(Var $2, $4) }
 
   | IF error { errAt 2 "Syntax error: expression expected" }
   | IF Exp error { errAt 3 "Syntax error: 'then' expected" }
@@ -216,9 +216,9 @@ LongExp:
       { errAt 12 "Syntax error: '->' expected" }
   | MATCH Exp WITH LBRACKET RBRACKET RARROW Exp BAR LCID COLCOL LCID RARROW error
       { errAt 13 "Syntax error: expression expected" }
-  | SHIFT error { errAt 2 "Syntax error: variable expected" } 
-  | SHIFT LCID error { errAt 3 "Syntax error: 'in' expected" }  
-  | SHIFT LCID IN error { errAt 4 "Syntax error: expression expected" }  
+  | SHIFT error { errAt 2 "Syntax error: variable expected" }
+  | SHIFT LCID error { errAt 3 "Syntax error: 'in' expected" }
+  | SHIFT LCID IN error { errAt 4 "Syntax error: expression expected" }
 
 Exp1:
   | Exp1 BinOp1 Exp2 { BinOp($2, $1, $3) }
@@ -236,7 +236,7 @@ Exp4:
     Exp4 BinOp4 Exp5 { BinOp($2, $1, $3) }
   | Exp5 { $1 }
 
-Exp5:  /* function application: 
+Exp5:  /* function application:
           argument is an atomic expression without unary minus */
     Exp5 AExp { App($1, $2) }
   | MinExp { $1 }
@@ -251,7 +251,7 @@ BinOp3:
 BinOp4:
     AST { Mult }
 
-MinExp: 
+MinExp:
     HYPHEN INTL { Exp_of_int (- $2) }
   | AExp { $1 }
 
@@ -287,7 +287,7 @@ AVal:
   | FALSE { Value_of_bool false }
   | LBRACKET RBRACKET { NilV }
   | LPAREN Env RPAREN LBRACKET FUN LCID RARROW Exp RBRACKET { Fun($2, Var $6, $8) }
-  | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET 
+  | LPAREN Env RPAREN LBRACKET REC LCID EQ FUN LCID RARROW Exp RBRACKET
       { Rec($2, Var $6, Var $9, $11) }
   | LPAREN Val RPAREN { $2 }
   | LBRACKET Cont RBRACKET { ContF $2 }
@@ -308,7 +308,7 @@ AVal:
   | LPAREN Env RPAREN LBRACKET REC LCID FUN LCID RARROW Exp error { errBtw 4 11 "Syntax error: unmatched brackets" }
   | LPAREN Val error { errBtw 1 3 "Syntax error: unmatched parenthesis" }
 
-BinOp: BinOp1 {$1} | BinOp3 {$1} | BinOp4 {$1} 
+BinOp: BinOp1 {$1} | BinOp3 {$1} | BinOp4 {$1}
 
 MHole: USCOREUSCORE { RetKK }
 
@@ -326,13 +326,13 @@ OptCont: GTGT Cont { $2 }
   | GTGT error { errAt 2 "Syntax error: continuation expected" }
 Cont:
   | Hole { RetK }
-  | LBRACE Env VDASH Hole BinOp1 Exp2 RBRACE OptCont 
+  | LBRACE Env VDASH Hole BinOp1 Exp2 RBRACE OptCont
      { EvalRK($2, $6, $5, $8) }
-  | LBRACE Env VDASH Hole BinOp3 Exp4 RBRACE OptCont 
+  | LBRACE Env VDASH Hole BinOp3 Exp4 RBRACE OptCont
      { EvalRK($2, $6, $5, $8) }
   | LBRACE Env VDASH Hole BinOp4 Exp5 RBRACE OptCont
      { EvalRK($2, $6, $5, $8) }
-  | LBRACE Env VDASH Hole BinOp LongExp RBRACE OptCont 
+  | LBRACE Env VDASH Hole BinOp LongExp RBRACE OptCont
      { EvalRK($2, $6, $5, $8) }
   | LBRACE Val BinOp Hole RBRACE OptCont { AppOpK($2, $3, $6) }
   | LBRACE Env VDASH IF Hole THEN Exp ELSE Exp RBRACE OptCont
@@ -364,7 +364,7 @@ Cont:
   | LBRACE Val BinOp Hole error { errAt 5 "Syntax error: '}' expected" }
   | LBRACE Env VDASH IF error { errAt 5 "Syntax error: '_' expected" }
   | LBRACE Env VDASH IF Hole error { errAt 6 "Syntax error: 'then' expected" }
-  | LBRACE Env VDASH IF Hole THEN error 
+  | LBRACE Env VDASH IF Hole THEN error
      { errAt 7 "Syntax error: expression expected" }
   | LBRACE Env VDASH IF Hole THEN Exp error
      { errAt 8 "Syntax error: 'else' expected" }
@@ -406,22 +406,22 @@ Cont:
       { errAt 11 "Syntax error: variable name expected" }
   | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp BAR LCID error
       { errAt 12 "Syntax error: '::' name expected" }
-  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp
                                 BAR LCID COLCOL error
       { errAt 13 "Syntax error: variable name expected" }
-  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp
                                 BAR LCID COLCOL LCID error
       { errAt 14 "Syntax error: '->' expected" }
-  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp
                                 BAR LCID COLCOL LCID RARROW error
       { errAt 15 "Syntax error: expression expected" }
-  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp 
+  | LBRACE Env VDASH MATCH Hole WITH LBRACKET RBRACKET Exp
                                 BAR LCID COLCOL LCID RARROW Exp error
       { errAt 16 "Syntax error: '}' expected" }
 
 /******** experimental feature for macro defintions *********/
 
-MacroDefs: 
+MacroDefs:
   | MacroDef MacroDefs { () }
 
 MacroDef:
@@ -438,42 +438,42 @@ MacroDef:
   | DEF MVMCONT EQ error { errAt 4 "Syntax error: meta-continuation expected"  }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
-Val: MVVALUE { 
+Val: MVVALUE {
   try
-    match Hashtbl.find tbl $1 with 
+    match Hashtbl.find tbl $1 with
       Value v -> v
-    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
 AExp: MVEXP {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Exp e -> e
-    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Env: MVENV Env2 {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Env e -> List.fold_left (fun env (id, v) -> Bind(env, Var id, v)) e $2
-    | _ -> errAt 1 "Cannot happen! Env: MVENV" 
+    | _ -> errAt 1 "Cannot happen! Env: MVENV"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Cont: MVCONT {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Cont k -> k
-    | _ -> errAt 1 "Cannot happen! Cont: MVCONT" 
+    | _ -> errAt 1 "Cannot happen! Cont: MVCONT"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 MCont: MVMCONT {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       MCont k -> k
-    | _ -> errAt 1 "Cannot happen! MCont: MVMCONT" 
+    | _ -> errAt 1 "Cannot happen! MCont: MVMCONT"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

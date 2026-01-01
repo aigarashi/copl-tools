@@ -128,7 +128,7 @@
 	* checker/{EvalML6,TypingML6}: Now allows 3-ary constructors.
 
 	* checker/TypingML6/parser.mly: In this game, the input takes the form:
-	   MacroDefs 
+	   MacroDefs
 	   TypeDefinitions (signature)
 	   Derivation
 	so that the user doesn't have to write the siganture in judgments.
@@ -148,7 +148,7 @@
 	* checker/EvalML6/{EvalML6.gm, parser.mly, pp.ml}:
 	The name of some constructors changed.
 
-	* checker/*/parser.mly, checker/lexer.mll, checker/common/link.ml: 
+	* checker/*/parser.mly, checker/lexer.mll, checker/common/link.ml:
 	New token UCID for upper case identifiers.
 	* checker/EvalML6: New game for 0- upto 2-ary constructors.
 
@@ -288,17 +288,17 @@
 	categories between given two categories.
 
 	* checker: Renaming of games MLx to EvalMLx.
-	
+
 	* cgi/process.cgi: reverted yesterday's change.
-	* checker/main.ml, */parser.mly: 
+	* checker/main.ml, */parser.mly:
 	Fixed a bug, which accepts the empty string (or
 	strings consisting of only space characters) as a right one!
 
 	Now, each parser should accepts a toplevel EOF but raise the
 	exception End_of_file in the action.
-	
+
         * checker/mySupport.ml: Symbolic link to ../gmc/mySupport.ml
-	
+
 2009-10-22  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/process.cgi (display-result): Fixed a bug, which accepts the
@@ -316,7 +316,7 @@
 	* checker/lexer.mll: "-d->" is added to a special symbol.  It was
 	a bad idea to have a symbol like this.
 	* checker/Makefile: bug fix.
-	
+
 2009-10-19  Atsushi Igarashi  <igarashi@cornet>
 
 	* checker/derivation.ml (print_derivs): Modified the way a derivation is printed.
@@ -345,7 +345,7 @@
 2009-09-09  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* ML1/parser.mly, common/link.ml, common/Makefile.game,
-	lexer.mll, Makefile, ML1/macroVars.ml: 
+	lexer.mll, Makefile, ML1/macroVars.ml:
 
 	Support of definitions.  Lexer recognizes '$' followed by a
 	category name as a macro name.  The category names and their
@@ -361,17 +361,17 @@
 
 	* */macroVars.ml:  New files to list up macro variable names.
 	But, they should be generated from *.gm automatically.
-	
+
 	* */parser.mly:  Adaptation for the introduction of definitions.
 
 2009-09-08  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* checker/ContML4: Syntax change:  ">>" in "v >> k evalto v" has
 	been changed to "=>".
-	
+
 	* checker/ContML1, cgi/rules2TeX.scm: New game ContML1 for a
 	gentle introduction to the idea of continuations.
-	
+
 
 2009-09-07  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
@@ -393,7 +393,7 @@
 
 2009-09-04  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
-	* gmc/emit.ml (ML.Rules.emit_jdg, ML.Rules.emit_term, Prover.emit_term): 
+	* gmc/emit.ml (ML.Rules.emit_jdg, ML.Rules.emit_term, Prover.emit_term):
 	error handling for the failure of List.map2.
 
 	* checker/ML4Cont/ML4Cont.gm: New game for first-class continuations.
@@ -418,9 +418,9 @@
 
 	* checker/lexer.mll: tokens for integer literals are now changed
 	to one without minus; parsers should take care of unary minus.
-	
+
 	* checker/PolyML5/{pp.ml,keywords.ml,parser.mly}: Syntax for type
-	   schemes changed from All('a,'b)['a->'b->'a] 
+	   schemes changed from All('a,'b)['a->'b->'a]
 	   to 'a 'b.'a->'b->'a.
 
 2008-11-21  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
@@ -458,10 +458,10 @@
 
 	* cgi/index.cgi (display-qlist): space for the solved problem has
 	been replaced by &nbsp;
-	
+
 	* cgi/questions.db: many typos:  We should automate the check
 	to make sure the expression is valid.
-	
+
 2008-10-20  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
 	* cgi/questions.db: Questions rearranged.
@@ -475,10 +475,10 @@
 	* checker/NatExp/pp.ml: adapted for TeX output
 	* checker/NatLt1/pp.ml: adapted for TeX output
 	* checker/Nat/pp.ml: adapted for TeX output
-	
+
 2008-09-17  Atsushi Igarashi  <igarashi@cornet>
 
-	* checker: nat -> Nat 
+	* checker: nat -> Nat
 
 2008-09-16  Atsushi Igarashi  <igarashi@cornet>
 
@@ -506,10 +506,10 @@
 
 2008-08-28  IGARASHI Atsushi  <igarashi@saturn.sato.kuis.kyoto-u.ac.jp>
 
-	* checker/nat/nat.gm: The induction variable for plus and mult 
+	* checker/nat/nat.gm: The induction variable for plus and mult
 	has been swapped (again).
 
-	* cgi/rules2TeX.scm: The metavar for run-time environments is 
+	* cgi/rules2TeX.scm: The metavar for run-time environments is
 	typeset as \mathcal{E}.
 
 	* gmc/mySupport.ml (Pervasives.add_substitute): Adapted
@@ -520,13 +520,13 @@
 	* gmc/emit.ml (SExp.emit_qexp): now properly escapes commas and
 	backslashes.
 
-	* gmc/emit.ml ({Rules,TeX,SExp}.emit_term): 
+	* gmc/emit.ml ({Rules,TeX,SExp}.emit_term):
 	* gmc/main.ml (Syntax.of_game): true and false are
 	treated as special metavariables of category "bool".  In output,
 	they are never preceded by underscores.
 	* checker/*/ML?.gm (E-IfT, E-IfF): Now, true and false are used in
 	rules.
-	
+
 	* gmc/syntax.ml, gmc/emit.ml, gmc/lexer.mll, gmc/parser.mly: TeX
 	  presentation for side conditions can be expressed by putting an
 	  TeX string enclosed by % after a side condition `...`.
@@ -602,7 +602,7 @@
 
 	* checker/main.ml, common/link.ml, */parser.mly:
 	New option "-against" to match the proved judment.
-	
+
 	* checker/main.ml: New option "-check" followed by the string of
 	the derivation to check.
 
@@ -631,10 +631,10 @@
 
 	* PolyML4/pp.ml (pp_type_aux): List.nth counts elements of a list
 	from 0.
-	
+
 	* PolyML4/pp.ml (pp_tyvardecls): new function(s) to print a type
 	scheme correctly.
-	
+
 	* lexer.mll: Only uppercase names can contain hyphens. It prevents
 	'a->'a from being parsed as "'" "a-" ">".  An apostorophe or comma
 	cannot be a part of (long) symbolic names.
@@ -644,7 +644,7 @@
 	* PolyML4: new game for polymorphic typing.  Probably unfinished.
 	* TypingML4: type variables (named by a prime follewed by an
 	alphanumeric name) are added.
-	
+
 	* checker/lexer.mll: identifiers can now begin with an underscore.
 	An apostrophe can be part of a symbolic name.  Underscore is
 	removed from charcters for symbolic names.
@@ -660,7 +660,7 @@
 
 	* gmc/mySupport.ml (Pervasives.iteri): New function.  Iteration
 	over a list with index (the first element is indexed by 1).
-	
+
 	* ML5/pp.ml (print_exp): Recovering missing parens for cons.
 	* TypingML5/pp.ml (print_exp): Ditto.
 
@@ -675,7 +675,7 @@
 	their own index numbers (but not printed in the pattern).  This
 	will allow some metavars in side conditions to appear as declaration
 	in the emitted code.
-	
+
 	* gmc/{syntax.ml, syntax.mli, parser.mly, lexer.mll, main.ml}: .gm
 	  file now allows ML code at the end of the file with the tag
 	  "[ML]".  The code will be inserted before generated functions so
@@ -702,7 +702,7 @@
 
 	* checker/{ML2,ML3,ML4}/pp.ml: Small bug fix.
 	* checker/ML5: New game for ML5 expressions.  Modular
-	pretty-printing routine is imported from TypingML4.  
+	pretty-printing routine is imported from TypingML4.
 	* checker/Makefile: changes due to the new game.
 	* gmc/parser.mly: better error message.
 
@@ -721,7 +721,7 @@
 	* checker/TypingML4: new game for typing ML4 expressions.
 	ML files other than core.ml are generated by emacs emerge.
 	More modular pretty-printing routine in pp.ml.
-	
+
 	* gmc/mySupport.ml: Error or warning messages output to stderr.
 
 2008-05-07  Atsushi Igarashi  <igarashi@localhost>
@@ -741,11 +741,11 @@
 	occurrences of the same variable.
 
 	* checker/TypingML2: new game for typing ML2 expressions.
-	
+
 	* gmc/emit.ml: newline at the final line for the emitted program.
 
 	* gmc/mode.ml: New module for mode analysis.
-	* gmc/main.ml, gmc/mySupport.ml, gmc/syntax.ml, gmc/syntax.mli: 
+	* gmc/main.ml, gmc/mySupport.ml, gmc/syntax.ml, gmc/syntax.mli:
 	changes to incorporate mode analysis.
 
 2008-04-19  Atsushi Igarashi  <igarashi@cornet>
@@ -783,10 +783,10 @@
 
 	* examples/ML2.gm: representation of env is modified.
 	* examples/ML2/{parser.mly, pp.ml}: according changes.
-	
+
 	* examples/common/main.ml: if file name is omitted, it reads from
-	stdin. 
-	
+	stdin.
+
 2008-04-03  Atsushi Igarashi  <igarashi@cornet>
 
 	* gmc/emit.ml: All calls of Format.printf has been replaced with
@@ -798,9 +798,9 @@
 	* examples/ML2/{parser.mly, pp.ml, Makefile, keywords.ml}: New files.
 	* examples/common/{Makefile, main.ml}: Necessary changes for ML2.
 	* doc/main.tex: description of problems in implementing ML2.
-	
+
 	* examples/ML1/pp.ml: tidying up.
-	
+
 
 2008-04-01  Atsushi Igarashi  <igarashi@cornet>
 
@@ -818,7 +818,7 @@
 	and alphabetical names (ID) as a rule name.
 
 	* examples/common/link.ml: function lcid() added.
-	
+
 	* examples/*/keywords.ml: "?" and ";" are listed as keywords.
 
 2008-03-31  Atsushi Igarashi  <igarashi@cornet>
@@ -837,7 +837,7 @@
 	category.
 	* gmc/syntax.ml, gmc/syntax.mli: accordingly changed.
 	* examples/nat.gm: test of this feature.
-	
+
 2008-03-30  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/ML1.gm: bug fix.
@@ -864,7 +864,7 @@
 
 	* examples/nat.gm: exchanged the positons of tasu-kazu and
 	tasareru-kazu.
-	
+
 
 2008-03-26  IGARASHI Atsushi  <igarashi@sato.kuis.kyoto-u.ac.jp>
 
@@ -873,11 +873,11 @@
 
 	* source code restructuring: lexer is functorized.  Modules
 	for each game are packed in to one module.  Switch to choose a game.
-	
+
 2008-03-23  Atsushi Igarashi  <igarashi@cornet>
 
 	* examples/common/syntax.ml, examples/nat/pp.ml: function to
-	output derivations in TeX (-TeX flag).  
+	output derivations in TeX (-TeX flag).
 
 2008-03-22  Atsushi Igarashi  <igarashi@cornet>
 
@@ -895,9 +895,9 @@
 
 	* examples/common/syntax.ml: data structure and pretty printing
 	functions common to all games.
-	
+
 	* examples/nat/pp.ml: pretty printer for natural numbers.
-	
+
 	* gmc/emit.ml: renamed from pp.ml to avoid collision with
 	game-specific printers.
 
@@ -911,8 +911,7 @@
 
 	* examples/ML1: game for ML1 (int + binoperations)
 	* changes for handling side conditions in rules.
-	
+
 2008-03-13  Atsushi Igarashi  <igarashi@cornet>
 
 	* ML1.gm: formatting adjustment
-

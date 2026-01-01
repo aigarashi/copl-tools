@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -53,7 +53,7 @@ let tbl = Hashtbl.create 1024
 
 %%
 
-Judgment: 
+Judgment:
     Exp GTGT Cont EVALTO Val { EvalTo($3, $1, $5) }
   | Exp EVALTO Val { EvalTo(RetK, $1, $3) }
   | Val DRARROW Cont EVALTO Val { AppK($3, $1, $5) }
@@ -115,11 +115,11 @@ partialj :
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
-  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
-  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
-  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
+  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) }
+  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) }
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) }
 
-LongExp: 
+LongExp:
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
 
 Exp1:
@@ -160,7 +160,7 @@ Val:
   | TRUE { Value_of_bool true }
   | FALSE { Value_of_bool false }
 
-BinOp: BinOp1 {$1} | BinOp2 {$1} | BinOp3 {$1} 
+BinOp: BinOp1 {$1} | BinOp2 {$1} | BinOp3 {$1}
 
 Hole:  UNDERSCORE { RetK }
 
@@ -169,13 +169,13 @@ OptCont: GTGT Cont { $2 }
   | GTGT error { errAt 2 "Syntax error: continuation expected" }
 Cont:
   | Hole { RetK }
-  | LBRACE Hole BinOp1 Exp2 RBRACE OptCont 
+  | LBRACE Hole BinOp1 Exp2 RBRACE OptCont
      { EvalRK($4, $3, $6) }
-  | LBRACE Hole BinOp2 Exp3 RBRACE OptCont 
+  | LBRACE Hole BinOp2 Exp3 RBRACE OptCont
      { EvalRK($4, $3, $6) }
   | LBRACE Hole BinOp3 AExp RBRACE OptCont
      { EvalRK($4, $3, $6) }
-  | LBRACE Hole BinOp LongExp RBRACE OptCont 
+  | LBRACE Hole BinOp LongExp RBRACE OptCont
      { EvalRK($4, $3, $6) }
   | LBRACE Val BinOp Hole RBRACE OptCont { AppOpK($2, $3, $6) }
   | LBRACE IF Hole THEN Exp ELSE Exp RBRACE OptCont
@@ -203,7 +203,7 @@ Cont:
 
 /******** experimental feature for macro defintions *********/
 
-MacroDefs: 
+MacroDefs:
   | MacroDef MacroDefs { () }
 
 MacroDef:
@@ -216,26 +216,26 @@ MacroDef:
   | DEF MVCONT EQ error { errAt 4 "Syntax error: continuation expected"  }
   | DEF error { errAt 2 "Syntax error: metavariable (with $) expected" }
 
-Val: MVVALUE { 
+Val: MVVALUE {
   try
-    match Hashtbl.find tbl $1 with 
+    match Hashtbl.find tbl $1 with
       Value v -> v
-    | _ -> errAt 1 "Cannot happen! Val: MVVALUE" 
+    | _ -> errAt 1 "Cannot happen! Val: MVVALUE"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
 }
 
 AExp: MVEXP {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Exp e -> e
-    | _ -> errAt 1 "Cannot happen! AExp: MVEXP" 
+    | _ -> errAt 1 "Cannot happen! AExp: MVEXP"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }
 
 Cont: MVCONT {
-  try 
+  try
     match Hashtbl.find tbl $1 with
       Cont e -> e
-    | _ -> errAt 1 "Cannot happen! Cont: MVCONT" 
+    | _ -> errAt 1 "Cannot happen! Cont: MVCONT"
   with Not_found -> errAt 1 ("Undefined macro: " ^ $1)
   }

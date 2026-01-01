@@ -40,7 +40,7 @@ struct
     print_2pos pos1 pos2;
     err s
 
-(*  let warning s = 
+(*  let warning s =
     eprintf "\n";
     eprintf "Warning: %s\n" s
 *)
@@ -67,7 +67,7 @@ struct
     if n = 0 then []
     else match l with [] -> [] | a :: rest -> a :: take (n-1) rest
 
-  let rec drop n l = 
+  let rec drop n l =
     if n = 0 then l
     else match l with [] -> [] | a :: rest -> drop (n-1) rest
 
@@ -82,7 +82,7 @@ struct
 	| x :: l' -> f n x; loop (n+1) l'
     in loop 1 l
 
-  let rec pos a l = 
+  let rec pos a l =
     match l with
 	[] -> raise Not_found
       | a' :: rest -> if a = a' then 1 else 1 + pos a rest
@@ -157,7 +157,7 @@ struct
 	    | current ->
 		add_char b current;
 		subst current (i + 1)
-	end 
+	end
       else if previous == '\\' then add_char b previous in
       subst ' ' 0;;
 
@@ -177,16 +177,16 @@ struct
 		  begin
 		    match Stdlib.String.get s i with
 			('"' | '\\') as c ->
-			  Bytes.set s' !n '\\'; incr n; 
+			  Bytes.set s' !n '\\'; incr n;
 			  Bytes.set s' !n c
 		      | ',' ->
-			  Bytes.set s' !n ','; incr n; 
+			  Bytes.set s' !n ','; incr n;
 			  Bytes.set s' !n ','
 		      | '\n' ->
-			  Bytes.set s' !n '\\'; incr n; 
+			  Bytes.set s' !n '\\'; incr n;
 			  Bytes.set s' !n 'n'
 		      | '\t' ->
-			  Bytes.set s' !n '\\'; incr n; 
+			  Bytes.set s' !n '\\'; incr n;
 			  Bytes.set s' !n 't'
 		      | c -> Bytes.set s' !n c
 		  end;

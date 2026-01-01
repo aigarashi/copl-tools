@@ -398,7 +398,7 @@ struct
   let normalize_name s =
     let roman = function
 	'1' -> "i" | '2' -> "ii" | '3' -> "iii" | '4' -> "iv" | '5' -> "v"
-      | '6' -> "vi" | '7' -> "vii" | '8' -> "viii" | '9' -> "ix" 
+      | '6' -> "vi" | '7' -> "vii" | '8' -> "viii" | '9' -> "ix"
       | _ -> failwith "Implementation bug in Emit.normalize_name" in
     let b = Buffer.create (String.length s) in
       String.iter
@@ -540,7 +540,7 @@ struct
 	  let inargs = take i jdg.args in
 	  let ts =
 	    List.map
-	      (function 
+	      (function
                | Var v -> Var (Syntax.base_LCID v)
                | _ -> failwith "Emit.of_judgments")
               inargs in

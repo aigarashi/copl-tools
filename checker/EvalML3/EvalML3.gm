@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
 *)
@@ -40,17 +40,17 @@ E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
 E-Var2:  EvalTo(Bind(env,y,v1), x, v2) :- `$y <> $x` %$y \neq $x%, EvalTo(env, x, v2);
-E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :- 
+E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :- 
+E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Minus, i1, i2, i3);
-E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :- 
+E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
-E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, true), EvalTo(env, e2, v);
-E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, false), EvalTo(env, e3, v);
 E-Let:  EvalTo(env, Let(x, e1, e2), v) :-
 		EvalTo(env, e1, v1), EvalTo(Bind(env,x,v1), e2, v);

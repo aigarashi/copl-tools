@@ -7,7 +7,7 @@ n in Nat ::= Z
 
 [Judgments]
 
-Lt(n1, n2);      
+Lt(n1, n2);
 
 [Rules]
 

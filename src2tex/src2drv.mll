@@ -26,7 +26,7 @@
       end;
      current := ""
 
-  let header = 
+  let header =
 "#!/bin/bash\n$HOME/work/books/CoPL/tools/checker/checker -full -game "
 
   let pr s = if !mode = ML then emit s
@@ -35,7 +35,7 @@
 rule lex = parse
   eof { }
 | "#{" ['#' '*'] "}{" (['A'-'Z' 'a'-'z' '(' ')' '-' ' ' '"' '?' '+' '*']* as opt) "}\n" {
-    pr (Lexing.lexeme lexbuf); mode := ML; 
+    pr (Lexing.lexeme lexbuf); mode := ML;
     prerr_string "hoge!\n";
     emit header;
     emit opt;
@@ -55,7 +55,7 @@ rule lex = parse
 (*       emit "(* \""; emit !wholename; emit "\" *)\n"; *)
        lex (Lexing.from_channel (open_in !wholename)))
     else
-      (basename := "ml/f"; 
+      (basename := "ml/f";
        lex (Lexing.from_channel stdin));
     exit 0
 }

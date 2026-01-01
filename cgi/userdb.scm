@@ -38,7 +38,7 @@
 
 (define-constant tmp-users
   ;; should not be a valid user name
-  "@TMP-USERS")  
+  "@TMP-USERS")
 
 (define (timestamp-of entry) (cadr entry))
 (define (passwd-of entry) (caddr entry))
@@ -66,7 +66,7 @@
   (match alist
 	 [() (list (cons key content))]
 	 [((and (key2 . _) p) . rest)
-	  (if (equal? key key2) 
+	  (if (equal? key key2)
 	      (if content
 		  (cons (cons key content) rest)
 		  rest)
@@ -124,7 +124,7 @@
 	     (let* ((db (read in))
 		    (entry (assoc key db))
 		    (oldentry (if entry (cdr entry) #f)))
-	       (receive 
+	       (receive
 		(out tempfile) (sys-mkstemp dbname)
 		(dynamic-wind
 		    (lambda ())
@@ -143,12 +143,12 @@
     ;; insert a nat m into an increasing list ns without duplication
     (match ns
 	   [() (list m)]
-	   [(hd . tl) (cond ((> m hd) 
+	   [(hd . tl) (cond ((> m hd)
 			     (cons hd (insert m tl)))
-			    ((= m hd) ns)  ;; avoid duplication 
+			    ((= m hd) ns)  ;; avoid duplication
 			    (else (cons m ns)))]))
-  (updatedb uname 'solved 
-	    (lambda (old) 
+  (updatedb uname 'solved
+	    (lambda (old)
 	      (if old (insert new old) (list new)))))
 
 (define (renew-passwd uname remotehost remoteIP)
@@ -163,7 +163,7 @@
 		   (not (expired? (timestamp-of tmp-address)))
 		   (< 0 (string-length (address-of tmp-address)))))
 	  (let*
-	      ((address (or (and address-entry (cdr address-entry)) 
+	      ((address (or (and address-entry (cdr address-entry))
 			 (address-of tmp-address)))
 	       (process (run-process '(pwgen "-s") :output :pipe))
 	       (newpasswd (read-line (process-output process)))
@@ -172,17 +172,17 @@
 		       (integer->char (+ 65 (random-integer 26)))
 		       (integer->char (+ 65 (random-integer 26))))))
 	       (hash (sys-crypt newpasswd salt))
-	       (msg 
+	       (msg
 #`"This is a message from the E-learning system for the book \"Concepts of Programming Languages\".
 Below is your account information:
 
     User name: ,|uname|
     Password: ,|newpasswd|
 
-If you are not sure about this message, please contact 
+If you are not sure about this message, please contact
   igarashi@kuis.kyoto-u.ac.jp")
 	       (title "[CoPL E-Learning] Your account information")
-	       (mail-process (run-process `(mail ,address "-s" ,title) 
+	       (mail-process (run-process `(mail ,address "-s" ,title)
 				     :input :pipe
 				     :error :pipe))
 	       (output (process-input mail-process)))
@@ -192,14 +192,14 @@ If you are not sure about this message, please contact
 		;; if normal-users
 		(begin
 		  (updatedb uname 'passwd (lambda (old) hash))
-		  (write-log uname 
+		  (write-log uname
 			     (format "Password change request from ~a (~a)"
 				     remotehost remoteIP)
 			     :header #t))
 		(begin
 		  ;; if temporary user
 		  (updatedb tmp-users uname
-			    (match-lambda 
+			    (match-lambda
 			     ((timestamp _ address fname)
 			      (list timestamp hash address fname))))
 		  (write-log tmp-users
@@ -212,7 +212,7 @@ If you are not sure about this message, please contact
   ;; can exclude temporary users since they have never logged in
   (map (lambda (x) (path-sans-extension x))
        (directory-list *userdb-dir* :children? #t
-        :filter (lambda (f) 
+        :filter (lambda (f)
 		  (and (string-suffix? ".db" f)
 		       (not (string=? tmp-users (path-sans-extension f))))))))
 
@@ -232,7 +232,7 @@ If you are not sure about this message, please contact
 (define (expired? time)
   (> (sys-difftime (sys-time) time) three-days))
 
-(define (user-exists? name) 
+(define (user-exists? name)
   (or (file-exists? (dbfile name))
       (let ((x (lookupdb tmp-users name)))
 	(and x

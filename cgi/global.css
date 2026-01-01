@@ -173,7 +173,7 @@ ul.qlist {
     overflow:hidden;
     border:1px solid #ffffff;
     /***/
-    padding: 2px; 
+    padding: 2px;
     color: #ffff00;
 }
 .qlist li.finished {
@@ -246,7 +246,7 @@ ul.questions{
 }
 
 #userinput {
-    margin: 5px; 
+    margin: 5px;
     border: 1px solid #6699ff;
     border-spacing: 0em;
 }

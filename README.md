@@ -6,7 +6,7 @@ Tools for the book "Concepts of Programming Languages" including:
 - gmc: Generates an OCaml functon to check derivations from a formal
   definition of a derivation system.
 - checker: Derivation checker.
-- cgi: CGI scripts in Gauche for the CoPL web site at 
+- cgi: CGI scripts in Gauche for the CoPL web site at
   http://www.fos.kuis.kyoto-u.ac.jp/~igarashi/CoPL/.
 
 - doc: Documentation.

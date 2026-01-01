@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
   NamelessML3: ML3 in de Bruin notation
@@ -39,19 +39,19 @@ AppBOp(op, v, v; v);
 
 E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
-E-IfT: 	EvalTo(env, IfD(d1, d2, d3), v) :- 
+E-IfT: 	EvalTo(env, IfD(d1, d2, d3), v) :-
 		EvalTo(env, d1, true), EvalTo(env, d2, v);
-E-IfF: 	EvalTo(env, IfD(d1, d2, d3), v) :- 
+E-IfF: 	EvalTo(env, IfD(d1, d2, d3), v) :-
 		EvalTo(env, d1, false), EvalTo(env, d3, v);
-E-Plus: EvalTo(env, BinOpD(Plus, d1, d2), i3) :- 
+E-Plus: EvalTo(env, BinOpD(Plus, d1, d2), i3) :-
 		EvalTo(env, d1, i1), EvalTo(env, d2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(env, BinOpD(Minus, d1, d2), i3) :- 
+E-Minus: EvalTo(env, BinOpD(Minus, d1, d2), i3) :-
 		EvalTo(env, d1, i1), EvalTo(env, d2, i2), AppBOp(Minus, i1, i2, i3);
-E-Times: EvalTo(env, BinOpD(Mult, d1, d2), i3) :- 
+E-Times: EvalTo(env, BinOpD(Mult, d1, d2), i3) :-
 		EvalTo(env, d1, i1), EvalTo(env, d2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOpD(Lt, d1, d2), b3) :-
 		EvalTo(env, d1, i1), EvalTo(env, d2, i2), AppBOp(Lt, i1, i2, b3);
-E-Var:  EvalTo(env, Index(n), v) :- 
+E-Var:  EvalTo(env, Index(n), v) :-
           `try $v = nth $env $n with Exit -> false`
           `$v = nth $env $n`
           %$env[$n] = $v%;
@@ -78,8 +78,7 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 [ML]
 
 let rec nth env n =
-    match env, n with 
+    match env, n with
       Bind(_, v), 1 -> v
     | Bind(env', _), n -> nth env' (n-1)
     | Empty, _ -> raise Exit
-

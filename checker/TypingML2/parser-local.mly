@@ -3,7 +3,7 @@ open Core
 open Derivation
 
 let errBtw i j s =
-  MySupport.Error.errBtw 
+  MySupport.Error.errBtw
     (Parsing.rhs_start_pos i) (Parsing.rhs_end_pos j) s
 
 let errAt i s =
@@ -29,7 +29,7 @@ let errAt i s =
 
 /* ML2 */
 %token VDASH COMMA
-%token LET EQ IN 
+%token LET EQ IN
 
 /* TypingML2 */
 %token INT BOOL
@@ -46,7 +46,7 @@ let errAt i s =
 
 %%
 
-Judgment: 
+Judgment:
     Env VDASH Exp COLON Type { Typing($1, $3, $5) }
   | Env VDASH Exp error { errAt 4 "Syntax error: colon expected" }
   | Env VDASH Exp COLON error { errAt 5 "Syntax error: type expression expected" }
@@ -57,37 +57,37 @@ partialj :
   | Env VDASH Exp COLON error { errAt 5 "Syntax error: '?' expected" }
 
 Env:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | Env2 LCID COLON Type { Bind($1, Var $2, $4) }
   | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
   | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
 
 Env2:
-    /* empty */ { Empty } 
+    /* empty */ { Empty }
   | Env2 LCID COLON Type COMMA { Bind($1, Var $2, $4) }
   | Env2 LCID COLON Type error { errAt 5 "Syntax error: ',' expected" }
   | Env2 LCID COLON error { errAt 4 "Syntax error: type expression expected after :" }
   | Env2 LCID error { errAt 3 "Syntax error: ':' expected" }
-  
+
 Exp:
   | LongExp { $1 }
   | Exp1 { $1 }
-  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) } 
-  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) } 
-  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) } 
+  | Exp1 BinOp1 LongExp { BinOp($2, $1, $3) }
+  | Exp2 BinOp2 LongExp { BinOp($2, $1, $3) }
+  | Exp3 BinOp3 LongExp { BinOp($2, $1, $3) }
 
-LongExp: 
+LongExp:
   | IF Exp THEN Exp ELSE Exp { If($2, $4, $6) }
   | LET LCID EQ Exp IN Exp { Let(Var $2, $4, $6) }
 
   /* error handling */
-  | IF Exp THEN Exp ELSE error { 
+  | IF Exp THEN Exp ELSE error {
 	errAt 6 "Syntax error: expression expected after else" }
   | IF Exp THEN error { errAt 4 "Syntax error: expression expected after then" }
   | IF error { errAt 2 "Syntax error: expression expected after if" }
-  | LET LCID EQ Exp IN error { 
+  | LET LCID EQ Exp IN error {
 	errAt 6 "Syntax error: expression expected after in" }
-  | LET LCID EQ error { 
+  | LET LCID EQ error {
 	errAt 4 "Syntax error: expression expected after =" }
   | LET error { errAt 2 "Syntax error: lowercase identifier or 'rec' expected after let" }
 
@@ -125,4 +125,3 @@ AExp:
 Type:
     INT { TyInt }
   | BOOL { TyBool }
-    

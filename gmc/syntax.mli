@@ -5,10 +5,10 @@ type term = Var of id | App of id * term list
 type syndef = { mvars : id list; cat : id; body : term list; }
 type judgment = { pred : string; args : term list }
 
-type premise = 
+type premise =
     J of judgment
   | Qexp of string * string option * string option
-      (* quoted ML expression for a side condition 
+      (* quoted ML expression for a side condition
 	 with an optional TeX representation *)
 
 type rule = { rname : string; rconc : judgment; rprem : premise list; }
@@ -24,9 +24,9 @@ val split_LCID : string -> string * string * string
 
 val base_LCID : string -> string
 
-type decl = 
-    Category 
-  | MVar of id 
+type decl =
+    Category
+  | MVar of id
   | TCon of id list * id
   | JCon of id list * id list
   | IsA of id

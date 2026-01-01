@@ -1,5 +1,5 @@
 (*
-  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算 
+  ML1: 整数 (represented by int) + 三則演算 + 真偽値 + If + 比較演算
   ML2: ML1 + let (環境)
   ML3: ML2 + fun (関数抽象・適用) + let rec (再帰関数定義)
   ML4: ML3 + list + match
@@ -42,21 +42,21 @@ AppBOp(op, v, v; v);
 
 E-Int: 	EvalTo(env, i, i) :- ;
 E-Bool: EvalTo(env, b, b) :- ;
-E-Var:  EvalTo(env, x, v) :- 
-          `try $v = lookup $env $x with Exit -> false` 
-          `$v = lookup $env $x` 
+E-Var:  EvalTo(env, x, v) :-
+          `try $v = lookup $env $x with Exit -> false`
+          `$v = lookup $env $x`
           %$env($x) = $v%;
-E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :- 
+E-Plus: EvalTo(env, BinOp(Plus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Plus, i1, i2, i3);
-E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :- 
+E-Minus: EvalTo(env, BinOp(Minus, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Minus, i1, i2, i3);
-E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :- 
+E-Times: EvalTo(env, BinOp(Mult, e1, e2), i3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Mult, i1, i2, i3);
 E-Lt: 	EvalTo(env, BinOp(Lt, e1, e2), b3) :-
 		EvalTo(env, e1, i1), EvalTo(env, e2, i2), AppBOp(Lt, i1, i2, b3);
-E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfT: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, true), EvalTo(env, e2, v);
-E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :- 
+E-IfF: 	EvalTo(env, If(e1, e2, e3), v) :-
 		EvalTo(env, e1, false), EvalTo(env, e3, v);
 (*
 E-Var1:  EvalTo(Bind(env,x,v), x, v) :- ;
@@ -80,7 +80,7 @@ E-AppRec: EvalTo(env,App(e1, e2), v) :-
 E-Nil: EvalTo(env,Nil,NilV) :- ;
 E-Cons: EvalTo(env,Cons(e1,e2),ConsV(v1,v2)) :- EvalTo(env,e1,v1), EvalTo(env,e2,v2);
 E-MatchNil: EvalTo(env,Match(e1,e2,x,y,e3),v) :- EvalTo(env,e1,NilV), EvalTo(env,e2,v);
-E-MatchCons: EvalTo(env,Match(e1,e2,x,y,e3),v) :- 
+E-MatchCons: EvalTo(env,Match(e1,e2,x,y,e3),v) :-
 	     EvalTo(env,e1,ConsV(v1,v2)), EvalTo(Bind(Bind(env,x,v1), y,v2), e3, v);
 
 B-Plus: AppBOp(Plus, i1, i2, i3) 	:- `$i3 = $i1 + $i2`;
@@ -91,6 +91,6 @@ B-Lt: 	AppBOp(Lt, i1, i2, b3) 		:- `$b3 = ($i1 < $i2)`;
 [ML]
 
 let rec lookup env x =
-    match env with 
+    match env with
       Empty -> raise Exit
     | Bind(env, x', v') -> if x = x' then v' else lookup env x

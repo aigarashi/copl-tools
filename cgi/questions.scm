@@ -40,7 +40,7 @@
 	      (cond [(< n 0) #f]
 		    [(< n length)
 		     ;; this problem belong to this section
-		     (prerequisite-satisfied? 
+		     (prerequisite-satisfied?
 		      (prerequisites-of (car sections))
 		      (sections-passed qdb solved))]
 		    [else (aux (- n length) (cdr sections))]))))
@@ -48,7 +48,7 @@
 
 (define how-many-q  ;; query how many questions are installed
   (call-with-input-file *question-db*
-    (lambda (in) 
+    (lambda (in)
       (define (aux sections)
 	(if (null? sections) 0
 	    (+ (vector-length (questions-of (car sections)))
@@ -62,7 +62,7 @@
 function toggleQ(elm) {
   var mode = elm.className.split(' ');
   switch (mode[0]) {
-    case 'on': elm.className='off ' + mode[1]; break; 
+    case 'on': elm.className='off ' + mode[1]; break;
     case 'off': elm.className='on ' + mode[1]; break;
     default:
   }
@@ -81,7 +81,7 @@ function turnOffAll() {
 
 function turnOffOthersAndToggle(elm) {
   if (elm.className.split(' ')[0] == 'off') {
-    turnOffAll(); toggleQ(elm); 
+    turnOffAll(); toggleQ(elm);
   } else { turnOffAll(); }
 }
 
@@ -99,7 +99,7 @@ function isAnyTurnedOn() {
 //-->"))
 
 ;; answer more than 1/3 questions passed, and proceed to the next stage
-(define-constant passing-rate 3) 
+(define-constant passing-rate 3)
 (define (sections-passed sections solved)
   (define (aux q-no sections)
     (if (null? sections) '()
@@ -120,7 +120,7 @@ function isAnyTurnedOn() {
       (and (memq (car prerequisites) passed)
 	   (prerequisite-satisfied? (cdr prerequisites) passed))))
 
-(define (display-qlist solved)  
+(define (display-qlist solved)
   ;; solved is a sorted list of numbers of solved questions
   (define (inner-loop q-no until)
     (if (= q-no until) '()
@@ -152,15 +152,15 @@ function isAnyTurnedOn() {
 		     :class "off unsolved"
 		     "(？_？)")
 		    (outer-loop end (cdr sections) passed))))))
-	 
+
   (call-with-input-file *question-db*
     (lambda (in)
       (let ((sections (read in)))
 	(html:div
 	 :id "qlist"
 	 JStoggleQ
-	 (html:ul 
+	 (html:ul
 	  :class "qlist"
 	  (html:li "問題セクション (正解数/問題数)")
-	  (outer-loop 1 sections 
+	  (outer-loop 1 sections
 		      (sections-passed sections solved))))))))

@@ -26,7 +26,7 @@ module Lexer = Lexer.Make(
         and def = DEF
 	and qm = QM
         and by = BY
-      end 
+      end
 
       module K = Keywords
       module MV = MacroVars
@@ -39,21 +39,21 @@ let check_deriv lexbuf ?against fullp texp =
     if !Core.failed then exit 2
     else
     (match fullp, texp with
-	true, true -> 
+	true, true ->
 	  Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d
-      | true, false -> 
+      | true, false ->
 	  Derivation.print_deriv Pp.print_judgment Format.std_formatter d
       | false, true ->
 	  Pp.tex_judgment Format.std_formatter d.Derivation.conc
       | false, false ->
 	  Pp.print_judgment Format.std_formatter d.Derivation.conc);
     Format.print_newline();
-    match against with 
-	None -> () 
+    match against with
+	None -> ()
       | Some s ->
 	  Format.fprintf Format.std_formatter "against %s" s;
 	  let j' = Parser.judgment Lexer.main (Lexing.from_string s) in
-	    if j <> j' then 
+	    if j <> j' then
 	      err ("The conclusion of the whole judgment is wrong.\nIt should be " ^ s)
 
 let make_deriv lexbuf fullp texp =
@@ -61,16 +61,15 @@ let make_deriv lexbuf fullp texp =
     try
       let d = Core.make_deriv j in
 	(match fullp, texp with
-	     true, true -> 
+	     true, true ->
 	       Derivation.tex_deriv Pp.tex_judgment Format.std_formatter d
-	   | true, false -> 
+	   | true, false ->
 	       Derivation.print_deriv Pp.print_judgment Format.std_formatter d
 	   | false, true ->
 	       Pp.tex_judgment Format.std_formatter d.Derivation.conc
 	   | false, false ->
 	       Pp.print_judgment Format.std_formatter d.Derivation.conc);
 	Format.print_newline()
-    with Core.NoApplicableRule j -> 
-      Format.fprintf Format.std_formatter 
+    with Core.NoApplicableRule j ->
+      Format.fprintf Format.std_formatter
 	"Error: no applicable rule for %a\n" Pp.print_pjudgment j
-
