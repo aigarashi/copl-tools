@@ -30,7 +30,7 @@
    (cons 'fname (fullname-of userinfo))
    (cons 'user-since (sys-time))
    '(group)
-   (cons 'questions #()))
+   (cons 'questions #())))
 
 ;; temporary user list management
 ;; format
