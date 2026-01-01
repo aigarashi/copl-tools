@@ -1,34 +1,32 @@
-.gm §´§È html §«¿∞∑¡§µ§Ï§øµ¨¬ß§Ú¿∏¿Æ§π§Î§À§œ°ß
+# gm „Åã„Çâ html „ÅßÊï¥ÂΩ¢„Åï„Çå„ÅüË¶èÂâá„ÇíÁîüÊàê„Åô„Çã
 
-°¶tools/cgi/rules2TeX.scm §À§Ω§Œ¬Œ∑œÕ—§Œ¿∞∑¡¥ÿøÙ§ÚΩÒ§Ø
+1. `tools/cgi/rules2TeX.scm` „Å´„Åù„ÅÆ‰ΩìÁ≥ªÁî®„ÅÆÊï¥ÂΩ¢Èñ¢Êï∞„ÇíÊõ∏„Åè
 
-    gmc §« SExp •’•©°º•‡§ÚΩ–Œœ§∑§∆§Ω§Ï§Ú…æ≤¡§∑§∆§§§Î
+`gmc` „Åß SExp „Éï„Ç©„Éº„É†„ÇíÂá∫Âäõ„Åó„Å¶„Åù„Çå„ÇíË©ï‰æ°„Åó„Å¶„ÅÑ„Çã
 
-  make §« games ∞ ≤º§À html §¨§œ§´§Ï§Î°•
+```
+make
+```
+„Åß `games/` ‰ª•‰∏ã„Å´ html „Åå„ÅØ„Åã„Çå„ÇãÔºéÂæå„ÅØÊâãÂãï„Ç≥„Éî„Éº!Ôºü
 
-  ∏Â§œºÍ∆∞•≥•‘°º!°©
+2. `games.tex` „Å´TeX„Éû„ÇØ„É≠„ÇíÊõ∏„Åè
 
-°¶games.tex §À•ﬁ•Ø•Ì§ÚΩÒ§Ø
+# ‰ΩìÁ≥ªÂÆöÁæ©„Çí‰øÆÊ≠£„Åó„Åü„Çâ
 
+* `checker/` „ÅÆ make „Çí„Åó„Å¶Ôºå`LOCALROOT`„Å∏„Ç≥„Éî„Éº
 
+* `cgi/` „Åß make „Çí„Åó„Å¶ `games/*.html` „ÅÆÁîüÊàêÔºé
+   `games/` „Åæ„Çã„Åî„Å® `LOCALROOT` „Å∏„Ç≥„Éî„Éº
 
-¬Œ∑œƒÍµ¡§ÚΩ§¿µ§∑§ø§È:
+* `doc/` „Åß `make rules` „Çí„Åó„Å¶ `rulebook.tex` „ÇíÁ∑®ÈõÜÔºépdf „ÅÆÁîüÊàê
+   `rulebook.pdf` „Çí `LOCALROOT` „Å∏„Ç≥„Éî„Éº
 
-- checker/ §Œ make -> local_html/dc §ÿ•≥•‘°º
+* `LOCALROOT/news.scm` „ÅÆÁ∑®ÈõÜ
 
-- cgi §« make°• games/*.html §Œ¿∏¿Æ°•
-   games/ -> local_html/dc §ÿ•≥•‘°º
+* `LOCALROOT` „Åß
 
-- doc/ §« make rules,  rulebook.tex §Ú ‘Ω∏°•pdf §Œ¿∏¿Æ
-   local_html/dc §ÿ•≥•‘°º
-
-- io:local_html/dc/news.scm §Œ ‘Ω∏
-
-- local•≥•‘°º§«∆∞∫Ó≥Œ«ß
-
-- local_html/dc §«
-
-   cp -r checker games rulebook.pdf news.scm ~/public_htm/CoPL
-
- §«¥∞Œª°•
+```
+cp -r checker games rulebook.pdf news.scm ~/public_htm/CoPL
+```
+„ÅßÂÆå‰∫ÜÔºé
 
