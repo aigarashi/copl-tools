@@ -4,10 +4,9 @@
 (use gauche.sequence)
 (use util.match)
 
-(load "./site-local.scm")
-(load "./global.scm")
-
-(load "./userdb.scm")
+;;(load "./site-local.scm")
+;;(load "./global.scm")
+;;(load "./userdb.scm")
 
 (use file.util)
 (use srfi-1)

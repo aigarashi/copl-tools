@@ -15,6 +15,7 @@
 (load "./global.scm")
 (load "./userdb.scm")
 (load "./questions.scm")
+(load "./hilight.scm")
 (load "./process.scm")
 (load "./statistics.scm")
 
@@ -263,7 +264,7 @@ function ToggleOldnews() {
      )))
 
 (define (display-q n uname)
-  (let ((q (get-q n)))
+  (let ((q (get-q n uname)))
     (if q ;; if n-th problem exists, q must be a list
 	;; then check if you are qualified to solve it
 	(if (not (qualified? n (cdr (lookupdb uname 'solved))))
@@ -332,7 +333,7 @@ function ToggleOldnews() {
 	 (deriv (cgi-get-parameter "derivation" params))
 	 (uname (cgi-get-parameter "loginas" params))
 	 (no (string->number (or (cgi-get-parameter "no" params) "0")))
-	 (problem (get-q no)))
+	 (problem (get-q no uname)))
     (if (and game deriv (or (zero? no) uname))
 	(let* ((result (invoke-checker game fullp deriv problem))
 	       (html-msg (display-result result deriv no uname game)))

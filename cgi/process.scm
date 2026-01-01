@@ -5,11 +5,11 @@
 (use text.html-lite)
 (use gauche.process)
 
-(load "./site-local.scm")
-(load "./global.scm")
-(load "./userdb.scm")
-(load "./hilight.scm")
-(load "./questions.scm")
+;; (load "./site-local.scm")
+;; (load "./global.scm")
+;; (load "./userdb.scm")
+;; (load "./hilight.scm")
+;; (load "./questions.scm")
 
 (define (make-cmd game fullp)
     (if fullp

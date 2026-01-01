@@ -12,6 +12,7 @@
 ;; USER DB format
 ;; (entry_1 ... entry_n)
 ;;  ENTRY_i = ((solved list-of-solved-problems)
+;;             (questions vector-of-fixed-problems)
 ;;             (passwd hash-of-passwd-string)
 ;;             (address email-address)
 ;;             (fname full-name-string)
@@ -28,7 +29,8 @@
    (cons 'address (address-of userinfo))
    (cons 'fname (fullname-of userinfo))
    (cons 'user-since (sys-time))
-   '(group)))
+   '(group)
+   (cons 'questions #()))
 
 ;; temporary user list management
 ;; format
